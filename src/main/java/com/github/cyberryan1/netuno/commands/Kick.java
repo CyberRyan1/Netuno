@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 public class Kick implements CommandExecutor {
 
-    private Database db = Utils.getDatabase();
+    private final Database DATA = Utils.getDatabase();
 
     @Override
     // /kick (player) (reason)
@@ -48,7 +48,7 @@ public class Kick implements CommandExecutor {
                         staff = "CONSOLE";
                     }
 
-                    db.addPunishment( pun );
+                    DATA.addPunishment( pun );
 
                     String kickMsg = "";
                     for ( String str : ConfigUtils.getColoredStrList( "kick.kicked-lines" ) ) {
