@@ -1,0 +1,66 @@
+
+
+#
+# Netuno Config Message Variables:
+# [STAFF] = Staff executing the command
+# [TARGET] = Player being punished
+# [LENGTH] = Length of a punishment (ex: 30m, 3h, etc)
+# [FANCY_LENGTH] = Length of a punishment given in a better format (ex: 30 minutes, 3 hours, etc)
+# [REASON] = Reason for a punishment
+#
+
+general:
+  # Permission for staff so that they can see silent punishments, etc
+  staff-perm: "netuno.staff"
+  # Permission for all netuno commands
+  all-perms: "netuno.*"
+  # What to send when a player is denied permission to a command
+  perm-denied-msg: "&cInsufficient permissions!"
+  # Prefix for broadcasts for a silently executed command
+  silent-prefix: "&8[&7S&8]"
+  # Whether staff can punish other staff or not
+  # Can be bypassed by players who have the permission defined in all-perms
+  staff-punishments: false
+
+warn:
+  # Permission
+  perm: "netuno.warn"
+  # Message sent to all non-staff
+  # Set to just one line with "" for nothing to be sent
+  broadcast:
+    - ""
+  # Message sent to all staff
+  # Set to just one line with "" for nothing to be sent
+  staff-broadcast:
+    - ""
+    - " &6[TARGET] &7has been &6warned"
+    - " &6Reason: &7[REASON]"
+    - " &6Staff: &7[STAFF]"
+    - ""
+  # What the warned player sees in their chat
+  message:
+    - ""
+    - " &7You have been &6warned&7!"
+    - " &6Reason: &7[REASON]"
+    - ""
+
+kick:
+  # Permission
+  perm: "netuno.kick"
+  # Message sent to all non-staff
+  # Set to just one line with "" for nothing to be sent
+  broadcast:
+    - " &6[TARGET] &7has been &6kicked"
+    - " &6Reason: &7[REASON]"
+  # Message sent to all staff
+  # Set to just one line with "" for nothing to be sent
+  staff-broadcast:
+    - ""
+    - " &6[TARGET] &7has been &6kicked"
+    - " &6Reason: &7[REASON]"
+    - " &6Staff: &7[STAFF]"
+    - ""
+  # What the kicked player sees
+  kicked-lines:
+    - "&7You have been &6kicked&7!"
+    - "&6Reason: &7[REASON]"
