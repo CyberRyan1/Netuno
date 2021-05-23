@@ -1,8 +1,15 @@
 package com.github.cyberryan1.netuno.utils;
 
+import java.sql.Timestamp;
+
 public class Time {
 
     public static long getCurrentTimestamp() { return System.currentTimeMillis() / 1000; }
+
+    public static String getDateFromTimestamp( long stamp ) {
+        Timestamp date = new Timestamp( stamp * 1000 );
+        return date.toGMTString();
+    }
 
     // supported units: s, m, h, d, w
     public static String getFormattedLength( String len ) {
