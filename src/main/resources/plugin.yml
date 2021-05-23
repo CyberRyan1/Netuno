@@ -4,6 +4,5 @@ main: com.github.cyberryan1.netuno.Netuno
 api-version: 1.16
 authors: [ CyberRyan ]
 commands:
-  testcommand:
-
+  warn:
   kick:
