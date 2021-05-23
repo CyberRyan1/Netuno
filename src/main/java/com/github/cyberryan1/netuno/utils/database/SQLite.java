@@ -19,7 +19,7 @@ public class SQLite extends Database {
         dbName = plugin.getConfig().getString( "SQLite.Filename", "database" );
     }
 
-    public String SQLiteCreateTokensTable = "CREATE TABLE IF NOT EXISTS database (" +
+    public String CREATE_PUNS_TABLE = "CREATE TABLE IF NOT EXISTS database (" +
             "`id` INTEGER NOT NULL," +
             "`player` STRING NOT NULL," +
             "`staff` STRING NOT NULL," +
@@ -27,6 +27,11 @@ public class SQLite extends Database {
             "`date` STRING NOT NULL," +
             "`length` STRING NOT NULL," +
             "`reason` STRING NOT NULL," +
+            "PRIMARY KEY (`id`));";
+
+    public final String CREATE_NOTIFS_TABLE = "CREATE TABLE IF NOT EXISTS notifs (" +
+            "`id` INTEGER NOT NULL," +
+            "`player` STRING NOT NULL," +
             "PRIMARY KEY (`id`));";
 
     public Connection getSqlConnection() {
@@ -66,7 +71,10 @@ public class SQLite extends Database {
         connection = getSqlConnection();
         try {
             Statement s = connection.createStatement();
-            s.executeUpdate( SQLiteCreateTokensTable );
+            s.executeUpdate( CREATE_PUNS_TABLE );
+
+            s = connection.createStatement();
+            s.executeUpdate( CREATE_NOTIFS_TABLE );
             s.close();
         } catch ( SQLException e ) {
             e.printStackTrace();

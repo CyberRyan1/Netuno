@@ -5,16 +5,20 @@ import com.github.cyberryan1.netuno.utils.Punishment;
 import com.github.cyberryan1.netuno.utils.Utils;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public abstract class Database {
 
     Netuno plugin;
     Connection connection;
-    public String table = "database";
-    public int tokens = 0;
 
-    private final String TYPELIST = "(id,player,staff,type,date,length,reason)";
-    private final String UNKNOWNLIST = "(?,?,?,?,?,?,?)";
+    public final String PUN_TABLE_NAME = "database";
+    private final String PUN_TYPE_LIST = "(id,player,staff,type,date,length,reason)";
+    private final String PUN_UNKNOWN_LIST = "(?,?,?,?,?,?,?)";
+
+    private final String NOTIF_TABLE_NAME = "notifs";
+    private final String NOTIF_TYPE_LIST = "(id,player)";
+    private final String NOTIF_UNKOWN_LIST = "(?,?)";
 
     public Database( Netuno instance ) {
         plugin = instance;
@@ -27,7 +31,7 @@ public abstract class Database {
     public void initialize() {
         connection = getSqlConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement( "SELECT * FROM " + table + " WHERE id = ?" );
+            PreparedStatement ps = connection.prepareStatement( "SELECT * FROM " + PUN_TABLE_NAME + " WHERE id = ?" );
             ResultSet rs = ps.executeQuery();
             close(ps, rs);
         } catch ( SQLException ex ) {
@@ -35,18 +39,34 @@ public abstract class Database {
         }
     }
 
-    public void addPunishment( Punishment pun ) {
+    public void close( PreparedStatement ps, ResultSet rs ) {
+        try {
+            if ( ps != null )
+                ps.close();
+            if ( rs != null )
+                rs.close();
+        } catch ( SQLException e ) {
+            Error.close( plugin, e );
+        }
+    }
+
+    //
+    // Punishments Database
+    //
+
+    // Returns the ID of the punishment, if needed
+    public int addPunishment( Punishment pun ) {
         Connection conn = null;
         PreparedStatement ps = null;
 
         try {
             conn = getSqlConnection();
-            ps = conn.prepareStatement( "INSERT INTO " + table + " " + TYPELIST + " VALUES" + UNKNOWNLIST );
+            ps = conn.prepareStatement( "INSERT INTO " + PUN_TABLE_NAME + " " + PUN_TYPE_LIST + " VALUES" + PUN_UNKNOWN_LIST );
 
-            int id = getNextID();
+            int id = getNextPunID();
             if ( id == -1 ) {
-                Utils.logError( "Unabled to add punishment to database" );
-                return;
+                Utils.logError( "Unable to add punishment to database" );
+                return -1;
             }
 
             ps.setInt( 1, id );
@@ -58,7 +78,7 @@ public abstract class Database {
             ps.setString( 7, pun.getReason() );
 
             ps.executeUpdate();
-            return;
+            return id;
 
         } catch ( SQLException ex ) {
             Utils.logError( "Unable to add punishment to database" );
@@ -74,13 +94,15 @@ public abstract class Database {
                 Utils.logError( Errors.sqlConnectionExecute(), e );
             }
         }
+
+        return -1;
     }
 
-    private int getNextID() {
+    private int getNextPunID() {
         try {
             Connection conn = getSqlConnection();
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery( "SELECT COUNT(*) FROM " + table );
+            ResultSet rs = stmt.executeQuery( "SELECT COUNT(*) FROM " + PUN_TABLE_NAME);
             rs.next();
             return rs.getInt("count(*)");
         } catch ( SQLException ex ) {
@@ -89,94 +111,15 @@ public abstract class Database {
         return -1;
     }
 
-//    public Punishment getPunishment( int id ) {
-//        if ( checkIDExists( id ) ) {
-//            Connection conn = null;
-//            PreparedStatement ps = null;
-//            ResultSet rs = null;
-//
-//            try {
-//                conn = getSqlConnection();
-//                ps = conn.prepareStatement( "SELECT * FROM " + table + " WHERE id = " + id + ";" );
-//
-//                rs = ps.executeQuery();
-//                while ( rs.next() ) {
-//                    Punishment next = rs.getObject( "punishment", Punishment.class );
-//                    if ( next.getID() == id ) {
-//                        return next;
-//                    }
-//                }
-//            } catch ( SQLException e ) {
-//                e.printStackTrace();
-//                Utils.logError( "Couldn't execute MySQL statement: ", e );
-//        //        Utils.logError( Errors.sqlConnectionExecute(), e );
-//            } finally {
-//                try {
-//                    if ( ps != null )
-//                        ps.close();
-//                    if ( conn != null )
-//                        conn.close();
-//                } catch ( SQLException e ) {
-//                    Utils.logError( Errors.sqlConnectionClose(), e );
-//                }
-//            }
-//        }
-//
-//        return null;
-//    }
-//
-//
-//
-//    public void addPunishment( Punishment pun ) {
-//        int id = pun.getID();
-//        Connection conn = null;
-//        PreparedStatement ps = null;
-//
-//        try {
-//            conn = getSqlConnection();
-//            ps = conn.prepareStatement( "INSERT INTO " + table + " (id,history) VALUES(?,?)" );
-//
-//            ps.setInt( 1, id );
-//            ps.setObject( 2, pun );
-//            //ps.setBytes( 2, pun.toByteArray() );
-//            ps.executeUpdate();
-//            return;
-//        } catch ( SQLException e ) {
-//            Utils.logError( Errors.sqlConnectionExecute() );
-//        } finally {
-//            try {
-//                if ( ps != null )
-//                    ps.close();
-//                if ( conn != null )
-//                    conn.close();
-//            } catch ( SQLException e ) {
-//                Utils.logError( Errors.sqlConnectionExecute(), e );
-//            }
-//        }
-//
-//        return;
-//    }
-
-    public void close( PreparedStatement ps, ResultSet rs ) {
-        try {
-            if ( ps != null )
-                ps.close();
-            if ( rs != null )
-                rs.close();
-        } catch ( SQLException e ) {
-            Error.close( plugin, e );
-        }
-    }
-
     // sees if a punishment id exists
-    private boolean checkIDExists( int id ) {
+    private boolean checkPunIDExists(int id ) {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
             conn = getSqlConnection();
-            ps = conn.prepareStatement( "SELECT * FROM " + table + " WHERE id = " + id + ";" );
+            ps = conn.prepareStatement( "SELECT * FROM " + PUN_TABLE_NAME + " WHERE id = " + id + ";" );
             rs = ps.executeQuery();
         } catch ( SQLException ignore ) {}
         finally {
@@ -198,19 +141,124 @@ public abstract class Database {
         return false;
     }
 
-    // Convert a byte array to a Punishment object
-//    private Punishment getPunishmentFromByteArray( byte[] data ) {
-//        try {
-//            ByteArrayInputStream baip = new ByteArrayInputStream( data );
-//            ObjectInputStream ois = new ObjectInputStream( baip );
-//            Punishment pun = ( Punishment ) ois.readObject();
-//            return pun;
-//        } catch ( IOException e ) {
-//            e.printStackTrace();
-//        } catch ( ClassNotFoundException e ) {
-//            e.printStackTrace();
-//        }
-//
-//        return null;
-//    }
+    // Get a punishment from an ID
+    public Punishment getPunishment( int id ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT * FROM " + PUN_TABLE_NAME + " WHERE id = " + id + ";" );
+            rs = ps.executeQuery();
+
+            Punishment pun = new Punishment();
+            pun.setPlayerUUID( rs.getString( "player" ) );
+            pun.setStaffUUID( rs.getString( "staff" ) );
+            pun.setType( rs.getString( "type" ) );
+            pun.setDate( Long.parseLong( rs.getString( "date" ) ) );
+            pun.setLength( Long.parseLong( rs.getString( "length" ) ) );
+            pun.setReason( rs.getString( "reason" ) );
+
+            return pun;
+
+        } catch ( SQLException e ) {
+            Utils.logError( "Couldn't execute MySQL statement: ", e );
+        } finally {
+            try {
+                if ( ps != null ) {
+                    ps.close();
+                }
+                if ( conn != null ) {
+                    conn.close();
+                }
+            } catch ( SQLException e ) {
+                Utils.logError( Errors.sqlConnectionClose(), e );
+            }
+        }
+
+        return null;
+    }
+
+    //
+    // Notifs Database
+    //
+    public void addNotif( int punID, String playerUUID ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "INSERT INTO " + NOTIF_TABLE_NAME + " " + NOTIF_TYPE_LIST + " VALUES" + NOTIF_UNKOWN_LIST );
+
+            ps.setInt( 1, punID );
+            ps.setString( 2, playerUUID );
+
+            ps.executeUpdate();
+            return;
+
+        } catch ( SQLException ex ) {
+            Utils.logError( "Unable to add notification to database" );
+        }
+    }
+
+    public ArrayList<Integer> searchNotifByUUID( String uuid ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<Integer> toReturn = new ArrayList<>();
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT * FROM " + NOTIF_TABLE_NAME + " WHERE player=?;" );
+
+            ps.setString( 1, uuid );
+            rs = ps.executeQuery();
+
+            while ( rs.next() ) {
+                toReturn.add( rs.getInt( "id" ) );
+            }
+
+            return toReturn;
+        } catch ( SQLException e ) {
+            Utils.logError( "Couldn't execute MySQL statement: ", e );
+        } finally {
+            try {
+                if ( ps != null ) {
+                    ps.close();
+                }
+                if ( conn != null ) {
+                    conn.close();
+                }
+            } catch ( SQLException e ) {
+                Utils.logError( Errors.sqlConnectionClose(), e );
+            }
+        }
+
+        return null;
+    }
+
+    public void removeNotif( int id ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "DELETE FROM " + NOTIF_TABLE_NAME + " WHERE id=" + id + ";" );
+            ps.executeUpdate();
+        } catch ( SQLException e ) {
+            Utils.logError( "Couldn't execute MySQL statement: ", e );
+        } finally {
+            try {
+                if ( ps != null ) {
+                    ps.close();
+                }
+                if ( conn != null ) {
+                    conn.close();
+                }
+            } catch ( SQLException e ) {
+                Utils.logError( Errors.sqlConnectionClose(), e );
+            }
+        }
+    }
 }
