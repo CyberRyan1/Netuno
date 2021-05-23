@@ -1,6 +1,8 @@
 package com.github.cyberryan1.netuno;
 
 import com.github.cyberryan1.netuno.commands.Kick;
+import com.github.cyberryan1.netuno.commands.Warn;
+import com.github.cyberryan1.netuno.listeners.JoinListener;
 import com.github.cyberryan1.netuno.managers.ConfigManager;
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
@@ -26,6 +28,9 @@ public final class Netuno extends JavaPlugin {
         vaultUtils = new VaultUtils();
 
         this.getCommand( "kick" ).setExecutor( new Kick() );
+        this.getCommand( "warn" ).setExecutor( new Warn() );
+
+        this.getServer().getPluginManager().registerEvents( new JoinListener(), this );
 
         ConfigUtils.getConfigManager().reloadConfig();
     }
