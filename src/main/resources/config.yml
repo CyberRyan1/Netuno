@@ -67,11 +67,11 @@ kick:
 mute:
   perm: "netuno.mute"
   broadcast:
-    - " &6[TARGET] &7has been &6muted &8[&7[FANCY_LENGTH]&8]"
+    - " &6[TARGET] &7has been &6muted &8[&7[LENGTH]&8]"
     - " &6Reason: &7[REASON]"
   staff-broadcast:
     - ""
-    - " &6[TARGET] &7has been &6muted &8[&7[FANCY_LENGTH]&8]"
+    - " &6[TARGET] &7has been &6muted &8[&7[LENGTH]&8]"
     - " &6Reason: &7[REASON]"
     - " &6Staff: &7[STAFF]"
     - ""
