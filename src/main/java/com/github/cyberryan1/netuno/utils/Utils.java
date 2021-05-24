@@ -10,6 +10,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class Utils {
@@ -84,7 +85,7 @@ public class Utils {
         String message = ConfigUtils.getColoredStrFromList( type + ".message" );
 
         String length = "";
-        if ( pun.getLength() != -1 ) {
+        if ( pun.getType().equals( "warn" ) == false && pun.getType().equals( "kick" ) == false ) {
             length = Time.getLengthFromTimestamp( pun.getLength() );
         }
 
@@ -113,5 +114,66 @@ public class Utils {
         }
 
         return true;
+    }
+
+    // Sends a public punishment broadcast, if needed
+    public static void doPublicPunBroadcast( Punishment pun ) {
+        String type = pun.getType().toLowerCase();
+        boolean sendToStaff = ConfigUtils.checkListNotEmpty( type + ".staff-broadcast" );
+        if ( ConfigUtils.checkListNotEmpty( type + ".broadcast" ) ) {
+            String broadcast = ConfigUtils.getColoredStrFromList( type + ".broadcast" );
+
+            String staffName = "CONSOLE";
+            if ( pun.getStaffUUID().equalsIgnoreCase( "CONSOLE" ) == false ) {
+                staffName = Bukkit.getOfflinePlayer( UUID.fromString( pun.getStaffUUID() ) ).getName();
+            }
+            String targetName = Bukkit.getOfflinePlayer( UUID.fromString( pun.getPlayerUUID() ) ).getName();
+
+            String length = "";
+            if ( pun.getType().equals( "warn" ) == false && pun.getType().equals( "kick" ) == false ) {
+                length = Time.getLengthFromTimestamp( pun.getLength() );
+            }
+
+            broadcast = ConfigUtils.replaceAllVariables( broadcast, staffName, targetName, length, pun.getReason() );
+
+            for ( Player p : Bukkit.getOnlinePlayers() ) {
+                if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) == false || sendToStaff == false ) {
+                    p.sendMessage( broadcast );
+                    if ( broadcast.charAt( broadcast.length() - 1 ) == '\n' ) {
+                        p.sendMessage( "" );
+                    }
+                }
+            }
+        }
+    }
+
+    // Sends a staff punishment broadcast, if needed
+    public static void doStaffPunBroadcast( Punishment pun ) {
+        String type = pun.getType().toLowerCase();
+        if ( ConfigUtils.checkListNotEmpty( type + ".staff-broadcast" ) ) {
+            String broadcast = ConfigUtils.getColoredStrFromList( type + ".staff-broadcast" );
+
+            String staffName = "CONSOLE";
+            if ( pun.getStaffUUID().equalsIgnoreCase( "CONSOLE" ) == false ) {
+                staffName = Bukkit.getOfflinePlayer( UUID.fromString( pun.getStaffUUID() ) ).getName();
+            }
+            String targetName = Bukkit.getOfflinePlayer( UUID.fromString( pun.getPlayerUUID() ) ).getName();
+
+            String length = "";
+            if ( pun.getType().equals( "warn" ) == false && pun.getType().equals( "kick" ) == false ) {
+                length = Time.getLengthFromTimestamp( pun.getLength() );
+            }
+
+            broadcast = ConfigUtils.replaceAllVariables( broadcast, staffName, targetName, length, pun.getReason() );
+
+            for ( Player p : Bukkit.getOnlinePlayers() ) {
+                if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
+                    p.sendMessage( broadcast );
+                    if ( broadcast.charAt( broadcast.length() - 1 ) == '\n' ) {
+                        p.sendMessage( "" );
+                    }
+                }
+            }
+        }
     }
 }
