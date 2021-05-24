@@ -111,6 +111,7 @@ public class ConfigUtils {
 
         if ( pun.getType().equalsIgnoreCase( "kick" ) == false && pun.getType().equalsIgnoreCase( "warn" ) == false ) {
             str = str.replace( "[LENGTH]", Time.getLengthFromTimestamp( pun.getLength() ) );
+            str = str.replace( "[REMAIN]", Time.getLengthRemaining( pun ) );
         }
 
         str = str.replace( "[REASON]", pun.getReason() );

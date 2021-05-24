@@ -5,6 +5,7 @@
 # [STAFF] = Staff executing the command
 # [TARGET] = Player being punished
 # [LENGTH] = Length of a punishment (ex: 30 minutes, 3 hours, etc)
+# [REMAIN] = Length remaining of a punishment
 # [REASON] = Reason for a punishment
 #
 
@@ -86,6 +87,6 @@ mute:
   attempt:
     - ""
     - " &7You are &6muted&7!"
-    - " &6Length: &7[LENGTH]"
+    - " &6Time Remaining: &7[REMAIN]"
     - " &6Reason: &7[REASON]"
     - ""
