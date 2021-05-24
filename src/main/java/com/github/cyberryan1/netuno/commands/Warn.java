@@ -84,7 +84,7 @@ public class Warn implements CommandExecutor {
                 }
 
                 else {
-                    sender.sendMessage( ConfigUtils.getColoredStr( "&7Could not find any played named &6" + args[0] ) );
+                    sender.sendMessage( ConfigUtils.getColoredStr( "&7Could not find any player named &6" + args[0] ) );
                     return true;
                 }
 
