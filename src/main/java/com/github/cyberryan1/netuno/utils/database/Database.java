@@ -252,12 +252,9 @@ public abstract class Database {
         }
 
         long endingDate = pun.getDate() + pun.getLength();
-        Utils.logWarn( "checkActive || endingDate = " + endingDate ); // ! debug
         long today = Time.getCurrentTimestamp();
-        Utils.logWarn( "checkActive || today = " + today ); // ! debug
 
         if ( endingDate <= today ) {
-            Utils.logWarn( "checkActive || endingDate >= today" ); // ! debug
             pun.setActive( false );
             setPunishmentActive( pun.getID(), false );
             return false;
