@@ -4,8 +4,7 @@
 # Netuno Config Message Variables:
 # [STAFF] = Staff executing the command
 # [TARGET] = Player being punished
-# [LENGTH] = Length of a punishment (ex: 30m, 3h, etc)
-# [FANCY_LENGTH] = Length of a punishment given in a better format (ex: 30 minutes, 3 hours, etc)
+# [LENGTH] = Length of a punishment (ex: 30 minutes, 3 hours, etc)
 # [REASON] = Reason for a punishment
 #
 
@@ -79,6 +78,6 @@ mute:
   message:
     - ""
     - " &7You have been &6muted&7!"
-    - " &6Length: &7[FANCY_LENGTH]"
+    - " &6Length: &7[LENGTH]"
     - " &6Reason: &7[REASON]"
     - ""
