@@ -24,7 +24,7 @@ public class Time {
         if ( unit == 'w' ) { dur = Duration.ofDays( 7L * amount ); }
         else if ( unit == 'd' ) { dur = Duration.ofDays( ( long ) amount ); }
         else if ( unit == 'h' ) { dur = Duration.ofHours( ( long ) amount ); }
-        else if ( unit == 'm' ) { dur = Duration.ofHours( ( long ) amount ); }
+        else if ( unit == 'm' ) { dur = Duration.ofMinutes( ( long ) amount ); }
         else { dur = Duration.ofSeconds( ( long ) amount ); }
 
         return dur.getSeconds();
@@ -41,7 +41,7 @@ public class Time {
         if ( unit == 'w' ) { betterUnit = "week"; }
         else if ( unit == 'd' ) { betterUnit = "day"; }
         else if ( unit == 'h' ) { betterUnit = "hour"; }
-        else if ( unit == 'm' ) { betterUnit = "month"; }
+        else if ( unit == 'm' ) { betterUnit = "minute"; }
         else { betterUnit = "second"; }
 
         if ( amount > 1 ) {
