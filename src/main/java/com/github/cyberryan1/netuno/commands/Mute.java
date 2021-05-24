@@ -25,7 +25,6 @@ public class Mute implements CommandExecutor {
         if ( Utils.isOutOfBounds( args, 2 ) == false ) {
             if ( Time.isAllowableLength( args[1] ) ) {
                 String reason = Utils.getRemainingArgs( args, 2 );
-                String length = Time.getFormattedLength( args[1] );
                 Punishment pun = new Punishment();
 
                 pun.setReason( reason );
@@ -34,22 +33,18 @@ public class Mute implements CommandExecutor {
                 pun.setLength( Time.getTimestampFromLength( args[1] ) );
                 pun.setActive( true );
 
-                String staffName = "CONSOLE";
-                String targetName;
                 Player target = Bukkit.getServer().getPlayer( args[0] );
                 if ( target != null ) {
 
-                    targetName = target.getName();
                     pun.setPlayerUUID( target.getUniqueId().toString() );
 
                     pun.setStaffUUID( "CONSOLE" );
                     if ( sender instanceof Player ) {
                         Player staff = ( Player ) sender;
                         pun.setStaffUUID( staff.getUniqueId().toString() );
-                        staffName = staff.getName();
 
                         if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
-                            staff.sendMessage( Utils.getColored( "&6" + targetName + " &7is a staff member, so they cannot be punished" ) );
+                            staff.sendMessage( Utils.getColored( "&6" + target.getName() + " &7is a staff member, so they cannot be punished" ) );
                             return true;
                         }
                     }
@@ -60,7 +55,6 @@ public class Mute implements CommandExecutor {
 
                 else if ( Bukkit.getServer().getOfflinePlayer( args[0] ).hasPlayedBefore() ) {
                     OfflinePlayer offline = Bukkit.getServer().getOfflinePlayer( args[0] );
-                    targetName = offline.getName();
 
                     pun.setPlayerUUID( offline.getUniqueId().toString() );
 
@@ -68,10 +62,9 @@ public class Mute implements CommandExecutor {
                     if ( sender instanceof Player ) {
                         Player staff = ( Player ) sender;
                         pun.setStaffUUID( staff.getUniqueId().toString() );
-                        staffName = staff.getName();
 
                         if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
-                            staff.sendMessage( Utils.getColored( "&6" + targetName + " &7is a staff member, so they cannot be punished" ) );
+                            staff.sendMessage( Utils.getColored( "&6" + target.getName() + " &7is a staff member, so they cannot be punished" ) );
                             return true;
                         }
                     }
