@@ -1,9 +1,11 @@
 package com.github.cyberryan1.netuno.utils;
 
 import com.github.cyberryan1.netuno.managers.ConfigManager;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class ConfigUtils {
 
@@ -91,9 +93,27 @@ public class ConfigUtils {
     public static String replaceAllVariables( String str, String staff, String target, String length, String reason ) {
         str = str.replace( "[STAFF]", staff ).replace( "[TARGET]", target );
         if ( length.length() > 0 ) {
-            str = str.replace( "[LENGTH]", length ).replace( "[FANCY_LENGTH]", Time.getFormattedLength( length ) );
+            str = str.replace( "[LENGTH]", Time.getFormattedLength( length ) );
         }
         str = str.replace( "[REASON]", reason );
+
+        return str;
+    }
+
+    public static String replaceAllVariables( String str, Punishment pun ) {
+        String targetName = Bukkit.getOfflinePlayer( UUID.fromString( pun.getPlayerUUID() ) ).getName();
+        String staffName = "CONSOLE";
+        if ( pun.getStaffUUID().equalsIgnoreCase( "CONSOLE" ) == false ) {
+            staffName = Bukkit.getOfflinePlayer( UUID.fromString( pun.getStaffUUID() ) ).getName();
+        }
+
+        str = str.replace( "[STAFF]", staffName ).replace( "[TARGET]", targetName );
+
+        if ( pun.getType().equalsIgnoreCase( "kick" ) == false && pun.getType().equalsIgnoreCase( "warn" ) == false ) {
+            str = str.replace( "[LENGTH]", Time.getLengthFromTimestamp( pun.getLength() ) );
+        }
+
+        str = str.replace( "[REASON]", pun.getReason() );
 
         return str;
     }
