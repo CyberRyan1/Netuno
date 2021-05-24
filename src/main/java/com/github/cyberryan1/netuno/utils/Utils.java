@@ -80,26 +80,25 @@ public class Utils {
         return str.substring( 0, str.length() - 1 );
     }
 
+    public static void sendAnyMsg( Player target, String str ) {
+        target.sendMessage( str );
+        if ( str.charAt( str.length() - 1 ) == '\n' ) {
+            target.sendMessage( "" );
+        }
+    }
+
     public static void sendPunishmentMsg( Player target, Punishment pun ) {
         String type = pun.getType().toLowerCase();
         String message = ConfigUtils.getColoredStrFromList( type + ".message" );
 
-        message = ConfigUtils.replaceAllVariables( message, pun );
-        target.sendMessage( message );
-        if ( message.charAt( message.length() - 1 ) == '\n' ) {
-            target.sendMessage( "" );
-        }
+        sendAnyMsg( target, ConfigUtils.replaceAllVariables( message, pun ) );
     }
 
     public static void sendDeniedMsg( Player target, Punishment pun ) {
         String type = pun.getType().toLowerCase();
         String message = ConfigUtils.getColoredStrFromList( type + ".attempt" );
 
-        message = ConfigUtils.replaceAllVariables( message, pun );
-        target.sendMessage( message );
-        if ( message.charAt( message.length() - 1 ) == '\n' ) {
-            target.sendMessage( "" );
-        }
+        sendAnyMsg( target, ConfigUtils.replaceAllVariables( message, pun ) );
     }
 
     // Checks if a staff punishing another staff is allowable or not
@@ -122,26 +121,11 @@ public class Utils {
         boolean sendToStaff = ConfigUtils.checkListNotEmpty( type + ".staff-broadcast" );
         if ( ConfigUtils.checkListNotEmpty( type + ".broadcast" ) ) {
             String broadcast = ConfigUtils.getColoredStrFromList( type + ".broadcast" );
-
-            String staffName = "CONSOLE";
-            if ( pun.getStaffUUID().equalsIgnoreCase( "CONSOLE" ) == false ) {
-                staffName = Bukkit.getOfflinePlayer( UUID.fromString( pun.getStaffUUID() ) ).getName();
-            }
-            String targetName = Bukkit.getOfflinePlayer( UUID.fromString( pun.getPlayerUUID() ) ).getName();
-
-            String length = "";
-            if ( pun.getType().equals( "warn" ) == false && pun.getType().equals( "kick" ) == false ) {
-                length = Time.getLengthFromTimestamp( pun.getLength() );
-            }
-
             broadcast = ConfigUtils.replaceAllVariables( broadcast, pun );
 
             for ( Player p : Bukkit.getOnlinePlayers() ) {
                 if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) == false || sendToStaff == false ) {
-                    p.sendMessage( broadcast );
-                    if ( broadcast.charAt( broadcast.length() - 1 ) == '\n' ) {
-                        p.sendMessage( "" );
-                    }
+                    sendAnyMsg( p, broadcast );
                 }
             }
         }
@@ -152,26 +136,11 @@ public class Utils {
         String type = pun.getType().toLowerCase();
         if ( ConfigUtils.checkListNotEmpty( type + ".staff-broadcast" ) ) {
             String broadcast = ConfigUtils.getColoredStrFromList( type + ".staff-broadcast" );
-
-            String staffName = "CONSOLE";
-            if ( pun.getStaffUUID().equalsIgnoreCase( "CONSOLE" ) == false ) {
-                staffName = Bukkit.getOfflinePlayer( UUID.fromString( pun.getStaffUUID() ) ).getName();
-            }
-            String targetName = Bukkit.getOfflinePlayer( UUID.fromString( pun.getPlayerUUID() ) ).getName();
-
-            String length = "";
-            if ( pun.getType().equals( "warn" ) == false && pun.getType().equals( "kick" ) == false ) {
-                length = Time.getLengthFromTimestamp( pun.getLength() );
-            }
-
             broadcast = ConfigUtils.replaceAllVariables( broadcast, pun );
 
             for ( Player p : Bukkit.getOnlinePlayers() ) {
                 if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
-                    p.sendMessage( broadcast );
-                    if ( broadcast.charAt( broadcast.length() - 1 ) == '\n' ) {
-                        p.sendMessage( "" );
-                    }
+                    sendAnyMsg( p, broadcast );
                 }
             }
         }
