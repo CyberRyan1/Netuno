@@ -64,3 +64,21 @@ kick:
   kicked-lines:
     - "&7You have been &6kicked&7!"
     - "&6Reason: &7[REASON]"
+
+mute:
+  perm: "netuno.mute"
+  broadcast:
+    - " &6[TARGET] &7has been &6muted &8[&7[FANCY_LENGTH]&8]"
+    - " &6Reason: &7[REASON]"
+  staff-broadcast:
+    - ""
+    - " &6[TARGET] &7has been &6muted &8[&7[FANCY_LENGTH]&8]"
+    - " &6Reason: &7[REASON]"
+    - " &6Staff: &7[STAFF]"
+    - ""
+  message:
+    - ""
+    - " &7You have been &6muted&7!"
+    - " &6Length: &7[FANCY_LENGTH]"
+    - " &6Reason: &7[REASON]"
+    - ""

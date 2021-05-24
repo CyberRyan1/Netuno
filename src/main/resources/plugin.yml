@@ -6,3 +6,4 @@ authors: [ CyberRyan ]
 commands:
   warn:
   kick:
+  mute:
