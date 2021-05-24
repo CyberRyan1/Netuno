@@ -84,16 +84,16 @@ public class Utils {
         String type = pun.getType().toLowerCase();
         String message = ConfigUtils.getColoredStrFromList( type + ".message" );
 
-        String length = "";
-        if ( pun.getType().equals( "warn" ) == false && pun.getType().equals( "kick" ) == false ) {
-            length = Time.getLengthFromTimestamp( pun.getLength() );
+        message = ConfigUtils.replaceAllVariables( message, pun );
+        target.sendMessage( message );
+        if ( message.charAt( message.length() - 1 ) == '\n' ) {
+            target.sendMessage( "" );
         }
+    }
 
-        String staffName = "CONSOLE";
-        if ( pun.getStaffUUID().equals( "CONSOLE" ) == false ) {
-            OfflinePlayer staff = Bukkit.getServer().getOfflinePlayer( pun.getStaffUUID() );
-            staffName = staff.getName();
-        }
+    public static void sendDeniedMsg( Player target, Punishment pun ) {
+        String type = pun.getType().toLowerCase();
+        String message = ConfigUtils.getColoredStrFromList( type + ".attempt" );
 
         message = ConfigUtils.replaceAllVariables( message, pun );
         target.sendMessage( message );
