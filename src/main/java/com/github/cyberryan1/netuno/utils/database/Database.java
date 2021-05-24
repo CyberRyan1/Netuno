@@ -2,6 +2,7 @@ package com.github.cyberryan1.netuno.utils.database;
 
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.utils.Punishment;
+import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
 
 import java.sql.*;
@@ -13,8 +14,8 @@ public abstract class Database {
     Connection connection;
 
     public final String PUN_TABLE_NAME = "database";
-    private final String PUN_TYPE_LIST = "(id,player,staff,type,date,length,reason)";
-    private final String PUN_UNKNOWN_LIST = "(?,?,?,?,?,?,?)";
+    private final String PUN_TYPE_LIST = "(id,player,staff,type,date,length,reason,active)";
+    private final String PUN_UNKNOWN_LIST = "(?,?,?,?,?,?,?,?)";
 
     private final String NOTIF_TABLE_NAME = "notifs";
     private final String NOTIF_TYPE_LIST = "(id,player)";
@@ -76,6 +77,7 @@ public abstract class Database {
             ps.setString( 5, "" + pun.getDate() );
             ps.setString( 6, "" + pun.getLength() );
             ps.setString( 7, pun.getReason() );
+            ps.setString( 8, pun.getActive() + "" );
 
             ps.executeUpdate();
             return id;
@@ -153,12 +155,14 @@ public abstract class Database {
             rs = ps.executeQuery();
 
             Punishment pun = new Punishment();
+            pun.setID( rs.getInt( "id" ) );
             pun.setPlayerUUID( rs.getString( "player" ) );
             pun.setStaffUUID( rs.getString( "staff" ) );
             pun.setType( rs.getString( "type" ) );
             pun.setDate( Long.parseLong( rs.getString( "date" ) ) );
             pun.setLength( Long.parseLong( rs.getString( "length" ) ) );
             pun.setReason( rs.getString( "reason" ) );
+            pun.setActive( Boolean.parseBoolean( rs.getString( "active" ) ) );
 
             return pun;
 
@@ -178,6 +182,115 @@ public abstract class Database {
         }
 
         return null;
+    }
+
+    // Search for a punishment by UUID
+    public ArrayList<Punishment> getPunishment( String uuid ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<Punishment> results = new ArrayList<>();
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT * FROM " + PUN_TABLE_NAME + " WHERE player=?;");
+            ps.setString( 1, uuid );
+            rs = ps.executeQuery();
+
+            while ( rs.next() ) {
+                Punishment pun = new Punishment();
+                pun.setID( rs.getInt( "id" ) );
+                pun.setPlayerUUID( rs.getString( "player" ) );
+                pun.setStaffUUID( rs.getString( "staff" ) );
+                pun.setType( rs.getString( "type" ) );
+                pun.setDate( Long.parseLong( rs.getString( "date" ) ) );
+                pun.setLength( Long.parseLong( rs.getString( "length" ) ) );
+                pun.setReason( rs.getString( "reason" ) );
+                pun.setActive( Boolean.parseBoolean( rs.getString( "active" ) ) );
+
+                results.add( pun );
+            }
+        } catch ( SQLException e ) {
+            Utils.logError( "Couldn't execute MySQL statement: ", e );
+        } finally {
+            try {
+                if ( ps != null ) {
+                    ps.close();
+                }
+                if ( conn != null ) {
+                    conn.close();
+                }
+            } catch ( SQLException e ) {
+                Utils.logError( Errors.sqlConnectionClose(), e );
+            }
+        }
+
+        return results;
+    }
+
+    // Gets punishments of a certain type that are active
+    public ArrayList<Punishment> getPunishment( String uuid, String type, boolean active ) {
+        ArrayList<Punishment> punishments = getPunishment( uuid );
+        ArrayList<Punishment> toReturn = new ArrayList<>();
+
+        for ( Punishment pun : punishments ) {
+            if ( pun.getType().equalsIgnoreCase( type ) ) {
+                if ( checkActive( pun ) == active ) {
+                    toReturn.add( pun );
+                }
+            }
+        }
+
+        return toReturn;
+    }
+
+    // Checks if a punishment is active or not
+    // true = still active, false = not active
+    public boolean checkActive( Punishment pun ) {
+        if ( pun.getLength() == -1 ) {
+            return true;
+        }
+
+        long endingDate = pun.getDate() + pun.getLength();
+        Utils.logWarn( "checkActive || endingDate = " + endingDate ); // ! debug
+        long today = Time.getCurrentTimestamp();
+        Utils.logWarn( "checkActive || today = " + today ); // ! debug
+
+        if ( endingDate <= today ) {
+            Utils.logWarn( "checkActive || endingDate >= today" ); // ! debug
+            pun.setActive( false );
+            setPunishmentActive( pun.getID(), false );
+            return false;
+        }
+
+        return true;
+    }
+
+    // Sets whether a punishment is still active or not
+    public void setPunishmentActive( int id, boolean active ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement("UPDATE " + PUN_TABLE_NAME + " SET active=? WHERE id=?;" );
+            ps.setString( 1, active + "" );
+            ps.setInt( 2, id );
+            ps.executeUpdate();
+        } catch ( SQLException e ) {
+            Utils.logError( "Couldn't execute MySQL statement: ", e );
+        } finally {
+            try {
+                if ( ps != null ) {
+                    ps.close();
+                }
+                if ( conn != null ) {
+                    conn.close();
+                }
+            } catch ( SQLException e ) {
+                Utils.logError( Errors.sqlConnectionClose(), e );
+            }
+        }
     }
 
     //
