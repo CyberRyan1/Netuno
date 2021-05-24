@@ -4,6 +4,7 @@ import java.io.*;
 
 public class Punishment implements Serializable {
 
+    private int id = -1;
     private String playerUUID;
     private String staffUUID;
     private String type;
@@ -32,6 +33,8 @@ public class Punishment implements Serializable {
         this.active = active;
     }
 
+    public int getID() { return id; }
+
     public String getPlayerUUID() { return playerUUID; }
 
     public String getStaffUUID() { return staffUUID; }
@@ -45,6 +48,8 @@ public class Punishment implements Serializable {
     public String getReason() { return reason; }
 
     public boolean getActive() { return active; }
+
+    public void setID( int id ) { this.id = id; }
 
     public void setPlayerUUID( String str ) { playerUUID = str; }
 
