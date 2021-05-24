@@ -81,3 +81,11 @@ mute:
     - " &6Length: &7[LENGTH]"
     - " &6Reason: &7[REASON]"
     - ""
+  # What to send when a player attempts to speak while muted
+  # Set to just one line with "" for nothing to be sent
+  attempt:
+    - ""
+    - " &7You are &6muted&7!"
+    - " &6Length: &7[LENGTH]"
+    - " &6Reason: &7[REASON]"
+    - ""
