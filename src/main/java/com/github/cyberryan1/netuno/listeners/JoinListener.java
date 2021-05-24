@@ -19,26 +19,14 @@ public class JoinListener implements Listener {
         // * IMPORTANT * Should be the last thing checked in this event, if anything more is going to be added
         // Checking if the player has been punished while they were offline
         // Gives them a notification about it if they were
-        if ( DATA.searchNotifByUUID( event.getPlayer().getUniqueId().toString() ).size() > 0 ) {
-            for ( int id : DATA.searchNotifByUUID( event.getPlayer().getUniqueId().toString() ) ) {
-                Punishment pun = DATA.getPunishment( id );
-
-                String staff = "CONSOLE";
-                if ( pun.getStaffUUID().equals( "CONSOLE" ) == false ) {
-                    staff = Bukkit.getOfflinePlayer( pun.getStaffUUID() ).getName();
+        Bukkit.getScheduler().runTaskLater( Utils.getPlugin(), () -> {
+            if ( DATA.searchNotifByUUID( event.getPlayer().getUniqueId().toString() ).size() > 0 ) {
+                for ( int id : DATA.searchNotifByUUID( event.getPlayer().getUniqueId().toString() ) ) {
+                    Punishment pun = DATA.getPunishment( id );
+                    Utils.sendPunishmentMsg( event.getPlayer(), pun );
+                    DATA.removeNotif( id );
                 }
-
-                // TODO add something as a check for the length
-
-                String notif = ConfigUtils.getColoredStrFromList( "warn.message" );
-                notif = ConfigUtils.replaceAllVariables( notif, staff, event.getPlayer().getName(), "", pun.getReason() );
-                event.getPlayer().sendMessage( notif );
-                if ( notif.charAt( notif.length() - 1 ) == '\n' ) {
-                    event.getPlayer().sendMessage( "" );
-                }
-
-                DATA.removeNotif( id );
             }
-        }
+        }, 60L );
     }
 }
