@@ -55,34 +55,8 @@ public class Kick implements CommandExecutor {
 
                     target.kickPlayer( kickMsg );
 
-                    boolean staffBroadcast = ConfigUtils.checkListNotEmpty( "kick.staff-broadcast" );
-                    if ( ConfigUtils.checkListNotEmpty( "kick.broadcast" ) ) {
-                        String broadcastMsg = ConfigUtils.getColoredStrFromList( "kick.broadcast" );
-                        broadcastMsg = ConfigUtils.replaceAllVariables( broadcastMsg, staff, target.getName(), "", reason );
-
-                        for ( Player p : Bukkit.getOnlinePlayers() ) {
-                            if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) == false || staffBroadcast == false ) {
-                                p.sendMessage( broadcastMsg );
-                                if ( broadcastMsg.charAt( broadcastMsg.length() - 1 ) == '\n' ) {
-                                    p.sendMessage( "" );
-                                }
-                            }
-                        }
-                    }
-
-                    if ( staffBroadcast ) {
-                        String broadcastMsg = ConfigUtils.getColoredStrFromList( "kick.staff-broadcast" );
-                        broadcastMsg = ConfigUtils.replaceAllVariables( broadcastMsg, staff, target.getName(), "", reason );
-
-                        for ( Player p : Bukkit.getOnlinePlayers() ) {
-                            if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
-                                p.sendMessage( broadcastMsg );
-                                if ( broadcastMsg.charAt( broadcastMsg.length() - 1 ) == '\n' ) {
-                                    p.sendMessage( "" );
-                                }
-                            }
-                        }
-                    }
+                    Utils.doPublicPunBroadcast( pun );
+                    Utils.doStaffPunBroadcast( pun );
                 }
 
                 else {

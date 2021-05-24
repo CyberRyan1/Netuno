@@ -88,34 +88,8 @@ public class Warn implements CommandExecutor {
                     return true;
                 }
 
-                boolean staffBroadcast = ConfigUtils.checkListNotEmpty( "warn.staff-broadcast" );
-                if ( ConfigUtils.checkListNotEmpty( "warn.broadcast" ) ) {
-                    String broadcastMsg = ConfigUtils.getColoredStrFromList( "warn.broadcast" );
-                    broadcastMsg = ConfigUtils.replaceAllVariables( broadcastMsg, staff, target.getName(), "", reason );
-
-                    for ( Player p : Bukkit.getOnlinePlayers() ) {
-                        if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) == false || staffBroadcast == false ) {
-                            p.sendMessage( broadcastMsg );
-                            if ( broadcastMsg.charAt( broadcastMsg.length() - 1 ) == '\n' ) {
-                                p.sendMessage( "" );
-                            }
-                        }
-                    }
-                }
-
-                if ( staffBroadcast ) {
-                    String broadcastMsg = ConfigUtils.getColoredStrFromList( "warn.staff-broadcast" );
-                    broadcastMsg = ConfigUtils.replaceAllVariables( broadcastMsg, staff, targetName, "", reason );
-
-                    for ( Player p : Bukkit.getOnlinePlayers() ) {
-                        if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
-                            p.sendMessage( broadcastMsg );
-                            if ( broadcastMsg.charAt( broadcastMsg.length() - 1 ) == '\n' ) {
-                                p.sendMessage( "" );
-                            }
-                        }
-                    }
-                }
+                Utils.doPublicPunBroadcast( pun );
+                Utils.doStaffPunBroadcast( pun );
             }
 
             else {
