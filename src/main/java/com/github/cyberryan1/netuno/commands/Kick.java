@@ -34,12 +34,9 @@ public class Kick implements CommandExecutor {
                         pun.setStaffUUID( player.getUniqueId().toString() );
                         staff = player.getName();
 
-                        if ( ConfigUtils.getBool( "general.staff-punishments" ) == false ) {
-                            if ( VaultUtils.hasPerms( target, ConfigUtils.getStr( "general.staff-perm" ) ) &&
-                                    VaultUtils.hasPerms( player, ConfigUtils.getStr( "general.all-perms" ) ) == false ) {
-                                player.sendMessage( Utils.getColored( "&6" + target.getName() + "&7is a staff member, so they cannot be punished" ) );
-                                return true;
-                            }
+                        if ( Utils.checkStaffPunishmentAllowable( player, target ) == false ) {
+                            player.sendMessage( Utils.getColored( "&6" + target.getName() + " &7is a staff member, so they cannot be punished" ) );
+                            return true;
                         }
                     }
 
