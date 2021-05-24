@@ -112,7 +112,7 @@ public abstract class Database {
     }
 
     // sees if a punishment id exists
-    private boolean checkPunIDExists(int id ) {
+    private boolean checkPunIDExists( int id ) {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
