@@ -83,4 +83,9 @@ public class Time {
         else if ( week == 0 ) { return getFormattedLength( day + "d" ); }
         else { return getFormattedLength( week + "w" ); }
     }
+
+    public static String getLengthRemaining( Punishment pun ) {
+        if ( pun.getLength() == -1 ) { return "Never"; }
+        return getLengthFromTimestamp( pun.getDate() + pun.getLength() - getCurrentTimestamp() );
+    }
 }
