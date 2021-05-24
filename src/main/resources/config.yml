@@ -90,3 +90,15 @@ mute:
     - " &6Time Remaining: &7[REMAIN]"
     - " &6Reason: &7[REASON]"
     - ""
+  # What to send when a player's mute expires
+  # Set to just one line with "" for nothing to be sent
+  # No supported variables
+  expire:
+    - ""
+    - " &7Your mute has &6expired&7!"
+    - ""
+  # What to send to online staff when a player's mute expires
+  # Set to just one line with "" for nothing to be sent
+  # Only supported variable: [TARGET]
+  expire-staff:
+    - " &6[TARGET]&7's mute has expired"
