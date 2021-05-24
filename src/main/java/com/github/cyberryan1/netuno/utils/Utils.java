@@ -95,7 +95,7 @@ public class Utils {
             staffName = staff.getName();
         }
 
-        message = ConfigUtils.replaceAllVariables( message, staffName, target.getName(), length, pun.getReason() );
+        message = ConfigUtils.replaceAllVariables( message, pun );
         target.sendMessage( message );
         if ( message.charAt( message.length() - 1 ) == '\n' ) {
             target.sendMessage( "" );
@@ -134,7 +134,7 @@ public class Utils {
                 length = Time.getLengthFromTimestamp( pun.getLength() );
             }
 
-            broadcast = ConfigUtils.replaceAllVariables( broadcast, staffName, targetName, length, pun.getReason() );
+            broadcast = ConfigUtils.replaceAllVariables( broadcast, pun );
 
             for ( Player p : Bukkit.getOnlinePlayers() ) {
                 if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) == false || sendToStaff == false ) {
@@ -164,7 +164,7 @@ public class Utils {
                 length = Time.getLengthFromTimestamp( pun.getLength() );
             }
 
-            broadcast = ConfigUtils.replaceAllVariables( broadcast, staffName, targetName, length, pun.getReason() );
+            broadcast = ConfigUtils.replaceAllVariables( broadcast, pun );
 
             for ( Player p : Bukkit.getOnlinePlayers() ) {
                 if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
