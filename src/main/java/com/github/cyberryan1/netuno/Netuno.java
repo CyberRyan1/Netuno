@@ -1,7 +1,6 @@
 package com.github.cyberryan1.netuno;
 
-import com.github.cyberryan1.netuno.commands.Kick;
-import com.github.cyberryan1.netuno.commands.Warn;
+import com.github.cyberryan1.netuno.commands.*;
 import com.github.cyberryan1.netuno.listeners.JoinListener;
 import com.github.cyberryan1.netuno.managers.ConfigManager;
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
@@ -9,6 +8,7 @@ import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
+// TODO make /netuno reload command
 public final class Netuno extends JavaPlugin {
 
     private ConfigManager config;
@@ -29,6 +29,7 @@ public final class Netuno extends JavaPlugin {
 
         this.getCommand( "kick" ).setExecutor( new Kick() );
         this.getCommand( "warn" ).setExecutor( new Warn() );
+        this.getCommand( "mute" ).setExecutor( new Mute() );
 
         this.getServer().getPluginManager().registerEvents( new JoinListener(), this );
 
