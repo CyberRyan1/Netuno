@@ -55,12 +55,7 @@ public class Warn implements CommandExecutor {
 
                     DATA.addPunishment( pun );
 
-                    String warnMsg = ConfigUtils.getColoredStrFromList( "warn.message" );
-                    warnMsg = ConfigUtils.replaceAllVariables( warnMsg, staff, targetName, "", reason );
-                    target.sendMessage( warnMsg );
-                    if ( warnMsg.charAt( warnMsg.length() - 1 ) == '\n' ) {
-                        target.sendMessage( "" );
-                    }
+                    Utils.sendPunishmentMsg( target, pun );
                 }
 
                 // target is offline
