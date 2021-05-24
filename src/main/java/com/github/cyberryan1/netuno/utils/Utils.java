@@ -4,7 +4,10 @@ import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.managers.ConfigManager;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import com.github.cyberryan1.netuno.utils.database.SQLite;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
 import java.util.logging.Level;
@@ -74,5 +77,27 @@ public class Utils {
         }
 
         return str.substring( 0, str.length() - 1 );
+    }
+
+    public static void sendPunishmentMsg( Player target, Punishment pun ) {
+        String type = pun.getType().toLowerCase();
+        String message = ConfigUtils.getColoredStrFromList( type + ".message" );
+
+        String length = "";
+        if ( pun.getLength() != -1 ) {
+            length = Time.getLengthFromTimestamp( pun.getLength() );
+        }
+
+        String staffName = "CONSOLE";
+        if ( pun.getStaffUUID().equals( "CONSOLE" ) == false ) {
+            OfflinePlayer staff = Bukkit.getServer().getOfflinePlayer( pun.getStaffUUID() );
+            staffName = staff.getName();
+        }
+
+        message = ConfigUtils.replaceAllVariables( message, staffName, target.getName(), length, pun.getReason() );
+        target.sendMessage( message );
+        if ( message.charAt( message.length() - 1 ) == '\n' ) {
+            target.sendMessage( "" );
+        }
     }
 }
