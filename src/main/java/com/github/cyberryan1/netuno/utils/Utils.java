@@ -100,4 +100,18 @@ public class Utils {
             target.sendMessage( "" );
         }
     }
+
+    // Checks if a staff punishing another staff is allowable or not
+    // false = not allowed, true = allowed
+    public static boolean checkStaffPunishmentAllowable( Player staff, OfflinePlayer target ) {
+        if ( ConfigUtils.getBool( "general.staff-punishments" ) == false ) {
+            if ( VaultUtils.hasPerms( target, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
+                if ( VaultUtils.hasPerms( staff, ConfigUtils.getStr( "general.all-perms" ) ) == false ) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }
