@@ -30,7 +30,7 @@ public class Mute implements CommandExecutor {
 
                 pun.setReason( reason );
                 pun.setDate( Time.getCurrentTimestamp() );
-                pun.setType( "Warn" );
+                pun.setType( "Mute" );
                 pun.setLength( Time.getTimestampFromLength( args[1] ) );
 
                 String staffName = "CONSOLE";
@@ -80,15 +80,22 @@ public class Mute implements CommandExecutor {
                 }
 
                 else {
-                    sender.sendMessage( ConfigUtils.getColoredStr( "&7Could not find any player named &6" + args[0] ) );
+                    sender.sendMessage( Utils.getColored( "&7Could not find any player named &6" + args[0] ) );
                     return true;
                 }
 
                 Utils.doPublicPunBroadcast( pun );
                 Utils.doStaffPunBroadcast( pun );
             }
+
+            else {
+                sender.sendMessage( Utils.getColored( "&7Invalid timespan &8(&6\"" + args[1] + "&6\"&8)" ) );
+            }
         }
 
+        else {
+            sender.sendMessage( Utils.getColored( "&8/&6mute &7(player) (length/forever) (reason)" ) );
+        }
 
         return true;
     }
