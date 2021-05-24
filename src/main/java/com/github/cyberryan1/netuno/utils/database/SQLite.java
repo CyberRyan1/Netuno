@@ -27,6 +27,7 @@ public class SQLite extends Database {
             "`date` STRING NOT NULL," +
             "`length` STRING NOT NULL," +
             "`reason` STRING NOT NULL," +
+            "`active` STRING NOT NULL," +
             "PRIMARY KEY (`id`));";
 
     public final String CREATE_NOTIFS_TABLE = "CREATE TABLE IF NOT EXISTS notifs (" +

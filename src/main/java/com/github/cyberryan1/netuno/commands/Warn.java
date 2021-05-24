@@ -25,6 +25,7 @@ public class Warn implements CommandExecutor {
                 pun.setReason( reason );
                 pun.setDate( Time.getCurrentTimestamp() );
                 pun.setType( "Warn" );
+                pun.setActive( false );
 
                 String staff;
                 String targetName;

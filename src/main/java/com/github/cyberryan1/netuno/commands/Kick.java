@@ -27,6 +27,7 @@ public class Kick implements CommandExecutor {
                     pun.setReason( reason );
                     pun.setDate( Time.getCurrentTimestamp() );
                     pun.setType( "Kick" );
+                    pun.setActive( false );
 
                     String staff;
                     if ( sender instanceof Player ) {

@@ -32,6 +32,7 @@ public class Mute implements CommandExecutor {
                 pun.setDate( Time.getCurrentTimestamp() );
                 pun.setType( "Mute" );
                 pun.setLength( Time.getTimestampFromLength( args[1] ) );
+                pun.setActive( true );
 
                 String staffName = "CONSOLE";
                 String targetName;
