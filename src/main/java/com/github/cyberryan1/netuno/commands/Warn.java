@@ -27,28 +27,20 @@ public class Warn implements CommandExecutor {
                 pun.setType( "Warn" );
                 pun.setActive( false );
 
-                String staff;
-                String targetName;
                 Player target = Bukkit.getServer().getPlayer( args[0] );
                 if ( target != null ) {
 
-                    targetName = target.getName();
                     pun.setPlayerUUID( target.getUniqueId().toString() );
 
+                    pun.setStaffUUID( "CONSOLE" );
                     if ( sender instanceof Player ) {
                         Player player = ( Player ) sender;
                         pun.setStaffUUID( player.getUniqueId().toString() );
-                        staff = player.getName();
 
                         if ( Utils.checkStaffPunishmentAllowable( player, target ) == false ) {
-                            player.sendMessage( Utils.getColored( "&6" + targetName + " &7is a staff member, so they cannot be punished" ) );
+                            player.sendMessage( Utils.getColored( "&6" + target.getName() + " &7is a staff member, so they cannot be punished" ) );
                             return true;
                         }
-                    }
-
-                    else {
-                        pun.setStaffUUID( "CONSOLE" );
-                        staff = "CONSOLE";
                     }
 
                     DATA.addPunishment( pun );
@@ -59,29 +51,22 @@ public class Warn implements CommandExecutor {
                 // target is offline
                 else if ( Bukkit.getServer().getOfflinePlayer( args[0] ).hasPlayedBefore() ) {
                     OfflinePlayer offline = Bukkit.getServer().getOfflinePlayer( args[0] );
-                    targetName = offline.getName();
 
-                    String uuid = offline.getUniqueId().toString();
-                    pun.setPlayerUUID( uuid );
+                    pun.setPlayerUUID( offline.getUniqueId().toString() );
 
+                    pun.setStaffUUID( "CONSOLE" );
                     if ( sender instanceof Player ) {
                         Player player = ( Player ) sender;
                         pun.setStaffUUID( player.getUniqueId().toString() );
-                        staff = player.getName();
 
                         if ( Utils.checkStaffPunishmentAllowable( player, target ) == false ) {
-                            player.sendMessage( Utils.getColored( "&6" + targetName + " &7is a staff member, so they cannot be punished" ) );
+                            player.sendMessage( Utils.getColored( "&6" + target.getName() + " &7is a staff member, so they cannot be punished" ) );
                             return true;
                         }
                     }
 
-                    else {
-                        pun.setStaffUUID( "CONSOLE" );
-                        staff = "CONSOLE";
-                    }
-
                     int id = DATA.addPunishment( pun );
-                    DATA.addNotif( id, uuid );
+                    DATA.addNotif( id, offline.getUniqueId().toString() );
                 }
 
                 else {
