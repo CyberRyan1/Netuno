@@ -3,6 +3,7 @@ package com.github.cyberryan1.netuno;
 import com.github.cyberryan1.netuno.commands.*;
 import com.github.cyberryan1.netuno.listeners.ChatListener;
 import com.github.cyberryan1.netuno.listeners.JoinListener;
+import com.github.cyberryan1.netuno.listeners.LeaveListener;
 import com.github.cyberryan1.netuno.managers.ConfigManager;
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
@@ -11,6 +12,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 // TODO make /netuno reload command
 // TODO add tab-completer
+// TODO add option to disable signs for muted players
+// TODO add sign-popups for staff
 public final class Netuno extends JavaPlugin {
 
     private ConfigManager config;
@@ -32,9 +35,11 @@ public final class Netuno extends JavaPlugin {
         this.getCommand( "kick" ).setExecutor( new Kick() );
         this.getCommand( "warn" ).setExecutor( new Warn() );
         this.getCommand( "mute" ).setExecutor( new Mute() );
+        this.getCommand( "ban" ).setExecutor( new Ban() );
 
         this.getServer().getPluginManager().registerEvents( new JoinListener(), this );
         this.getServer().getPluginManager().registerEvents( new ChatListener(), this );
+        this.getServer().getPluginManager().registerEvents( new LeaveListener(), this );
 
         ConfigUtils.getConfigManager().reloadConfig();
     }

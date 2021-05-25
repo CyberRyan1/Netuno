@@ -7,3 +7,4 @@ commands:
   warn:
   kick:
   mute:
+  ban:

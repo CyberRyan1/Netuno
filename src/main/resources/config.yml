@@ -102,3 +102,33 @@ mute:
   # Only supported variable: [TARGET]
   expire-staff:
     - " &6[TARGET]&7's mute has expired"
+
+ban:
+  perm: "netuno.ban"
+  broadcast:
+    - " &6[TARGET] &7has been &6banned &8[&7[LENGTH]&8]"
+    - " &6Reason: &7[REASON]"
+  staff-broadcast:
+    - ""
+    - " &6[TARGET] &7has been &6banned &8[&7[LENGTH]&8]"
+    - " &6Reason: &7[REASON]"
+    - " &6By: &7[STAFF]"
+    - ""
+  # What the banned player sees when they are first banned (if they are online)
+  banned-lines:
+    - "&7You have been &6banned&7!"
+    - "&6Length: &7[LENGTH]"
+    - "&6Reason: &7[REASON]"
+  # What the banned player sees when they try to join while banned
+  attempt:
+    - "&7You are &6banned&7!"
+    - "&6Time Remaining: &7[REMAIN]"
+    - "&6Reason: &7[REASON]"
+  # No supported variables
+  expire:
+    - ""
+    - " &7Your ban has &6expired&7!"
+    - ""
+  # Only supported variable: [TARGET]
+  expire-staff:
+    - " &6[TARGET]&7's ban has expired"
