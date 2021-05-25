@@ -10,7 +10,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
-import java.util.UUID;
 import java.util.logging.Level;
 
 public class Utils {
@@ -89,9 +88,10 @@ public class Utils {
 
     public static void sendPunishmentMsg( Player target, Punishment pun ) {
         String type = pun.getType().toLowerCase();
-        String message = ConfigUtils.getColoredStrFromList( type + ".message" );
-
-        sendAnyMsg( target, ConfigUtils.replaceAllVariables( message, pun ) );
+        if ( ConfigUtils.checkListNotEmpty( type + ".message" ) ) {
+            String message = ConfigUtils.getColoredStrFromList( type + ".message" );
+            sendAnyMsg( target, ConfigUtils.replaceAllVariables( message, pun ) );
+        }
     }
 
     public static void sendDeniedMsg( Player target, Punishment pun ) {
@@ -125,7 +125,15 @@ public class Utils {
 
             for ( Player p : Bukkit.getOnlinePlayers() ) {
                 if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) == false || sendToStaff == false ) {
-                    sendAnyMsg( p, broadcast );
+                    if ( p.getUniqueId().toString().equals( pun.getPlayerUUID() ) == false ) {
+                        sendAnyMsg( p, broadcast );
+                    }
+
+                    else if ( type.equals( "kick" ) == false && type.equals( "ban" ) == false ) {
+                        if ( ConfigUtils.checkListNotEmpty( type + ".message" ) == false ) {
+                            sendAnyMsg( p, broadcast );
+                        }
+                    }
                 }
             }
         }
