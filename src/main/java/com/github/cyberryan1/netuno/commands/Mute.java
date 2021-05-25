@@ -63,8 +63,8 @@ public class Mute implements CommandExecutor {
                         Player staff = ( Player ) sender;
                         pun.setStaffUUID( staff.getUniqueId().toString() );
 
-                        if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
-                            staff.sendMessage( Utils.getColored( "&6" + target.getName() + " &7is a staff member, so they cannot be punished" ) );
+                        if ( Utils.checkStaffPunishmentAllowable( staff, offline ) == false ) {
+                            staff.sendMessage( Utils.getColored( "&6" + offline.getName() + " &7is a staff member, so they cannot be punished" ) );
                             return true;
                         }
                     }
