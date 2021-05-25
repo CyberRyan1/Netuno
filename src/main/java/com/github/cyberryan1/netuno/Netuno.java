@@ -32,6 +32,7 @@ public final class Netuno extends JavaPlugin {
         configUtils = new ConfigUtils( config );
         vaultUtils = new VaultUtils();
 
+        this.getCommand( "netuno" ).setExecutor( new NetunoCmd() );
         this.getCommand( "kick" ).setExecutor( new Kick() );
         this.getCommand( "warn" ).setExecutor( new Warn() );
         this.getCommand( "mute" ).setExecutor( new Mute() );

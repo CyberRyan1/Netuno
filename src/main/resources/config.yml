@@ -21,6 +21,8 @@ general:
   # Whether staff can punish other staff or not
   # Can be bypassed by players who have the permission defined in all-perms
   staff-punishments: false
+  # Permission to reload the plugin
+  reload-perm: "netuno.reload"
 
 warn:
   # Permission
