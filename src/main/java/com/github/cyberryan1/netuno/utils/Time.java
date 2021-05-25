@@ -75,13 +75,49 @@ public class Time {
         int min = ( int ) ( len / 60 );
         int hour = min / 60;
         int day = hour / 24;
-        int week =  day / 7;
+        int week = day / 7;
 
-        if ( min == 0 ) { return getFormattedLength( len + "s" ); }
-        else if ( hour == 0 ) { return getFormattedLength( min + "m" ); }
-        else if ( day == 0 ) { return getFormattedLength( hour + "h" ); }
-        else if ( week == 0 ) { return getFormattedLength( day + "d" ); }
-        else { return getFormattedLength( week + "w" ); }
+        long secondsUsed = 0;
+        if ( week != 0 ) {
+            secondsUsed += ( week * 7L * 24 * 3600 );
+        }
+        else if ( day != 0 ) {
+            secondsUsed += ( day * 24L * 3600 );
+        }
+        else if ( hour != 0 ) {
+            secondsUsed += ( hour * 3600L );
+        }
+        else if ( min != 0 ) {
+            secondsUsed += ( min * 60L );
+        }
+        else {
+            secondsUsed += len % 60;
+        }
+
+        long secondsRemain = len - secondsUsed;
+        int secondSec = ( int ) ( secondsRemain % 60 );
+        int secondMin = ( int ) ( secondsRemain / 60 );
+        int secondHour = secondMin / 60;
+        int secondDay = secondHour / 24;
+
+        // // //
+        if ( min == 0 && hour == 0 && day == 0 && week == 0 ) { return getFormattedLength( len + "s" ); }
+        else if ( hour == 0 && day == 0 && week == 0 ) {
+            if ( secondSec % 60 == 0 ) { return getFormattedLength( min + "m" ); }
+            return getFormattedLength( min + "m" ) + " and " + getFormattedLength( secondSec + "s" );
+        }
+        else if ( day == 0 && week == 0 ) {
+            if ( secondMin == 0 ) { return getFormattedLength( hour + "h" ); }
+            return getFormattedLength( hour + "h" ) + " and " + getFormattedLength( secondMin + "m" );
+        }
+        else if ( week == 0 ) {
+            if ( secondHour == 0 ) { return getFormattedLength( day + "d" ); }
+            return getFormattedLength( day + "d" ) + " and " + getFormattedLength( secondHour + "h" );
+        }
+        else {
+            if ( secondDay == 0 ) { return getFormattedLength( week + "w" ); }
+            return getFormattedLength( week + "w" ) + " and " + getFormattedLength( secondDay + "d" );
+        }
     }
 
     public static String getLengthRemaining( Punishment pun ) {
