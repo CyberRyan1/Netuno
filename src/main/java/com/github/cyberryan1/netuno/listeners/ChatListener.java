@@ -31,8 +31,17 @@ public class ChatListener implements Listener {
         ArrayList<Punishment> punishments = DATA.getPunishment( event.getPlayer().getUniqueId().toString(), "mute", true );
         if ( punishments.size() >= 1 ) {
             event.setCancelled( true );
-            Punishment first = punishments.get( 0 );
-            Utils.sendDeniedMsg( event.getPlayer(), first );
+
+            long highestExpire = punishments.get( 0 ).getExpirationDate();
+            Punishment highest = punishments.get( 0 );
+            for ( int index = 1; index < punishments.size(); index++ ) {
+                if ( punishments.get( index ).getExpirationDate() > highestExpire ) {
+                    highest = punishments.get( index );
+                    highestExpire = highest.getExpirationDate();
+                }
+            }
+
+            Utils.sendDeniedMsg( event.getPlayer(), highest );
         }
 
         else if ( hadActive ) {
