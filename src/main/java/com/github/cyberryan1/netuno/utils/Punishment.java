@@ -49,6 +49,8 @@ public class Punishment implements Serializable {
 
     public boolean getActive() { return active; }
 
+    public long getExpirationDate() { return length + date; }
+
     public void setID( int id ) { this.id = id; }
 
     public void setPlayerUUID( String str ) { playerUUID = str; }
