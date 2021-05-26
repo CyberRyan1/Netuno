@@ -113,7 +113,7 @@ public class ConfigUtils {
 
         str = str.replace( "[STAFF]", staffName ).replace( "[TARGET]", targetName );
 
-        if ( punsWithNoLength.contains( pun.getType().toLowerCase() ) ) {
+        if ( punsWithNoLength.contains( pun.getType().toLowerCase() ) == false ) {
             str = str.replace( "[LENGTH]", Time.getLengthFromTimestamp( pun.getLength() ) );
             str = str.replace( "[REMAIN]", Time.getLengthRemaining( pun ) );
         }
