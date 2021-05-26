@@ -18,7 +18,7 @@ public class Mute implements CommandExecutor {
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
         if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "mute.perm" ) ) == false ) {
-            sender.sendMessage( ConfigUtils.getColoredStr( "perm-denied-msg" ) );
+            sender.sendMessage( ConfigUtils.getColoredStr( "general.perm-denied-msg" ) );
             return true;
         }
 
