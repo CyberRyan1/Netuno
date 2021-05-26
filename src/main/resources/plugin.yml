@@ -10,3 +10,4 @@ commands:
   mute:
   unmute:
   ban:
+  unban:

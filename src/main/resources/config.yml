@@ -148,3 +148,15 @@ ban:
   # Only supported variable: [TARGET]
   expire-staff:
     - " &6[TARGET]&7's ban has expired"
+
+unban:
+  perm: "netuno.unban"
+  broadcast:
+    - ""
+  staff-broadcast:
+    - ""
+    - " &6[TARGET] &7has been &6unbanned"
+    - " &6Staff: &7[STAFF]"
+    - ""
+  message:
+    - ""
