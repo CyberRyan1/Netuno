@@ -5,14 +5,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.UUID;
 
 public class ConfigUtils {
 
     private static ConfigManager config;
 
+    private static ArrayList<String> punsWithNoLength = new ArrayList<>();
+
     public ConfigUtils( ConfigManager con ) {
         config = con;
+        Collections.addAll( punsWithNoLength, "kick", "warn", "unmute", "unban" );
     }
 
     // returns the config of the ConfigManager
@@ -109,7 +113,7 @@ public class ConfigUtils {
 
         str = str.replace( "[STAFF]", staffName ).replace( "[TARGET]", targetName );
 
-        if ( pun.getType().equalsIgnoreCase( "kick" ) == false && pun.getType().equalsIgnoreCase( "warn" ) == false ) {
+        if ( punsWithNoLength.contains( pun.getType().toLowerCase() ) ) {
             str = str.replace( "[LENGTH]", Time.getLengthFromTimestamp( pun.getLength() ) );
             str = str.replace( "[REMAIN]", Time.getLengthRemaining( pun ) );
         }
