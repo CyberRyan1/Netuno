@@ -73,6 +73,10 @@ public class Unmute implements CommandExecutor {
             }
         }
 
+        else {
+            sender.sendMessage( "&8/&6unmute &7(player)" );
+        }
+
         return true;
     }
 }
