@@ -63,18 +63,18 @@ public class Unmute implements CommandExecutor {
                 }
 
                 else {
-                    sender.sendMessage( "&6" + target.getName() + " &7does not have any active mutes" );
+                    sender.sendMessage( Utils.getColored( "&6" + target.getName() + " &7does not have any active mutes" ) );
                 }
 
             }
 
             else {
-                sender.sendMessage( "&7Found no player named &6" + target.getName() );
+                sender.sendMessage( Utils.getColored( "&7Found no player named &6" + target.getName() ) );
             }
         }
 
         else {
-            sender.sendMessage( "&8/&6unmute &7(player)" );
+            sender.sendMessage( Utils.getColored( "&8/&6unmute &7(player)" ) );
         }
 
         return true;
