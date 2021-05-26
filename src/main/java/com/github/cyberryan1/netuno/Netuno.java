@@ -10,7 +10,6 @@ import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
-// TODO make /netuno reload command
 // TODO add tab-completer
 // TODO add option to disable signs for muted players
 // TODO add sign-popups for staff
@@ -36,6 +35,7 @@ public final class Netuno extends JavaPlugin {
         this.getCommand( "kick" ).setExecutor( new Kick() );
         this.getCommand( "warn" ).setExecutor( new Warn() );
         this.getCommand( "mute" ).setExecutor( new Mute() );
+        this.getCommand( "unmute" ).setExecutor( new Unmute() );
         this.getCommand( "ban" ).setExecutor( new Ban() );
 
         this.getServer().getPluginManager().registerEvents( new JoinListener(), this );

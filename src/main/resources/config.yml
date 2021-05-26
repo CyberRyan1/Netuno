@@ -105,6 +105,20 @@ mute:
   expire-staff:
     - " &6[TARGET]&7's mute has expired"
 
+unmute:
+  perm: "netuno.unmute"
+  broadcast:
+    - ""
+  staff-broadcast:
+    - ""
+    - " &6[TARGET]&7 has been &6unmuted"
+    - " &6Staff: &7[STAFF]"
+    - ""
+  message:
+    - ""
+    - " &7You have been &6unmuted&7!"
+    - ""
+
 ban:
   perm: "netuno.ban"
   broadcast:

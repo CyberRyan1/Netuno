@@ -8,4 +8,5 @@ commands:
   warn:
   kick:
   mute:
+  unmute:
   ban:
