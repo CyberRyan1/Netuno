@@ -254,7 +254,7 @@ public abstract class Database {
         long endingDate = pun.getDate() + pun.getLength();
         long today = Time.getCurrentTimestamp();
 
-        if ( endingDate <= today ) {
+        if ( endingDate <= today || pun.getActive() == false ) {
             pun.setActive( false );
             setPunishmentActive( pun.getID(), false );
             return false;
