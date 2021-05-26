@@ -19,7 +19,7 @@ public abstract class Database {
 
     private final String NOTIF_TABLE_NAME = "notifs";
     private final String NOTIF_TYPE_LIST = "(id,player)";
-    private final String NOTIF_UNKOWN_LIST = "(?,?)";
+    private final String NOTIF_UNKNOWN_LIST = "(?,?)";
 
     public Database( Netuno instance ) {
         plugin = instance;
@@ -34,7 +34,7 @@ public abstract class Database {
         try {
             PreparedStatement ps = connection.prepareStatement( "SELECT * FROM " + PUN_TABLE_NAME + " WHERE id = ?" );
             ResultSet rs = ps.executeQuery();
-            close(ps, rs);
+            close( ps, rs );
         } catch ( SQLException ex ) {
             Utils.logError( "Unable to retrieve connection", ex );
         }
@@ -104,9 +104,9 @@ public abstract class Database {
         try {
             Connection conn = getSqlConnection();
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery( "SELECT COUNT(*) FROM " + PUN_TABLE_NAME);
+            ResultSet rs = stmt.executeQuery( "SELECT COUNT(*) FROM " + PUN_TABLE_NAME );
             rs.next();
-            return rs.getInt("count(*)");
+            return rs.getInt( "count(*)" );
         } catch ( SQLException ex ) {
             Utils.logError( "Unable to get next available ID in database" );
         }
@@ -123,8 +123,8 @@ public abstract class Database {
             conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT * FROM " + PUN_TABLE_NAME + " WHERE id = " + id + ";" );
             rs = ps.executeQuery();
-        } catch ( SQLException ignore ) {}
-        finally {
+        } catch ( SQLException ignore ) {
+        } finally {
             try {
                 if ( ps != null && conn != null ) {
                     ps.close();
@@ -193,7 +193,7 @@ public abstract class Database {
 
         try {
             conn = getSqlConnection();
-            ps = conn.prepareStatement( "SELECT * FROM " + PUN_TABLE_NAME + " WHERE player=?;");
+            ps = conn.prepareStatement( "SELECT * FROM " + PUN_TABLE_NAME + " WHERE player=?;" );
             ps.setString( 1, uuid );
             rs = ps.executeQuery();
 
@@ -270,7 +270,7 @@ public abstract class Database {
 
         try {
             conn = getSqlConnection();
-            ps = conn.prepareStatement("UPDATE " + PUN_TABLE_NAME + " SET active=? WHERE id=?;" );
+            ps = conn.prepareStatement( "UPDATE " + PUN_TABLE_NAME + " SET active=? WHERE id=?;" );
             ps.setString( 1, active + "" );
             ps.setInt( 2, id );
             ps.executeUpdate();
@@ -299,7 +299,7 @@ public abstract class Database {
 
         try {
             conn = getSqlConnection();
-            ps = conn.prepareStatement( "INSERT INTO " + NOTIF_TABLE_NAME + " " + NOTIF_TYPE_LIST + " VALUES" + NOTIF_UNKOWN_LIST );
+            ps = conn.prepareStatement( "INSERT INTO " + NOTIF_TABLE_NAME + " " + NOTIF_TYPE_LIST + " VALUES" + NOTIF_UNKNOWN_LIST );
 
             ps.setInt( 1, punID );
             ps.setString( 2, playerUUID );
