@@ -35,7 +35,7 @@ public class SQLite extends Database {
             "`player` STRING NOT NULL," +
             "PRIMARY KEY (`id`));";
 
-    public final String CREATE_IP_TABLE = "CREATE TABLE IF NOT EXISTS ip )" +
+    public final String CREATE_IP_TABLE = "CREATE TABLE IF NOT EXISTS ip (" +
             "`id` INTEGER NOT NULL," +
             "`player` STRING NOT NULL," +
             "`ip` STRING NOT NULL," +

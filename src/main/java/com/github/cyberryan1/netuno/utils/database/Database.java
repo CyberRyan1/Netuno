@@ -381,6 +381,7 @@ public abstract class Database {
     // IP database
     //
     public void addIP( String playerUUID, String ip ) {
+        int id = getNextIpID();
         Connection conn = null;
         PreparedStatement ps = null;
 
@@ -388,7 +389,7 @@ public abstract class Database {
             conn = getSqlConnection();
             ps = conn.prepareStatement( "INSERT INTO " + IP_TABLE_NAME + " " + IP_TYPE_LIST + " VALUES" + IP_UNKNOWN_LIST );
 
-            ps.setInt( 1, getNextIpID() );
+            ps.setInt( 1, id );
             ps.setString( 2, playerUUID );
             ps.setString( 3, ip );
 
@@ -428,19 +429,31 @@ public abstract class Database {
 
     public boolean playerHasIP( String playerUUID, String ip ) {
         Connection conn = null;
+        PreparedStatement ps = null;
 
         try {
             conn = getSqlConnection();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery( "SELECT * FROM " + IP_TABLE_NAME + " WHERE player=?,ip=?" );
+            ps = conn.prepareStatement( "SELECT * FROM " + IP_TABLE_NAME + " WHERE player=?;" );
 
-            return rs.next();
+            ps.setString( 1, playerUUID );
+            ResultSet rs = ps.executeQuery();
+
+            while ( rs.next() ) {
+                if ( rs.getString( "ip" ).equals( ip ) ) {
+                    return true;
+                }
+            }
+
+            return false;
         } catch ( SQLException e ) {
             Utils.logError( "Unable to check if a player's IP address has already been saved!" );
         } finally {
             try {
                 if ( conn != null ) {
                     conn.close();
+                }
+                if ( ps != null ) {
+                    ps.close();
                 }
             } catch ( SQLException ex ) {
                 Utils.logError( Errors.sqlConnectionClose(), ex );
