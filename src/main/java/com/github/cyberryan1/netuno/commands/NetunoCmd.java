@@ -40,7 +40,7 @@ public class NetunoCmd implements CommandExecutor {
                 }
 
                 else {
-                    sender.sendMessage( ConfigUtils.getColoredStr( "perm-denied.msg" ) );
+                    CommandErrors.sendInvalidPerms( sender );
                 }
             }
 
