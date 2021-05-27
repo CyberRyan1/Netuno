@@ -19,6 +19,19 @@ public class JoinListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin( PlayerJoinEvent event ) {
+        //
+        // High priority things below here
+        //
+
+        // Log the player's IP address into the database
+        String ipAddress = event.getPlayer().getAddress().getAddress().getHostAddress();
+        if ( DATA.playerHasIP( event.getPlayer().getUniqueId().toString(), ipAddress ) == false ) {
+            DATA.addIP( event.getPlayer().getUniqueId().toString(), ipAddress );
+        }
+
+        //
+        // Medium priority things below here
+        //
 
         ArrayList<Punishment> allPunishments = DATA.getPunishment( event.getPlayer().getUniqueId().toString() );
         boolean hadActiveBan = false;
@@ -42,6 +55,7 @@ public class JoinListener implements Listener {
             }
 
             event.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables( ConfigUtils.getColoredStrFromList( "ban.attempt" ), highest ) );
+            return;
         }
 
         else if ( hadActiveBan ) {
@@ -58,6 +72,10 @@ public class JoinListener implements Listener {
                 }
             }
         }
+
+        //
+        // Low priority things below here
+        //
 
         // * IMPORTANT * Should be the last thing checked in this event, if anything more is going to be added
         // Checking if the player has been punished while they were offline

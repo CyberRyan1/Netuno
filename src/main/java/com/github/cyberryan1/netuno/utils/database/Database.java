@@ -21,6 +21,10 @@ public abstract class Database {
     private final String NOTIF_TYPE_LIST = "(id,player)";
     private final String NOTIF_UNKNOWN_LIST = "(?,?)";
 
+    private final String IP_TABLE_NAME = "ip";
+    private final String IP_TYPE_LIST = "(id,player,ip)";
+    private final String IP_UNKNOWN_LIST = "(?,?,?)";
+
     public Database( Netuno instance ) {
         plugin = instance;
     }
@@ -114,6 +118,7 @@ public abstract class Database {
     }
 
     // sees if a punishment id exists
+    // TODO won't work bad code lmao
     private boolean checkPunIDExists( int id ) {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -371,4 +376,109 @@ public abstract class Database {
             }
         }
     }
+
+    //
+    // IP database
+    //
+    public void addIP( String playerUUID, String ip ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "INSERT INTO " + IP_TABLE_NAME + " " + IP_TYPE_LIST + " VALUES" + IP_UNKNOWN_LIST );
+
+            ps.setInt( 1, getNextIpID() );
+            ps.setString( 2, playerUUID );
+            ps.setString( 3, ip );
+
+            ps.executeUpdate();
+        } catch ( SQLException ex ) {
+            Utils.logError( "Unable to add ip to database" );
+        } finally {
+            try {
+                if ( conn != null ) { conn.close(); }
+                if ( ps != null ) { ps.close(); }
+            } catch ( SQLException e ) {
+                Utils.logError( Errors.sqlConnectionClose(), e );
+            }
+        }
+    }
+
+    private int getNextIpID() {
+        Connection conn = getSqlConnection();
+
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery( "SELECT COUNT(*) FROM " + IP_TABLE_NAME );
+            rs.next();
+            return rs.getInt( "count(*)" );
+        } catch ( SQLException ex ) {
+            Utils.logError( "Unable to get next available ID for the IP database" );
+        } finally {
+            try {
+                if ( conn != null ) { conn.close(); }
+            } catch ( SQLException e ) {
+                Utils.logError( Errors.sqlConnectionClose(), e );
+            }
+        }
+
+        return -1;
+    }
+
+    public boolean playerHasIP( String playerUUID, String ip ) {
+        Connection conn = null;
+
+        try {
+            conn = getSqlConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery( "SELECT * FROM " + IP_TABLE_NAME + " WHERE player=?,ip=?" );
+
+            return rs.next();
+        } catch ( SQLException e ) {
+            Utils.logError( "Unable to check if a player's IP address has already been saved!" );
+        } finally {
+            try {
+                if ( conn != null ) {
+                    conn.close();
+                }
+            } catch ( SQLException ex ) {
+                Utils.logError( Errors.sqlConnectionClose(), ex );
+            }
+        }
+
+        return false;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
