@@ -13,6 +13,7 @@ public class Kick implements CommandExecutor {
     private final Database DATA = Utils.getDatabase();
 
     @Override
+    // TODO can be optimized more
     // /kick (player) (reason)
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
         if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "kick.perm" ) ) ) {
@@ -36,7 +37,7 @@ public class Kick implements CommandExecutor {
                         staff = player.getName();
 
                         if ( Utils.checkStaffPunishmentAllowable( player, target ) == false ) {
-                            player.sendMessage( Utils.getColored( "&6" + target.getName() + " &7is a staff member, so they cannot be punished" ) );
+                            CommandErrors.sendPlayerCannotBePunished( sender, target.getName() );
                             return true;
                         }
                     }
@@ -61,17 +62,17 @@ public class Kick implements CommandExecutor {
                 }
 
                 else {
-                    sender.sendMessage( Utils.getColored( "&7Could not find an online player named &6" + args[0] ) );
+                    CommandErrors.sendPlayerNotFound( sender, args[0] );
                 }
             }
 
             else {
-                sender.sendMessage( Utils.getColored( "&8/&6kick &7(player) (reason)" ) );
+                CommandErrors.sendCommandUsage( sender, "kick" );
             }
         }
 
         else {
-            sender.sendMessage( ConfigUtils.getColoredStr( "general.perm-denied-msg" ) );
+            CommandErrors.sendInvalidPerms( sender );
         }
 
 
