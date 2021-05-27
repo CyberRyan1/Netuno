@@ -18,7 +18,8 @@ public class Ban implements CommandExecutor {
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
         if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "ban.perm" ) ) == false ) {
-            sender.sendMessage( ConfigUtils.getColoredStr( "perm-denied-msg" ) );
+            //sender.sendMessage( ConfigUtils.getColoredStr( "perm-denied-msg" ) );
+            CommandErrors.sendInvalidPerms( sender );
             return true;
         }
 
@@ -45,7 +46,8 @@ public class Ban implements CommandExecutor {
                         pun.setStaffUUID( staff.getUniqueId().toString() );
 
                         if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
-                            staff.sendMessage( Utils.getColored( "&6" + target.getName() + " &7is a staff member, so they cannot be punished" ) );
+                            //staff.sendMessage( Utils.getColored( "&6" + target.getName() + " &7is a staff member, so they cannot be punished" ) );
+                            CommandErrors.sendPlayerCannotBePunished( staff, target.getName() );
                             return true;
                         }
                     }
@@ -55,27 +57,29 @@ public class Ban implements CommandExecutor {
                 }
 
                 else if ( Bukkit.getServer().getOfflinePlayer( args[0] ).hasPlayedBefore() ) {
-                    OfflinePlayer offline = Bukkit.getServer().getOfflinePlayer( args[0] );
+                    OfflinePlayer targetOffline = Bukkit.getServer().getOfflinePlayer( args[0] );
 
-                    pun.setPlayerUUID( offline.getUniqueId().toString() );
+                    pun.setPlayerUUID( targetOffline.getUniqueId().toString() );
 
                     pun.setStaffUUID( "CONSOLE" );
                     if ( sender instanceof Player ) {
                         Player staff = ( Player ) sender;
                         pun.setStaffUUID( staff.getUniqueId().toString() );
 
-                        if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
-                            staff.sendMessage( Utils.getColored( "&6" + target.getName() + " &7is a staff member, so they cannot be punished" ) );
+                        if ( Utils.checkStaffPunishmentAllowable( staff, targetOffline ) == false ) {
+                            //staff.sendMessage( Utils.getColored( "&6" + target.getName() + " &7is a staff member, so they cannot be punished" ) );
+                            CommandErrors.sendPlayerCannotBePunished( sender, targetOffline.getName() );
                             return true;
                         }
                     }
 
                     int id = DATA.addPunishment( pun );
-                    DATA.addNotif( id, offline.getUniqueId().toString() );
+                    DATA.addNotif( id, targetOffline.getUniqueId().toString() );
                 }
 
                 else {
-                    sender.sendMessage( Utils.getColored( "&7Could not find any player named &6" + args[0] ) );
+                    //sender.sendMessage( Utils.getColored( "&7Could not find any player named &6" + args[0] ) );
+                    CommandErrors.sendPlayerNotFound( sender, args[0] );
                     return true;
                 }
 
@@ -84,12 +88,14 @@ public class Ban implements CommandExecutor {
             }
 
             else {
-                sender.sendMessage( Utils.getColored( "&7Invalid timespan &8(&6\"" + args[1] + "&6\"&8)" ) );
+                //sender.sendMessage( Utils.getColored( "&7Invalid timespan &8(&6\"" + args[1] + "&6\"&8)" ) );
+                CommandErrors.sendInvalidTimespan( sender, args[1] );
             }
         }
 
         else {
-            sender.sendMessage( Utils.getColored( "&8/&6ban &7(player) (length/forever) (reason)" ) );
+            //sender.sendMessage( Utils.getColored( "&8/&6ban &7(player) (length/forever) (reason)" ) );
+            CommandErrors.sendCommandUsage( sender, "ban" );
         }
 
         return true;
