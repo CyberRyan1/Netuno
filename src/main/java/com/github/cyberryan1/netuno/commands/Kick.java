@@ -20,38 +20,29 @@ public class Kick implements CommandExecutor {
             if ( Utils.isOutOfBounds( args, 1 ) == false ) {
                 Player target = Bukkit.getServer().getPlayer( args[0] );
                 if ( target != null ) {
-
-                    String reason = Utils.getRemainingArgs( args, 1 );
-
                     Punishment pun = new Punishment();
                     pun.setPlayerUUID( target.getUniqueId().toString() );
-                    pun.setReason( reason );
+                    pun.setReason( Utils.getRemainingArgs( args, 1 ) );
                     pun.setDate( Time.getCurrentTimestamp() );
                     pun.setType( "Kick" );
                     pun.setActive( false );
 
-                    String staff;
+                    pun.setStaffUUID( "CONSOLE" );
                     if ( sender instanceof Player ) {
-                        Player player = ( Player ) sender;
-                        pun.setStaffUUID( player.getUniqueId().toString() );
-                        staff = player.getName();
+                        Player staff = ( Player ) sender;
+                        pun.setStaffUUID( staff.getUniqueId().toString() );
 
-                        if ( Utils.checkStaffPunishmentAllowable( player, target ) == false ) {
+                        if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
                             CommandErrors.sendPlayerCannotBePunished( sender, target.getName() );
                             return true;
                         }
-                    }
-
-                    else {
-                        pun.setStaffUUID( "CONSOLE" );
-                        staff = "CONSOLE";
                     }
 
                     DATA.addPunishment( pun );
 
                     String kickMsg = "";
                     for ( String str : ConfigUtils.getColoredStrList( "kick.kicked-lines" ) ) {
-                        String replaced = ConfigUtils.replaceAllVariables( str, staff, target.getName(), "", reason );
+                        String replaced = ConfigUtils.replaceAllVariables( str, pun );
                         kickMsg += replaced + "\n";
                     }
 
