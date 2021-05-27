@@ -21,25 +21,43 @@ public class CommandErrors {
     }
 
     public static void sendCommandUsage( CommandSender sender, String command ) {
+        sender.sendMessage( getCommandUsage( command ) );
+    }
+
+    public static String getCommandUsage( String command ) {
         switch ( command.toLowerCase() ) {
             case "warn":
-                sender.sendMessage( Utils.getColored( "&8/&6warn &7(player) (reason)" ) );
-                break;
+                return Utils.getColored( "&8/&6warn &7(player) (reason)" );
             case "kick":
-                sender.sendMessage( Utils.getColored( "&8/&6kick &7(player) (reason)" ) );
-                break;
+                return Utils.getColored( "&8/&6kick &7(player) (reason)" );
             case "mute":
-                sender.sendMessage( Utils.getColored( "&8/&6mute &7(player) (time) (reason) " ) );
+                return Utils.getColored( "&8/&6mute &7(player) (time) (reason) " );
+            case "unmute":
+                return Utils.getColored( "&8/&6unmute &7(player)" );
+            case "ban":
+                return Utils.getColored( "&8/&6ban &7(player) (time) (reason)" );
+            case "unban":
+                return Utils.getColored( "&8/&6unban &7(player) (time) (reason)" );
+        }
+
+        return null;
+    }
+
+    public static void sendNoPunishments( CommandSender sender, String target, String punType ) {
+        String plural;
+        // more cases will come as more punishments are added
+        switch ( punType.toLowerCase() ) {
+            case "mute":
+                plural = "mutes";
                 break;
             case "unmute":
-                sender.sendMessage( Utils.getColored( "&8/&6unmute &7(player)" ) );
+                plural = "mutes";
                 break;
-            case "ban":
-                sender.sendMessage( Utils.getColored( "&8/&6ban &7(player) (time) (reason)" ) );
-                break;
-            case "unban":
-                sender.sendMessage( Utils.getColored( "&8/&6unban &7(player) (time) (reason)" ) );
+            default: // bans/unbans
+                plural = "bans";
                 break;
         }
+
+        sender.sendMessage( Utils.getColored( "&6" + target + " &7does not have any active " + plural ) );
     }
 }
