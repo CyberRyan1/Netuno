@@ -13,7 +13,6 @@ public class Kick implements CommandExecutor {
     private final Database DATA = Utils.getDatabase();
 
     @Override
-    // TODO can be optimized more
     // /kick (player) (reason)
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
         if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "kick.perm" ) ) ) {
