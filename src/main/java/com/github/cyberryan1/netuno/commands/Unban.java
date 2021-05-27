@@ -19,7 +19,7 @@ public class Unban implements CommandExecutor {
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
         if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "unban.perm" ) ) == false ) {
-            sender.sendMessage( ConfigUtils.getColoredStr( "general.perm-denied-msg" ) );
+            CommandErrors.sendInvalidPerms( sender );
             return true;
         }
 
@@ -50,19 +50,19 @@ public class Unban implements CommandExecutor {
                 }
 
                 else {
-                    sender.sendMessage( Utils.getColored( "&6" + target.getName() + " &7does not have any active bans" ) );
+                    CommandErrors.sendNoPunishments( sender, target.getName(), "ban" );
                 }
 
             }
 
             else {
-                sender.sendMessage( Utils.getColored( "&7Found no player named &6" + target.getName() ) );
+                CommandErrors.sendPlayerNotFound( sender, args[0] );
             }
 
         }
 
         else {
-            sender.sendMessage( Utils.getColored( "&8/&6unban &7(player)" ) );
+            CommandErrors.sendCommandUsage( sender, "unban" );
         }
 
         return true;

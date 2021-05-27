@@ -20,7 +20,7 @@ public class Unmute implements CommandExecutor {
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
         if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "unmute.perm" ) ) == false ) {
-            sender.sendMessage( ConfigUtils.getColoredStr( "general.perm-denied-msg" ) );
+            CommandErrors.sendInvalidPerms( sender );
             return true;
         }
 
@@ -63,18 +63,18 @@ public class Unmute implements CommandExecutor {
                 }
 
                 else {
-                    sender.sendMessage( Utils.getColored( "&6" + target.getName() + " &7does not have any active mutes" ) );
+                    CommandErrors.sendNoPunishments( sender, target.getName(), "mute" );
                 }
 
             }
 
             else {
-                sender.sendMessage( Utils.getColored( "&7Found no player named &6" + target.getName() ) );
+                CommandErrors.sendPlayerNotFound( sender, args[0] );
             }
         }
 
         else {
-            sender.sendMessage( Utils.getColored( "&8/&6unmute &7(player)" ) );
+            CommandErrors.sendCommandUsage( sender, "unmute" );
         }
 
         return true;

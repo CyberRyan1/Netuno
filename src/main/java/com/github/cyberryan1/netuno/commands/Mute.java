@@ -14,11 +14,12 @@ public class Mute implements CommandExecutor {
     private final Database DATA = Utils.getDatabase();
 
     @Override
+    // TODO code can be optimized a bit more
     // /mute (player) (length/forever) (reason)
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
         if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "mute.perm" ) ) == false ) {
-            sender.sendMessage( ConfigUtils.getColoredStr( "general.perm-denied-msg" ) );
+            CommandErrors.sendInvalidPerms( sender );
             return true;
         }
 
@@ -44,7 +45,7 @@ public class Mute implements CommandExecutor {
                         pun.setStaffUUID( staff.getUniqueId().toString() );
 
                         if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
-                            staff.sendMessage( Utils.getColored( "&6" + target.getName() + " &7is a staff member, so they cannot be punished" ) );
+                            CommandErrors.sendPlayerCannotBePunished( sender, target.getName() );
                             return true;
                         }
                     }
@@ -64,7 +65,7 @@ public class Mute implements CommandExecutor {
                         pun.setStaffUUID( staff.getUniqueId().toString() );
 
                         if ( Utils.checkStaffPunishmentAllowable( staff, offline ) == false ) {
-                            staff.sendMessage( Utils.getColored( "&6" + offline.getName() + " &7is a staff member, so they cannot be punished" ) );
+                            CommandErrors.sendPlayerCannotBePunished( sender, offline.getName() );
                             return true;
                         }
                     }
@@ -74,7 +75,7 @@ public class Mute implements CommandExecutor {
                 }
 
                 else {
-                    sender.sendMessage( Utils.getColored( "&7Could not find any player named &6" + args[0] ) );
+                    CommandErrors.sendPlayerNotFound( sender, args[0] );
                     return true;
                 }
 
@@ -83,12 +84,12 @@ public class Mute implements CommandExecutor {
             }
 
             else {
-                sender.sendMessage( Utils.getColored( "&7Invalid timespan &8(&6\"" + args[1] + "&6\"&8)" ) );
+                CommandErrors.sendInvalidTimespan( sender, args[1] );
             }
         }
 
         else {
-            sender.sendMessage( Utils.getColored( "&8/&6mute &7(player) (length/forever) (reason)" ) );
+            CommandErrors.sendCommandUsage( sender, "mute" );
         }
 
         return true;

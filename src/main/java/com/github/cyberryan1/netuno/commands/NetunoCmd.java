@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
@@ -9,15 +10,15 @@ import org.bukkit.command.CommandSender;
 
 public class NetunoCmd implements CommandExecutor {
 
-    private final String helpMsg[] = { "\n", Utils.getColored( "&8/&6warn &7(player) (reason)" ), Utils.getColored( "&8/&6kick &7(player) (reason)" ),
-            Utils.getColored( "&8/&6mute &7(player) (reason)" ), Utils.getColored( "&8/&6ban &7(player) (reason)" ),
-            Utils.getColored( "&8/&6netuno &7reload" ), "\n"};
+    private final String helpMsg[] = { "\n", CommandErrors.getCommandUsage( "warn" ), CommandErrors.getCommandUsage( "kick" ),
+            CommandErrors.getCommandUsage( "mute" ), CommandErrors.getCommandUsage( "unmute" ), CommandErrors.getCommandUsage( "ban" ),
+            CommandErrors.getCommandUsage( "unban" ), Utils.getColored( "&8/&6netuno &7reload" ), "\n"};
 
     @Override
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
         if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "general.staff-perm" ) ) == false ) {
-            sender.sendMessage( ConfigUtils.getColoredStr( "perm-denied-msg" ) );
+            CommandErrors.sendInvalidPerms( sender );
             return true;
         }
 

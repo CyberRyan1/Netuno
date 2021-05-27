@@ -14,6 +14,7 @@ public class Warn implements CommandExecutor {
     private final Database DATA = Utils.getDatabase();
 
     @Override
+    // TODO code can be optimized more
     // /warn (player) (reason)
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
         if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "warn.perm" ) ) ) {
@@ -38,7 +39,7 @@ public class Warn implements CommandExecutor {
                         pun.setStaffUUID( player.getUniqueId().toString() );
 
                         if ( Utils.checkStaffPunishmentAllowable( player, target ) == false ) {
-                            player.sendMessage( Utils.getColored( "&6" + target.getName() + " &7is a staff member, so they cannot be punished" ) );
+                            CommandErrors.sendPlayerCannotBePunished( sender, target.getName() );
                             return true;
                         }
                     }
@@ -59,8 +60,8 @@ public class Warn implements CommandExecutor {
                         Player player = ( Player ) sender;
                         pun.setStaffUUID( player.getUniqueId().toString() );
 
-                        if ( Utils.checkStaffPunishmentAllowable( player, target ) == false ) {
-                            player.sendMessage( Utils.getColored( "&6" + target.getName() + " &7is a staff member, so they cannot be punished" ) );
+                        if ( Utils.checkStaffPunishmentAllowable( player, offline ) == false ) {
+                            CommandErrors.sendPlayerCannotBePunished( sender, offline.getName() );
                             return true;
                         }
                     }
@@ -70,7 +71,7 @@ public class Warn implements CommandExecutor {
                 }
 
                 else {
-                    sender.sendMessage( ConfigUtils.getColoredStr( "&7Could not find any player named &6" + args[0] ) );
+                    CommandErrors.sendPlayerNotFound( sender, args[0] );
                     return true;
                 }
 
@@ -79,12 +80,12 @@ public class Warn implements CommandExecutor {
             }
 
             else {
-                sender.sendMessage( Utils.getColored( "&8/&6warn &7(player) (reason)" ) );
+                CommandErrors.sendCommandUsage( sender, "warn" );
             }
         }
 
         else {
-            sender.sendMessage( ConfigUtils.getColoredStr( "general.perm-denied-msg" ) );
+            CommandErrors.sendInvalidPerms( sender );
         }
 
         return true;
