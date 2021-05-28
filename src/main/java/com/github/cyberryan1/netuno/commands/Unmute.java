@@ -25,6 +25,12 @@ public class Unmute implements CommandExecutor {
         }
 
         if ( Utils.isOutOfBounds( args, 0 ) == false ) {
+
+            if ( Utils.isValidUsername( args[0] ) == false ) {
+                CommandErrors.sendPlayerNotFound( sender, args[0] );
+                return true;
+            }
+
             OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
             if ( target != null ) {
                 ArrayList<Punishment> punishments = DATA.getPunishment( target.getUniqueId().toString(), "mute", true );

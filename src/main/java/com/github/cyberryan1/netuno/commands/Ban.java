@@ -23,6 +23,12 @@ public class Ban implements CommandExecutor {
         }
 
         if ( Utils.isOutOfBounds( args, 2 ) == false ) {
+
+            if ( Utils.isValidUsername( args[0] ) == false ) {
+                CommandErrors.sendPlayerNotFound( sender, args[0] );
+                return true;
+            }
+
             if ( Time.isAllowableLength( args[1] ) ) {
                 OfflinePlayer target = Bukkit.getServer().getOfflinePlayer( args[0] );
                 if ( target != null ) {

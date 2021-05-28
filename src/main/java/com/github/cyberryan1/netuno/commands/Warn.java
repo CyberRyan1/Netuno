@@ -19,6 +19,11 @@ public class Warn implements CommandExecutor {
         if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "warn.perm" ) ) ) {
             if ( Utils.isOutOfBounds( args, 1 ) == false ) {
 
+                if ( Utils.isValidUsername( args[0] ) == false ) {
+                    CommandErrors.sendPlayerNotFound( sender, args[0] );
+                    return true;
+                }
+
                 Punishment pun = new Punishment();
                 pun.setReason( Utils.getRemainingArgs( args, 1 ) );
                 pun.setDate( Time.getCurrentTimestamp() );

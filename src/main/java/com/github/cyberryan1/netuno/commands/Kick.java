@@ -17,6 +17,12 @@ public class Kick implements CommandExecutor {
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
         if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "kick.perm" ) ) ) {
             if ( Utils.isOutOfBounds( args, 1 ) == false ) {
+
+                if ( Utils.isValidUsername( args[0] ) == false ) {
+                    CommandErrors.sendPlayerNotFound( sender, args[0] );
+                    return true;
+                }
+
                 Player target = Bukkit.getServer().getPlayer( args[0] );
                 if ( target != null ) {
                     Punishment pun = new Punishment();
