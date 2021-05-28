@@ -14,74 +14,57 @@ public class Warn implements CommandExecutor {
     private final Database DATA = Utils.getDatabase();
 
     @Override
-    // TODO code can be optimized more
     // /warn (player) (reason)
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
         if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "warn.perm" ) ) ) {
             if ( Utils.isOutOfBounds( args, 1 ) == false ) {
 
-                String reason = Utils.getRemainingArgs( args, 1 );
                 Punishment pun = new Punishment();
-
-                pun.setReason( reason );
+                pun.setReason( Utils.getRemainingArgs( args, 1 ) );
                 pun.setDate( Time.getCurrentTimestamp() );
                 pun.setType( "Warn" );
                 pun.setActive( false );
 
-                Player target = Bukkit.getServer().getPlayer( args[0] );
+                OfflinePlayer target = Bukkit.getServer().getOfflinePlayer( args[0] );
                 if ( target != null ) {
 
                     pun.setPlayerUUID( target.getUniqueId().toString() );
 
                     pun.setStaffUUID( "CONSOLE" );
                     if ( sender instanceof Player ) {
-                        Player player = ( Player ) sender;
-                        pun.setStaffUUID( player.getUniqueId().toString() );
+                        Player staff = ( Player ) sender;
+                        pun.setStaffUUID( staff.getUniqueId().toString() );
 
-                        if ( Utils.checkStaffPunishmentAllowable( player, target ) == false ) {
-                            CommandErrors.sendPlayerCannotBePunished( sender, target.getName() );
-                            return true;
-                        }
-                    }
-
-                    DATA.addPunishment( pun );
-
-                    Utils.sendPunishmentMsg( target, pun );
-                }
-
-                // target is offline
-                else if ( Bukkit.getServer().getOfflinePlayer( args[0] ).hasPlayedBefore() ) {
-                    OfflinePlayer offline = Bukkit.getServer().getOfflinePlayer( args[0] );
-
-                    pun.setPlayerUUID( offline.getUniqueId().toString() );
-
-                    pun.setStaffUUID( "CONSOLE" );
-                    if ( sender instanceof Player ) {
-                        Player player = ( Player ) sender;
-                        pun.setStaffUUID( player.getUniqueId().toString() );
-
-                        if ( Utils.checkStaffPunishmentAllowable( player, offline ) == false ) {
-                            CommandErrors.sendPlayerCannotBePunished( sender, offline.getName() );
+                        if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
+                            CommandErrors.sendPlayerCannotBePunished( staff, target.getName() );
                             return true;
                         }
                     }
 
                     int id = DATA.addPunishment( pun );
-                    DATA.addNotif( id, offline.getUniqueId().toString() );
+
+                    if ( target.isOnline() ) {
+                        Utils.sendPunishmentMsg( target.getPlayer(), pun );
+                    }
+
+                    else {
+                        DATA.addNotif( id, target.getUniqueId().toString() );
+                    }
+
+                    Utils.doPublicPunBroadcast( pun );
+                    Utils.doStaffPunBroadcast( pun );
                 }
 
                 else {
                     CommandErrors.sendPlayerNotFound( sender, args[0] );
-                    return true;
                 }
 
-                Utils.doPublicPunBroadcast( pun );
-                Utils.doStaffPunBroadcast( pun );
             }
 
             else {
                 CommandErrors.sendCommandUsage( sender, "warn" );
             }
+
         }
 
         else {
