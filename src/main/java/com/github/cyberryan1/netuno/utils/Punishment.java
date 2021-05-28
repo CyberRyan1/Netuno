@@ -14,13 +14,6 @@ public class Punishment implements Serializable {
     private boolean active;
 
     public Punishment() {
-        playerUUID = null;
-        staffUUID = null;
-        type = null;
-        date = -1;
-        length = -1;
-        reason = null;
-        active = false;
     }
 
     public Punishment( String playerUUID, String staffUUID, String type, long date, long length, String reason, boolean active ) {
