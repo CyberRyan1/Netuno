@@ -2,6 +2,7 @@ name: Netuno
 version: ${project.version}
 main: com.github.cyberryan1.netuno.Netuno
 api-version: 1.16
+softdepend: [ Vault ]
 authors: [ CyberRyan ]
 commands:
   netuno:
