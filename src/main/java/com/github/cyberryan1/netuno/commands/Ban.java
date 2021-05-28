@@ -14,7 +14,6 @@ public class Ban implements CommandExecutor {
     private final Database DATA = Utils.getDatabase();
 
     @Override
-    // TODO code can be optimized
     // /ban (player) (length/forever) (reason)
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
@@ -25,20 +24,15 @@ public class Ban implements CommandExecutor {
 
         if ( Utils.isOutOfBounds( args, 2 ) == false ) {
             if ( Time.isAllowableLength( args[1] ) ) {
-                String reason = Utils.getRemainingArgs( args, 2 );
-                String length = Time.getFormattedLength( args[1] );
-                Punishment pun = new Punishment();
-
-                pun.setReason( reason );
-                pun.setDate( Time.getCurrentTimestamp() );
-                pun.setType( "Ban" );
-                pun.setLength( Time.getTimestampFromLength( args[1] ) );
-                pun.setActive( true );
-
-                Player target = Bukkit.getServer().getPlayer( args[0] );
+                OfflinePlayer target = Bukkit.getServer().getOfflinePlayer( args[0] );
                 if ( target != null ) {
-
+                    Punishment pun = new Punishment();
+                    pun.setReason( Utils.getRemainingArgs( args, 2 ) );
                     pun.setPlayerUUID( target.getUniqueId().toString() );
+                    pun.setActive( true );
+                    pun.setDate( Time.getCurrentTimestamp() );
+                    pun.setLength( Time.getTimestampFromLength( args[1] ) );
+                    pun.setType( "Ban" );
 
                     pun.setStaffUUID( "CONSOLE" );
                     if ( sender instanceof Player ) {
@@ -51,42 +45,30 @@ public class Ban implements CommandExecutor {
                         }
                     }
 
-                    target.kickPlayer( ConfigUtils.replaceAllVariables( ConfigUtils.getColoredStrFromList( "ban.banned-lines" ), pun ) );
-                    DATA.addPunishment( pun );
-                }
+                    int id = DATA.addPunishment( pun );
 
-                else if ( Bukkit.getServer().getOfflinePlayer( args[0] ).hasPlayedBefore() ) {
-                    OfflinePlayer targetOffline = Bukkit.getServer().getOfflinePlayer( args[0] );
-
-                    pun.setPlayerUUID( targetOffline.getUniqueId().toString() );
-
-                    pun.setStaffUUID( "CONSOLE" );
-                    if ( sender instanceof Player ) {
-                        Player staff = ( Player ) sender;
-                        pun.setStaffUUID( staff.getUniqueId().toString() );
-
-                        if ( Utils.checkStaffPunishmentAllowable( staff, targetOffline ) == false ) {
-                            CommandErrors.sendPlayerCannotBePunished( sender, targetOffline.getName() );
-                            return true;
-                        }
+                    if ( target.isOnline() ) {
+                        target.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables( ConfigUtils.getColoredStrFromList( "ban.banned-lines" ), pun ) );
                     }
 
-                    int id = DATA.addPunishment( pun );
-                    DATA.addNotif( id, targetOffline.getUniqueId().toString() );
+                    else {
+                        DATA.addNotif( id, target.getUniqueId().toString() );
+                    }
+
+                    Utils.doPublicPunBroadcast( pun );
+                    Utils.doStaffPunBroadcast( pun );
                 }
 
                 else {
                     CommandErrors.sendPlayerNotFound( sender, args[0] );
-                    return true;
                 }
 
-                Utils.doPublicPunBroadcast( pun );
-                Utils.doStaffPunBroadcast( pun );
             }
 
             else {
                 CommandErrors.sendInvalidTimespan( sender, args[1] );
             }
+
         }
 
         else {
