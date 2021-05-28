@@ -70,8 +70,7 @@ public abstract class Database {
 
             int id = getNextPunID();
             if ( id == -1 ) {
-                Utils.logError( "Unable to add punishment to database" );
-                return -1;
+                throw new SQLException();
             }
 
             ps.setInt( 1, id );
