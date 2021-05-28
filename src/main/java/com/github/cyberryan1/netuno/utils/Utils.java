@@ -7,6 +7,7 @@ import com.github.cyberryan1.netuno.utils.database.SQLite;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
@@ -82,7 +83,7 @@ public class Utils {
         return str.substring( 0, str.length() - 1 );
     }
 
-    public static void sendAnyMsg( Player target, String str ) {
+    public static void sendAnyMsg( CommandSender target, String str ) {
         target.sendMessage( str );
         if ( str.charAt( str.length() - 1 ) == '\n' ) {
             target.sendMessage( "" );
