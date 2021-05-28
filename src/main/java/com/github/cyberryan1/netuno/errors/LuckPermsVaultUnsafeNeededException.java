@@ -5,7 +5,7 @@ import org.bukkit.plugin.Plugin;
 
 public class LuckPermsVaultUnsafeNeededException extends Exception {
 
-    public static final String LUCKPERMS_VAULT_UNSAFE_NEEDED = "LuckPerms cannot be used unless \"vault-unsafe-lookups\" in the LuckPerms config is enabled!";
+    public static final String LUCKPERMS_VAULT_UNSAFE_NEEDED = "LuckPerms cannot be used unless \"vault-unsafe-lookups\" in the LuckPerms config is set to true!";
 
     public LuckPermsVaultUnsafeNeededException() {
         super( LUCKPERMS_VAULT_UNSAFE_NEEDED );
