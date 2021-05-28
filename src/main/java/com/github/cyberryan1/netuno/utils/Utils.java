@@ -18,6 +18,9 @@ public class Utils {
     private static ConfigManager configManager;
     private static Database db;
 
+    private static final char SPECIAL_CHARS[] = { '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '=', '+', '`', '~', '[', ']',
+                                                    '{', '}', '\\', '|', ':', ';', '\'', '\"', ',', '<', '.', '>', '/', '?' };
+
     public Utils( Netuno pl, ConfigManager cm ) {
         plugin = pl;
         configManager = cm;
@@ -152,5 +155,19 @@ public class Utils {
                 }
             }
         }
+    }
+
+    // Checks if a username provided is a potential username allowed by Minecraft
+    // Useful so that time isn't wasted searching for a wack name
+    public static boolean isValidUsername( String user ) {
+        if ( user.length() < 3 || user.length() > 16 ) { return false; }
+        if ( user.contains( " " ) ) { return false; }
+        for ( char c : SPECIAL_CHARS ) {
+            if ( user.contains( c + "" ) == true ) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
