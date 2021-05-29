@@ -171,4 +171,36 @@ public class Utils {
 
         return true;
     }
+
+    // Formats a list into a string
+    // Ex: { "125", "812" } -> "125 and 812"
+    // Ex: { "912" } -> "912"
+    // Ex: { "192", "015", "529" } -> "192, 015, and 529"
+    public static String formatListIntoFancierString( String list[] ) {
+        if ( list.length == 1 ) { return list[0]; }
+        if ( list.length == 2 ) { return list[0] + " and " + list[1]; }
+
+        String toReturn = "";
+        for ( int index = 0; index < list.length - 1; index++ ) {
+            toReturn += list[index] + ", ";
+        }
+
+        toReturn += "and " + list[ list.length - 1 ];
+        return toReturn;
+    }
+
+    // formats a list into a string
+    // main difference with above is it doesn't have "and", replacing that with commas
+    // ex: { "125", "812" } -> "125, 812"
+    public static String formatListIntoString( String list[] ) {
+        if ( list.length == 1 ) { return list[0]; }
+
+        String toReturn = "";
+        for ( int index = 0; index < list.length - 1; index++ ) {
+            toReturn += list[index] + ", ";
+        }
+
+        toReturn += list[ list.length - 1 ];
+        return toReturn;
+    }
 }
