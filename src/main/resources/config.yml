@@ -160,3 +160,6 @@ unban:
     - ""
   message:
     - ""
+
+ipinfo:
+  perm: "netuno.ipinfo"

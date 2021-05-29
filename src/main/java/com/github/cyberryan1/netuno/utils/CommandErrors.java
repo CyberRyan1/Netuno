@@ -12,6 +12,10 @@ public class CommandErrors {
         sender.sendMessage( Utils.getColored( "&7No player with the name &6" + player + " &7found" ) );
     }
 
+    public static void sendPlayerNeverJoined( CommandSender sender, String player ) {
+        sender.sendMessage( Utils.getColored( "&7Player with the name &6" + player + " &7has never joined the server before" ) );
+    }
+
     public static void sendInvalidPerms( CommandSender sender ) {
         sender.sendMessage( ConfigUtils.getColoredStr( "general.perm-denied-msg" ) );
     }
@@ -38,6 +42,8 @@ public class CommandErrors {
                 return Utils.getColored( "&8/&6ban &7(player) (time) (reason)" );
             case "unban":
                 return Utils.getColored( "&8/&6unban &7(player) (time) (reason)" );
+            case "ipinfo":
+                return Utils.getColored( "&8/&6ipinfo &7(player)" );
         }
 
         return null;
@@ -59,5 +65,9 @@ public class CommandErrors {
         }
 
         sender.sendMessage( Utils.getColored( "&6" + target + " &7does not have any active " + plural ) );
+    }
+
+    public static void sendNoAltAccounts( CommandSender sender, String target ) {
+        sender.sendMessage( Utils.getColored( "&6" + target + " &7has no other alt accounts" ) );
     }
 }

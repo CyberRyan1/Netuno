@@ -12,3 +12,4 @@ commands:
   unmute:
   ban:
   unban:
+  ipinfo:

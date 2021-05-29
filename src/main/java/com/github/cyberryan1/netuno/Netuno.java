@@ -13,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 // TODO add tab-completer
 // TODO add option to disable signs for muted players
 // TODO add sign-popups for staff
+// TODO add a [MAIN] variable in config for the main plugin color
 public final class Netuno extends JavaPlugin {
 
     private ConfigManager config;
@@ -38,6 +39,7 @@ public final class Netuno extends JavaPlugin {
         this.getCommand( "unmute" ).setExecutor( new Unmute() );
         this.getCommand( "ban" ).setExecutor( new Ban() );
         this.getCommand( "unban" ).setExecutor( new Unban() );
+        this.getCommand( "ipinfo" ).setExecutor( new IPInfo() );
 
         this.getServer().getPluginManager().registerEvents( new JoinListener(), this );
         this.getServer().getPluginManager().registerEvents( new ChatListener(), this );
