@@ -4,9 +4,12 @@ import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.utils.Punishment;
 import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public abstract class Database {
 
@@ -460,6 +463,118 @@ public abstract class Database {
         }
 
         return false;
+    }
+
+    public ArrayList<String> getAllAccountsOnIP( String ip ) {
+        ArrayList<String> toReturn = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT * FROM " + IP_TABLE_NAME + " WHERE ip=?;" );
+            ps.setString( 1, ip );
+
+            ResultSet rs = ps.executeQuery();
+            while ( rs.next() ) {
+                toReturn.add( rs.getString( "player" ) );
+            }
+
+            return toReturn;
+        } catch ( SQLException e ) { Utils.logError( "Unable to get all accounts on an IP address" );
+        } finally {
+            try {
+                if ( conn != null ) { conn.close(); }
+                if ( ps != null ) { ps.close(); }
+            } catch ( SQLException ex ) { Utils.logError( Errors.sqlConnectionClose(), ex ); }
+        }
+
+        return null;
+    }
+
+    public ArrayList<String> getAllIPFromPlayer( String playerUUID ) {
+        ArrayList<String> toReturn = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT * FROM " + IP_TABLE_NAME + " WHERE player=?;" );
+            ps.setString( 1, playerUUID );
+
+            ResultSet rs = ps.executeQuery();
+            while ( rs.next() ) {
+                toReturn.add( rs.getString( "ip" ) );
+            }
+
+            return toReturn;
+        } catch ( SQLException e ) { Utils.logError( "Unable to get all IPs from a player" ); }
+        finally {
+            try {
+                if ( conn != null ) { conn.close(); }
+                if ( ps != null ) { ps.close(); }
+            } catch ( SQLException ex ) { Utils.logError( Errors.sqlConnectionClose(), ex ); }
+        }
+
+        return null;
+    }
+
+    // returns all of the alts they have (based off what is logged in the database)
+    public ArrayList<OfflinePlayer> getAllAlts( String playerUUID ) {
+        ArrayList<String> ipsGoingThrough = getAllIPFromPlayer( playerUUID );
+        ArrayList<String> searched = new ArrayList<>();
+        ArrayList<OfflinePlayer> accounts = new ArrayList<>();
+
+        while ( ipsGoingThrough.size() >= 1 ) {
+            String current = ipsGoingThrough.remove( 0 );
+            searched.add( current );
+
+            ArrayList<String> accountsOnCurrent = getAllAccountsOnIP( current );
+            for ( String uuidStr : accountsOnCurrent ) {
+                OfflinePlayer offline = Bukkit.getOfflinePlayer( UUID.fromString( uuidStr ) );
+                if ( accounts.contains( offline ) == false ) {
+                    accounts.add( offline );
+                }
+
+                ArrayList<String> ipOfflineList = getAllIPFromPlayer( uuidStr );
+                for ( String ipStr : ipOfflineList ) {
+                    if ( ipsGoingThrough.contains( ipStr ) == false && searched.contains( ipStr ) == false ) {
+                        ipsGoingThrough.add( ipStr );
+                    }
+                }
+            }
+        }
+
+        return accounts;
+    }
+
+    // returns all of the alts in their respective colors
+    public ArrayList<String> getPunishedAltList( String playerUUID ) {
+        ArrayList<OfflinePlayer> alts = getAllAlts( playerUUID );
+        ArrayList<String> toReturn = new ArrayList<>();
+
+        if ( alts.size() == 0 ) { return toReturn; }
+
+        for ( OfflinePlayer account : alts ) {
+            if ( account.getUniqueId().toString().equals( playerUUID ) == false ) { // checking that it's not the player requested
+                ArrayList<Punishment> activeMutes = getPunishment( account.getUniqueId().toString(), "mute", true );
+                ArrayList<Punishment> activeBans = getPunishment( account.getUniqueId().toString(), "ban", true );
+
+                ArrayList<String> suffixs = new ArrayList<>();
+                if ( activeBans.size() >= 1 ) { suffixs.add( "BANNED" ); }
+                if ( activeMutes.size() >= 1 ) { suffixs.add( "MUTED" ); }
+
+                String after = "";
+                if ( suffixs.size() >= 1 ) {
+                    String suffixsList[] = new String[ suffixs.size() - 1 ];
+                    after = Utils.getColored( "&c[" + Utils.formatListIntoString( suffixs.toArray( suffixsList ) ) + "]" );
+                }
+
+                toReturn.add( account.getName() + " " + after );
+            }
+        }
+
+        return toReturn;
     }
 }
 
