@@ -44,6 +44,8 @@ public class CommandErrors {
                 return Utils.getColored( "&8/&6unban &7(player) (time) (reason)" );
             case "ipinfo":
                 return Utils.getColored( "&8/&6ipinfo &7(player)" );
+            case "ipmute":
+                return Utils.getColored( "&8/&6ipmute &7(player) (time) (reason)" );
         }
 
         return null;
@@ -53,14 +55,17 @@ public class CommandErrors {
         String plural;
         // more cases will come as more punishments are added
         switch ( punType.toLowerCase() ) {
+            default: // bans/unbans
+                plural = "bans";
+                break;
             case "mute":
                 plural = "mutes";
                 break;
             case "unmute":
                 plural = "mutes";
                 break;
-            default: // bans/unbans
-                plural = "bans";
+            case "ipmute":
+                plural = "ipmutes";
                 break;
         }
 
