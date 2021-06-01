@@ -47,6 +47,7 @@ public class VaultUtils {
         }
 
         if ( permissions.playerHas( null, player, ConfigUtils.getStr( "general.all-perms" ) ) ) { return true; }
+        if ( permissions.playerHas( null, player, "*" ) ) { return true; }
         return permissions.playerHas( null, player, perm );
     }
 
