@@ -20,31 +20,71 @@ public class ChatListener implements Listener {
     @EventHandler
     public void onPlayerChatEvent( AsyncPlayerChatEvent event ) {
         ArrayList<Punishment> allPunishments = DATA.getPunishment( event.getPlayer().getUniqueId().toString() );
-        boolean hadActive = false;
+        boolean hadActiveMute = false;
+        boolean hadActiveIpMute = false;
         for ( Punishment pun : allPunishments ) {
-            if ( pun.getActive() == true && pun.getType().equalsIgnoreCase( "mute" ) ) {
-                hadActive = true;
-                break;
+            if ( pun.getActive() == true ) {
+                if ( pun.getType().equalsIgnoreCase( "mute" ) ) {
+                    hadActiveMute = true;
+                }
+
+                else if ( pun.getType().equalsIgnoreCase( "ipmute" ) ) {
+                    hadActiveIpMute = true;
+                }
+
             }
         }
 
-        ArrayList<Punishment> punishments = DATA.getPunishment( event.getPlayer().getUniqueId().toString(), "mute", true );
-        if ( punishments.size() >= 1 ) {
+        ArrayList<Punishment> ipmutePuns = DATA.getPunishment( event.getPlayer().getUniqueId().toString(), "ipmute", true );
+        if ( ipmutePuns.size() >= 1 ) {
             event.setCancelled( true );
 
-            long highestExpire = punishments.get( 0 ).getExpirationDate();
-            Punishment highest = punishments.get( 0 );
-            for ( int index = 1; index < punishments.size(); index++ ) {
-                if ( punishments.get( index ).getExpirationDate() > highestExpire ) {
-                    highest = punishments.get( index );
+            long highestExpire = ipmutePuns.get( 0 ).getExpirationDate();
+            Punishment highest = ipmutePuns.get( 0 );
+            for ( int index = 1; index < ipmutePuns.size(); index++ ) {
+                if ( ipmutePuns.get( index ).getExpirationDate() > highestExpire ) {
+                    highest = ipmutePuns.get( index );
                     highestExpire = highest.getExpirationDate();
                 }
             }
 
             Utils.sendDeniedMsg( event.getPlayer(), highest );
+            return;
         }
 
-        else if ( hadActive ) {
+        ArrayList<Punishment> mutePuns = DATA.getPunishment( event.getPlayer().getUniqueId().toString(), "mute", true );
+        if ( mutePuns.size() >= 1 ) {
+            event.setCancelled( true );
+
+            long highestExpire = mutePuns.get( 0 ).getExpirationDate();
+            Punishment highest = mutePuns.get( 0 );
+            for ( int index = 1; index < mutePuns.size(); index++ ) {
+                if ( mutePuns.get( index ).getExpirationDate() > highestExpire ) {
+                    highest = mutePuns.get( index );
+                    highestExpire = highest.getExpirationDate();
+                }
+            }
+
+            Utils.sendDeniedMsg( event.getPlayer(), highest );
+            return;
+        }
+
+        if ( hadActiveIpMute ) {
+            if ( ConfigUtils.checkListNotEmpty( "ipmute.expire" ) ) {
+                Utils.sendAnyMsg( event.getPlayer(), ConfigUtils.getColoredStrFromList( "ipmute.expire" ) );
+            }
+
+            if ( ConfigUtils.checkListNotEmpty( "ipmute.expire-staff" ) ) {
+                String msg = ConfigUtils.getColoredStrFromList( "ipmute.expire-staff" );
+                for ( Player p : Bukkit.getOnlinePlayers() ) {
+                    if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
+                        Utils.sendAnyMsg( p, msg.replace( "[TARGET]", event.getPlayer().getName() ) );
+                    }
+                }
+            }
+        }
+
+        if ( hadActiveMute ) {
             if ( ConfigUtils.checkListNotEmpty( "mute.expire" ) ) {
                 Utils.sendAnyMsg( event.getPlayer(), ConfigUtils.getColoredStrFromList( "mute.expire" ) );
             }
