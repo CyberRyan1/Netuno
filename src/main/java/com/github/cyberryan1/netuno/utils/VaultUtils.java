@@ -2,7 +2,6 @@ package com.github.cyberryan1.netuno.utils;
 
 import com.github.cyberryan1.netuno.errors.LuckPermsVaultUnsafeNeededException;
 import net.milkbowl.vault.permission.Permission;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
