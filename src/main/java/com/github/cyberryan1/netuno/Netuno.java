@@ -41,6 +41,7 @@ public final class Netuno extends JavaPlugin {
         this.getCommand( "unban" ).setExecutor( new Unban() );
         this.getCommand( "ipinfo" ).setExecutor( new IPInfo() );
         this.getCommand( "ipmute" ).setExecutor( new IPMute() );
+        this.getCommand( "unipmute" ).setExecutor( new UnIPMute() );
 
         this.getServer().getPluginManager().registerEvents( new JoinListener(), this );
         this.getServer().getPluginManager().registerEvents( new ChatListener(), this );

@@ -14,3 +14,4 @@ commands:
   unban:
   ipinfo:
   ipmute:
+  unipmute:

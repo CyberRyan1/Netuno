@@ -178,12 +178,32 @@ ipmute:
     - " &6Length: &7[LENGTH]"
     - " &6Reason: &7[REASON]"
     - ""
+  attempt:
+    - ""
+    - " &7Your are &6ipmuted&7!"
+    - " &6Time Remaining: &7[REMAIN]"
+    - " &6Reason: &7[REASON]"
+    - ""
   expire:
     - ""
     - " &7Your ipmute has &6expired&7!"
     - ""
   expire-staff:
-    " &6[TARGET]&7's ipmute has expired"
+    - " &6[TARGET]&7's ipmute has expired"
+
+unipmute:
+  perm: "netuno.unipmute"
+  broadcast:
+    - ""
+  staff-broadcast:
+    - ""
+    - " &6[TARGET] &7has been &6unipmuted"
+    - " &6Staff: &7[STAFF]"
+    - ""
+  message:
+    - ""
+    - " &7You have been &6unipmuted"
+    - ""
 
 ipinfo:
   perm: "netuno.ipinfo"
