@@ -53,15 +53,10 @@ public class Unmute implements CommandExecutor {
                         unmutePun.setStaffUUID( staff.getUniqueId().toString() );
                     }
 
+                    DATA.addPunishment( unmutePun );
                     if ( target.isOnline() ) {
-                        DATA.addPunishment( unmutePun );
                         Player targetOnline = target.getPlayer();
                         Utils.sendPunishmentMsg( targetOnline, unmutePun );
-                    }
-
-                    else {
-                        int id = DATA.addPunishment( unmutePun );
-                        DATA.addNotif( id, target.getUniqueId().toString() );
                     }
 
                     Utils.doPublicPunBroadcast( unmutePun );

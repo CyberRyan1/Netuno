@@ -52,15 +52,10 @@ public class UnIPMute implements CommandExecutor {
                         pun.setStaffUUID( staff.getUniqueId().toString() );
                     }
 
+                    DATA.addPunishment( pun );
                     if ( target.isOnline() ) {
-                        DATA.addPunishment( pun );
                         Player targetOnline = target.getPlayer();
                         Utils.sendPunishmentMsg( targetOnline, pun );
-                    }
-
-                    else {
-                        int id = DATA.addPunishment( pun );
-                        DATA.addNotif( id, target.getUniqueId().toString() );
                     }
 
                     Utils.doPublicPunBroadcast( pun );
