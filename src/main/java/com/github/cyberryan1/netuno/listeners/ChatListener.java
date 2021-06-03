@@ -1,9 +1,6 @@
 package com.github.cyberryan1.netuno.listeners;
 
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
-import com.github.cyberryan1.netuno.utils.Punishment;
-import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.VaultUtils;
+import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,23 +16,18 @@ public class ChatListener implements Listener {
 
     @EventHandler
     public void onPlayerChatEvent( AsyncPlayerChatEvent event ) {
-        ArrayList<Punishment> allPunishments = DATA.getPunishment( event.getPlayer().getUniqueId().toString() );
-        boolean hadActiveMute = false;
+
+        // ipmute handling
+        ArrayList<IPPunishment> allIPPunishments = DATA.getIPPunishment( event.getPlayer().getUniqueId().toString() );
         boolean hadActiveIpMute = false;
-        for ( Punishment pun : allPunishments ) {
-            if ( pun.getActive() == true ) {
-                if ( pun.getType().equalsIgnoreCase( "mute" ) ) {
-                    hadActiveMute = true;
-                }
-
-                else if ( pun.getType().equalsIgnoreCase( "ipmute" ) ) {
-                    hadActiveIpMute = true;
-                }
-
+        for ( IPPunishment pun : allIPPunishments ) {
+            if ( pun.getActive() && pun.getType().equalsIgnoreCase( "ipmute" ) ) {
+                hadActiveIpMute = true;
+                break;
             }
         }
 
-        ArrayList<Punishment> ipmutePuns = DATA.getPunishment( event.getPlayer().getUniqueId().toString(), "ipmute", true );
+        ArrayList<IPPunishment> ipmutePuns = DATA.getIPPunishment( event.getPlayer().getUniqueId().toString(), "ipmute", true );
         if ( ipmutePuns.size() >= 1 ) {
             event.setCancelled( true );
 
@@ -50,6 +42,16 @@ public class ChatListener implements Listener {
 
             Utils.sendDeniedMsg( event.getPlayer(), highest );
             return;
+        }
+
+        // mute handling
+        ArrayList<Punishment> allPunishments = DATA.getPunishment( event.getPlayer().getUniqueId().toString() );
+        boolean hadActiveMute = false;
+        for ( Punishment pun : allPunishments ) {
+            if ( pun.getActive() && pun.getType().equalsIgnoreCase( "mute" ) ) {
+                hadActiveMute = true;
+                break;
+            }
         }
 
         ArrayList<Punishment> mutePuns = DATA.getPunishment( event.getPlayer().getUniqueId().toString(), "mute", true );
@@ -69,6 +71,7 @@ public class ChatListener implements Listener {
             return;
         }
 
+        // ipmute notification handling
         if ( hadActiveIpMute ) {
             if ( ConfigUtils.checkListNotEmpty( "ipmute.expire" ) ) {
                 Utils.sendAnyMsg( event.getPlayer(), ConfigUtils.getColoredStrFromList( "ipmute.expire" ) );
@@ -84,7 +87,8 @@ public class ChatListener implements Listener {
             }
         }
 
-        if ( hadActiveMute ) {
+        // mute notification handling
+        else if ( hadActiveMute ) {
             if ( ConfigUtils.checkListNotEmpty( "mute.expire" ) ) {
                 Utils.sendAnyMsg( event.getPlayer(), ConfigUtils.getColoredStrFromList( "mute.expire" ) );
             }
