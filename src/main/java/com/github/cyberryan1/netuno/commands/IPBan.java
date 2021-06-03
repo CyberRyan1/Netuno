@@ -59,7 +59,6 @@ public class IPBan implements CommandExecutor {
                         }
                     }
 
-                    Utils.logError( " pun id = " + DATA.addIPPunishment( pun ) );
                     if ( target.isOnline() ) {
                         target.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables( ConfigUtils.getColoredStrFromList( "ipban.banned-lines" ), pun ) );
                     }
