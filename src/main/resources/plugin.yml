@@ -16,3 +16,4 @@ commands:
   ipmute:
   unipmute:
   ipban:
+  unipban:
