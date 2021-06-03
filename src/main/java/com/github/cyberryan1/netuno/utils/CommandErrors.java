@@ -46,6 +46,12 @@ public class CommandErrors {
                 return Utils.getColored( "&8/&6ipinfo &7(player)" );
             case "ipmute":
                 return Utils.getColored( "&8/&6ipmute &7(player) (time) (reason)" );
+            case "unipmute":
+                return Utils.getColored( "&8/&6unipmute &7(player)" );
+            case "ipban":
+                return Utils.getColored( "&8/&6ipban &7(player) (time) (reason)" );
+            case "unipban":
+                return Utils.getColored( "&8/&6unipban &7(player)" );
         }
 
         return null;
