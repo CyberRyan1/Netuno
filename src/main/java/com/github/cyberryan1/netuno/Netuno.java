@@ -1,15 +1,14 @@
 package com.github.cyberryan1.netuno;
 
 import com.github.cyberryan1.netuno.commands.*;
-import com.github.cyberryan1.netuno.listeners.ChatListener;
-import com.github.cyberryan1.netuno.listeners.JoinListener;
-import com.github.cyberryan1.netuno.listeners.LeaveListener;
+import com.github.cyberryan1.netuno.listeners.*;
 import com.github.cyberryan1.netuno.managers.ConfigManager;
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
+// TODO ipmute needs to alert all online alts and add notifications for all their alts (same with ipban, except no notifications)
 // TODO add tab-completer
 // TODO add option to disable signs for muted players
 // TODO add sign-popups for staff
@@ -42,6 +41,7 @@ public final class Netuno extends JavaPlugin {
         this.getCommand( "ipinfo" ).setExecutor( new IPInfo() );
         this.getCommand( "ipmute" ).setExecutor( new IPMute() );
         this.getCommand( "unipmute" ).setExecutor( new UnIPMute() );
+        this.getCommand( "ipban" ).setExecutor( new IPBan() );
 
         this.getServer().getPluginManager().registerEvents( new JoinListener(), this );
         this.getServer().getPluginManager().registerEvents( new ChatListener(), this );

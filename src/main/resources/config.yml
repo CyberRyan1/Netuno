@@ -128,7 +128,7 @@ ban:
     - ""
     - " &6[TARGET] &7has been &6banned &8[&7[LENGTH]&8]"
     - " &6Reason: &7[REASON]"
-    - " &6By: &7[STAFF]"
+    - " &6Staff: &7[STAFF]"
     - ""
   # What the banned player sees when they are first banned (if they are online)
   banned-lines:
@@ -203,6 +203,44 @@ unipmute:
   message:
     - ""
     - " &7You have been &6unipmuted"
+    - ""
+
+ipban:
+  perm: "netuno.ipban"
+  broadcast:
+    - " &6[TARGET] &7has been &6ipbanned &8[&7[LENGTH]&8]"
+    - " &6Reason: &7[REASON]"
+  staff-broadcast:
+    - ""
+    - " &6[TARGET] &7has been &6ipbanned &8[&7[LENGTH]&8]"
+    - " &6Reason: &7[REASON]"
+    - " &6Staff: &7[STAFF]"
+    - ""
+  banned-lines:
+    - "&7You have been &6ipbanned&7!"
+    - "&6Length: &7[LENGTH]"
+    - "&6Reason: &7[REASON]"
+  attempt:
+    - "&7You are &6ipbanned&7!"
+    - "&6Time Remaining: &7[REMAIN]"
+    - "&6Reason: &7[REASON]"
+  expire:
+    - ""
+    - " &7Your ipban has &6expired&7!"
+    - ""
+  expire-staff:
+    - " &6[TARGET]&7's ipban has expired"
+
+unipban:
+  perm: "netuno.unipban"
+  broadcast:
+    - ""
+  staff-broadcast:
+    - ""
+    - " &6[TARGET] &7has been &6unipbanned"
+    - " &6Staff: &7[STAFF]"
+    - ""
+  message:
     - ""
 
 ipinfo:
