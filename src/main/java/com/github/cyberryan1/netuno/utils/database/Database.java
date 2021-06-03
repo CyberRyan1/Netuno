@@ -1,6 +1,7 @@
 package com.github.cyberryan1.netuno.utils.database;
 
 import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.netuno.utils.IPPunishment;
 import com.github.cyberryan1.netuno.utils.Punishment;
 import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
@@ -28,6 +29,10 @@ public abstract class Database {
     private final String IP_TYPE_LIST = "(id,player,ip)";
     private final String IP_UNKNOWN_LIST = "(?,?,?)";
 
+    private final String IP_PUN_TABLE_NAME = "ippuns";
+    private final String IP_PUN_TYPE_LIST = "(id,player,staff,type,date,length,reason,active,alts)";
+    private final String IP_PUN_UNKNOWN_LIST = "(?,?,?,?,?,?,?,?,?)";
+
     public Database( Netuno instance ) {
         plugin = instance;
     }
@@ -41,18 +46,18 @@ public abstract class Database {
         try {
             PreparedStatement ps = connection.prepareStatement( "SELECT * FROM " + PUN_TABLE_NAME + " WHERE id = ?" );
             ResultSet rs = ps.executeQuery();
-            close( ps, rs );
+            close( connection, ps, rs );
         } catch ( SQLException ex ) {
             Utils.logError( "Unable to retrieve connection", ex );
         }
     }
 
-    public void close( PreparedStatement ps, ResultSet rs ) {
+    // TODO can be used to close PreparedStatement and ResultSet
+    public void close( Connection conn, PreparedStatement ps, ResultSet rs ) {
         try {
-            if ( ps != null )
-                ps.close();
-            if ( rs != null )
-                rs.close();
+            if ( conn != null ) { conn.close(); }
+            if ( ps != null ) { ps.close(); }
+            if ( rs != null ) { rs.close(); }
         } catch ( SQLException e ) {
             Error.close( plugin, e );
         }
@@ -106,6 +111,7 @@ public abstract class Database {
         return -1;
     }
 
+    // TODO won't work in edge cases, will return an id already being used
     private int getNextPunID() {
         try {
             Connection conn = getSqlConnection();
@@ -263,7 +269,8 @@ public abstract class Database {
 
         if ( endingDate <= today || pun.getActive() == false ) {
             pun.setActive( false );
-            setPunishmentActive( pun.getID(), false );
+            if ( pun instanceof IPPunishment ) { setIPPunishmentActive( pun.getID(), false ); }
+            else { setPunishmentActive( pun.getID(), false ); }
             return false;
         }
 
@@ -575,6 +582,195 @@ public abstract class Database {
         }
 
         return toReturn;
+    }
+
+    //
+    // IP-Punishments database
+    //
+    public int addIPPunishment( IPPunishment pun ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        int id = -1;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "INSERT INTO " + IP_PUN_TABLE_NAME + " " + IP_PUN_TYPE_LIST + " VALUES" + IP_PUN_UNKNOWN_LIST );
+
+            id = getNextIPPunId();
+            ps.setInt( 1, id );
+            ps.setString( 2, pun.getPlayerUUID() );
+            ps.setString( 3, pun.getStaffUUID() );
+            ps.setString( 4, pun.getType() );
+            ps.setString( 5, "" + pun.getDate() );
+            ps.setString( 6, "" + pun.getLength() );
+            ps.setString( 7, pun.getReason() );
+            ps.setString( 8, "" + pun.getActive() );
+            ps.setString( 9, pun.getAltListAsString() );
+
+            ps.executeUpdate();
+        } catch ( SQLException ex ) {
+            Utils.logError( "Unable to add ip punishment to database" );
+        }
+
+        close( conn, ps, null );
+        return id;
+    }
+
+    public int getNextIPPunId() {
+        int start = 0;
+        try {
+            Connection conn = getSqlConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery( "SELECT COUNT(*) FROM " + IP_PUN_TABLE_NAME );
+            rs.next();
+            start = rs.getInt( "count(*)" );
+            close( conn, null, rs );
+        } catch ( SQLException ex ) {
+            Utils.logError( "Unable to get next available ID in ip punishments database" );
+        }
+
+        while ( checkIpPunIDExists( start ) == true ) { start++; }
+        return start;
+    }
+
+    private boolean checkIpPunIDExists( int id ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        boolean toReturn = false;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + IP_PUN_TABLE_NAME + " WHERE id = " + id + ";" );
+            rs = ps.executeQuery();
+            rs.next();
+            if ( rs.getInt( "count(*)" ) >= 1 ) { toReturn = true; }
+        } catch ( SQLException ex ) {
+            Utils.logError( "Unable to check if an id in the IP punishments database exists" );
+        }
+
+        close( conn, ps, rs );
+        return toReturn;
+    }
+
+    // Gets an IP punishment from an ID
+    public IPPunishment getIPPunishment( int id ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        IPPunishment toReturn = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT * FROM " + IP_PUN_TABLE_NAME + " WHERE id = " + id + ";" );
+            rs = ps.executeQuery();
+
+            toReturn = new IPPunishment();
+            toReturn.setID( rs.getInt( "id" ) );
+            toReturn.setPlayerUUID( rs.getString( "player" ) );
+            toReturn.setStaffUUID( rs.getString( "staff" ) );
+            toReturn.setType( rs.getString( "type" ) );
+            toReturn.setDate( Long.parseLong( rs.getString( "date" ) ) );
+            toReturn.setLength( Long.parseLong( rs.getString( "length" ) ) );
+            toReturn.setReason( rs.getString( "reason" ) );
+            toReturn.setActive( Boolean.parseBoolean( rs.getString( "active" ) ) );
+            toReturn.setAltListFromString( rs.getString( "alts" ) );
+
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
+
+        close( conn, ps, rs );
+        return toReturn;
+    }
+
+    // Search for an ippunishment by UUID
+    public ArrayList<IPPunishment> getIPPunishment( String uuid ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<IPPunishment> results = new ArrayList<>();
+        ArrayList<Integer> idResults = new ArrayList<>();
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT * FROM " + IP_PUN_TABLE_NAME + " WHERE player=?;" );
+            ps.setString( 1, uuid );
+            rs = ps.executeQuery();
+
+            while ( rs.next() ) {
+                IPPunishment pun = new IPPunishment();
+                pun.setID( rs.getInt( "id" ) );
+                pun.setPlayerUUID( rs.getString( "player" ) );
+                pun.setStaffUUID( rs.getString( "staff" ) );
+                pun.setType( rs.getString( "type" ) );
+                pun.setDate( Long.parseLong( rs.getString( "date" ) ) );
+                pun.setLength( Long.parseLong( rs.getString( "length" ) ) );
+                pun.setReason( rs.getString( "reason" ) );
+                pun.setActive( Boolean.parseBoolean( rs.getString( "active" ) ) );
+                pun.setAltListFromString( rs.getString( "alts" ) );
+
+                results.add( pun );
+                idResults.add( pun.getID() );
+            }
+
+            ps = conn.prepareStatement( "SELECT * FROM " + IP_PUN_TABLE_NAME + " WHERE instr(alts, ?) > 0;" );
+            ps.setString( 1, uuid );
+            rs = ps.executeQuery();
+
+            while ( rs.next() ) {
+                IPPunishment pun = new IPPunishment();
+                pun.setID( rs.getInt( "id" ) );
+
+                if ( idResults.contains( pun.getID() ) == false ) {
+                    pun.setPlayerUUID( rs.getString( "player" ) );
+                    pun.setStaffUUID( rs.getString( "staff" ) );
+                    pun.setType( rs.getString( "type" ) );
+                    pun.setDate( Long.parseLong( rs.getString( "date" ) ) );
+                    pun.setLength( Long.parseLong( rs.getString( "length" ) ) );
+                    pun.setReason( rs.getString( "reason" ) );
+                    pun.setActive( Boolean.parseBoolean( rs.getString( "active" ) ) );
+                    pun.setAltListFromString( rs.getString( "alts" ) );
+
+                    results.add( pun );
+                    idResults.add( pun.getID() );
+                }
+            }
+
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
+
+        close( conn, ps, rs );
+        return results;
+    }
+
+    // Search for an ippunishment by uuid, type, and active
+    public ArrayList<IPPunishment> getIPPunishment( String uuid, String type, boolean active ) {
+        ArrayList<IPPunishment> punishments = getIPPunishment( uuid );
+        ArrayList<IPPunishment> toReturn = new ArrayList<>();
+
+        for ( IPPunishment pun : punishments ) {
+            if ( pun.getType().equalsIgnoreCase( type ) ) {
+                if ( checkActive( pun ) == active ) {
+                    toReturn.add( pun );
+                }
+            }
+        }
+
+        return toReturn;
+    }
+
+    // Sets whether an ippunishment is still active or not
+    public void setIPPunishmentActive( int id, boolean active ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "UPDATE " + IP_PUN_TABLE_NAME + " SET active=? WHERE id=?;" );
+            ps.setString( 1, active + "" );
+            ps.setInt( 2, id );
+            ps.executeUpdate();
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
+
+        close( conn, ps, null );
     }
 }
 

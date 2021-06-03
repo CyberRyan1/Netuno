@@ -41,6 +41,18 @@ public class SQLite extends Database {
             "`ip` STRING NOT NULL," +
             "PRIMARY KEY (`id`));";
 
+    public final String CREATE_IP_PUNS_TABLE = "CREATE TABLE IF NOT EXISTS ippuns (" +
+            "`id` INTEGER NOT NULL," +
+            "`player` STRING NOT NULL," +
+            "`staff` STRING NOT NULL," +
+            "`type` STRING NOT NULL," +
+            "`date` STRING NOT NULL," +
+            "`length` STRING NOT NULL," +
+            "`reason` STRING NOT NULL," +
+            "`active` STRING NOT NULL," +
+            "`alts` STRING NOT NULL," +
+            "PRIMARY KEY (`id`));";
+
     public Connection getSqlConnection() {
         File plugins = new File( "plugins" );
         File directory = new File( plugins, "Netuno" );
@@ -85,6 +97,9 @@ public class SQLite extends Database {
 
             s = connection.createStatement();
             s.executeUpdate( CREATE_IP_TABLE );
+
+            s = connection.createStatement();
+            s.executeUpdate( CREATE_IP_PUNS_TABLE );
 
             s.close();
         } catch ( SQLException e ) {
