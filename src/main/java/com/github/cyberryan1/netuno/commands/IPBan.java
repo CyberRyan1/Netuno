@@ -93,11 +93,6 @@ public class IPBan implements CommandExecutor {
             CommandErrors.sendCommandUsage( sender, "ipban" );
         }
 
-
-
-
-
-
         return true;
     }
 }
