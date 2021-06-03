@@ -57,14 +57,11 @@ public class JoinListener implements Listener {
         }
 
         else if ( hadActiveIPBan ) {
-            Utils.logWarn( "hadActiveIPBan == true" ); // ! debug
             if ( ConfigUtils.checkListNotEmpty( "ipban.expire" ) ) {
-                Utils.logWarn( "ConfigUtils.getColoredStrFromList( \"ipban.expire\" ) == " + ConfigUtils.getColoredStrFromList( "ipban.expire" ) ); // ! debug
                 Utils.sendAnyMsg( event.getPlayer(), ConfigUtils.getColoredStrFromList( "ipban.expire" ) );
             }
 
             if ( ConfigUtils.checkListNotEmpty( "ipban.expire-staff" ) ) {
-                Utils.logWarn( "ConfigUtils.getColoredStrFromList( \"ipban.expire-staff\" ) == " + ConfigUtils.getColoredStrFromList( "ipban.expire-staff" ) ); // ! debug
                 String msg = ConfigUtils.getColoredStrFromList( "ipban.expire-staff" );
                 for ( Player p : Bukkit.getOnlinePlayers() ) {
                     if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
