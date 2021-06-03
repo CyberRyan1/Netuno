@@ -65,7 +65,6 @@ public class JoinListener implements Listener {
                 String msg = ConfigUtils.getColoredStrFromList( "ipban.expire-staff" );
                 for ( Player p : Bukkit.getOnlinePlayers() ) {
                     if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
-                        Utils.logWarn( "sending ipban.expire-staff to " + p.getName() ); // ! debug
                         Utils.sendAnyMsg( p, msg.replace( "[TARGET]", event.getPlayer().getName() ) );
                     }
                 }
