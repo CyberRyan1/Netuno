@@ -16,7 +16,10 @@ public class IPPunishment extends Punishment {
 
     public void setAltList( ArrayList<String> alts ) { altList = alts; }
 
-    public String getAltListAsString() { return Utils.formatListIntoString( ( String[] ) altList.toArray() ); }
+    public String getAltListAsString() {
+        String toReturn[] = new String[ altList.size() ];
+        return Utils.formatListIntoString( altList.toArray( toReturn ) );
+    }
 
     public void setAltListFromString( String alts ) {
         String split[] = alts.split( ", " );
