@@ -9,6 +9,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+
 public class IPMute implements CommandExecutor {
 
     private final Database DATA = Utils.getDatabase();
@@ -32,13 +34,19 @@ public class IPMute implements CommandExecutor {
             if ( Time.isAllowableLength( args[1] ) ) {
                 OfflinePlayer target = Bukkit.getServer().getOfflinePlayer( args[0] );
                 if ( target != null ) {
-                    Punishment pun = new Punishment();
+                    IPPunishment pun = new IPPunishment();
                     pun.setReason( Utils.getRemainingArgs( args, 2 ) );
                     pun.setPlayerUUID( target.getUniqueId().toString() );
                     pun.setActive( true );
                     pun.setDate( Time.getCurrentTimestamp() );
                     pun.setLength( Time.getTimestampFromLength( args[1] ) );
                     pun.setType( "IPMute" );
+
+                    ArrayList<String> altList = new ArrayList<>();
+                    for ( OfflinePlayer alt : DATA.getAllAlts( target.getUniqueId().toString() ) ) {
+                        altList.add( alt.getUniqueId().toString() );
+                    }
+                    pun.setAltList( altList );
 
                     pun.setStaffUUID( "CONSOLE" );
                     if ( sender instanceof Player ) {
@@ -51,18 +59,22 @@ public class IPMute implements CommandExecutor {
                         }
                     }
 
-                    int id = DATA.addPunishment( pun );
-
+                    DATA.addIPPunishment( pun );
                     if ( target.isOnline() ) {
                         Utils.sendPunishmentMsg( target.getPlayer(), pun );
                     }
 
-                    else {
-                        DATA.addNotif( id, target.getUniqueId().toString() );
-                    }
-
                     Utils.doPublicPunBroadcast( pun );
                     Utils.doStaffPunBroadcast( pun );
+
+                    // Sends a notification to all online alts for the same punishment
+                    for ( OfflinePlayer alt : DATA.getAllAlts( target.getUniqueId().toString() ) ) {
+                        if ( alt.isOnline() && alt.getName().equals( target.getName() ) == false ) {
+                            pun.setPlayerUUID( alt.getUniqueId().toString() );
+                            Utils.sendPunishmentMsg( alt.getPlayer(), pun );
+                        }
+                    }
+
                 }
 
                 else {
