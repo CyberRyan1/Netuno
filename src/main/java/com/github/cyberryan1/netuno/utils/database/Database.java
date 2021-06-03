@@ -590,13 +590,12 @@ public abstract class Database {
     public int addIPPunishment( IPPunishment pun ) {
         Connection conn = null;
         PreparedStatement ps = null;
-        int id = -1;
+        int id = getNextIPPunId();;
 
         try {
             conn = getSqlConnection();
             ps = conn.prepareStatement( "INSERT INTO " + IP_PUN_TABLE_NAME + " " + IP_PUN_TYPE_LIST + " VALUES" + IP_PUN_UNKNOWN_LIST );
 
-            id = getNextIPPunId();
             ps.setInt( 1, id );
             ps.setString( 2, pun.getPlayerUUID() );
             ps.setString( 3, pun.getStaffUUID() );
@@ -610,6 +609,7 @@ public abstract class Database {
             ps.executeUpdate();
         } catch ( SQLException ex ) {
             Utils.logError( "Unable to add ip punishment to database" );
+            ex.printStackTrace();
         }
 
         close( conn, ps, null );
@@ -617,18 +617,22 @@ public abstract class Database {
     }
 
     public int getNextIPPunId() {
-        int start = 0;
+        int start = 1;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
         try {
-            Connection conn = getSqlConnection();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery( "SELECT COUNT(*) FROM " + IP_PUN_TABLE_NAME );
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + IP_PUN_TABLE_NAME );
+            rs = ps.executeQuery();
             rs.next();
             start = rs.getInt( "count(*)" );
-            close( conn, null, rs );
         } catch ( SQLException ex ) {
             Utils.logError( "Unable to get next available ID in ip punishments database" );
         }
 
+        close( conn, null, rs );
         while ( checkIpPunIDExists( start ) == true ) { start++; }
         return start;
     }
