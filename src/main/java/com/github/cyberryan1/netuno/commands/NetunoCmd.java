@@ -12,7 +12,9 @@ public class NetunoCmd implements CommandExecutor {
 
     private final String helpMsg[] = { "\n", CommandErrors.getCommandUsage( "warn" ), CommandErrors.getCommandUsage( "kick" ),
             CommandErrors.getCommandUsage( "mute" ), CommandErrors.getCommandUsage( "unmute" ), CommandErrors.getCommandUsage( "ban" ),
-            CommandErrors.getCommandUsage( "unban" ), Utils.getColored( "&8/&6netuno &7reload" ), "\n"};
+            CommandErrors.getCommandUsage( "unban" ), CommandErrors.getCommandUsage( "ipinfo" ), CommandErrors.getCommandUsage( "ipmute" ),
+            CommandErrors.getCommandUsage( "unipmute" ), CommandErrors.getCommandUsage( "ipban" ), CommandErrors.getCommandUsage( "unipban" ),
+            Utils.getColored( "&8/&6netuno &7reload" ), "\n"};
 
     @Override
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
