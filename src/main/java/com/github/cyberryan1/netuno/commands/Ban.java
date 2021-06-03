@@ -51,14 +51,9 @@ public class Ban implements CommandExecutor {
                         }
                     }
 
-                    int id = DATA.addPunishment( pun );
-
+                    DATA.addPunishment( pun );
                     if ( target.isOnline() ) {
                         target.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables( ConfigUtils.getColoredStrFromList( "ban.banned-lines" ), pun ) );
-                    }
-
-                    else {
-                        DATA.addNotif( id, target.getUniqueId().toString() );
                     }
 
                     Utils.doPublicPunBroadcast( pun );
