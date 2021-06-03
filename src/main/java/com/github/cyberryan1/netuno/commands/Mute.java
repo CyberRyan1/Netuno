@@ -51,14 +51,9 @@ public class Mute implements CommandExecutor {
                         }
                     }
 
-                    int id = DATA.addPunishment( pun );
-
+                    DATA.addPunishment( pun );
                     if ( target.isOnline() ) {
                         Utils.sendPunishmentMsg( target.getPlayer(), pun );
-                    }
-
-                    else {
-                        DATA.addNotif( id, target.getUniqueId().toString() );
                     }
 
                     Utils.doPublicPunBroadcast( pun );
