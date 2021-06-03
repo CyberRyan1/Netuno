@@ -1,9 +1,6 @@
 package com.github.cyberryan1.netuno.listeners;
 
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
-import com.github.cyberryan1.netuno.utils.Punishment;
-import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.VaultUtils;
+import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -33,6 +30,52 @@ public class JoinListener implements Listener {
         // Medium priority things below here
         //
 
+        // ipban handling
+        ArrayList<IPPunishment> allIPPunishments = DATA.getIPPunishment( event.getPlayer().getUniqueId().toString() );
+        boolean hadActiveIPBan = false;
+        for ( IPPunishment pun : allIPPunishments ) {
+            if ( pun.getActive() && pun.getType().equalsIgnoreCase( "ipban" ) ) {
+                hadActiveIPBan = true;
+                break;
+            }
+        }
+
+        ArrayList<IPPunishment> ipbanPunishments = DATA.getIPPunishment( event.getPlayer().getUniqueId().toString(), "ipban", true );
+        if ( ipbanPunishments.size() >= 1 ) {
+            event.setJoinMessage( null );
+
+            long highestExpire = ipbanPunishments.get( 0 ).getExpirationDate();
+            IPPunishment highest = ipbanPunishments.get( 0 );
+            for ( int index = 1; index < ipbanPunishments.size(); index++ ) {
+                if ( ipbanPunishments.get( index ).getExpirationDate() > highest.getExpirationDate() ) {
+                    highest = ipbanPunishments.get( index );
+                }
+            }
+
+            event.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables( ConfigUtils.getColoredStrFromList( "ipban.attempt" ), highest ) );
+            return;
+        }
+
+        else if ( hadActiveIPBan ) {
+            Utils.logWarn( "hadActiveIPBan == true" ); // ! debug
+            if ( ConfigUtils.checkListNotEmpty( "ipban.expire" ) ) {
+                Utils.logWarn( "ConfigUtils.getColoredStrFromList( \"ipban.expire\" ) == " + ConfigUtils.getColoredStrFromList( "ipban.expire" ) ); // ! debug
+                Utils.sendAnyMsg( event.getPlayer(), ConfigUtils.getColoredStrFromList( "ipban.expire" ) );
+            }
+
+            if ( ConfigUtils.checkListNotEmpty( "ipban.expire-staff" ) ) {
+                Utils.logWarn( "ConfigUtils.getColoredStrFromList( \"ipban.expire-staff\" ) == " + ConfigUtils.getColoredStrFromList( "ipban.expire-staff" ) ); // ! debug
+                String msg = ConfigUtils.getColoredStrFromList( "ipban.expire-staff" );
+                for ( Player p : Bukkit.getOnlinePlayers() ) {
+                    if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
+                        Utils.logWarn( "sending ipban.expire-staff to " + p.getName() ); // ! debug
+                        Utils.sendAnyMsg( p, msg.replace( "[TARGET]", event.getPlayer().getName() ) );
+                    }
+                }
+            }
+        }
+
+        // ban handling
         ArrayList<Punishment> allPunishments = DATA.getPunishment( event.getPlayer().getUniqueId().toString() );
         boolean hadActiveBan = false;
         for ( Punishment pun : allPunishments ) {
@@ -46,10 +89,9 @@ public class JoinListener implements Listener {
         if ( banPunishments.size() >= 1 ) {
             event.setJoinMessage( null );
 
-            long highestExpire = banPunishments.get( 0 ).getExpirationDate();
             Punishment highest = banPunishments.get( 0 );
             for ( int index = 1; index < banPunishments.size(); index++ ) {
-                if ( banPunishments.get( index ).getExpirationDate() > highestExpire ) {
+                if ( banPunishments.get( index ).getExpirationDate() > highest.getExpirationDate() ) {
                     highest = banPunishments.get( index );
                 }
             }
@@ -77,7 +119,7 @@ public class JoinListener implements Listener {
         // Low priority things below here
         //
 
-        // * IMPORTANT * Should be the last thing checked in this event, if anything more is going to be added
+        // * IMPORTANT * Should be the last thing checked in this event
         // Checking if the player has been punished while they were offline
         // Gives them a notification about it if they were
         Bukkit.getScheduler().runTaskLater( Utils.getPlugin(), () -> {
