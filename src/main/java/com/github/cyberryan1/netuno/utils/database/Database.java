@@ -69,6 +69,7 @@ public abstract class Database {
 
     // Returns the ID of the punishment, if needed
     public int addPunishment( Punishment pun ) {
+        int id = getNextPunID();
         Connection conn = null;
         PreparedStatement ps = null;
 
@@ -76,7 +77,6 @@ public abstract class Database {
             conn = getSqlConnection();
             ps = conn.prepareStatement( "INSERT INTO " + PUN_TABLE_NAME + " " + PUN_TYPE_LIST + " VALUES" + PUN_UNKNOWN_LIST );
 
-            int id = getNextPunID();
             if ( id == -1 ) {
                 throw new SQLException();
             }
@@ -95,6 +95,7 @@ public abstract class Database {
 
         } catch ( SQLException ex ) {
             Utils.logError( "Unable to add punishment to database" );
+            ex.printStackTrace(); // ! debug
         } finally {
             try {
                 if ( ps != null ) {
@@ -111,49 +112,47 @@ public abstract class Database {
         return -1;
     }
 
-    // TODO won't work in edge cases, will return an id already being used
+    // note: ipPuns and regular puns cannot share the same ID
     private int getNextPunID() {
-        try {
-            Connection conn = getSqlConnection();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery( "SELECT COUNT(*) FROM " + PUN_TABLE_NAME );
-            rs.next();
-            return rs.getInt( "count(*)" );
-        } catch ( SQLException ex ) {
-            Utils.logError( "Unable to get next available ID in database" );
-        }
-        return -1;
-    }
-
-    // sees if a punishment id exists
-    // TODO won't work bad code lmao
-    private boolean checkPunIDExists( int id ) {
+        int start = 1;
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
             conn = getSqlConnection();
-            ps = conn.prepareStatement( "SELECT * FROM " + PUN_TABLE_NAME + " WHERE id = " + id + ";" );
+            ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + PUN_TABLE_NAME );
             rs = ps.executeQuery();
-        } catch ( SQLException ignore ) {
-        } finally {
-            try {
-                if ( ps != null && conn != null ) {
-                    ps.close();
-                    rs.close();
-                    return true;
-                }
-                if ( ps != null )
-                    ps.close();
-                if ( conn != null )
-                    conn.close();
-            } catch ( SQLException e ) {
-                Utils.logError( Errors.sqlConnectionClose(), e );
-            }
+            rs.next();
+            start = rs.getInt( "count(*)" );
+        } catch ( SQLException ex ) {
+            Utils.logError( "Unable to get next available ID in punishments database" );
         }
 
-        return false;
+        close( conn, ps, rs );
+        while ( checkPunIDExists( start ) || checkIpPunIDExists( start ) ) { start++; }
+        return start;
+    }
+
+    // sees if a punishment id exists
+    private boolean checkPunIDExists( int id ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        boolean toReturn = false;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + PUN_TABLE_NAME + " WHERE id = " + id + ";" );
+            rs = ps.executeQuery();
+            rs.next();
+            if ( rs.getInt( "count(*)" ) >= 1 ) { toReturn = true; }
+        } catch ( SQLException ex ) {
+            Utils.logError( "Unable to check if an id in the punishment database exists" );
+        }
+
+        close( conn, ps, rs );
+        return toReturn;
     }
 
     // Get a punishment from an ID
@@ -616,6 +615,7 @@ public abstract class Database {
         return id;
     }
 
+    // note: ipPuns and regular puns cannot share the same ID
     public int getNextIPPunId() {
         int start = 1;
         Connection conn = null;
@@ -632,8 +632,8 @@ public abstract class Database {
             Utils.logError( "Unable to get next available ID in ip punishments database" );
         }
 
-        close( conn, null, rs );
-        while ( checkIpPunIDExists( start ) == true ) { start++; }
+        close( conn, ps, rs );
+        while ( checkIpPunIDExists( start ) == true || checkPunIDExists( start ) == true ) { start++; }
         return start;
     }
 
