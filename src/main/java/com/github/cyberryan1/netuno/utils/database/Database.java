@@ -259,7 +259,7 @@ public abstract class Database {
     // true = still active, false = not active
     public boolean checkActive( Punishment pun ) {
         if ( pun.getLength() == -1 ) {
-            return true;
+            return pun.getActive();
         }
 
         long endingDate = pun.getDate() + pun.getLength();
