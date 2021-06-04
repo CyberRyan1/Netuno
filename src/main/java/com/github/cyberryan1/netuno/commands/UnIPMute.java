@@ -32,9 +32,9 @@ public class UnIPMute implements CommandExecutor {
 
             OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
             if ( target != null ) {
-                ArrayList<Punishment> punishments = DATA.getPunishment( target.getUniqueId().toString(), "ipmute", true );
+                ArrayList<IPPunishment> punishments = DATA.getIPPunishment( target.getUniqueId().toString(), "ipmute", true );
                 if ( punishments.size() >= 1 ) {
-                    for ( Punishment pun : punishments ) {
+                    for ( IPPunishment pun : punishments ) {
                         DATA.setPunishmentActive( pun.getID(), false );
                     }
 
@@ -60,6 +60,14 @@ public class UnIPMute implements CommandExecutor {
 
                     Utils.doPublicPunBroadcast( pun );
                     Utils.doStaffPunBroadcast( pun );
+
+                    // Sends a notification to all online alts for the same punishment
+                    for ( OfflinePlayer alt : DATA.getAllAlts( target.getUniqueId().toString() ) ) {
+                        if ( alt.isOnline() && alt.getName().equals( target.getName() ) == false ) {
+                            pun.setPlayerUUID( alt.getUniqueId().toString() );
+                            Utils.sendPunishmentMsg( alt.getPlayer(), pun );
+                        }
+                    }
                 }
 
                 else {
