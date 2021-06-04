@@ -95,7 +95,6 @@ public abstract class Database {
 
         } catch ( SQLException ex ) {
             Utils.logError( "Unable to add punishment to database" );
-            ex.printStackTrace(); // ! debug
         } finally {
             try {
                 if ( ps != null ) {
@@ -283,7 +282,14 @@ public abstract class Database {
 
         try {
             conn = getSqlConnection();
+            // regular punishments
             ps = conn.prepareStatement( "UPDATE " + PUN_TABLE_NAME + " SET active=? WHERE id=?;" );
+            ps.setString( 1, active + "" );
+            ps.setInt( 2, id );
+            ps.executeUpdate();
+
+            // ip punishments
+            ps = conn.prepareStatement( "UPDATE " + IP_PUN_TABLE_NAME + " SET active=? WHERE id=?;" );
             ps.setString( 1, active + "" );
             ps.setInt( 2, id );
             ps.executeUpdate();
