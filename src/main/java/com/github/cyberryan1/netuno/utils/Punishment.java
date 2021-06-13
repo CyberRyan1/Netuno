@@ -59,4 +59,13 @@ public class Punishment implements Serializable {
     public void setReason( String str ) { reason = str; }
 
     public void setActive( boolean act ) { active = act; }
+
+    // Typically used for debug purposes
+    public String toString() {
+        String toReturn = "\tPunishment #" + id + " | playerUUID = " + playerUUID;
+        toReturn += "\n\tstaffUUID = " +  staffUUID + " | type = " + type;
+        toReturn += "\n\tdate = " + date + " | length = " + length;
+        toReturn += "\n\tactive = " + active + " | reason = " + reason;
+        return toReturn;
+    }
 }
