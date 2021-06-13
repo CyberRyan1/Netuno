@@ -129,7 +129,7 @@ public abstract class Database {
         }
 
         close( conn, ps, rs );
-        while ( checkPunIDExists( start ) || checkIpPunIDExists( start ) ) { start++; }
+        while ( checkPunIDExists( start ) || checkIpPunIDExists( start ) || start <= 0 ) { start++; }
         return start;
     }
 
@@ -639,7 +639,7 @@ public abstract class Database {
         }
 
         close( conn, ps, rs );
-        while ( checkIpPunIDExists( start ) == true || checkPunIDExists( start ) == true ) { start++; }
+        while ( checkIpPunIDExists( start ) == true || checkPunIDExists( start ) == true || start <= 0 ) { start++; }
         return start;
     }
 
