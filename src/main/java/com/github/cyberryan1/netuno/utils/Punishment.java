@@ -1,6 +1,13 @@
 package com.github.cyberryan1.netuno.utils;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
 import java.io.*;
+import java.util.ArrayList;
+import java.util.UUID;
 
 public class Punishment implements Serializable {
 
@@ -84,5 +91,37 @@ public class Punishment implements Serializable {
         toReturn += "\n\tdate = " + date + " | length = " + length;
         toReturn += "\n\tactive = " + active + " | reason = " + reason;
         return toReturn;
+    }
+
+    // Returns the punishment as it would be seen on a sign in a GUI
+    public ItemStack getPunishmentAsSign() {
+        ItemStack sign = new ItemStack( Material.OAK_SIGN );
+        ItemMeta meta = sign.getItemMeta();
+        meta.setDisplayName( Utils.getColored( "&7Punishment &6#" + id ) );
+
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add( Utils.getColored( "&6Date: &7" + Time.getDateFromTimestamp( date ) ) );
+        lore.add( Utils.getColored( "&6Type: &7" + type.toUpperCase() ) );
+
+        if ( checkIsUnpunish() == false && checkHasNoTime() == false ) {
+            lore.add( Utils.getColored( "&6Length: &7" + Time.getLengthFromTimestamp( length ) ) );
+        }
+
+        if ( staffUUID.equals( "CONSOLE" ) ) { lore.add( Utils.getColored( "&6Staff: &7CONSOLE" ) ); }
+        else {
+            String staffName = Bukkit.getOfflinePlayer( UUID.fromString( staffUUID ) ).getName();
+            lore.add( Utils.getColored( "&6Staff: &7" + staffName ) );
+        }
+
+        if ( checkIsIPPun() ) {
+            String originalPlayerName = Bukkit.getOfflinePlayer( UUID.fromString( playerUUID ) ).getName();
+            lore.add( Utils.getColored( "&6Original Player: &7" + originalPlayerName ) );
+        }
+
+        if ( checkIsUnpunish() == false ) { lore.add( Utils.getColored( "&6Reason: &7" + reason ) ); }
+
+        meta.setLore( lore );
+        sign.setItemMeta( meta );
+        return sign;
     }
 }
