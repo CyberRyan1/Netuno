@@ -48,6 +48,8 @@ public class Unban implements CommandExecutor {
                         unbanPun.setStaffUUID( staff.getUniqueId().toString() );
                     }
 
+                    DATA.addPunishment( unbanPun );
+
                     Utils.doPublicPunBroadcast( unbanPun );
                     Utils.doStaffPunBroadcast( unbanPun );
                 }
