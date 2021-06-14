@@ -134,7 +134,7 @@ public abstract class Database {
     }
 
     // sees if a punishment id exists
-    private boolean checkPunIDExists( int id ) {
+    public boolean checkPunIDExists( int id ) {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -643,7 +643,7 @@ public abstract class Database {
         return start;
     }
 
-    private boolean checkIpPunIDExists( int id ) {
+    public boolean checkIpPunIDExists( int id ) {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
