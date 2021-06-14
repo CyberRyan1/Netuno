@@ -109,12 +109,6 @@ public class HistoryListGUI implements Listener {
         Punishment current = history.get( index );
         ItemStack sign = new ItemStack( Material.OAK_SIGN );
 
-        boolean isUnpunish = current.getType().equalsIgnoreCase( "unmute" ) || current.getType().equalsIgnoreCase( "unban" ) ||
-                current.getType().equalsIgnoreCase( "unipmute" ) || current.getType().equalsIgnoreCase( "unipban" );
-        boolean isIPPun = current.getType().equalsIgnoreCase( "ipmute" ) || current.getType().equalsIgnoreCase( "unipmute" ) ||
-                current.getType().equalsIgnoreCase( "ipban" ) || current.getType().equalsIgnoreCase( "unipban" );
-        boolean hasNoTime = current.getType().equalsIgnoreCase( "warn" ) || current.getType().equalsIgnoreCase( "kick" );
-
         ItemMeta meta = sign.getItemMeta();
         meta.setDisplayName( Utils.getColored( "&7Punishment &6#" + current.getID() ) );
 
@@ -122,7 +116,7 @@ public class HistoryListGUI implements Listener {
         loreLines.add( Utils.getColored( "&6Date: &7" + Time.getDateFromTimestamp( current.getDate() ) ) );
         loreLines.add( Utils.getColored( "&6Type: &7" + current.getType().toUpperCase() ) );
 
-        if ( isUnpunish == false && hasNoTime == false ) {
+        if ( current.checkIsUnpunish() == false && current.checkHasNoTime() == false ) {
             loreLines.add( Utils.getColored( "&6Length: &7" + Time.getLengthFromTimestamp( current.getLength() ) ) );
         }
 
@@ -134,12 +128,12 @@ public class HistoryListGUI implements Listener {
             loreLines.add( Utils.getColored( "&6Staff: &7" + staffName ) );
         }
 
-        if ( isIPPun ) {
+        if ( current.checkIsIPPun() ) {
             String originalPlayerName = Bukkit.getServer().getOfflinePlayer( UUID.fromString( current.getPlayerUUID() ) ).getName();
             loreLines.add( Utils.getColored( "&6Original Player: &7" + originalPlayerName ) );
         }
 
-        if ( isUnpunish == false ) {
+        if ( current.checkIsUnpunish() == false ) {
             loreLines.add( Utils.getColored( "&6Reason: &7" + current.getReason() ) );
         }
 
