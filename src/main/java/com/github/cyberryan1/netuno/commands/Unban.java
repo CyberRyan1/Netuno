@@ -38,7 +38,7 @@ public class Unban implements CommandExecutor {
                         DATA.setPunishmentActive( pun.getID(), false );
                     }
 
-                    Punishment unbanPun = new Punishment( "", "", "unban", -1, -1, "", false );
+                    Punishment unbanPun = new Punishment( "", "", "Unban", -1, -1, "", false );
                     unbanPun.setPlayerUUID( target.getUniqueId().toString() );
                     unbanPun.setDate( Time.getCurrentTimestamp() );
 
