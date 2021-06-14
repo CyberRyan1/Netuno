@@ -60,6 +60,23 @@ public class Punishment implements Serializable {
 
     public void setActive( boolean act ) { active = act; }
 
+    // Checks if a punishment's type is to unpunish (unmute/unban/unipmute/unipban)
+    public boolean checkIsUnpunish() {
+        return type.equalsIgnoreCase( "unmute" ) || type.equalsIgnoreCase( "unipmute" ) ||
+                type.equalsIgnoreCase( "unban" ) || type.equalsIgnoreCase( "unipban" );
+    }
+
+    // Checks if a punishment would have no time set on purpose (warns/kicks)
+    public boolean checkHasNoTime() {
+        return type.equalsIgnoreCase( "kick" ) || type.equalsIgnoreCase( "warn" );
+    }
+
+    // Checks if a punishment is an ip-punishment (ipmute/unipmute/ipban/unipban)
+    public boolean checkIsIPPun() {
+        return type.equalsIgnoreCase( "ipmute" ) || type.equalsIgnoreCase( "unipmute" ) ||
+                type.equalsIgnoreCase( "ipban" ) || type.equalsIgnoreCase( "unipban" );
+    }
+
     // Typically used for debug purposes
     public String toString() {
         String toReturn = "\tPunishment #" + id + " | playerUUID = " + playerUUID;
