@@ -52,6 +52,20 @@ public class CommandErrors {
                 return Utils.getColored( "&8/&6ipban &7(player) (time) (reason)" );
             case "unipban":
                 return Utils.getColored( "&8/&6unipban &7(player)" );
+            case "history":
+                String toReturn = getCommandUsage( "history-list" ) + "\n" + getCommandUsage( "history-reason" ) + "\n";
+                toReturn += getCommandUsage( "history-time" ) + "\n" + getCommandUsage( "history-delete" ) + "\n" + getCommandUsage( "history-reset" );
+                return toReturn;
+            case "history-list":
+                return Utils.getColored( "&8/&6history &7list (player)" );
+            case "history-reason":
+                return Utils.getColored( "&8/&6history &7reason (pun ID) (new reason)" );
+            case "history-time":
+                return Utils.getColored( "&8/&6history &7time (pun ID) (new time)" );
+            case "history-delete":
+                return Utils.getColored( "&8/&6history &7delete (pun ID)" );
+            case "history-reset":
+                return Utils.getColored( "&8/&6history &7reset (player)" );
         }
 
         return null;
@@ -80,5 +94,25 @@ public class CommandErrors {
 
     public static void sendNoAltAccounts( CommandSender sender, String target ) {
         sender.sendMessage( Utils.getColored( "&6" + target + " &7has no other alt accounts" ) );
+    }
+
+    public static void sendInvalidPageNumber( CommandSender sender, String page ) {
+        sender.sendMessage( Utils.getColored( "&7Invalid page number &8(&6\"" + page + "&6\"&8)" ) );
+    }
+
+    public static void sendHistoryPageNoExist( CommandSender sender, String targetName, int maxPage ) {
+        sender.sendMessage( Utils.getColored( "&7Maximum page number for &6" + targetName + " &7is &6" + maxPage ) );
+    }
+
+    public static void sendNoPreviousPunishments( CommandSender sender, String targetName ) {
+        sender.sendMessage( Utils.getColored( "&6" + targetName + " &7has no previous punishments" ) );
+    }
+
+    public static void sendCanOnlyBeRanByPlayer( CommandSender sender ) {
+        sender.sendMessage( ConfigUtils.getColoredStr( "general.player-only-msg" ) );
+    }
+
+    public static void sendUnexpectedError( CommandSender sender ) {
+        sender.sendMessage( Utils.getColored( "&6&lNETUNO ERROR! &7An unexpected error occurred. Please contact the plugin developer about this!" ) );
     }
 }
