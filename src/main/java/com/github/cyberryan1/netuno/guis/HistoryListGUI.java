@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class HistoryGUI implements Listener {
+public class HistoryListGUI implements Listener {
 
     private final Database DATA = Utils.getDatabase();
 
@@ -36,7 +36,7 @@ public class HistoryGUI implements Listener {
     private final ArrayList<Punishment> history = new ArrayList<>();
 
 
-    public HistoryGUI( OfflinePlayer target, Player staff, int page ) {
+    public HistoryListGUI( OfflinePlayer target, Player staff, int page ) {
         staffTargets.remove( staff.getName() );
         staffTargets.put( staff.getName(), target.getUniqueId() );
 
@@ -71,6 +71,7 @@ public class HistoryGUI implements Listener {
         // glass: 0-8; 9, 18, 27, 17, 26, 35, 36-44, 45, 46, 48-50, 52-53
         // signs: 10-16, 19-25, 28-34
         // back book: 47 || next book: 51
+        // paper: 40
         ItemStack items[] = new ItemStack[54];
         for ( int index = 0; index < items.length; index++ ) {
             items[index] = getBackgroundGlass();
@@ -90,6 +91,8 @@ public class HistoryGUI implements Listener {
 
             guiIndex += 2;
         }
+
+        items[40] = getCurrentPagePaper( page );
 
         if ( page >= 2 ) {
             items[47] = getPreviousPageBook();
@@ -169,6 +172,19 @@ public class HistoryGUI implements Listener {
         return book;
     }
 
+    private ItemStack getCurrentPagePaper( int pageNumber ) {
+        ItemStack paper = new ItemStack( Material.PAPER );
+        ItemMeta meta = paper.getItemMeta();
+        meta.setDisplayName( Utils.getColored( "&7Page &6#" + pageNumber ) );
+
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add( Utils.getColored( "&7&oClick any sign to edit the punishment!" ) );
+        meta.setLore( lore );
+
+        paper.setItemMeta( meta );
+        return paper;
+    }
+
     public void openInventory( Player staff ) {
         OfflinePlayer target = Bukkit.getOfflinePlayer( staffTargets.get( staff.getName() ) );
         if ( gui.contains( Material.OAK_SIGN ) == false && staffPages.get( staff.getName() ) == 0 ) { CommandErrors.sendNoPreviousPunishments( staff, target.getName() ); }
@@ -195,7 +211,7 @@ public class HistoryGUI implements Listener {
             String name = itemClicked.getItemMeta().getDisplayName();
 
             if ( name.contains( "Next Page" ) ) {
-                HistoryGUI next = new HistoryGUI( target, staff, page + 1 );
+                HistoryListGUI next = new HistoryListGUI( target, staff, page + 1 );
                 staff.closeInventory();
                 next.openInventory( staff );
 
@@ -205,7 +221,7 @@ public class HistoryGUI implements Listener {
                 }, 5L );
             }
             else {
-                HistoryGUI previous = new HistoryGUI( target, staff, page - 1 );
+                HistoryListGUI previous = new HistoryListGUI( target, staff, page - 1 );
                 staff.closeInventory();
                 previous.openInventory( staff );
 

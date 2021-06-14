@@ -1,6 +1,6 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.netuno.guis.HistoryGUI;
+import com.github.cyberryan1.netuno.guis.HistoryListGUI;
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
@@ -49,7 +49,7 @@ public class History implements CommandExecutor {
                     }
 
                     Player staff = ( Player ) sender;
-                    HistoryGUI gui = new HistoryGUI( target, staff, 1 );
+                    HistoryListGUI gui = new HistoryListGUI( target, staff, 1 );
                     gui.openInventory( staff );
                     Utils.getPlugin().getServer().getPluginManager().registerEvents( gui, Utils.getPlugin() );
 
