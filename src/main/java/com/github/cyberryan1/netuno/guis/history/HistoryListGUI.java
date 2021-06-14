@@ -1,4 +1,4 @@
-package com.github.cyberryan1.netuno.guis;
+package com.github.cyberryan1.netuno.guis.history;
 
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
