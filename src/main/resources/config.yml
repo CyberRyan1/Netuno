@@ -16,6 +16,8 @@ general:
   all-perms: "netuno.*"
   # What to send when a player is denied permission to a command
   perm-denied-msg: "&cInsufficient permissions!"
+  # What to send when a non-player (ex console) tries to run a command that can only be run by a player
+  player-only-msg: "&cThis command can only be ran by a player!"
   # Prefix for broadcasts for a silently executed command
   silent-prefix: "&8[&7S&8]"
   # Whether staff can punish other staff or not
@@ -245,3 +247,23 @@ unipban:
 
 ipinfo:
   perm: "netuno.ipinfo"
+
+history:
+  # note: players MUST have this permission to use any of the other sub-commands
+  perm: "netuno.history"
+
+  # "/history reason" command
+  reason:
+    perm: "netuno.history.reason"
+
+  # "/history time" command
+  time:
+    perm: "netuno.history.time"
+
+  # "/history delete" command
+  delete:
+    perm: "netuno.history.delete"
+
+  # "/history reset" command
+  reset:
+    perm: "netuno.history.reset"
