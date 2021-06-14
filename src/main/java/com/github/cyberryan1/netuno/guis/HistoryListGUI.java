@@ -107,39 +107,7 @@ public class HistoryListGUI implements Listener {
 
     private ItemStack getPunishmentItem( int index ) {
         Punishment current = history.get( index );
-        ItemStack sign = new ItemStack( Material.OAK_SIGN );
-
-        ItemMeta meta = sign.getItemMeta();
-        meta.setDisplayName( Utils.getColored( "&7Punishment &6#" + current.getID() ) );
-
-        ArrayList<String> loreLines = new ArrayList<>();
-        loreLines.add( Utils.getColored( "&6Date: &7" + Time.getDateFromTimestamp( current.getDate() ) ) );
-        loreLines.add( Utils.getColored( "&6Type: &7" + current.getType().toUpperCase() ) );
-
-        if ( current.checkIsUnpunish() == false && current.checkHasNoTime() == false ) {
-            loreLines.add( Utils.getColored( "&6Length: &7" + Time.getLengthFromTimestamp( current.getLength() ) ) );
-        }
-
-        if ( current.getStaffUUID().equals( "CONSOLE" ) ) {
-            loreLines.add( Utils.getColored( "&6Staff: &7CONSOLE" ) );
-        }
-        else {
-            String staffName = Bukkit.getServer().getOfflinePlayer( UUID.fromString( current.getStaffUUID() ) ).getName();
-            loreLines.add( Utils.getColored( "&6Staff: &7" + staffName ) );
-        }
-
-        if ( current.checkIsIPPun() ) {
-            String originalPlayerName = Bukkit.getServer().getOfflinePlayer( UUID.fromString( current.getPlayerUUID() ) ).getName();
-            loreLines.add( Utils.getColored( "&6Original Player: &7" + originalPlayerName ) );
-        }
-
-        if ( current.checkIsUnpunish() == false ) {
-            loreLines.add( Utils.getColored( "&6Reason: &7" + current.getReason() ) );
-        }
-
-        meta.setLore( loreLines );
-        sign.setItemMeta( meta );
-        return sign;
+        return current.getPunishmentAsSign();
     }
 
     private ItemStack getBackgroundGlass() {
