@@ -309,6 +309,48 @@ public abstract class Database {
         }
     }
 
+    // Sets a punishment's length
+    public void setPunishmentLength( int id, long length ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "UPDATE " + PUN_TABLE_NAME + " SET length=? WHERE id=?;" );
+            ps.setString( 1, length + "" );
+            ps.setInt( 2, id );
+            ps.executeUpdate();
+
+            ps = conn.prepareStatement( "UPDATE " + IP_PUN_TABLE_NAME + " SET length=? WHERE id=?;" );
+            ps.setString( 1, length + "" );
+            ps.setInt( 2, id );
+            ps.executeUpdate();
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
+
+        close( conn, ps, null );
+    }
+
+    // Sets a punishments reason
+    public void setPunishmentReason( int id, String reason ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "UPDATE " + PUN_TABLE_NAME + " SET reason=? WHERE id=?;" );
+            ps.setString( 1, reason );
+            ps.setInt( 2, id );
+            ps.executeUpdate();
+
+            ps = conn.prepareStatement( "UPDATE " + IP_PUN_TABLE_NAME + " SET reason=? WHERE id=?;" );
+            ps.setString( 1, reason );
+            ps.setInt( 2, id );
+            ps.executeUpdate();
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
+
+        close( conn, ps, null );
+    }
+
     //
     // Notifs Database
     //
