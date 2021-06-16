@@ -115,4 +115,12 @@ public class CommandErrors {
     public static void sendUnexpectedError( CommandSender sender ) {
         sender.sendMessage( Utils.getColored( "&6&lNETUNO ERROR! &7An unexpected error occurred. Please contact the plugin developer about this!" ) );
     }
+
+    public static void sendInvalidPunishmentID( CommandSender sender, String arg ) {
+        sender.sendMessage( Utils.getColored( "&7Invalid punishment ID &8(&6\"" + arg + "&6\"&8)" ) );
+    }
+
+    public static void sendPunishmentIDNotFound( CommandSender sender, int id ) {
+        sender.sendMessage( Utils.getColored( "&7Punishment with ID &6" + id + " &7not found" ) );
+    }
 }
