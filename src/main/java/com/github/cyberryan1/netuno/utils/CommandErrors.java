@@ -58,12 +58,8 @@ public class CommandErrors {
                 return toReturn;
             case "history-list":
                 return Utils.getColored( "&8/&6history &7list (player)" );
-            case "history-reason":
-                return Utils.getColored( "&8/&6history &7reason (pun ID) (new reason)" );
-            case "history-time":
-                return Utils.getColored( "&8/&6history &7time (pun ID) (new time)" );
-            case "history-delete":
-                return Utils.getColored( "&8/&6history &7delete (pun ID)" );
+            case "history-edit":
+                return Utils.getColored( "&8/&6history &7edit (pun ID)" );
             case "history-reset":
                 return Utils.getColored( "&8/&6history &7reset (player)" );
         }
