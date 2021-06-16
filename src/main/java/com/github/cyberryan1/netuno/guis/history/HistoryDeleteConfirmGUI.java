@@ -10,11 +10,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -27,6 +29,8 @@ public class HistoryDeleteConfirmGUI implements Listener {
     private final static HashMap<String, UUID> STAFF_TARGETS = new HashMap<>();
     //                      Staff Name | Target Punishment
     private final static HashMap<String, Punishment> STAFF_PUNS = new HashMap<>();
+    //                             Staff
+    private final static ArrayList<Player> COOLDOWN = new ArrayList<>();
 
     public HistoryDeleteConfirmGUI( OfflinePlayer target, Player staff, Punishment pun ) {
         STAFF_TARGETS.remove( staff.getName() );
@@ -91,24 +95,30 @@ public class HistoryDeleteConfirmGUI implements Listener {
     public void onInventoryClick( InventoryClickEvent event ) {
         if ( STAFF_TARGETS.containsKey( event.getWhoClicked().getName() ) ) {
             event.setCancelled( true );
-
-            ItemStack itemClicked = event.getCurrentItem();
-            if ( itemClicked == null || itemClicked.getType().isAir() ) { return; }
-            String itemName = itemClicked.getItemMeta().getDisplayName();
-            if ( itemName.equals( Utils.getColored( "&aConfirm" ) ) == false
-                    && itemName.equals( Utils.getColored( "&cCancel" ) ) == false ) { return; }
-
             Player staff = ( Player ) event.getWhoClicked();
 
-            if ( itemClicked.getType() == Material.LIME_WOOL ) {
-                staff.closeInventory();
-                int punID = STAFF_PUNS.get( staff.getName() ).getID();
-                DATA.deletePunishment( punID );
-                staff.sendMessage( Utils.getColored( "&7Successfully deleted punishment &6#" + punID ) );
-            }
+            if ( COOLDOWN.contains( staff ) == false ) {
+                ItemStack itemClicked = event.getCurrentItem();
+                if ( itemClicked == null || itemClicked.getType().isAir() ) { return; }
 
-            else if ( itemClicked.getType() == Material.RED_WOOL ) {
-                staff.closeInventory();
+                if ( itemClicked.equals( getConfirmGreenWool() ) ) {
+                    staff.closeInventory();
+                    int punID = STAFF_PUNS.get( staff.getName() ).getID();
+                    DATA.deletePunishment( punID );
+                    staff.sendMessage( Utils.getColored( "&7Successfully deleted punishment &6#" + punID ) );
+                }
+
+                else if ( itemClicked.equals( getCancelRedWool() ) ) {
+                    staff.closeInventory();
+                }
+
+                if ( itemClicked.equals( getCancelRedWool() ) || itemClicked.equals( getConfirmGreenWool() ) ) {
+                    STAFF_TARGETS.remove( staff.getName() );
+                    COOLDOWN.add( staff );
+                    Bukkit.getScheduler().runTaskLater( Utils.getPlugin(), () -> {
+                        COOLDOWN.remove( staff );
+                    }, 5L );
+                }
             }
         }
     }
@@ -117,6 +127,14 @@ public class HistoryDeleteConfirmGUI implements Listener {
     public void onInventoryDrag( InventoryDragEvent event ) {
         if ( STAFF_TARGETS.containsKey( event.getWhoClicked().getName() ) ) {
             event.setCancelled( true );
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClose( InventoryCloseEvent event ) {
+        if ( STAFF_TARGETS.containsKey( event.getPlayer().getName() ) ) {
+            STAFF_TARGETS.remove( event.getPlayer().getName() );
+            STAFF_PUNS.remove( event.getPlayer().getName() );
         }
     }
 }
