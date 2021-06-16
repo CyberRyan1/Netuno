@@ -275,7 +275,26 @@ public abstract class Database {
         return true;
     }
 
+    public void deletePunishment( int id ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "DELETE FROM " + PUN_TABLE_NAME + " WHERE id=?;" );
+            ps.setInt( 1, id );
+            ps.executeUpdate();
+
+            ps = conn.prepareStatement( "DELETE FROM " + IP_PUN_TABLE_NAME + " WHERE id=?;" );
+            ps.setInt( 1, id );
+            ps.executeUpdate();
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
+
+        close( conn, ps, null );
+    }
+
     // Sets whether a punishment is still active or not
+    // Works for both regular punishments and IP punishments
     public void setPunishmentActive( int id, boolean active ) {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -310,6 +329,7 @@ public abstract class Database {
     }
 
     // Sets a punishment's length
+    // Works for both regular punishments and IP punishments
     public void setPunishmentLength( int id, long length ) {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -331,6 +351,7 @@ public abstract class Database {
     }
 
     // Sets a punishments reason
+    // Works for both regular punishments and IP punishments
     public void setPunishmentReason( int id, String reason ) {
         Connection conn = null;
         PreparedStatement ps = null;
