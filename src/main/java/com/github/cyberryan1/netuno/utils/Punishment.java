@@ -105,6 +105,7 @@ public class Punishment implements Serializable {
         meta.setDisplayName( Utils.getColored( "&7Punishment &6#" + id ) );
 
         ArrayList<String> lore = new ArrayList<>();
+        lore.add( Utils.getColored( "&6Player: &7" + Bukkit.getOfflinePlayer( UUID.fromString( playerUUID ) ).getName() ) );
         lore.add( Utils.getColored( "&6Date: &7" + Time.getDateFromTimestamp( date ) ) );
         lore.add( Utils.getColored( "&6Type: &7" + type.toUpperCase() ) );
 
