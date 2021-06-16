@@ -37,8 +37,6 @@ public class HistoryEditGUI implements Listener {
     //                         Staff name
     private final static ArrayList<String> STAFF_EDITING_REASON = new ArrayList<>();
 
-    // ? TODO make the go back button go back to the page they were on, not the start ???
-
     public HistoryEditGUI( OfflinePlayer target, Player staff, int punID ) {
 
         Punishment workingWith;
