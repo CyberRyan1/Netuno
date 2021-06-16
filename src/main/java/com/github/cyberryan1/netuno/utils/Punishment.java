@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.utils;
 
+import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class Punishment implements Serializable {
+
+    private final static Database DATA = Utils.getDatabase();
 
     private int id = -1;
     private String playerUUID;
@@ -124,7 +127,7 @@ public class Punishment implements Serializable {
 
         meta.setLore( lore );
 
-        if ( active ) {
+        if ( active && DATA.checkActive( this ) ) {
             meta.addItemFlags( ItemFlag.HIDE_ENCHANTS );
             meta.addEnchant( Enchantment.DURABILITY, 1, false );
         }
