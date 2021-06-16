@@ -97,7 +97,7 @@ public class HistoryListGUI implements Listener {
         if ( page >= 2 ) {
             items[47] = getPreviousPageBook();
         }
-        int maxPage = ( history.size() / 21 ) + 1;
+        int maxPage = ( int ) Math.ceil( history.size() / 21.0 ) ;
         if ( page < maxPage ) {
             items[51] = getNextPageBook();
         }
@@ -150,7 +150,6 @@ public class HistoryListGUI implements Listener {
     public void openInventory( Player staff ) {
         OfflinePlayer target = Bukkit.getOfflinePlayer( staffTargets.get( staff.getName() ) );
         if ( gui.contains( Material.OAK_SIGN ) == false && staffPages.get( staff.getName() ) == 0 ) { CommandErrors.sendNoPreviousPunishments( staff, target.getName() ); }
-        else if ( gui.contains( Material.OAK_SIGN ) == false ) { CommandErrors.sendUnexpectedError( staff ); }
         else { staff.openInventory( gui ); }
     }
 
@@ -167,12 +166,12 @@ public class HistoryListGUI implements Listener {
 
         ItemStack itemClicked = event.getCurrentItem();
         if ( itemClicked == null || itemClicked.getType().isAir() ) { return; }
+        int page = staffPages.get( staff.getName() );
 
         if ( itemClicked.getType() == Material.BOOK ) {
-            int page = staffPages.get( staff.getName() );
             String name = itemClicked.getItemMeta().getDisplayName();
 
-            if ( name.contains( "Next Page" ) ) {
+            if ( name.equals( Utils.getColored( "&6Next Page" ) ) ) {
                 HistoryListGUI next = new HistoryListGUI( target, staff, page + 1 );
                 staff.closeInventory();
                 next.openInventory( staff );
@@ -182,7 +181,7 @@ public class HistoryListGUI implements Listener {
                     inventoryClickCooldown.remove( staff.getName() );
                 }, 5L );
             }
-            else {
+            else if ( name.equals( Utils.getColored( "&6Previous Page" ) ) ){
                 HistoryListGUI previous = new HistoryListGUI( target, staff, page - 1 );
                 staff.closeInventory();
                 previous.openInventory( staff );
@@ -192,6 +191,22 @@ public class HistoryListGUI implements Listener {
                     inventoryClickCooldown.remove( staff.getName() );
                 }, 5L );
             }
+        }
+
+        else if ( itemClicked.getType() == Material.OAK_SIGN
+                && itemClicked.getItemMeta().getDisplayName().contains( Utils.getColored( "&7Punishment &6#" ) ) ) {
+            int punClicked = ( ( page - 1 ) * 21 ) + event.getSlot() - 10;
+            if ( event.getSlot() >= 18 ) { punClicked -= 2; }
+            if ( event.getSlot() >= 27 ) { punClicked -= 2; }
+
+            Utils.logWarn( "punClicked == " + punClicked ); // ! debug
+            Utils.logWarn( "history.size() == " + history.size() ); // ! debug
+            Utils.logWarn( "history.get( punClicked ).getID() == " + history.get( punClicked ).getID() ); // ! debug
+            int punID = history.get( punClicked ).getID();
+            HistoryEditGUI editGUI = new HistoryEditGUI( target, staff, punID );
+            editGUI.openInventory( staff );
+            Utils.getPlugin().getServer().getPluginManager().registerEvents( editGUI, Utils.getPlugin() );
+
         }
     }
 
