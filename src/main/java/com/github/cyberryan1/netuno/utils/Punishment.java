@@ -2,6 +2,8 @@ package com.github.cyberryan1.netuno.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -121,6 +123,12 @@ public class Punishment implements Serializable {
         if ( checkIsUnpunish() == false ) { lore.add( Utils.getColored( "&6Reason: &7" + reason ) ); }
 
         meta.setLore( lore );
+
+        if ( active ) {
+            meta.addItemFlags( ItemFlag.HIDE_ENCHANTS );
+            meta.addEnchant( Enchantment.DURABILITY, 1, false );
+        }
+
         sign.setItemMeta( meta );
         return sign;
     }
