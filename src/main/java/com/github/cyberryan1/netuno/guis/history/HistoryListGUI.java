@@ -199,9 +199,6 @@ public class HistoryListGUI implements Listener {
             if ( event.getSlot() >= 18 ) { punClicked -= 2; }
             if ( event.getSlot() >= 27 ) { punClicked -= 2; }
 
-            Utils.logWarn( "punClicked == " + punClicked ); // ! debug
-            Utils.logWarn( "history.size() == " + history.size() ); // ! debug
-            Utils.logWarn( "history.get( punClicked ).getID() == " + history.get( punClicked ).getID() ); // ! debug
             int punID = history.get( punClicked ).getID();
             HistoryEditGUI editGUI = new HistoryEditGUI( target, staff, punID );
             editGUI.openInventory( staff );
