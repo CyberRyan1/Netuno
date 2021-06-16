@@ -60,6 +60,7 @@ public class HistoryEditGUI implements Listener {
     public void insertItems( Player staff ) {
         // glass: everything else
         // pun info sign: 13
+        // back to history list: 49
         // unpunish layout:
         //      delete punishment barrier: 31
         // no-length layout:
@@ -89,6 +90,7 @@ public class HistoryEditGUI implements Listener {
             items[33] = getDeleteBarrier();
         }
 
+        items[49] = getBackArrow();
         GUI.setContents( items );
     }
 
@@ -124,6 +126,14 @@ public class HistoryEditGUI implements Listener {
         return barrier;
     }
 
+    private ItemStack getBackArrow() {
+        ItemStack arrow = new ItemStack( Material.ARROW );
+        ItemMeta meta = arrow.getItemMeta();
+        meta.setDisplayName( Utils.getColored( "&7Go back" ) );
+        arrow.setItemMeta( meta );
+        return arrow;
+    }
+
     public void openInventory( Player player ) {
         player.openInventory( GUI );
     }
@@ -142,9 +152,10 @@ public class HistoryEditGUI implements Listener {
         String itemName = itemClicked.getItemMeta().getDisplayName();
         if ( itemName.equals( Utils.getColored( "&7Edit length" ) ) == false
             && itemName.equals( Utils.getColored( "&7Edit reason" ) ) == false
-            && itemName.equals( Utils.getColored( "&7Delete punishment" ) ) == false ) { return; }
+            && itemName.equals( Utils.getColored( "&7Delete punishment" ) ) == false
+            && itemName.equals( Utils.getColored( "&7Go back" ) ) == false ) { return; }
 
-        if ( itemClicked.getType() == Material.CLOCK ) {
+        if ( itemClicked.equals( getEditLengthClock() ) ) {
             if ( STAFF_EDITING_LENGTH.contains( event.getWhoClicked().getName() ) == false ) {
                 event.getWhoClicked().closeInventory();
                 int punID = STAFF_PUNS.get( event.getWhoClicked().getName() ).getID();
@@ -154,7 +165,7 @@ public class HistoryEditGUI implements Listener {
             }
         }
 
-        else if ( itemClicked.getType() == Material.PAPER ) {
+        else if ( itemClicked.equals( getEditReasonPaper() ) ) {
             if ( STAFF_EDITING_REASON.contains( event.getWhoClicked().getName() ) == false ) {
                 event.getWhoClicked().closeInventory();
                 int punID = STAFF_PUNS.get( event.getWhoClicked().getName() ).getID();
@@ -164,13 +175,21 @@ public class HistoryEditGUI implements Listener {
             }
         }
 
-        else if ( itemClicked.getType() == Material.BARRIER ) {
+        else if ( itemClicked.equals( getDeleteBarrier() ) ) {
             event.getWhoClicked().closeInventory();
             OfflinePlayer target = Bukkit.getOfflinePlayer( STAFF_TARGETS.get( event.getWhoClicked().getName() ) );
             Punishment pun = STAFF_PUNS.get( event.getWhoClicked().getName() );
             HistoryDeleteConfirmGUI deleteGUI = new HistoryDeleteConfirmGUI( target, staff, pun );
             deleteGUI.openInventory( staff );
             Utils.getPlugin().getServer().getPluginManager().registerEvents( deleteGUI, Utils.getPlugin() );
+        }
+
+        else if ( itemClicked.equals( getBackArrow() ) ) {
+            event.getWhoClicked().closeInventory();
+            OfflinePlayer target = Bukkit.getOfflinePlayer( STAFF_TARGETS.get( event.getWhoClicked().getName() ) );
+            HistoryListGUI gui = new HistoryListGUI( target, staff, 1 );
+            gui.openInventory( staff );
+            Utils.getPlugin().getServer().getPluginManager().registerEvents( gui, Utils.getPlugin() );
         }
 
     }
