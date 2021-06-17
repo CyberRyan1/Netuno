@@ -22,7 +22,6 @@ public class History implements CommandExecutor {
     // /history list (player)
     // /history edit (pun ID)
     // /history reset (player)
-    // TODO if a punishment gets deleted, unpunish the player if needed
     // TODO disallow already expired punishments's times from being changed
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
