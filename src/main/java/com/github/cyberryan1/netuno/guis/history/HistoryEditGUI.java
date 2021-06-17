@@ -205,14 +205,6 @@ public class HistoryEditGUI implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClose( InventoryCloseEvent event ) {
-        if ( STAFF_TARGETS.containsKey( event.getPlayer().getName() ) ) {
-            STAFF_TARGETS.remove( event.getPlayer().getName() );
-            STAFF_PUNS.remove( event.getPlayer().getName() );
-        }
-    }
-
-    @EventHandler
     public void onPlayerChatEvent( PlayerChatEvent event ) {
         if ( STAFF_EDITING_LENGTH.contains( event.getPlayer().getName() ) ) {
             event.setCancelled( true );

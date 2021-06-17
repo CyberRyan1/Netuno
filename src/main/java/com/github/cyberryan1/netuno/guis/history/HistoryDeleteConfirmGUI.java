@@ -102,8 +102,8 @@ public class HistoryDeleteConfirmGUI implements Listener {
                 if ( itemClicked == null || itemClicked.getType().isAir() ) { return; }
 
                 if ( itemClicked.equals( getConfirmGreenWool() ) ) {
-                    staff.closeInventory();
                     int punID = STAFF_PUNS.get( staff.getName() ).getID();
+                    staff.closeInventory();
                     DATA.deletePunishment( punID );
                     staff.sendMessage( Utils.getColored( "&7Successfully deleted punishment &6#" + punID ) );
                 }
