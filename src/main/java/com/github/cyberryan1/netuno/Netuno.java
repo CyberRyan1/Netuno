@@ -9,6 +9,8 @@ import com.github.cyberryan1.netuno.utils.VaultUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
 // TODO transfer over stuff from vacation to here
+// TODO add punish GUI
+// TODO add alt-notifs
 // TODO add tab-completer
 // TODO add option to disable signs for muted players
 // TODO add sign-popups for staff
