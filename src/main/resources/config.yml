@@ -250,17 +250,18 @@ ipinfo:
 
 history:
   # note: players MUST have this permission to use any of the other sub-commands
+  # also gives them access to /history list (player)
   perm: "netuno.history"
 
-  # "/history reason" command
+  # ability to edit punishment reasons via GUI
   reason:
     perm: "netuno.history.reason"
 
-  # "/history time" command
+  # ability to edit punishment times via GUI
   time:
     perm: "netuno.history.time"
 
-  # "/history delete" command
+  # ability to delete punishments
   delete:
     perm: "netuno.history.delete"
 
