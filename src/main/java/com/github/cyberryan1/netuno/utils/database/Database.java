@@ -275,6 +275,8 @@ public abstract class Database {
         return true;
     }
 
+    // Deletes a punishment
+    // Works for both regular and IP punishments
     public void deletePunishment( int id ) {
         Connection conn = null;
         PreparedStatement ps = null;
