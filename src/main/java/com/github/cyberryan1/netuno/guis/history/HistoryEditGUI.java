@@ -1,9 +1,6 @@
 package com.github.cyberryan1.netuno.guis.history;
 
-import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.Punishment;
-import com.github.cyberryan1.netuno.utils.Time;
-import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -155,7 +152,11 @@ public class HistoryEditGUI implements Listener {
             && itemName.equals( Utils.getColored( "&7Go back" ) ) == false ) { return; }
 
         if ( itemClicked.equals( getEditLengthClock() ) ) {
-            if ( STAFF_EDITING_LENGTH.contains( event.getWhoClicked().getName() ) == false ) {
+            if ( VaultUtils.hasPerms( staff, ConfigUtils.getStr( "history.time.perm" ) ) == false ) {
+                CommandErrors.sendInvalidPerms( staff );
+            }
+
+            else if ( STAFF_EDITING_LENGTH.contains( event.getWhoClicked().getName() ) == false ) {
                 event.getWhoClicked().closeInventory();
                 int punID = STAFF_PUNS.get( event.getWhoClicked().getName() ).getID();
                 event.getWhoClicked().sendMessage( Utils.getColored( "&7Please type the new length for punishment &6#" + punID ) );
@@ -165,7 +166,11 @@ public class HistoryEditGUI implements Listener {
         }
 
         else if ( itemClicked.equals( getEditReasonPaper() ) ) {
-            if ( STAFF_EDITING_REASON.contains( event.getWhoClicked().getName() ) == false ) {
+            if ( VaultUtils.hasPerms( staff, ConfigUtils.getStr( "history.reason.perm" ) ) == false ) {
+                CommandErrors.sendInvalidPerms( staff );
+            }
+
+            else if ( STAFF_EDITING_REASON.contains( event.getWhoClicked().getName() ) == false ) {
                 event.getWhoClicked().closeInventory();
                 int punID = STAFF_PUNS.get( event.getWhoClicked().getName() ).getID();
                 event.getWhoClicked().sendMessage( Utils.getColored( "&7Please type the new reason for punishment &6#" + punID ) );
@@ -175,12 +180,18 @@ public class HistoryEditGUI implements Listener {
         }
 
         else if ( itemClicked.equals( getDeleteBarrier() ) ) {
-            event.getWhoClicked().closeInventory();
-            OfflinePlayer target = Bukkit.getOfflinePlayer( STAFF_TARGETS.get( event.getWhoClicked().getName() ) );
-            Punishment pun = STAFF_PUNS.get( event.getWhoClicked().getName() );
-            HistoryDeleteConfirmGUI deleteGUI = new HistoryDeleteConfirmGUI( target, staff, pun );
-            deleteGUI.openInventory( staff );
-            Utils.getPlugin().getServer().getPluginManager().registerEvents( deleteGUI, Utils.getPlugin() );
+            if ( VaultUtils.hasPerms( staff, ConfigUtils.getStr( "history.delete.perm" ) ) == false ) {
+                CommandErrors.sendInvalidPerms( staff );
+            }
+
+            else {
+                event.getWhoClicked().closeInventory();
+                OfflinePlayer target = Bukkit.getOfflinePlayer( STAFF_TARGETS.get( event.getWhoClicked().getName() ) );
+                Punishment pun = STAFF_PUNS.get( event.getWhoClicked().getName() );
+                HistoryDeleteConfirmGUI deleteGUI = new HistoryDeleteConfirmGUI( target, staff, pun );
+                deleteGUI.openInventory( staff );
+                Utils.getPlugin().getServer().getPluginManager().registerEvents( deleteGUI, Utils.getPlugin() );
+            }
         }
 
         else if ( itemClicked.equals( getBackArrow() ) ) {

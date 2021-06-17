@@ -108,6 +108,11 @@ public class History implements CommandExecutor {
 
 
             else if ( args[0].equalsIgnoreCase( "reset" ) ) {
+                if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "history.reset.perm" ) ) == false ) {
+                    CommandErrors.sendInvalidPerms( sender );
+                    return true;
+                }
+
                 if ( Utils.isOutOfBounds( args, 1 ) == false ) {
 
                     if ( Utils.isValidUsername( args[1] ) == false ) {
