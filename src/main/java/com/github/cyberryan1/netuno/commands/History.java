@@ -11,6 +11,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class History implements CommandExecutor {
@@ -21,6 +22,8 @@ public class History implements CommandExecutor {
     // /history list (player)
     // /history edit (pun ID)
     // /history reset (player)
+    // TODO if a punishment gets deleted, unpunish the player if needed
+    // TODO disallow already expired punishments's times from being changed
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
         if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "history.perm" ) ) == false ) {
@@ -106,7 +109,48 @@ public class History implements CommandExecutor {
 
 
             else if ( args[0].equalsIgnoreCase( "reset" ) ) {
-                return false;
+                if ( Utils.isOutOfBounds( args, 1 ) == false ) {
+
+                    if ( Utils.isValidUsername( args[1] ) == false ) {
+                        CommandErrors.sendPlayerNotFound( sender, args[1] );
+                        return true;
+                    }
+
+                    OfflinePlayer target = Bukkit.getOfflinePlayer( args[1] );
+                    if ( target != null ) {
+                        ArrayList<Punishment> allPuns = DATA.getPunishment( target.getUniqueId().toString() );
+                        for ( Punishment pun : allPuns ) {
+                            DATA.deletePunishment( pun.getID() );
+                        }
+
+                        ArrayList<IPPunishment> ipPuns = DATA.getIPPunishment( target.getUniqueId().toString() );
+                        for ( IPPunishment pun : ipPuns ) {
+                            DATA.deletePunishment( pun.getID() );
+                        }
+
+                        ArrayList<Integer> notifs = DATA.searchNotifByUUID( target.getUniqueId().toString() );
+                        for ( int id : notifs ) {
+                            DATA.removeNotif( id );
+                        }
+
+                        if ( ipPuns.size() + allPuns.size() == 0 ) { CommandErrors.sendNoPreviousPunishments( sender, target.getName() ); }
+                        else {
+                            String plural = "punishments";
+                            if ( ipPuns.size() + allPuns.size() == 1 ) { plural = "punishment"; }
+                            sender.sendMessage( Utils.getColored( "&7Successfully deleted &6" + ( ipPuns.size() + allPuns.size() )
+                                    + " &7" + plural + " from &6" + target.getName() + "&7's history" ) );
+                        }
+                    }
+
+                    else {
+                        CommandErrors.sendPlayerNotFound( sender, args[1] );
+                    }
+
+                }
+
+                else {
+                    CommandErrors.sendCommandUsage( sender, "history-reset" );
+                }
             }
 
             else {
