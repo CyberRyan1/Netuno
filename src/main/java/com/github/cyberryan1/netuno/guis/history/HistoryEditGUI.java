@@ -76,7 +76,7 @@ public class HistoryEditGUI implements Listener {
         if ( pun.checkIsUnpunish() ) {
             items[31] = getDeleteBarrier();
         }
-        else if ( pun.checkHasNoTime() ) {
+        else if ( pun.checkHasNoTime() || pun.getActive() == false ) {
             items[30] = getEditReasonPaper();
             items[32] = getDeleteBarrier();
         }
