@@ -7,6 +7,7 @@ import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -32,6 +33,10 @@ public abstract class Database {
     private final String IP_PUN_TABLE_NAME = "ippuns";
     private final String IP_PUN_TYPE_LIST = "(id,player,staff,type,date,length,reason,active,alts)";
     private final String IP_PUN_UNKNOWN_LIST = "(?,?,?,?,?,?,?,?,?)";
+
+    private final String NO_SIGN_NOTIFS_TABLE_NAME = "nosignnotifs";
+    private final String NO_SIGN_NOTIFS_TYPE_LIST = "(player)";
+    private final String NO_SIGN_NOTIFS_UNKNOWN_LIST = "(?)";
 
     public Database( Netuno instance ) {
         plugin = instance;
@@ -257,6 +262,7 @@ public abstract class Database {
 
     // Checks if a punishment is active or not
     // true = still active, false = not active
+    // ? TODO move to punishment class
     public boolean checkActive( Punishment pun ) {
         if ( pun.getLength() == -1 ) {
             return pun.getActive();
@@ -846,6 +852,59 @@ public abstract class Database {
         } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
 
         close( conn, ps, null );
+    }
+
+    //
+    // Sign Notifications
+    //
+    public void addPlayerNoSignNotifs( Player player ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "INSERT INTO " + NO_SIGN_NOTIFS_TABLE_NAME + " VALUES" + NO_SIGN_NOTIFS_UNKNOWN_LIST );
+
+            ps.setString( 1, player.getUniqueId().toString() );
+            ps.executeUpdate();
+        } catch ( SQLException ex ) { Utils.logError( "Unable to add sign notif to database", ex ); }
+
+        close( conn, ps, null );
+    }
+
+    public void removePlayerNoSignNotifs( Player player ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "DELETE FROM " + NO_SIGN_NOTIFS_TABLE_NAME + " WHERE player=?;" );
+            ps.setString( 1, player.getUniqueId().toString() );
+            ps.executeQuery();
+        } catch ( SQLException ex ) { Utils.logError( "Unable to remove sign notif from database", ex ); }
+
+        close( conn, ps, null );
+    }
+
+    // returns true if player has no sign notifs enabled, false if not
+    public boolean checkPlayerNoSignNotifs( Player player ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        boolean toReturn = false;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT count(*) FROM " + NO_SIGN_NOTIFS_TABLE_NAME + " WHERE player=?;" );
+            ps.setString( 1, player.getUniqueId().toString() );
+
+            rs = ps.executeQuery();
+            rs.next();
+            if ( rs.getInt( "count(*)" ) >= 1 ) { toReturn = true; }
+        } catch ( SQLException ex ) { Utils.logError( "Unable to check if a player has no sign notifs enabled in the no sign notif database" ); }
+
+        close( conn, ps, rs );
+        return toReturn;
     }
 }
 

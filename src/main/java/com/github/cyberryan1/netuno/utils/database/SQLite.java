@@ -53,6 +53,10 @@ public class SQLite extends Database {
             "`alts` STRING NOT NULL," +
             "PRIMARY KEY (`id`));";
 
+    public final String CREATE_NO_SIGN_NOTIFS_TABLE = "CREATE TABLE IF NOT EXISTS nosignnotifs (" +
+            "`player` STRING NO NULL," +
+            "PRIMARY KEY (`player`));";
+
     public Connection getSqlConnection() {
         File plugins = new File( "plugins" );
         File directory = new File( plugins, "Netuno" );
@@ -100,6 +104,9 @@ public class SQLite extends Database {
 
             s = connection.createStatement();
             s.executeUpdate( CREATE_IP_PUNS_TABLE );
+
+            s = connection.createStatement();
+            s.executeUpdate( CREATE_NO_SIGN_NOTIFS_TABLE );
 
             s.close();
         } catch ( SQLException e ) {
