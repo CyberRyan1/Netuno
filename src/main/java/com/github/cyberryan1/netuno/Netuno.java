@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 // TODO transfer over stuff from vacation to here
 // TODO add punish GUI
 // TODO add alt-notifs
+// ? TODO make /ipinfo a GUI instead of chat based
 // TODO add tab-completer
 // TODO add a [MAIN] variable in config for the main plugin color
 public final class Netuno extends JavaPlugin {
