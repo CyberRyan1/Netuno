@@ -1,6 +1,6 @@
 package com.github.cyberryan1.netuno.guis.history;
 
-import com.github.cyberryan1.netuno.utils.Punishment;
+import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;

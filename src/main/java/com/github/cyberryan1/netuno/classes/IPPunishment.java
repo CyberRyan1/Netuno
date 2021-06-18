@@ -1,4 +1,6 @@
-package com.github.cyberryan1.netuno.utils;
+package com.github.cyberryan1.netuno.classes;
+
+import com.github.cyberryan1.netuno.utils.Utils;
 
 import java.util.ArrayList;
 

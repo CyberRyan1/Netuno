@@ -8,18 +8,18 @@ import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
+// TODO make /ipinfo a GUI instead of chat based
+// TODO add alt-notifs
 // TODO add a notes system
 // TODO add a reports system
 // TODO add option to disable books for muted/ipmuted players
 // TODO add punish GUI
-// TODO add alt-notifs
 // TODO add a set of commands blocked while muted/ipmuted
 // TODO add tab-completer
 // TODO add a way to convert vanilla bans to netuno bans
 // TODO add a [MAIN] variable in config for the main plugin color
 
 // ? TODO add a "protected" permission (basically not allowing them to be punished)
-// ? TODO make /ipinfo a GUI instead of chat based
 // ? TODO staffchat command & prefix
 public final class Netuno extends JavaPlugin {
 

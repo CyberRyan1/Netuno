@@ -1,8 +1,8 @@
 package com.github.cyberryan1.netuno.utils.database;
 
 import com.github.cyberryan1.netuno.Netuno;
-import com.github.cyberryan1.netuno.utils.IPPunishment;
-import com.github.cyberryan1.netuno.utils.Punishment;
+import com.github.cyberryan1.netuno.classes.IPPunishment;
+import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
 import org.bukkit.Bukkit;

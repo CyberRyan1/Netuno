@@ -1,5 +1,7 @@
 package com.github.cyberryan1.netuno.listeners;
 
+import com.github.cyberryan1.netuno.classes.IPPunishment;
+import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.managers.MutechatManager;
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;

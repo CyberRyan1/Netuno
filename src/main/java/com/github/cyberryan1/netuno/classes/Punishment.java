@@ -1,5 +1,7 @@
-package com.github.cyberryan1.netuno.utils;
+package com.github.cyberryan1.netuno.classes;
 
+import com.github.cyberryan1.netuno.utils.Time;
+import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

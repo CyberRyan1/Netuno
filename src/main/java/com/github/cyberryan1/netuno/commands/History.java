@@ -1,5 +1,7 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.netuno.classes.IPPunishment;
+import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.guis.history.HistoryEditGUI;
 import com.github.cyberryan1.netuno.guis.history.HistoryListGUI;
 import com.github.cyberryan1.netuno.utils.*;

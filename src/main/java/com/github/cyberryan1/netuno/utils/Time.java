@@ -1,5 +1,7 @@
 package com.github.cyberryan1.netuno.utils;
 
+import com.github.cyberryan1.netuno.classes.Punishment;
+
 import java.sql.Timestamp;
 import java.time.Duration;
 

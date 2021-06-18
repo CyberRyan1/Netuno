@@ -1,6 +1,7 @@
 package com.github.cyberryan1.netuno.utils;
 
 import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.managers.ConfigManager;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import com.github.cyberryan1.netuno.utils.database.SQLite;
