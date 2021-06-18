@@ -2,6 +2,8 @@ package com.github.cyberryan1.netuno.utils;
 
 import com.github.cyberryan1.netuno.managers.ConfigManager;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
@@ -121,6 +123,15 @@ public class ConfigUtils {
         str = str.replace( "[REASON]", pun.getReason() );
 
         return str;
+    }
+
+    public static String replaceStaffVariable( String str, CommandSender sender ) {
+        if ( sender instanceof OfflinePlayer ) {
+            OfflinePlayer staff = ( OfflinePlayer ) sender;
+            return str.replace( "[STAFF]", staff.getName() );
+        }
+
+        return str.replace( "[STAFF]", "CONSOLE" );
     }
 
     // checks if a list in the config is just full of nothing ("")
