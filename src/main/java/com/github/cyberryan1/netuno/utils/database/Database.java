@@ -880,7 +880,7 @@ public abstract class Database {
             conn = getSqlConnection();
             ps = conn.prepareStatement( "DELETE FROM " + NO_SIGN_NOTIFS_TABLE_NAME + " WHERE player=?;" );
             ps.setString( 1, player.getUniqueId().toString() );
-            ps.executeQuery();
+            ps.executeUpdate();
         } catch ( SQLException ex ) { Utils.logError( "Unable to remove sign notif from database", ex ); }
 
         close( conn, ps, null );
