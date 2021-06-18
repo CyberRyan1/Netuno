@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.listeners;
 
+import com.github.cyberryan1.netuno.managers.MutechatManager;
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
@@ -99,6 +100,20 @@ public class ChatListener implements Listener {
                     if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
                         Utils.sendAnyMsg( p, msg.replace( "[TARGET]", event.getPlayer().getName() ) );
                     }
+                }
+            }
+        }
+
+        // mutechat handling
+        if ( MutechatManager.chatIsMuted() ) {
+            if ( VaultUtils.hasPerms( event.getPlayer(), ConfigUtils.getStr( "general.staff-perm" ) ) == false ) {
+                if ( VaultUtils.hasPerms( event.getPlayer(), ConfigUtils.getStr( "mutechat.bypass-perm" ) ) == false ) {
+                    event.setCancelled( true );
+
+                    if ( ConfigUtils.checkListNotEmpty( "mutechat.attempt" ) ) {
+                        Utils.sendAnyMsg( event.getPlayer(), ConfigUtils.getColoredStrFromList( "mutechat.attempt" ) );
+                    }
+                    return;
                 }
             }
         }
