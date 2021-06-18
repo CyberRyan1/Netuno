@@ -8,7 +8,6 @@ import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
-// TODO transfer over stuff from vacation to here
 // TODO add a notes system
 // TODO add a reports system
 // TODO add option to disable books for muted/ipmuted players
