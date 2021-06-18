@@ -18,3 +18,4 @@ commands:
   ipban:
   unipban:
   history:
+  togglesigns:

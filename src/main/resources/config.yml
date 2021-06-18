@@ -268,3 +268,24 @@ history:
   # "/history reset" command
   reset:
     perm: "netuno.history.reset"
+
+signs:
+  # Allow ipmuted/muted players to place signs while ipmuted/mute
+  allow-while-muted: false
+  # What to send when an ipmuted/muted player attempts to place a sign and is blocked
+  sign-while-muted-attempt: "&7You cannot place signs while punished!"
+
+  # Enable sign notifications to staff
+  notifs: true
+  # Permission to toggle sign notifications via /togglesigns and to see sign notifications
+  notifs-perm: "netuno.signs"
+  # What a sign notification would look like
+  # Use [LINE_1], [LINE_2], [LINE_3], and [LINE_4] for the contents of the sign
+  # ALl four variables above MUST be used
+  # Also can use [LOC] for the location of the sign
+  notifs-msg:
+    - "&6[TARGET] &7has placed a sign at &6[LOC]"
+    - "&61) &7[LINE_1]"
+    - "&62) &7[LINE_2]"
+    - "&63) &7[LINE_3]"
+    - "&64) &7[LINE_4]"

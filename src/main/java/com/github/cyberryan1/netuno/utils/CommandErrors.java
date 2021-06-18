@@ -62,6 +62,8 @@ public class CommandErrors {
                 return Utils.getColored( "&8/&6history &7edit (pun ID)" );
             case "history-reset":
                 return Utils.getColored( "&8/&6history &7reset (player)" );
+            case "togglesigns":
+                return Utils.getColored( "&8/&6togglesigns &7[enable/disable]" );
         }
 
         return null;

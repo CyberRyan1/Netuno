@@ -46,10 +46,12 @@ public final class Netuno extends JavaPlugin {
         this.getCommand( "ipban" ).setExecutor( new IPBan() );
         this.getCommand( "unipban" ).setExecutor( new UnIPBan() );
         this.getCommand( "history" ).setExecutor( new History() );
+        this.getCommand( "togglesigns" ).setExecutor( new Togglesigns() );
 
         this.getServer().getPluginManager().registerEvents( new JoinListener(), this );
         this.getServer().getPluginManager().registerEvents( new ChatListener(), this );
         this.getServer().getPluginManager().registerEvents( new LeaveListener(), this );
+        this.getServer().getPluginManager().registerEvents( new SignChangeListener(), this );
 
         ConfigUtils.getConfigManager().reloadConfig();
     }
