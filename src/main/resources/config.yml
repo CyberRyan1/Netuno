@@ -248,6 +248,33 @@ unipban:
 ipinfo:
   perm: "netuno.ipinfo"
 
+mutechat:
+  perm: "netuno.mutechat"
+  # Players with the below permission and the general.staff-perm permission will bypass mutechat
+  bypass-perm: "netuno.mutechat.bypass"
+  enable-broadcast:
+    - ""
+    - "&7The chat has been &aenabled&7!"
+    - ""
+  disable-broadcast:
+    - ""
+    - "&7The chat has been &cdisabled&7!"
+    - ""
+  # What to send when a player attempts to chat while it's muted
+  attempt:
+    - ""
+    - "&7The chat is currently &6muted&7!"
+    - ""
+
+clearchat:
+  perm: "netuno.clearchat"
+  broadcast: "&7The chat has been cleared!"
+  # If enabled, staff's chat will not be cleared
+  staff-bypass: true
+  # What to send to staff when the chat is cleared
+  # If set to "", then the default broadcast will be sent
+  staff-broadcast: "&7The chat has been cleared by &6[STAFF]"
+
 history:
   # note: players MUST have this permission to use any of the other sub-commands
   # also gives them access to /history list (player)
