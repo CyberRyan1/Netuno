@@ -55,7 +55,6 @@ public class History implements CommandExecutor {
                     Player staff = ( Player ) sender;
                     HistoryListGUI gui = new HistoryListGUI( target, staff, 1 );
                     gui.openInventory( staff );
-                    Utils.getPlugin().getServer().getPluginManager().registerEvents( gui, Utils.getPlugin() );
 
                 }
 

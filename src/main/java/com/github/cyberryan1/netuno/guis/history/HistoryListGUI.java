@@ -1,7 +1,7 @@
 package com.github.cyberryan1.netuno.guis.history;
 
-import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
+import com.github.cyberryan1.netuno.guis.events.*;
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -46,8 +47,9 @@ public class HistoryListGUI implements Listener {
 
         String guiName = Utils.getColored( "&6" + target.getName() + "&7's history" );
         gui = Bukkit.createInventory( null, 54, guiName );
-
         insertItems( staff );
+
+        GUIEventManager.addEvent( this );
     }
 
     public void insertItems( Player staff ) {
@@ -112,7 +114,7 @@ public class HistoryListGUI implements Listener {
         else { staff.openInventory( gui ); }
     }
 
-    @EventHandler
+    @GUIEventInterface( type = GUIEventType.INVENTORY_CLICK )
     public void onInventoryClick( InventoryClickEvent event ) {
         if ( staffTargets.containsKey( event.getWhoClicked().getName() ) == false ) { return; }
         Player staff = ( Player ) event.getWhoClicked();
@@ -158,12 +160,11 @@ public class HistoryListGUI implements Listener {
             int punID = history.get( punClicked ).getID();
             HistoryEditGUI editGUI = new HistoryEditGUI( target, staff, punID );
             editGUI.openInventory( staff );
-            Utils.getPlugin().getServer().getPluginManager().registerEvents( editGUI, Utils.getPlugin() );
 
         }
     }
 
-    @EventHandler
+    @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
     public void onInventoryDrag( InventoryDragEvent event ) {
         if ( staffTargets.containsKey( event.getWhoClicked().getName() ) == false ) { return; }
         Player staff = ( Player ) event.getWhoClicked();
@@ -171,5 +172,17 @@ public class HistoryListGUI implements Listener {
         if ( event.getView().getTitle().equals( Utils.getColored( "&6" + target.getName() + "&7's history" ) ) == false ) { return; }
 
         event.setCancelled( true );
+    }
+
+    @GUIEventInterface( type = GUIEventType.INVENTORY_CLOSE )
+    public void onInventoryClose( InventoryCloseEvent event ) {
+        if ( staffTargets.containsKey( event.getPlayer().getName() ) == false ) { return; }
+        Player staff = ( Player ) event.getPlayer();
+        OfflinePlayer target = Bukkit.getOfflinePlayer( staffTargets.get( staff.getName() ) );
+        if ( event.getView().getTitle().equals( Utils.getColored( "&6" + target.getName() + "&7's history" ) ) == false ) { return; }
+
+        Bukkit.getScheduler().runTaskLater( Utils.getPlugin(), () -> {
+            GUIEventManager.removeEvent( this );
+        }, 3L );
     }
 }
