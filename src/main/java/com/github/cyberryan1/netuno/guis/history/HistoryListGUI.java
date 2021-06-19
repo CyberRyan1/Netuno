@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -18,41 +17,34 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
 
 public class HistoryListGUI implements Listener {
 
     private final Database DATA = Utils.getDatabase();
 
     private final Inventory gui;
-    //                      Staff name | Target UUID
-    private final static HashMap<String, UUID> staffTargets = new HashMap<>();
-    //                      Staff name | Page #
-    private final static HashMap<String, Integer> staffPages = new HashMap<>();
-    //                          Staff name
-    private final static ArrayList<String> inventoryClickCooldown = new ArrayList<>();
-
+    private final OfflinePlayer target;
+    private final Player staff;
+    private final int page;
+    private final static ArrayList<Player> clickCooldown = new ArrayList<>();
     private final ArrayList<Punishment> history = new ArrayList<>();
 
 
     public HistoryListGUI( OfflinePlayer target, Player staff, int page ) {
-        staffTargets.remove( staff.getName() );
-        staffTargets.put( staff.getName(), target.getUniqueId() );
-
-        staffPages.remove( staff.getName() );
-        staffPages.put( staff.getName(), page );
+        this.target = target;
+        this.staff = staff;
+        this.page = page;
 
         history.addAll( DATA.getAllPunishments( target.getUniqueId().toString() ) );
 
         String guiName = Utils.getColored( "&6" + target.getName() + "&7's history" );
         gui = Bukkit.createInventory( null, 54, guiName );
-        insertItems( staff );
+        insertItems();
 
         GUIEventManager.addEvent( this );
     }
 
-    public void insertItems( Player staff ) {
+    public void insertItems() {
         // glass: 0-8; 9, 18, 27, 17, 26, 35, 36-44, 45, 46, 48-50, 52-53
         // signs: 10-16, 19-25, 28-34
         // back book: 47 || next book: 51
@@ -62,7 +54,6 @@ public class HistoryListGUI implements Listener {
             items[index] = GUIUtils.getBackgroundGlass();
         }
 
-        int page = staffPages.get( staff.getName() );
         int punIndex = 21 * ( page - 1 );
         int guiIndex = 10;
         for ( int row = 0; row < 3; row++ ) {
@@ -77,7 +68,7 @@ public class HistoryListGUI implements Listener {
             guiIndex += 2;
         }
 
-        items[40] = getCurrentPagePaper( page );
+        items[40] = getCurrentPagePaper();
 
         if ( page >= 2 ) {
             items[47] = GUIUtils.createItem( Material.BOOK, "&6Previous Page" );
@@ -95,10 +86,10 @@ public class HistoryListGUI implements Listener {
         return current.getPunishmentAsSign();
     }
 
-    private ItemStack getCurrentPagePaper( int pageNumber ) {
+    private ItemStack getCurrentPagePaper() {
         ItemStack paper = new ItemStack( Material.PAPER );
         ItemMeta meta = paper.getItemMeta();
-        meta.setDisplayName( Utils.getColored( "&7Page &6#" + pageNumber ) );
+        meta.setDisplayName( Utils.getColored( "&7Page &6#" + page ) );
 
         ArrayList<String> lore = new ArrayList<>();
         lore.add( Utils.getColored( "&7&oClick any sign to edit the punishment!" ) );
@@ -109,45 +100,41 @@ public class HistoryListGUI implements Listener {
     }
 
     public void openInventory( Player staff ) {
-        OfflinePlayer target = Bukkit.getOfflinePlayer( staffTargets.get( staff.getName() ) );
-        if ( gui.contains( Material.OAK_SIGN ) == false && staffPages.get( staff.getName() ) == 0 ) { CommandErrors.sendNoPreviousPunishments( staff, target.getName() ); }
+        if ( gui.contains( Material.OAK_SIGN ) == false && page == 1 ) { CommandErrors.sendNoPreviousPunishments( staff, target.getName() ); }
         else { staff.openInventory( gui ); }
     }
 
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLICK )
     public void onInventoryClick( InventoryClickEvent event ) {
-        if ( staffTargets.containsKey( event.getWhoClicked().getName() ) == false ) { return; }
-        Player staff = ( Player ) event.getWhoClicked();
-        if ( inventoryClickCooldown.contains( staff.getName() ) ) { return; }
+        if ( event.getWhoClicked().getName().equals( staff.getName() ) == false ) { return; }
+        if ( clickCooldown.contains( staff ) ) { return; }
 
-        OfflinePlayer target = Bukkit.getOfflinePlayer( staffTargets.get( staff.getName() ) );
         if ( event.getView().getTitle().equals( Utils.getColored( "&6" + target.getName() + "&7's history" ) ) == false ) { return; }
 
         event.setCancelled( true );
 
         ItemStack itemClicked = event.getCurrentItem();
         if ( itemClicked == null || itemClicked.getType().isAir() ) { return; }
-        int page = staffPages.get( staff.getName() );
 
         if ( itemClicked.equals( GUIUtils.createItem( Material.BOOK, "&6Next Page" ) ) ) {
-            HistoryListGUI next = new HistoryListGUI( target, staff, page + 1 );
             staff.closeInventory();
+            HistoryListGUI next = new HistoryListGUI( target, staff, page + 1 );
             next.openInventory( staff );
 
-            inventoryClickCooldown.add( staff.getName() );
+            clickCooldown.add( staff );
             Bukkit.getScheduler().runTaskLater( Utils.getPlugin(), () -> {
-                inventoryClickCooldown.remove( staff.getName() );
+                clickCooldown.remove( staff );
             }, 5L );
         }
 
         else if ( itemClicked.equals( GUIUtils.createItem( Material.BOOK, "&6Previous Page" ) ) ) {
-            HistoryListGUI previous = new HistoryListGUI( target, staff, page - 1 );
             staff.closeInventory();
+            HistoryListGUI previous = new HistoryListGUI( target, staff, page - 1 );
             previous.openInventory( staff );
 
-            inventoryClickCooldown.add( staff.getName() );
+            clickCooldown.add( staff );
             Bukkit.getScheduler().runTaskLater( Utils.getPlugin(), () -> {
-                inventoryClickCooldown.remove( staff.getName() );
+                clickCooldown.remove( staff );
             }, 5L );
         }
 
@@ -156,6 +143,7 @@ public class HistoryListGUI implements Listener {
             int punClicked = ( ( page - 1 ) * 21 ) + event.getSlot() - 10;
             if ( event.getSlot() >= 18 ) { punClicked -= 2; }
             if ( event.getSlot() >= 27 ) { punClicked -= 2; }
+            staff.closeInventory();
 
             int punID = history.get( punClicked ).getID();
             HistoryEditGUI editGUI = new HistoryEditGUI( target, staff, punID );
@@ -166,9 +154,7 @@ public class HistoryListGUI implements Listener {
 
     @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
     public void onInventoryDrag( InventoryDragEvent event ) {
-        if ( staffTargets.containsKey( event.getWhoClicked().getName() ) == false ) { return; }
-        Player staff = ( Player ) event.getWhoClicked();
-        OfflinePlayer target = Bukkit.getOfflinePlayer( staffTargets.get( staff.getName() ) );
+        if ( event.getWhoClicked().getName().equals( staff.getName() ) == false ) { return; }
         if ( event.getView().getTitle().equals( Utils.getColored( "&6" + target.getName() + "&7's history" ) ) == false ) { return; }
 
         event.setCancelled( true );
@@ -176,13 +162,9 @@ public class HistoryListGUI implements Listener {
 
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLOSE )
     public void onInventoryClose( InventoryCloseEvent event ) {
-        if ( staffTargets.containsKey( event.getPlayer().getName() ) == false ) { return; }
-        Player staff = ( Player ) event.getPlayer();
-        OfflinePlayer target = Bukkit.getOfflinePlayer( staffTargets.get( staff.getName() ) );
+        if ( event.getPlayer().equals( staff ) == false ) { return; }
         if ( event.getView().getTitle().equals( Utils.getColored( "&6" + target.getName() + "&7's history" ) ) == false ) { return; }
 
-        Bukkit.getScheduler().runTaskLater( Utils.getPlugin(), () -> {
-            GUIEventManager.removeEvent( this );
-        }, 3L );
+        GUIEventManager.removeEvent( this );
     }
 }
