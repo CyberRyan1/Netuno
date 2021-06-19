@@ -281,105 +281,6 @@ public abstract class Database {
         return true;
     }
 
-    // Deletes a punishment
-    // Works for both regular and IP punishments
-    public void deletePunishment( int id ) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-
-        try {
-            conn = getSqlConnection();
-            ps = conn.prepareStatement( "DELETE FROM " + PUN_TABLE_NAME + " WHERE id=?;" );
-            ps.setInt( 1, id );
-            ps.executeUpdate();
-
-            ps = conn.prepareStatement( "DELETE FROM " + IP_PUN_TABLE_NAME + " WHERE id=?;" );
-            ps.setInt( 1, id );
-            ps.executeUpdate();
-        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
-
-        close( conn, ps, null );
-    }
-
-    // Sets whether a punishment is still active or not
-    // Works for both regular punishments and IP punishments
-    public void setPunishmentActive( int id, boolean active ) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-
-        try {
-            conn = getSqlConnection();
-            // regular punishments
-            ps = conn.prepareStatement( "UPDATE " + PUN_TABLE_NAME + " SET active=? WHERE id=?;" );
-            ps.setString( 1, active + "" );
-            ps.setInt( 2, id );
-            ps.executeUpdate();
-
-            // ip punishments
-            ps = conn.prepareStatement( "UPDATE " + IP_PUN_TABLE_NAME + " SET active=? WHERE id=?;" );
-            ps.setString( 1, active + "" );
-            ps.setInt( 2, id );
-            ps.executeUpdate();
-        } catch ( SQLException e ) {
-            Utils.logError( "Couldn't execute MySQL statement: ", e );
-        } finally {
-            try {
-                if ( ps != null ) {
-                    ps.close();
-                }
-                if ( conn != null ) {
-                    conn.close();
-                }
-            } catch ( SQLException e ) {
-                Utils.logError( Errors.sqlConnectionClose(), e );
-            }
-        }
-    }
-
-    // Sets a punishment's length
-    // Works for both regular punishments and IP punishments
-    public void setPunishmentLength( int id, long length ) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-
-        try {
-            conn = getSqlConnection();
-            ps = conn.prepareStatement( "UPDATE " + PUN_TABLE_NAME + " SET length=? WHERE id=?;" );
-            ps.setString( 1, length + "" );
-            ps.setInt( 2, id );
-            ps.executeUpdate();
-
-            ps = conn.prepareStatement( "UPDATE " + IP_PUN_TABLE_NAME + " SET length=? WHERE id=?;" );
-            ps.setString( 1, length + "" );
-            ps.setInt( 2, id );
-            ps.executeUpdate();
-        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
-
-        close( conn, ps, null );
-    }
-
-    // Sets a punishments reason
-    // Works for both regular punishments and IP punishments
-    public void setPunishmentReason( int id, String reason ) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-
-        try {
-            conn = getSqlConnection();
-            ps = conn.prepareStatement( "UPDATE " + PUN_TABLE_NAME + " SET reason=? WHERE id=?;" );
-            ps.setString( 1, reason );
-            ps.setInt( 2, id );
-            ps.executeUpdate();
-
-            ps = conn.prepareStatement( "UPDATE " + IP_PUN_TABLE_NAME + " SET reason=? WHERE id=?;" );
-            ps.setString( 1, reason );
-            ps.setInt( 2, id );
-            ps.executeUpdate();
-        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
-
-        close( conn, ps, null );
-    }
-
     //
     // Notifs Database
     //
@@ -631,6 +532,38 @@ public abstract class Database {
         return accounts;
     }
 
+    // returns a list of all the accounts who are punished
+    public ArrayList<OfflinePlayer> getPunishedAltList( String playerUUID ) {
+        ArrayList<OfflinePlayer> alts = getAllAlts( playerUUID );
+        ArrayList<OfflinePlayer> toReturn = new ArrayList<>();
+
+        if ( alts.size() == 0 ) { return toReturn; }
+
+        for ( OfflinePlayer account : alts ) {
+            if ( account.getUniqueId().toString().equals( playerUUID ) == false ) {
+                ArrayList<Punishment> activeMutes = getPunishment( account.getUniqueId().toString(), "mute", true );
+                if ( activeMutes.size() >= 1 ) { toReturn.add( account ); }
+
+                else {
+                    ArrayList<Punishment> activeBans = getPunishment( account.getUniqueId().toString(), "ban", true );
+                    if ( activeBans.size() >= 1 ) { toReturn.add( account ); }
+
+                    else {
+                        ArrayList<IPPunishment> activeIpmutes = getIPPunishment( account.getUniqueId().toString(), "ipmute", true );
+                        if ( activeIpmutes.size() >= 1 ) { toReturn.add( account ); }
+
+                        else {
+                            ArrayList<IPPunishment> activeIpbans = getIPPunishment( account.getUniqueId().toString(), "ipban", true );
+                            if ( activeIpbans.size() >= 1 ) { toReturn.add( account ); }
+                        }
+                    }
+                }
+            }
+        }
+
+        return toReturn;
+    }
+
     // returns all of the alts in their respective colors
     public ArrayList<String> getPunishedColoredAltList( String playerUUID ) {
         ArrayList<OfflinePlayer> alts = getAllAlts( playerUUID );
@@ -854,6 +787,146 @@ public abstract class Database {
         close( conn, ps, null );
     }
 
+    // returns true if player has no sign notifs enabled, false if not
+    public boolean checkPlayerNoSignNotifs( Player player ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        boolean toReturn = false;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT count(*) FROM " + NO_SIGN_NOTIFS_TABLE_NAME + " WHERE player=?;" );
+            ps.setString( 1, player.getUniqueId().toString() );
+
+            rs = ps.executeQuery();
+            rs.next();
+            if ( rs.getInt( "count(*)" ) >= 1 ) { toReturn = true; }
+        } catch ( SQLException ex ) { Utils.logError( "Unable to check if a player has no sign notifs enabled in the no sign notif database" ); }
+
+        close( conn, ps, rs );
+        return toReturn;
+    }
+
+    //
+    // Works for both IP punishments and regular punishments
+    //
+
+    // Gets all punishments a player has
+    public ArrayList<Punishment> getAllPunishments( String uuid ) {
+        ArrayList<Punishment> puns = getPunishment( uuid );
+        ArrayList<IPPunishment> ipPuns = getIPPunishment( uuid );
+
+        for ( int index = 0; index < puns.size(); index++ ) {
+            if ( ipPuns.size() <=0 ) { break; }
+            if ( puns.get( index ).getDate() > ipPuns.get( 0 ).getDate() ) {
+                puns.add( index, ipPuns.remove( 0 ) );
+            }
+        }
+        puns.addAll( ipPuns );
+
+        return puns;
+    }
+
+    // Deletes a punishment
+    // Works for both regular and IP punishments
+    public void deletePunishment( int id ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "DELETE FROM " + PUN_TABLE_NAME + " WHERE id=?;" );
+            ps.setInt( 1, id );
+            ps.executeUpdate();
+
+            ps = conn.prepareStatement( "DELETE FROM " + IP_PUN_TABLE_NAME + " WHERE id=?;" );
+            ps.setInt( 1, id );
+            ps.executeUpdate();
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
+
+        close( conn, ps, null );
+    }
+
+    // Sets whether a punishment is still active or not
+    // Works for both regular punishments and IP punishments
+    public void setPunishmentActive( int id, boolean active ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            // regular punishments
+            ps = conn.prepareStatement( "UPDATE " + PUN_TABLE_NAME + " SET active=? WHERE id=?;" );
+            ps.setString( 1, active + "" );
+            ps.setInt( 2, id );
+            ps.executeUpdate();
+
+            // ip punishments
+            ps = conn.prepareStatement( "UPDATE " + IP_PUN_TABLE_NAME + " SET active=? WHERE id=?;" );
+            ps.setString( 1, active + "" );
+            ps.setInt( 2, id );
+            ps.executeUpdate();
+        } catch ( SQLException e ) {
+            Utils.logError( "Couldn't execute MySQL statement: ", e );
+        } finally {
+            try {
+                if ( ps != null ) {
+                    ps.close();
+                }
+                if ( conn != null ) {
+                    conn.close();
+                }
+            } catch ( SQLException e ) {
+                Utils.logError( Errors.sqlConnectionClose(), e );
+            }
+        }
+    }
+
+    // Sets a punishment's length
+    // Works for both regular punishments and IP punishments
+    public void setPunishmentLength( int id, long length ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "UPDATE " + PUN_TABLE_NAME + " SET length=? WHERE id=?;" );
+            ps.setString( 1, length + "" );
+            ps.setInt( 2, id );
+            ps.executeUpdate();
+
+            ps = conn.prepareStatement( "UPDATE " + IP_PUN_TABLE_NAME + " SET length=? WHERE id=?;" );
+            ps.setString( 1, length + "" );
+            ps.setInt( 2, id );
+            ps.executeUpdate();
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
+
+        close( conn, ps, null );
+    }
+
+    // Sets a punishments reason
+    // Works for both regular punishments and IP punishments
+    public void setPunishmentReason( int id, String reason ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "UPDATE " + PUN_TABLE_NAME + " SET reason=? WHERE id=?;" );
+            ps.setString( 1, reason );
+            ps.setInt( 2, id );
+            ps.executeUpdate();
+
+            ps = conn.prepareStatement( "UPDATE " + IP_PUN_TABLE_NAME + " SET reason=? WHERE id=?;" );
+            ps.setString( 1, reason );
+            ps.setInt( 2, id );
+            ps.executeUpdate();
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
+
+        close( conn, ps, null );
+    }
+
     //
     // Sign Notifications
     //
@@ -884,27 +957,6 @@ public abstract class Database {
         } catch ( SQLException ex ) { Utils.logError( "Unable to remove sign notif from database", ex ); }
 
         close( conn, ps, null );
-    }
-
-    // returns true if player has no sign notifs enabled, false if not
-    public boolean checkPlayerNoSignNotifs( Player player ) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        boolean toReturn = false;
-
-        try {
-            conn = getSqlConnection();
-            ps = conn.prepareStatement( "SELECT count(*) FROM " + NO_SIGN_NOTIFS_TABLE_NAME + " WHERE player=?;" );
-            ps.setString( 1, player.getUniqueId().toString() );
-
-            rs = ps.executeQuery();
-            rs.next();
-            if ( rs.getInt( "count(*)" ) >= 1 ) { toReturn = true; }
-        } catch ( SQLException ex ) { Utils.logError( "Unable to check if a player has no sign notifs enabled in the no sign notif database" ); }
-
-        close( conn, ps, rs );
-        return toReturn;
     }
 }
 
