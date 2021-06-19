@@ -115,7 +115,7 @@ public class HistoryListGUI implements Listener {
     private ItemStack getBackgroundGlass() {
         ItemStack glass = new ItemStack( Material.GRAY_STAINED_GLASS_PANE );
         ItemMeta meta = glass.getItemMeta();
-        meta.setDisplayName( "" );
+        meta.setDisplayName( Utils.getColored( "&7") );
         glass.setItemMeta( meta );
         return glass;
     }
