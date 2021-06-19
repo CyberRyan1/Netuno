@@ -1,6 +1,9 @@
 package com.github.cyberryan1.netuno.guis.ipinfo;
 
 import com.github.cyberryan1.netuno.classes.Punishment;
+import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
+import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
+import com.github.cyberryan1.netuno.guis.events.GUIEventType;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.GUIUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
@@ -9,9 +12,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -40,6 +43,8 @@ public class AltsListGUI implements Listener {
         String guiName = Utils.getColored( "&6" + target.getName() + "&7's alts" );
         gui = Bukkit.createInventory( null, 54, guiName );
         insertItems();
+
+        GUIEventManager.addEvent( this );
     }
 
     public void insertItems() {
@@ -105,9 +110,9 @@ public class AltsListGUI implements Listener {
         else { staff.openInventory( gui ); }
     }
 
-    @EventHandler
+    @GUIEventInterface( type = GUIEventType.INVENTORY_CLICK )
     public void onInventoryClick( InventoryClickEvent event ) {
-        if ( staff.getName().equalsIgnoreCase( event.getWhoClicked().getName() ) == false ) { return; }
+        if ( staff.getName().equals( event.getWhoClicked().getName() ) == false ) { return; }
         if ( event.getView().getTitle().equals( Utils.getColored( "&6" + target.getName() + "&7's alts" ) ) == false ) { return; }
 
         event.setCancelled( true );
@@ -116,22 +121,32 @@ public class AltsListGUI implements Listener {
         if ( clicked == null || clicked.getType().isAir() ) { return; }
 
         if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&6Previous Page" ) ) ) {
+            staff.closeInventory();
             AltsListGUI newGUI = new AltsListGUI( target, staff, page - 1 );
             newGUI.openInventory( staff );
             Utils.getPlugin().getServer().getPluginManager().registerEvents( newGUI, Utils.getPlugin() );
         }
 
         else if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&6Next Page" ) ) ) {
+            staff.closeInventory();
             AltsListGUI newGUI = new AltsListGUI( target, staff, page + 1 );
             newGUI.openInventory( staff );
             Utils.getPlugin().getServer().getPluginManager().registerEvents( newGUI, Utils.getPlugin() );
         }
     }
 
-    @EventHandler
+    @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
     public void onInventoryDrag( InventoryDragEvent event ) {
-        if ( staff.getName().equalsIgnoreCase( event.getWhoClicked().getName() ) == false ) { return; }
+        if ( staff.getName().equals( event.getWhoClicked().getName() ) == false ) { return; }
         if ( event.getView().getTitle().equals( Utils.getColored( "&6" + target.getName() + "&7's alts" ) ) == false ) { return; }
         event.setCancelled( true );
+    }
+
+    @GUIEventInterface( type = GUIEventType.INVENTORY_CLOSE )
+    public void onInventoryClose( InventoryCloseEvent event ) {
+        if ( staff.getName().equals( event.getPlayer().getName() ) == false ) { return; }
+        if ( event.getView().getTitle().equals( Utils.getColored( "&6" + target.getName() + "&7's alts" ) ) == false ) { return; }
+
+        GUIEventManager.removeEvent( this );
     }
 }
