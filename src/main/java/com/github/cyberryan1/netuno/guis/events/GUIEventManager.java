@@ -16,7 +16,8 @@ public class GUIEventManager implements Listener {
 
     @EventHandler
     public void onInventoryClick( InventoryClickEvent event ) {
-        for ( Object obj : objects ) {
+        for ( int index = objects.size() - 1; index >= 0; index-- ) {
+            Object obj = objects.get( index );
             for ( Method method : obj.getClass().getMethods() ) {
                 if ( method.isAnnotationPresent( GUIEventInterface.class ) && method.getParameterTypes().length == 1 ) {
                     if ( method.getAnnotation( GUIEventInterface.class ).type() == GUIEventType.INVENTORY_CLICK ) {
@@ -31,7 +32,8 @@ public class GUIEventManager implements Listener {
 
     @EventHandler
     public void onInventoryDrag( InventoryDragEvent event ) {
-        for ( Object obj : objects ) {
+        for ( int index = objects.size() - 1; index >= 0; index-- ) {
+            Object obj = objects.get( index );
             for ( Method method : obj.getClass().getMethods() ) {
                 if ( method.isAnnotationPresent( GUIEventInterface.class ) && method.getParameterTypes().length == 1 ) {
                     if ( method.getAnnotation( GUIEventInterface.class ).type() == GUIEventType.INVENTORY_DRAG ) {
@@ -46,7 +48,8 @@ public class GUIEventManager implements Listener {
 
     @EventHandler
     public void onInventoryClose( InventoryCloseEvent event ) {
-        for ( Object obj : objects ) {
+        for ( int index = objects.size() - 1; index >= 0; index-- ) {
+            Object obj = objects.get( index );
             for ( Method method : obj.getClass().getMethods() ) {
                 if ( method.isAnnotationPresent( GUIEventInterface.class ) && method.getParameterTypes().length == 1 ) {
                     if ( method.getAnnotation( GUIEventInterface.class ).type() == GUIEventType.INVENTORY_CLOSE ) {
