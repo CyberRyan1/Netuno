@@ -32,9 +32,6 @@ public class HistoryListGUI implements Listener {
     //                          Staff name
     private final static ArrayList<String> inventoryClickCooldown = new ArrayList<>();
 
-    private ArrayList<Punishment> punHistory = new ArrayList<>();
-    private ArrayList<IPPunishment> ippunHistory = new ArrayList<>();
-    // (below) is the combined version of punHistory and ippunHistory, organized by date
     private final ArrayList<Punishment> history = new ArrayList<>();
 
 
@@ -45,28 +42,12 @@ public class HistoryListGUI implements Listener {
         staffPages.remove( staff.getName() );
         staffPages.put( staff.getName(), page );
 
-        initializeLists( staff );
+        history.addAll( DATA.getAllPunishments( target.getUniqueId().toString() ) );
 
         String guiName = Utils.getColored( "&6" + target.getName() + "&7's history" );
         gui = Bukkit.createInventory( null, 54, guiName );
 
         insertItems( staff );
-    }
-
-    private void initializeLists( Player staff ) {
-        OfflinePlayer target = Bukkit.getOfflinePlayer( staffTargets.get( staff.getName() ) );
-        punHistory = DATA.getPunishment( target.getUniqueId().toString() );
-        history.addAll( punHistory );
-
-        ippunHistory = DATA.getIPPunishment( target.getUniqueId().toString() );
-        ArrayList<IPPunishment> ipPuns = new ArrayList<>( ippunHistory );
-
-        for ( int index = 0; index < history.size(); index++ ) {
-            if ( ipPuns.size() > 0 && history.get( index ).getDate() > ipPuns.get( 0 ).getDate() ) {
-                history.add( index, ipPuns.remove( 0 ) );
-            }
-        }
-        history.addAll( ipPuns );
     }
 
     public void insertItems( Player staff ) {
