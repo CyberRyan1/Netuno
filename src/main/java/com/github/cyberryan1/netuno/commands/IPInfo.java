@@ -33,7 +33,7 @@ public class IPInfo implements CommandExecutor {
             OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
             // want the target to have joined before
             if ( target.hasPlayedBefore() ) {
-                ArrayList<String> coloredAlts = DATA.getPunishedAltList( target.getUniqueId().toString() );
+                ArrayList<String> coloredAlts = DATA.getPunishedColoredAltList( target.getUniqueId().toString() );
 
                 if ( coloredAlts.size() == 0 ) {
                     CommandErrors.sendNoAltAccounts( sender, target.getName() );

@@ -632,7 +632,7 @@ public abstract class Database {
     }
 
     // returns all of the alts in their respective colors
-    public ArrayList<String> getPunishedAltList( String playerUUID ) {
+    public ArrayList<String> getPunishedColoredAltList( String playerUUID ) {
         ArrayList<OfflinePlayer> alts = getAllAlts( playerUUID );
         ArrayList<String> toReturn = new ArrayList<>();
 
