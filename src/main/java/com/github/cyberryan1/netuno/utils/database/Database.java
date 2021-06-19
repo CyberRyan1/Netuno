@@ -813,6 +813,7 @@ public abstract class Database {
     //
 
     // Gets all punishments a player has
+    // TODO make use of this in HistoryListGUI class
     public ArrayList<Punishment> getAllPunishments( String uuid ) {
         ArrayList<Punishment> puns = getPunishment( uuid );
         ArrayList<IPPunishment> ipPuns = getIPPunishment( uuid );
