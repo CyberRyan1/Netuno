@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.netuno.guis.ipinfo.AltsListGUI;
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
@@ -7,6 +8,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
@@ -23,6 +25,12 @@ public class IPInfo implements CommandExecutor {
             return true;
         }
 
+        if ( sender instanceof Player == false ) {
+            CommandErrors.sendCanOnlyBeRanByPlayer( sender );
+            return true;
+        }
+        Player staff = ( Player ) sender;
+
         if ( Utils.isOutOfBounds( args, 0 ) == false ) {
 
             if ( Utils.isValidUsername( args[0] ) == false ) {
@@ -33,20 +41,9 @@ public class IPInfo implements CommandExecutor {
             OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
             // want the target to have joined before
             if ( target.hasPlayedBefore() ) {
-                ArrayList<String> coloredAlts = DATA.getPunishedColoredAltList( target.getUniqueId().toString() );
-
-                if ( coloredAlts.size() == 0 ) {
-                    CommandErrors.sendNoAltAccounts( sender, target.getName() );
-                }
-
-                else {
-                    String toSend = Utils.getColored( "\n&6" + target.getName() + "&7's alt accounts&8 -\n");
-                    for ( String str : coloredAlts ) {
-                        toSend += Utils.getColored( " &8- &7" + str + "\n" );
-                    }
-
-                    Utils.sendAnyMsg( sender, toSend );
-                }
+                AltsListGUI gui = new AltsListGUI( target, staff, 1 );
+                gui.openInventory( staff );
+                Utils.getPlugin().getServer().getPluginManager().registerEvents( gui, Utils.getPlugin() );
             }
 
             else {
