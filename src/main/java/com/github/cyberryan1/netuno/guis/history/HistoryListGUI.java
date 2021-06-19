@@ -78,11 +78,11 @@ public class HistoryListGUI implements Listener {
         items[40] = getCurrentPagePaper( page );
 
         if ( page >= 2 ) {
-            items[47] = getPreviousPageBook();
+            items[47] = GUIUtils.createItem( Material.BOOK, "&6Previous Page" );
         }
         int maxPage = ( int ) Math.ceil( history.size() / 21.0 ) ;
         if ( page < maxPage ) {
-            items[51] = getNextPageBook();
+            items[51] = GUIUtils.createItem( Material.BOOK, "&6Next Page" );
         }
 
         gui.setContents( items );
@@ -91,22 +91,6 @@ public class HistoryListGUI implements Listener {
     private ItemStack getPunishmentItem( int index ) {
         Punishment current = history.get( index );
         return current.getPunishmentAsSign();
-    }
-
-    private ItemStack getNextPageBook() {
-        ItemStack book = new ItemStack( Material.BOOK );
-        ItemMeta meta = book.getItemMeta();
-        meta.setDisplayName( Utils.getColored( "&6Next Page" ) );
-        book.setItemMeta( meta );
-        return book;
-    }
-
-    private ItemStack getPreviousPageBook() {
-        ItemStack book = new ItemStack( Material.BOOK );
-        ItemMeta meta = book.getItemMeta();
-        meta.setDisplayName( Utils.getColored( "&6Previous Page" ) );
-        book.setItemMeta( meta );
-        return book;
     }
 
     private ItemStack getCurrentPagePaper( int pageNumber ) {
@@ -143,29 +127,26 @@ public class HistoryListGUI implements Listener {
         if ( itemClicked == null || itemClicked.getType().isAir() ) { return; }
         int page = staffPages.get( staff.getName() );
 
-        if ( itemClicked.getType() == Material.BOOK ) {
-            String name = itemClicked.getItemMeta().getDisplayName();
+        if ( itemClicked.equals( GUIUtils.createItem( Material.BOOK, "&6Next Page" ) ) ) {
+            HistoryListGUI next = new HistoryListGUI( target, staff, page + 1 );
+            staff.closeInventory();
+            next.openInventory( staff );
 
-            if ( name.equals( Utils.getColored( "&6Next Page" ) ) ) {
-                HistoryListGUI next = new HistoryListGUI( target, staff, page + 1 );
-                staff.closeInventory();
-                next.openInventory( staff );
+            inventoryClickCooldown.add( staff.getName() );
+            Bukkit.getScheduler().runTaskLater( Utils.getPlugin(), () -> {
+                inventoryClickCooldown.remove( staff.getName() );
+            }, 5L );
+        }
 
-                inventoryClickCooldown.add( staff.getName() );
-                Bukkit.getScheduler().runTaskLater( Utils.getPlugin(), () -> {
-                    inventoryClickCooldown.remove( staff.getName() );
-                }, 5L );
-            }
-            else if ( name.equals( Utils.getColored( "&6Previous Page" ) ) ){
-                HistoryListGUI previous = new HistoryListGUI( target, staff, page - 1 );
-                staff.closeInventory();
-                previous.openInventory( staff );
+        else if ( itemClicked.equals( GUIUtils.createItem( Material.BOOK, "&6Previous Page" ) ) ) {
+            HistoryListGUI previous = new HistoryListGUI( target, staff, page - 1 );
+            staff.closeInventory();
+            previous.openInventory( staff );
 
-                inventoryClickCooldown.add( staff.getName() );
-                Bukkit.getScheduler().runTaskLater( Utils.getPlugin(), () -> {
-                    inventoryClickCooldown.remove( staff.getName() );
-                }, 5L );
-            }
+            inventoryClickCooldown.add( staff.getName() );
+            Bukkit.getScheduler().runTaskLater( Utils.getPlugin(), () -> {
+                inventoryClickCooldown.remove( staff.getName() );
+            }, 5L );
         }
 
         else if ( itemClicked.getType() == Material.OAK_SIGN
