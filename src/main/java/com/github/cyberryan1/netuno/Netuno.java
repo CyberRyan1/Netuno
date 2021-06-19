@@ -3,6 +3,7 @@ package com.github.cyberryan1.netuno;
 import com.github.cyberryan1.netuno.commands.*;
 import com.github.cyberryan1.netuno.listeners.*;
 import com.github.cyberryan1.netuno.managers.ConfigManager;
+import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
@@ -60,6 +61,7 @@ public final class Netuno extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents( new ChatListener(), this );
         this.getServer().getPluginManager().registerEvents( new LeaveListener(), this );
         this.getServer().getPluginManager().registerEvents( new SignChangeListener(), this );
+        this.getServer().getPluginManager().registerEvents( new GUIEventManager(), this );
 
         ConfigUtils.getConfigManager().reloadConfig();
     }
