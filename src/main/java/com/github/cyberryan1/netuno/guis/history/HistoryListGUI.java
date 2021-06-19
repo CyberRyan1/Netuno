@@ -57,7 +57,7 @@ public class HistoryListGUI implements Listener {
         // paper: 40
         ItemStack items[] = new ItemStack[54];
         for ( int index = 0; index < items.length; index++ ) {
-            items[index] = getBackgroundGlass();
+            items[index] = GUIUtils.getBackgroundGlass();
         }
 
         int page = staffPages.get( staff.getName() );
@@ -91,14 +91,6 @@ public class HistoryListGUI implements Listener {
     private ItemStack getPunishmentItem( int index ) {
         Punishment current = history.get( index );
         return current.getPunishmentAsSign();
-    }
-
-    private ItemStack getBackgroundGlass() {
-        ItemStack glass = new ItemStack( Material.GRAY_STAINED_GLASS_PANE );
-        ItemMeta meta = glass.getItemMeta();
-        meta.setDisplayName( Utils.getColored( "&7") );
-        glass.setItemMeta( meta );
-        return glass;
     }
 
     private ItemStack getNextPageBook() {
