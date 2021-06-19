@@ -829,6 +829,18 @@ public abstract class Database {
         return puns;
     }
 
+    // Returns all punishments a player has that are active
+    public ArrayList<Punishment> getAllActivePunishments( String uuid ) {
+        ArrayList<Punishment> toReturn = new ArrayList<>();
+        for ( Punishment pun : getAllPunishments( uuid ) ) {
+            if ( pun.getActive() ) {
+                toReturn.add( pun );
+            }
+        }
+
+        return toReturn;
+    }
+
     // Deletes a punishment
     // Works for both regular and IP punishments
     public void deletePunishment( int id ) {
