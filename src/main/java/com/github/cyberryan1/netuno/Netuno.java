@@ -9,7 +9,6 @@ import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
-// TODO make /ipinfo a GUI instead of chat based
 // TODO add alt-notifs
 // TODO add a notes system
 // TODO add a reports system
