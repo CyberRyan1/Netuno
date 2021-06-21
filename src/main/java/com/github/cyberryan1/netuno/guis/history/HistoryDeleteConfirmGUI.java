@@ -33,12 +33,6 @@ public class HistoryDeleteConfirmGUI implements Listener {
     private final Player staff;
     private final Punishment punishment;
     private boolean cooldown = false;
-    //                      Staff Name | Target UUID
-//    private final static HashMap<String, UUID> STAFF_TARGETS = new HashMap<>();
-    //                      Staff Name | Target Punishment
-//    private final static HashMap<String, Punishment> STAFF_PUNS = new HashMap<>();
-    //                             Staff
-//    private final static ArrayList<Player> COOLDOWN = new ArrayList<>();
 
     public HistoryDeleteConfirmGUI( OfflinePlayer target, Player staff, Punishment pun ) {
         this.target = target;
