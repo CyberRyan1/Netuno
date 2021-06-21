@@ -1,6 +1,10 @@
 package com.github.cyberryan1.netuno.guis.history;
 
 import com.github.cyberryan1.netuno.classes.Punishment;
+import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
+import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
+import com.github.cyberryan1.netuno.guis.events.GUIEventType;
+import com.github.cyberryan1.netuno.utils.GUIUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
@@ -25,27 +29,30 @@ public class HistoryDeleteConfirmGUI implements Listener {
     private final Database DATA = Utils.getDatabase();
 
     private final Inventory gui;
+    private final OfflinePlayer target;
+    private final Player staff;
+    private final Punishment punishment;
+    private boolean cooldown = false;
     //                      Staff Name | Target UUID
-    private final static HashMap<String, UUID> STAFF_TARGETS = new HashMap<>();
+//    private final static HashMap<String, UUID> STAFF_TARGETS = new HashMap<>();
     //                      Staff Name | Target Punishment
-    private final static HashMap<String, Punishment> STAFF_PUNS = new HashMap<>();
+//    private final static HashMap<String, Punishment> STAFF_PUNS = new HashMap<>();
     //                             Staff
-    private final static ArrayList<Player> COOLDOWN = new ArrayList<>();
+//    private final static ArrayList<Player> COOLDOWN = new ArrayList<>();
 
     public HistoryDeleteConfirmGUI( OfflinePlayer target, Player staff, Punishment pun ) {
-        STAFF_TARGETS.remove( staff.getName() );
-        STAFF_TARGETS.put( staff.getName(), target.getUniqueId() );
-
-        STAFF_PUNS.remove( staff.getName() );
-        STAFF_PUNS.put( staff.getName(), pun );
+        this.target = target;
+        this.staff = staff;
+        this.punishment = pun;
 
         String guiName = Utils.getColored( "&7Confirm Deletion" );
         gui = Bukkit.createInventory( null, 45, guiName );
+        insertItems();
 
-        insertItems( staff );
+        GUIEventManager.addEvent( this );
     }
 
-    private void insertItems( Player staff ) {
+    private void insertItems() {
         // glass: everywhere
         // sign: 13
         // green wool confirm: 30
@@ -53,88 +60,51 @@ public class HistoryDeleteConfirmGUI implements Listener {
 
         ItemStack items[] = new ItemStack[45];
         for ( int index = 0; index < 45; index++ ) {
-            items[index] = getBackgroundGlass();
+            items[index] = GUIUtils.getBackgroundGlass();
         }
 
-        items[13] = STAFF_PUNS.get( staff.getName() ).getPunishmentAsSign();
-        items[30] = getConfirmGreenWool();
-        items[32] = getCancelRedWool();
+        items[13] = punishment.getPunishmentAsSign();
+        items[30] = GUIUtils.createItem( Material.LIME_WOOL, "&aConfirm" );
+        items[32] = GUIUtils.createItem( Material.RED_WOOL, "&cCancel" );
 
         gui.setContents( items );
-    }
-
-    private ItemStack getBackgroundGlass() {
-        ItemStack glass = new ItemStack( Material.GRAY_STAINED_GLASS_PANE );
-        ItemMeta meta = glass.getItemMeta();
-        meta.setDisplayName( "" );
-        glass.setItemMeta( meta );
-        return glass;
-    }
-
-    private ItemStack getConfirmGreenWool() {
-        ItemStack wool = new ItemStack( Material.LIME_WOOL );
-        ItemMeta meta = wool.getItemMeta();
-        meta.setDisplayName( Utils.getColored( "&aConfirm" ) );
-        wool.setItemMeta( meta );
-        return wool;
-    }
-
-    private ItemStack getCancelRedWool() {
-        ItemStack wool = new ItemStack( Material.RED_WOOL );
-        ItemMeta meta = wool.getItemMeta();
-        meta.setDisplayName( Utils.getColored( "&cCancel" ) );
-        wool.setItemMeta( meta );
-        return wool;
     }
 
     public void openInventory( Player staff ) {
         staff.openInventory( gui );
     }
 
-    @EventHandler
+    @GUIEventInterface( type = GUIEventType.INVENTORY_CLICK )
     public void onInventoryClick( InventoryClickEvent event ) {
-        if ( STAFF_TARGETS.containsKey( event.getWhoClicked().getName() ) ) {
+        if ( event.getWhoClicked().getName().equals( staff.getName() ) ) {
             event.setCancelled( true );
-            Player staff = ( Player ) event.getWhoClicked();
 
-            if ( COOLDOWN.contains( staff ) == false ) {
+            if ( cooldown == false ) {
                 ItemStack itemClicked = event.getCurrentItem();
                 if ( itemClicked == null || itemClicked.getType().isAir() ) { return; }
 
-                if ( itemClicked.equals( getConfirmGreenWool() ) ) {
-                    int punID = STAFF_PUNS.get( staff.getName() ).getID();
+                if ( itemClicked.equals( GUIUtils.createItem( Material.LIME_WOOL, "&aConfirm" ) ) ) {
                     staff.closeInventory();
-                    DATA.deletePunishment( punID );
-                    staff.sendMessage( Utils.getColored( "&7Successfully deleted punishment &6#" + punID ) );
+                    DATA.deletePunishment( punishment.getID() );
+                    staff.sendMessage( Utils.getColored( "&7Successfully deleted punishment &6#" + punishment.getID() ) );
                 }
 
-                else if ( itemClicked.equals( getCancelRedWool() ) ) {
+                else if ( itemClicked.equals( GUIUtils.createItem( Material.RED_WOOL, "&cCancel" ) ) ) {
                     staff.closeInventory();
-                }
-
-                if ( itemClicked.equals( getCancelRedWool() ) || itemClicked.equals( getConfirmGreenWool() ) ) {
-                    STAFF_TARGETS.remove( staff.getName() );
-                    COOLDOWN.add( staff );
-                    Bukkit.getScheduler().runTaskLater( Utils.getPlugin(), () -> {
-                        COOLDOWN.remove( staff );
-                    }, 5L );
                 }
             }
         }
     }
 
-    @EventHandler
+    @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
     public void onInventoryDrag( InventoryDragEvent event ) {
-        if ( STAFF_TARGETS.containsKey( event.getWhoClicked().getName() ) ) {
+        if ( event.getWhoClicked().getName().equals( staff.getName() ) ) {
             event.setCancelled( true );
         }
     }
 
-    @EventHandler
+    @GUIEventInterface( type = GUIEventType.INVENTORY_CLOSE )
     public void onInventoryClose( InventoryCloseEvent event ) {
-        if ( STAFF_TARGETS.containsKey( event.getPlayer().getName() ) ) {
-            STAFF_TARGETS.remove( event.getPlayer().getName() );
-            STAFF_PUNS.remove( event.getPlayer().getName() );
-        }
+        if ( event.getPlayer().getName().equals( staff.getName() ) ) { GUIEventManager.removeEvent( this ); }
     }
 }
