@@ -1,59 +1,52 @@
 package com.github.cyberryan1.netuno.guis.history;
 
 import com.github.cyberryan1.netuno.classes.Punishment;
+import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
+import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
+import com.github.cyberryan1.netuno.guis.events.GUIEventType;
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
 
 public class HistoryEditGUI implements Listener {
 
     private final Database DATA = Utils.getDatabase();
 
     private final Inventory GUI;
-    //                      Staff name | Target UUID
-    private final static HashMap<String, UUID> STAFF_TARGETS = new HashMap<>();
-    //                      Staff name | Target punishment
-    private final static HashMap<String, Punishment> STAFF_PUNS = new HashMap<>();
-    //                         Staff name
-    private final static ArrayList<String> STAFF_EDITING_LENGTH = new ArrayList<>();
-    //                         Staff name
-    private final static ArrayList<String> STAFF_EDITING_REASON = new ArrayList<>();
+    private final OfflinePlayer target;
+    private final Player staff;
+    private final Punishment punishment;
+
+    private boolean editingLength = false;
+    private boolean editingReason = false;
 
     public HistoryEditGUI( OfflinePlayer target, Player staff, int punID ) {
+        this.target = target;
+        this.staff = staff;
 
         Punishment workingWith;
-        if ( DATA.checkPunIDExists( punID ) ) { workingWith = DATA.getPunishment( punID ); }
+        if ( DATA.checkPunIDExists( punID ) ) { punishment = DATA.getPunishment( punID ); }
         // else is an ip punishment
-        else { workingWith = DATA.getIPPunishment( punID ); }
-
-        STAFF_TARGETS.remove( staff.getName() );
-        STAFF_TARGETS.put( staff.getName(), target.getUniqueId() );
-
-        STAFF_PUNS.remove( staff.getName() );
-        STAFF_PUNS.put( staff.getName(), workingWith );
+        else { punishment = DATA.getIPPunishment( punID ); }
 
         String guiName = Utils.getColored( "&7Edit Punishment &6#" + punID );
         GUI = Bukkit.createInventory( null, 54, guiName );
+        insertItems();
 
-        insertItems( staff );
+        GUIEventManager.addEvent( this );
     }
 
-    public void insertItems( Player staff ) {
+    public void insertItems() {
         // glass: everything else
         // pun info sign: 13
         // back to history list: 49
@@ -67,80 +60,36 @@ public class HistoryEditGUI implements Listener {
 
         ItemStack items[] = new ItemStack[54];
         for ( int index = 0; index < items.length; index++ ) {
-            items[index] = getBackgroundGlass();
+            items[index] = GUIUtils.getBackgroundGlass();
         }
 
-        Punishment pun = STAFF_PUNS.get( staff.getName() );
-        items[13] = pun.getPunishmentAsSign();
+        items[13] = punishment.getPunishmentAsSign();
 
-        if ( pun.checkIsUnpunish() ) {
-            items[31] = getDeleteBarrier();
+        if ( punishment.checkIsUnpunish() ) {
+            items[31] = GUIUtils.createItem( Material.BARRIER, "&7Delete punishment" );
         }
-        else if ( pun.checkHasNoTime() || pun.getActive() == false ) {
-            items[30] = getEditReasonPaper();
-            items[32] = getDeleteBarrier();
+        else if ( punishment.checkHasNoTime() || punishment.getActive() == false ) {
+            items[30] = GUIUtils.createItem( Material.PAPER, "&7Edit reason" );
+            items[32] = GUIUtils.createItem( Material.BARRIER, "&7Delete punishment" );
         }
         else {
-            items[29] = getEditLengthClock();
-            items[31] = getEditReasonPaper();
-            items[33] = getDeleteBarrier();
+            items[29] = GUIUtils.createItem( Material.CLOCK, "&7Edit length" );
+            items[31] = GUIUtils.createItem( Material.PAPER, "&7Edit reason" );
+            items[33] = GUIUtils.createItem( Material.BARRIER, "&7Delete punishment" );
         }
 
-        items[49] = getBackArrow();
+        items[49] = GUIUtils.createItem( Material.ARROW, "&7Go back" );
         GUI.setContents( items );
-    }
-
-    private ItemStack getBackgroundGlass() {
-        ItemStack glass = new ItemStack( Material.GRAY_STAINED_GLASS_PANE );
-        ItemMeta meta = glass.getItemMeta();
-        meta.setDisplayName( "" );
-        glass.setItemMeta( meta );
-        return glass;
-    }
-
-    private ItemStack getEditLengthClock() {
-        ItemStack clock = new ItemStack( Material.CLOCK );
-        ItemMeta meta = clock.getItemMeta();
-        meta.setDisplayName( Utils.getColored( "&7Edit length" ) );
-        clock.setItemMeta( meta );
-        return clock;
-    }
-
-    private ItemStack getEditReasonPaper() {
-        ItemStack paper = new ItemStack( Material.PAPER );
-        ItemMeta meta = paper.getItemMeta();
-        meta.setDisplayName( Utils.getColored( "&7Edit reason" ) );
-        paper.setItemMeta( meta );
-        return paper;
-    }
-
-    private ItemStack getDeleteBarrier() {
-        ItemStack barrier = new ItemStack( Material.BARRIER );
-        ItemMeta meta = barrier.getItemMeta();
-        meta.setDisplayName( Utils.getColored( "&7Delete punishment" ) );
-        barrier.setItemMeta( meta );
-        return barrier;
-    }
-
-    private ItemStack getBackArrow() {
-        ItemStack arrow = new ItemStack( Material.ARROW );
-        ItemMeta meta = arrow.getItemMeta();
-        meta.setDisplayName( Utils.getColored( "&7Go back" ) );
-        arrow.setItemMeta( meta );
-        return arrow;
     }
 
     public void openInventory( Player player ) {
         player.openInventory( GUI );
     }
 
-    @EventHandler
+    @GUIEventInterface( type = GUIEventType.INVENTORY_CLICK )
     public void onInventoryClick( InventoryClickEvent event ) {
-        if ( STAFF_TARGETS.containsKey( event.getWhoClicked().getName() ) == false ) { return; }
-        Player staff = ( Player ) event.getWhoClicked();
-
-        Punishment targetPun = STAFF_PUNS.get( staff.getName() );
-        if ( event.getView().getTitle().equals( Utils.getColored( "&7Edit Punishment &6#" + targetPun.getID() ) ) == false ) { return; }
+        if ( event.getWhoClicked().getName().equals( staff.getName() ) == false ) { return; }
+        if ( event.getView().getTitle().equals( Utils.getColored( "&7Edit Punishment &6#" + punishment.getID() ) ) == false ) { return; }
 
         event.setCancelled( true );
         ItemStack itemClicked = event.getCurrentItem();
@@ -151,91 +100,91 @@ public class HistoryEditGUI implements Listener {
             && itemName.equals( Utils.getColored( "&7Delete punishment" ) ) == false
             && itemName.equals( Utils.getColored( "&7Go back" ) ) == false ) { return; }
 
-        if ( itemClicked.equals( getEditLengthClock() ) ) {
+        if ( itemClicked.equals( GUIUtils.createItem( Material.CLOCK, "&7Edit length" ) ) ) {
             if ( VaultUtils.hasPerms( staff, ConfigUtils.getStr( "history.time.perm" ) ) == false ) {
                 CommandErrors.sendInvalidPerms( staff );
             }
 
-            else if ( STAFF_EDITING_LENGTH.contains( event.getWhoClicked().getName() ) == false ) {
+            else if ( editingLength == false ) {
                 event.getWhoClicked().closeInventory();
-                int punID = STAFF_PUNS.get( event.getWhoClicked().getName() ).getID();
-                event.getWhoClicked().sendMessage( Utils.getColored( "&7Please type the new length for punishment &6#" + punID ) );
+                event.getWhoClicked().sendMessage( Utils.getColored( "&7Please type the new length for punishment &6#" + punishment.getID() ) );
                 event.getWhoClicked().sendMessage( Utils.getColored( "&7To cancel, type &6\"cancel\"" ) );
-                STAFF_EDITING_LENGTH.add( event.getWhoClicked().getName() );
+                editingLength = true;
             }
         }
 
-        else if ( itemClicked.equals( getEditReasonPaper() ) ) {
+        else if ( itemClicked.equals( GUIUtils.createItem( Material.PAPER, "&7Edit reason" ) ) ) {
             if ( VaultUtils.hasPerms( staff, ConfigUtils.getStr( "history.reason.perm" ) ) == false ) {
                 CommandErrors.sendInvalidPerms( staff );
             }
 
-            else if ( STAFF_EDITING_REASON.contains( event.getWhoClicked().getName() ) == false ) {
+            else if ( editingReason == false ) {
                 event.getWhoClicked().closeInventory();
-                int punID = STAFF_PUNS.get( event.getWhoClicked().getName() ).getID();
-                event.getWhoClicked().sendMessage( Utils.getColored( "&7Please type the new reason for punishment &6#" + punID ) );
+                event.getWhoClicked().sendMessage( Utils.getColored( "&7Please type the new reason for punishment &6#" + punishment.getID() ) );
                 event.getWhoClicked().sendMessage( Utils.getColored( "&7To cancel, type &6\"cancel\"" ) );
-                STAFF_EDITING_REASON.add( event.getWhoClicked().getName() );
+                editingReason = true;
             }
         }
 
-        else if ( itemClicked.equals( getDeleteBarrier() ) ) {
+        else if ( itemClicked.equals( GUIUtils.createItem( Material.BARRIER, "&7Delete punishment" ) ) ) {
             if ( VaultUtils.hasPerms( staff, ConfigUtils.getStr( "history.delete.perm" ) ) == false ) {
                 CommandErrors.sendInvalidPerms( staff );
             }
 
             else {
                 event.getWhoClicked().closeInventory();
-                OfflinePlayer target = Bukkit.getOfflinePlayer( STAFF_TARGETS.get( event.getWhoClicked().getName() ) );
-                Punishment pun = STAFF_PUNS.get( event.getWhoClicked().getName() );
-                HistoryDeleteConfirmGUI deleteGUI = new HistoryDeleteConfirmGUI( target, staff, pun );
+                HistoryDeleteConfirmGUI deleteGUI = new HistoryDeleteConfirmGUI( target, staff, punishment );
                 deleteGUI.openInventory( staff );
-                Utils.getPlugin().getServer().getPluginManager().registerEvents( deleteGUI, Utils.getPlugin() );
             }
         }
 
-        else if ( itemClicked.equals( getBackArrow() ) ) {
+        else if ( itemClicked.equals( GUIUtils.createItem( Material.ARROW, "&7Go back" ) ) ) {
             event.getWhoClicked().closeInventory();
-            OfflinePlayer target = Bukkit.getOfflinePlayer( STAFF_TARGETS.get( event.getWhoClicked().getName() ) );
             HistoryListGUI gui = new HistoryListGUI( target, staff, 1 );
             gui.openInventory( staff );
-            Utils.getPlugin().getServer().getPluginManager().registerEvents( gui, Utils.getPlugin() );
+
+            GUIEventManager.removeEvent( this );
         }
 
     }
 
-    @EventHandler
+    @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
     public void onInventoryDrag( InventoryDragEvent event ) {
-        if ( STAFF_TARGETS.containsKey( event.getWhoClicked().getName() ) == false ) { return; }
-        Player staff = ( Player ) event.getWhoClicked();
-
-        Punishment targetPun = STAFF_PUNS.get( staff.getName() );
-        if ( event.getView().getTitle().equals( Utils.getColored( "&7Edit Punishment &6#" + targetPun.getID() ) ) == false ) { return; }
+        if ( event.getWhoClicked().getName().equals( staff.getName() ) == false ) { return; }
+        if ( event.getView().getTitle().equals( Utils.getColored( "&7Edit Punishment &6#" + punishment.getID() ) ) == false ) { return; }
 
         event.setCancelled( true );
     }
 
-    @EventHandler
+    @GUIEventInterface( type = GUIEventType.INVENTORY_CLOSE )
+    public void onInventoryClose( InventoryCloseEvent event ) {
+        if ( event.getPlayer().getName().equals( staff.getName() ) == false ) { return; }
+        if ( event.getView().getTitle().equals( Utils.getColored( "&7Edit Punishment &6#" + punishment.getID() ) ) == false ) { return; }
+
+        if ( editingLength == false || editingReason == false ) { return; }
+
+        GUIEventManager.removeEvent( this );
+    }
+
+    @GUIEventInterface( type = GUIEventType.PLAYER_CHAT )
     public void onPlayerChatEvent( PlayerChatEvent event ) {
-        if ( STAFF_EDITING_LENGTH.contains( event.getPlayer().getName() ) ) {
+        Utils.logWarn( "onPlayerChatEvent fired sucessfully" ); // ! debug
+        if ( editingLength ) {
             event.setCancelled( true );
 
             if ( event.getMessage().equalsIgnoreCase( "cancel" ) ) {
-                OfflinePlayer target = Bukkit.getOfflinePlayer( STAFF_TARGETS.get( event.getPlayer().getName() ) );
-                HistoryEditGUI newGUI = new HistoryEditGUI( target, event.getPlayer(), STAFF_PUNS.get( event.getPlayer().getName() ).getID() );
+                HistoryEditGUI newGUI = new HistoryEditGUI( target, event.getPlayer(), punishment.getID() );
                 newGUI.openInventory( event.getPlayer() );
-                STAFF_EDITING_LENGTH.remove( event.getPlayer().getName() );
+                editingLength = false;
             }
 
             else if ( Time.isAllowableLength( event.getMessage() ) ) {
-                Punishment current = STAFF_PUNS.get( event.getPlayer().getName() );
-                current.setLength( Time.getTimestampFromLength( event.getMessage() ) );
-                DATA.setPunishmentLength( current.getID(), current.getLength() );
+                punishment.setLength( Time.getTimestampFromLength( event.getMessage() ) );
+                DATA.setPunishmentLength( punishment.getID(), punishment.getLength() );
 
-                OfflinePlayer target = Bukkit.getOfflinePlayer( STAFF_TARGETS.get( event.getPlayer().getName() ) );
-                HistoryEditGUI newGUI = new HistoryEditGUI( target, event.getPlayer(), current.getID() );
+                HistoryEditGUI newGUI = new HistoryEditGUI( target, event.getPlayer(), punishment.getID() );
                 newGUI.openInventory( event.getPlayer() );
-                STAFF_EDITING_LENGTH.remove( event.getPlayer().getName() );
+                editingLength = false;
             }
 
             else {
@@ -244,19 +193,17 @@ public class HistoryEditGUI implements Listener {
             }
         }
 
-        else if ( STAFF_EDITING_REASON.contains ( event.getPlayer().getName() ) ) {
+        else if ( editingReason ) {
             event.setCancelled( true );
 
             if ( event.getMessage().equalsIgnoreCase( "cancel" ) == false ) {
-                Punishment current = STAFF_PUNS.get( event.getPlayer().getName() );
-                current.setReason( event.getMessage() );
-                DATA.setPunishmentReason( current.getID(), current.getReason() );
+                punishment.setReason( event.getMessage() );
+                DATA.setPunishmentReason( punishment.getID(), punishment.getReason() );
             }
 
-            OfflinePlayer target = Bukkit.getOfflinePlayer( STAFF_TARGETS.get( event.getPlayer().getName() ) );
-            HistoryEditGUI newGUI = new HistoryEditGUI( target, event.getPlayer(), STAFF_PUNS.get( event.getPlayer().getName() ).getID() );
+            HistoryEditGUI newGUI = new HistoryEditGUI( target, event.getPlayer(), punishment.getID() );
             newGUI.openInventory( event.getPlayer() );
-            STAFF_EDITING_REASON.remove( event.getPlayer().getName() );
+            editingReason = false;
         }
     }
 }
