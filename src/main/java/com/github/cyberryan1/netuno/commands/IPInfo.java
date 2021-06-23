@@ -41,6 +41,12 @@ public class IPInfo implements CommandExecutor {
             OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
             // want the target to have joined before
             if ( target.hasPlayedBefore() ) {
+                if ( VaultUtils.hasPerms( target, ConfigUtils.getStr( "ipinfo.exempt-perm" ) )
+                        && VaultUtils.hasPerms( staff, ConfigUtils.getStr( "general.all-perms" ) ) == false ) {
+                    CommandErrors.sendPlayerExempt( staff, target.getName() );
+                    return true;
+                }
+
                 AltsListGUI gui = new AltsListGUI( target, staff, 1 );
                 gui.openInventory( staff );
                 Utils.getPlugin().getServer().getPluginManager().registerEvents( gui, Utils.getPlugin() );
@@ -55,8 +61,6 @@ public class IPInfo implements CommandExecutor {
         else {
             CommandErrors.sendCommandUsage( sender, "ipinfo" );
         }
-
-
 
         return true;
     }
