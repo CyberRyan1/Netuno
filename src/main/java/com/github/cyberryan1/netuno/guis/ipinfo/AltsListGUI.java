@@ -48,7 +48,8 @@ public class AltsListGUI implements Listener {
     }
 
     public void insertItems() {
-        // glass: everywhere
+        // dark background glass: everywhere
+        // light background glass: 10-16, 19-25, 38-34
         // alts: 10-16, 19-25, 28-34
         // back book: 47 || next book: 51
         // paper: 40
@@ -60,10 +61,10 @@ public class AltsListGUI implements Listener {
         int altIndex = 21 * ( page - 1 );
         int guiIndex = 10;
         for ( int row = 0; row < 3; row++ ) {
-            for ( int col = 0; col < 3; col++ ) {
-                if ( altIndex >= alts.size() ) { break; }
+            for ( int col = 0; col < 7; col++ ) {
+                if ( altIndex >= alts.size() ) { items[guiIndex] = GUIUtils.createItem( Material.LIGHT_GRAY_STAINED_GLASS_PANE, "&7" ); }
+                else { items[guiIndex] = getAltSkull( altIndex ); }
 
-                items[guiIndex] = getAltSkull( altIndex );
                 guiIndex++;
                 altIndex++;
             }
