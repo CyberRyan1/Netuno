@@ -13,7 +13,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 // TODO add a reports system
 // TODO add option to disable books for muted/ipmuted players
 // TODO add punish GUI
-// TODO add a set of commands blocked while muted/ipmuted
 // TODO add tab-completer
 // TODO add a way to convert vanilla bans to netuno bans
 // TODO add a [MAIN] variable in config for the main plugin color
