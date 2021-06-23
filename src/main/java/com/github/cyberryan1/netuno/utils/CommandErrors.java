@@ -123,4 +123,8 @@ public class CommandErrors {
     public static void sendPunishmentIDNotFound( CommandSender sender, int id ) {
         sender.sendMessage( Utils.getColored( "&7Punishment with ID &6" + id + " &7not found" ) );
     }
+
+    public static void sendPlayerExempt( CommandSender sender, String targetName ) {
+        sender.sendMessage( Utils.getColored( "&6" + targetName + " &7is exempt from this!" ) );
+    }
 }
