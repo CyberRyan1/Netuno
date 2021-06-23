@@ -247,6 +247,24 @@ unipban:
 
 ipinfo:
   perm: "netuno.ipinfo"
+  # Players cannot view players with this permissions alt list,
+  # unless they have the general.all-perms permissions
+  exempt-perm: "netuno.ipinfo.exempt"
+
+  # Whether punished alt notifications are enabled or not
+  notifs: true
+  # What to send when a player joins with punished alt accounts
+  # Only sends to players who have access to the /ipinfo command
+  # Will not be sent if a player has the exempt-perm
+  # Supported variables: [TARGET]
+  notif-msg:
+    - ""
+    - " &6[TARGET]&7 has punished alts! Click here to view them"
+    - ""
+  # The message that is seen when a player hovers over the notif-msg (above)
+  # Set to "" for no hover message
+  # Supported variables: [TARGET]
+  notif-hover: "&7Click to view &6[TARGET]&7's punished alts"
 
 mutechat:
   perm: "netuno.mutechat"

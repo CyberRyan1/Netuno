@@ -4,11 +4,16 @@ import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+
+import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.ArrayList;
 
@@ -116,6 +121,43 @@ public class JoinListener implements Listener {
         //
         // Low priority things below here
         //
+
+        // Checking if the player has any punished alts and alerting staff if they do
+        if ( DATA.getPunishedAltList( event.getPlayer().getUniqueId().toString() ).size() >= 1 ) {
+            if ( ConfigUtils.getBool( "ipinfo.notifs" )
+                    && VaultUtils.hasPerms( event.getPlayer(), ConfigUtils.getStr( "ipinfo.exempt-perm" ) ) == false ) {
+                if ( ConfigUtils.checkListNotEmpty( "ipinfo.notif-msg" ) ) {
+                    String coloredMsg = ConfigUtils.getColoredStrFromList( "ipinfo.notif-msg" );
+                    coloredMsg = coloredMsg.replace( "[TARGET]", event.getPlayer().getName() );
+
+                    //? For some reason can send two blank lines, this is a "fix"
+                    if ( coloredMsg.substring( coloredMsg.length() - 2 ).equals( "\n\n" ) ) {
+                        coloredMsg = coloredMsg.substring( 0, coloredMsg.length() - 2 ) + "\n";
+                    }
+
+                    TextComponent message = new TextComponent( coloredMsg );
+                    message.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/ipinfo " + event.getPlayer().getName() ) );
+
+                    if ( ConfigUtils.getStr( "ipinfo.notif-hover" ).equals( "" ) == false ) {
+                        String hoverColoredMsg = ConfigUtils.getColoredStr( "ipinfo.notif-hover" ).replace( "[TARGET]", event.getPlayer().getName() );
+                        ComponentBuilder hoverText = new ComponentBuilder( hoverColoredMsg );
+                        message.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, hoverText.create() ) );
+                    }
+
+                    Bukkit.getScheduler().runTaskLater( Utils.getPlugin(), () -> {
+                        for ( Player player : Bukkit.getOnlinePlayers() ) {
+                            if ( VaultUtils.hasPerms( player, ConfigUtils.getStr( "ipinfo.perm" ) ) ) {
+                                player.spigot().sendMessage( message );
+                            }
+                        }
+                    }, 5L );
+                }
+
+                else {
+                    Utils.logWarn( "\"ipinfo.notifs\" in the config is enabled, yet you have no message set in \"ipinfo.notif-msg\"!" );
+                }
+            }
+        }
 
         // * IMPORTANT * Should be the last thing checked in this event
         // Checking if the player has been punished while they were offline
