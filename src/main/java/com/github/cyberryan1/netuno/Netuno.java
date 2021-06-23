@@ -60,6 +60,7 @@ public final class Netuno extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents( new LeaveListener(), this );
         this.getServer().getPluginManager().registerEvents( new SignChangeListener(), this );
         this.getServer().getPluginManager().registerEvents( new GUIEventManager(), this );
+        this.getServer().getPluginManager().registerEvents( new CommandListener(), this );
 
         ConfigUtils.getConfigManager().reloadConfig();
     }

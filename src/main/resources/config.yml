@@ -106,6 +106,16 @@ mute:
   # Only supported variable: [TARGET]
   expire-staff:
     - " &6[TARGET]&7's mute has expired"
+  # Commands that are blocked while muted
+  # Are also blocked while IP-muted
+  # Should include the command name and the slash (ex: "/msg")
+  blocked-cmds:
+    - "/message"
+    - "/msg"
+    - "/w"
+    - "/whisper"
+  # What to send when a muted player attempts to execute a blocked command
+  blocked-cmd-msg: "&7You cannot do this command while punished"
 
 unmute:
   perm: "netuno.unmute"
