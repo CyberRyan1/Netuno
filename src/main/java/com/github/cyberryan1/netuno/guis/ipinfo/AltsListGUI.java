@@ -4,6 +4,7 @@ import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.guis.events.GUIEventType;
+import com.github.cyberryan1.netuno.guis.utils.SortBy;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.GUIUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
@@ -30,21 +31,105 @@ public class AltsListGUI implements Listener {
     private final Player staff;
     private final OfflinePlayer target;
     private final int page;
-    private final ArrayList<OfflinePlayer> alts;
+    private SortBy sort;
+    private ArrayList<OfflinePlayer> alts;
     private final ArrayList<OfflinePlayer> punishedAlts;
 
-    public AltsListGUI( OfflinePlayer target, Player staff, int page ) {
+    public AltsListGUI( OfflinePlayer target, Player staff, int page, SortBy sort ) {
         this.target = target;
         this.staff = staff;
         this.page = page;
+        this.sort = sort;
         this.alts = DATA.getAllAlts( target.getUniqueId().toString() );
         this.punishedAlts = DATA.getPunishedAltList( target.getUniqueId().toString() );
+
+        sortAlts();
 
         String guiName = Utils.getColored( "&6" + target.getName() + "&7's alts" );
         gui = Bukkit.createInventory( null, 54, guiName );
         insertItems();
 
         GUIEventManager.addEvent( this );
+    }
+
+    public AltsListGUI( OfflinePlayer target, Player staff, int page ) {
+        this( target, staff, page, SortBy.ALPHABETICAL );
+    }
+
+    private void sortAlts() {
+        if ( sort == SortBy.ALPHABETICAL ) {
+            ArrayList<OfflinePlayer> accounts = new ArrayList<>();
+            accounts.add( alts.remove( 0 ) );
+            for ( OfflinePlayer player : alts ) {
+                for ( int index = 0; index < accounts.size(); index++ ) {
+                    if ( player.getName().compareTo( accounts.get( index ).getName() ) < 0 ) {
+                        accounts.add( index, player );
+                        break;
+                    }
+                }
+
+                if ( accounts.contains( player ) == false ) { accounts.add( player ); }
+            }
+
+            alts = accounts;
+        }
+
+        else if ( sort == SortBy.FIRST_DATE ) {
+            ArrayList<OfflinePlayer> accounts = new ArrayList<>();
+            accounts.add( alts.remove( 0 ) );
+            for ( OfflinePlayer player : alts ) {
+                for ( int index = 0; index < accounts.size(); index++ ) {
+                    if ( player.getFirstPlayed() < accounts.get( index ).getFirstPlayed() ) {
+                        accounts.add( index, player );
+                        break;
+                    }
+                }
+
+                if ( accounts.contains( player ) == false ) { accounts.add( player ); }
+            }
+
+            alts = accounts;
+        }
+
+        else if ( sort == SortBy.LAST_DATE ) {
+            ArrayList<OfflinePlayer> accounts = new ArrayList<>();
+            accounts.add( alts.remove( 0 ) );
+            for ( OfflinePlayer player : alts ) {
+                for ( int index = 0; index < accounts.size(); index++ ) {
+                    if ( player.getFirstPlayed() > accounts.get( index ).getFirstPlayed() ) {
+                        accounts.add( index, player );
+                        break;
+                    }
+                }
+
+                if ( accounts.contains( player ) == false ) { accounts.add( player ); }
+            }
+
+            alts = accounts;
+        }
+
+        else if ( sort == SortBy.FIRST_PUNISHED ) {
+            ArrayList<OfflinePlayer> accounts = new ArrayList<>();
+            accounts.addAll( punishedAlts );
+            for ( OfflinePlayer player : alts ) {
+                if ( accounts.contains( player ) == false ) {
+                    accounts.add( player );
+                }
+            }
+
+            alts = accounts;
+        }
+
+        else if ( sort == SortBy.LAST_PUNISHED ) {
+            ArrayList<OfflinePlayer> accounts = new ArrayList<>();
+            accounts.addAll( alts );
+            for ( int index = accounts.size() - 1; index >= 0; index-- ) {
+                if ( punishedAlts.contains( accounts.get( index ) ) ) { accounts.remove( index ); }
+            }
+
+            accounts.addAll( punishedAlts );
+            alts = accounts;
+        }
     }
 
     public void insertItems() {
@@ -72,13 +157,67 @@ public class AltsListGUI implements Listener {
             guiIndex += 2;
         }
 
-        items[40] = GUIUtils.createItem( Material.PAPER, "&7Page &6#" + page );
+        if ( sort == SortBy.ALPHABETICAL ) { items[40] = getAlphabeticalPaper(); }
+        else if ( sort == SortBy.FIRST_DATE ) { items[40] = getFirstDatePaper(); }
+        else if ( sort == SortBy.LAST_DATE ) { items[40] = getLastDatePaper(); }
+        else if ( sort == SortBy.FIRST_PUNISHED ) { items[40] = getFirstPunPaper(); }
+        else if ( sort == SortBy.LAST_PUNISHED ) { items[40] = getLastPunPaper(); }
 
         if ( page >= 2 ) { items[47] = GUIUtils.createItem( Material.BOOK, "&6Previous Page" ); }
         int maxPage = ( int ) Math.ceil( alts.size() / 21.0 );
         if ( page < maxPage ) { items[51] = GUIUtils.createItem( Material.BOOK, "&6Next Page" ); }
 
         gui.setContents( items );
+    }
+
+    private ItemStack getAlphabeticalPaper() {
+        ItemStack toReturn = GUIUtils.createItem( Material.PAPER, "&7Page &6#" + page );
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add( "" );
+        lore.add( Utils.getColored( "&7Current Sort: &6A -> Z" ) );
+        lore.add( Utils.getColored( "&7Next Sort: &6First Join -> Last Join" ) );
+        lore.add( Utils.getColored( "&7Click to change sort method" ) );
+        return GUIUtils.setItemLore( toReturn, lore );
+    }
+
+    private ItemStack getFirstDatePaper() {
+        ItemStack toReturn = GUIUtils.createItem( Material.PAPER, "&7Page &6#" + page );
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add( "" );
+        lore.add( Utils.getColored( "&7Sort: &6First Join -> Last Join" ) );
+        lore.add( Utils.getColored( "&7Next Sort: &6Last Join -> First Join" ) );
+        lore.add( Utils.getColored( "&7Click to change sort method" ) );
+        return GUIUtils.setItemLore( toReturn, lore );
+    }
+
+    private ItemStack getLastDatePaper() {
+        ItemStack toReturn = GUIUtils.createItem( Material.PAPER, "&7Page &6#" + page );
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add( "" );
+        lore.add( Utils.getColored( "&7Sort: &6Last Join -> First Join" ) );
+        lore.add( Utils.getColored( "&7Next Sort: &6Punished -> Not Punished" ) );
+        lore.add( Utils.getColored( "&7Click to change sort method" ) );
+        return GUIUtils.setItemLore( toReturn, lore );
+    }
+
+    private ItemStack getFirstPunPaper() {
+        ItemStack toReturn = GUIUtils.createItem( Material.PAPER, "&7Page &6#" + page );
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add( "" );
+        lore.add( Utils.getColored( "&7Sort: &6Punished -> Not Punished" ) );
+        lore.add( Utils.getColored( "&7Next Sort: &6Not Punished -> Punished" ) );
+        lore.add( Utils.getColored( "&7Click to change sort method" ) );
+        return GUIUtils.setItemLore( toReturn, lore );
+    }
+
+    private ItemStack getLastPunPaper() {
+        ItemStack toReturn = GUIUtils.createItem( Material.PAPER, "&7Page &6#" + page );
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add( "" );
+        lore.add( Utils.getColored( "&7Sort: &6Not Punished -> Punished" ) );
+        lore.add( Utils.getColored( "&7Next Sort: &6A -> Z" ) );
+        lore.add( Utils.getColored( "&7Click to change sort method" ) );
+        return GUIUtils.setItemLore( toReturn, lore );
     }
 
     private ItemStack getAltSkull( int index ) {
@@ -108,7 +247,10 @@ public class AltsListGUI implements Listener {
 
     public void openInventory( Player staff ) {
         if ( alts.size() == 0 ) { CommandErrors.sendNoAltAccounts( staff, target.getName() ); }
-        else { staff.openInventory( gui ); }
+        else {
+            staff.openInventory( gui );
+            if ( GUIEventManager.getObjects().contains( this ) == false ) { GUIEventManager.addEvent( this ); }
+        }
     }
 
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLICK )
@@ -122,17 +264,38 @@ public class AltsListGUI implements Listener {
         if ( clicked == null || clicked.getType().isAir() ) { return; }
 
         if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&6Previous Page" ) ) ) {
-            staff.closeInventory();
             AltsListGUI newGUI = new AltsListGUI( target, staff, page - 1 );
             newGUI.openInventory( staff );
-            Utils.getPlugin().getServer().getPluginManager().registerEvents( newGUI, Utils.getPlugin() );
         }
 
         else if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&6Next Page" ) ) ) {
-            staff.closeInventory();
             AltsListGUI newGUI = new AltsListGUI( target, staff, page + 1 );
             newGUI.openInventory( staff );
-            Utils.getPlugin().getServer().getPluginManager().registerEvents( newGUI, Utils.getPlugin() );
+        }
+
+        else if ( clicked.equals( getAlphabeticalPaper() ) ) {
+            AltsListGUI newGUI = new AltsListGUI( target, staff, page, SortBy.FIRST_DATE );
+            newGUI.openInventory( staff );
+        }
+
+        else if ( clicked.equals( getFirstDatePaper() ) ) {
+            AltsListGUI newGUI = new AltsListGUI( target, staff, page, SortBy.LAST_DATE );
+            newGUI.openInventory( staff );
+        }
+
+        else if ( clicked.equals( getLastDatePaper() ) ) {
+            AltsListGUI newGUI = new AltsListGUI( target, staff, page, SortBy.FIRST_PUNISHED );
+            newGUI.openInventory( staff );
+        }
+
+        else if ( clicked.equals( getFirstPunPaper() ) ) {
+            AltsListGUI newGUI = new AltsListGUI( target, staff, page, SortBy.LAST_PUNISHED );
+            newGUI.openInventory( staff );
+        }
+
+        else if ( clicked.equals( getLastPunPaper() ) ) {
+            AltsListGUI newGUI = new AltsListGUI( target, staff, page, SortBy.ALPHABETICAL );
+            newGUI.openInventory( staff );
         }
     }
 
