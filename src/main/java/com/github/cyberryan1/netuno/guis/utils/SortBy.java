@@ -5,5 +5,7 @@ public enum SortBy {
     FIRST_DATE,
     LAST_DATE,
     FIRST_PUNISHED,
-    LAST_PUNISHED;
+    LAST_PUNISHED,
+    FIRST_ACTIVE,
+    LAST_ACTIVE;
 }
