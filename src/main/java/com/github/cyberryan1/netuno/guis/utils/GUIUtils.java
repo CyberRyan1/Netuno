@@ -1,5 +1,6 @@
-package com.github.cyberryan1.netuno.utils;
+package com.github.cyberryan1.netuno.guis.utils;
 
+import com.github.cyberryan1.netuno.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
