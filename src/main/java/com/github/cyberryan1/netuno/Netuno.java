@@ -11,7 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 // TODO create better transitions between pages in GUIs
 // TODO move GUIUtils to guis.utils package
-// TODO add a sort by feature in AltsListGUI and HistoryGUI
+// TODO add a sort by feature in HistoryGUI
 // TODO add a notes system
 // TODO add a reports system
 // TODO add option to disable books for muted/ipmuted players
