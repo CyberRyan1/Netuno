@@ -26,7 +26,6 @@ public class HistoryDeleteConfirmGUI implements Listener {
     private final OfflinePlayer target;
     private final Player staff;
     private final Punishment punishment;
-    private boolean cooldown = false;
 
     public HistoryDeleteConfirmGUI( OfflinePlayer target, Player staff, Punishment pun ) {
         this.target = target;
@@ -36,8 +35,6 @@ public class HistoryDeleteConfirmGUI implements Listener {
         String guiName = Utils.getColored( "&7Confirm Deletion" );
         gui = Bukkit.createInventory( null, 45, guiName );
         insertItems();
-
-        GUIEventManager.addEvent( this );
     }
 
     private void insertItems() {
@@ -60,6 +57,7 @@ public class HistoryDeleteConfirmGUI implements Listener {
 
     public void openInventory( Player staff ) {
         staff.openInventory( gui );
+        GUIEventManager.addEvent( this );
     }
 
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLICK )
@@ -67,19 +65,18 @@ public class HistoryDeleteConfirmGUI implements Listener {
         if ( event.getWhoClicked().getName().equals( staff.getName() ) ) {
             event.setCancelled( true );
 
-            if ( cooldown == false ) {
-                ItemStack itemClicked = event.getCurrentItem();
-                if ( itemClicked == null || itemClicked.getType().isAir() ) { return; }
+            ItemStack itemClicked = event.getCurrentItem();
+            if ( itemClicked == null || itemClicked.getType().isAir() ) { return; }
 
-                if ( itemClicked.equals( GUIUtils.createItem( Material.LIME_WOOL, "&aConfirm" ) ) ) {
-                    staff.closeInventory();
-                    DATA.deletePunishment( punishment.getID() );
-                    staff.sendMessage( Utils.getColored( "&7Successfully deleted punishment &6#" + punishment.getID() ) );
-                }
+            if ( itemClicked.equals( GUIUtils.createItem( Material.LIME_WOOL, "&aConfirm" ) ) ) {
+                staff.closeInventory();
+                DATA.deletePunishment( punishment.getID() );
+                staff.sendMessage( Utils.getColored( "&7Successfully deleted punishment &6#" + punishment.getID() ) );
+            }
 
-                else if ( itemClicked.equals( GUIUtils.createItem( Material.RED_WOOL, "&cCancel" ) ) ) {
-                    staff.closeInventory();
-                }
+            else if ( itemClicked.equals( GUIUtils.createItem( Material.RED_WOOL, "&cCancel" ) ) ) {
+                HistoryEditGUI editGUI = new HistoryEditGUI( target, staff, punishment.getID() );
+                editGUI.openInventory( staff );
             }
         }
     }
