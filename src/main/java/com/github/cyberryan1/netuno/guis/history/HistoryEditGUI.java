@@ -133,7 +133,7 @@ public class HistoryEditGUI implements Listener {
             }
 
             else {
-                event.getWhoClicked().closeInventory();
+                event.getWhoClicked().closeInventory(); // like this close inventory here, helps prevent accidental deletes
                 HistoryDeleteConfirmGUI deleteGUI = new HistoryDeleteConfirmGUI( target, staff, punishment );
                 deleteGUI.openInventory( staff );
             }
