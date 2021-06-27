@@ -9,6 +9,7 @@ import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
+// TODO remove cooldown from all gui's (pretty sure isn't needed anymore)
 // TODO create better transitions between pages in GUIs
 // TODO move GUIUtils to guis.utils package
 // TODO add a sort by feature in HistoryGUI
