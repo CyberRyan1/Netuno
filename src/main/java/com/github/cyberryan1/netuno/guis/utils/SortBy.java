@@ -7,5 +7,7 @@ public enum SortBy {
     FIRST_PUNISHED,
     LAST_PUNISHED,
     FIRST_ACTIVE,
-    LAST_ACTIVE;
+    LAST_ACTIVE,
+    ONLINE,
+    OFFLINE;
 }
