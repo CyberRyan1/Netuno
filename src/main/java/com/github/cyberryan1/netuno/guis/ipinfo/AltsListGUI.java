@@ -233,10 +233,18 @@ public class AltsListGUI implements Listener {
             ArrayList<Punishment> accountPuns = DATA.getAllActivePunishments( account.getUniqueId().toString() );
 
             for ( Punishment pun : accountPuns ) {
-                if ( pun.getType().equalsIgnoreCase( "mute" ) ) { lore.add( Utils.getColored( "&8- &7Muted" ) ); }
-                else if ( pun.getType().equalsIgnoreCase( "ban" ) ) { lore.add( Utils.getColored( "&8- &7Banned" ) ); }
-                else if ( pun.getType().equalsIgnoreCase( "ipmute" ) ) { lore.add( Utils.getColored( "&8- &7IP Muted" ) ); }
-                else if ( pun.getType().equalsIgnoreCase( "ipban" ) ) { lore.add( Utils.getColored( "&8- &7IP Banned" ) ); }
+                if ( pun.getType().equalsIgnoreCase( "mute" ) && lore.contains( Utils.getColored( "&8- &7Muted" ) ) == false ) {
+                    lore.add( Utils.getColored( "&8- &7Muted" ) );
+                }
+                else if ( pun.getType().equalsIgnoreCase( "ban" ) && lore.contains( Utils.getColored( "&8- &7Banned" ) ) == false ) {
+                    lore.add( Utils.getColored( "&8- &7Banned" ) );
+                }
+                else if ( pun.getType().equalsIgnoreCase( "ipmute" ) && lore.contains( Utils.getColored( "&8- &7IP Muted" ) ) == false ) {
+                    lore.add( Utils.getColored( "&8- &7IP Muted" ) );
+                }
+                else if ( pun.getType().equalsIgnoreCase( "ipban" ) && lore.contains( Utils.getColored( "&8- &7IP Banned" ) ) == false ) {
+                    lore.add( Utils.getColored( "&8- &7IP Banned" ) );
+                }
             }
             skull = GUIUtils.setItemLore( skull, lore );
         }
