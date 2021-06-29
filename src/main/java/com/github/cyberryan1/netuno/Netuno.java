@@ -17,9 +17,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 // TODO add a way to convert vanilla bans to netuno bans
 // TODO add a [MAIN] variable in config for the main plugin color
 
-// ? TODO make all events go through one event manager (is this really worth the time and effor?)
+// ? TODO make all events go through one event manager (is this really worth the time and effort?)
 // ? TODO add a "protected" permission (basically not allowing them to be punished)
 // ? TODO staffchat command & prefix
+// ? TODO change signs.notifs-perm to "netuno.signs.notifs"
 public final class Netuno extends JavaPlugin {
 
     private ConfigManager config;
