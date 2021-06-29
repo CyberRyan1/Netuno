@@ -53,9 +53,7 @@ public class CommandErrors {
             case "unipban":
                 return Utils.getColored( "&8/&6unipban &7(player)" );
             case "history":
-                String toReturn = getCommandUsage( "history-list" ) + "\n" + getCommandUsage( "history-reason" ) + "\n";
-                toReturn += getCommandUsage( "history-time" ) + "\n" + getCommandUsage( "history-delete" ) + "\n" + getCommandUsage( "history-reset" );
-                return toReturn;
+                return getCommandUsage( "history-list" ) + "\n" + getCommandUsage( "history-edit" ) + "\n" + getCommandUsage( "history-reset" );
             case "history-list":
                 return Utils.getColored( "&8/&6history &7list (player)" );
             case "history-edit":
