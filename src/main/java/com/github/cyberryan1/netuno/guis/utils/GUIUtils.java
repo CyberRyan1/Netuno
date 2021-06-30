@@ -16,6 +16,12 @@ public class GUIUtils {
         return item;
     }
 
+    public static ItemStack setItemLore( ItemStack item, String ... lore ) {
+        ArrayList<String> loreLines = new ArrayList<String>();
+        for ( String str : lore ) { loreLines.add( Utils.getColored( str ) ); }
+        return setItemLore( item, loreLines );
+    }
+
     public static ItemStack setItemName( ItemStack item, String name ) {
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName( Utils.getColored( name ) );
