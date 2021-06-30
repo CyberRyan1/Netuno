@@ -36,6 +36,7 @@ public class ReportsGUI implements Listener {
         this.page = page;
         this.sort = sort;
 
+        reports = DATA.getAllReports( 21 * ( page - 1 ), 21 * page );
         sort();
 
         String guiName = Utils.getColored( "&6Reports" );
