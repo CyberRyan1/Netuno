@@ -11,11 +11,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 // TODO add a notes system
 // TODO add a reports system
+// TODO add a search by target in the reports GUI
 // TODO add option to disable books for muted/ipmuted players
 // TODO add punish GUI
 // TODO add tab-completer
 // TODO add a way to convert vanilla bans to netuno bans
 // TODO add a [MAIN] variable in config for the main plugin color
+// TODO update /netuno command
 
 // ? TODO make all events go through one event manager (is this really worth the time and effort?)
 // ? TODO add a "protected" permission (basically not allowing them to be punished)
@@ -55,6 +57,7 @@ public final class Netuno extends JavaPlugin {
         this.getCommand( "togglesigns" ).setExecutor( new Togglesigns() );
         this.getCommand( "mutechat" ).setExecutor( new Mutechat() );
         this.getCommand( "clearchat" ).setExecutor( new Clearchat() );
+        this.getCommand( "reports" ).setExecutor( new Reports() );
 
         this.getServer().getPluginManager().registerEvents( new JoinListener(), this );
         this.getServer().getPluginManager().registerEvents( new ChatListener(), this );
