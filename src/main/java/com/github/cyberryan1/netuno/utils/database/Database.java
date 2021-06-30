@@ -3,6 +3,7 @@ package com.github.cyberryan1.netuno.utils.database;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
+import com.github.cyberryan1.netuno.classes.Report;
 import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
 import org.bukkit.Bukkit;
@@ -37,6 +38,10 @@ public abstract class Database {
     private final String NO_SIGN_NOTIFS_TABLE_NAME = "nosignnotifs";
     private final String NO_SIGN_NOTIFS_TYPE_LIST = "(player)";
     private final String NO_SIGN_NOTIFS_UNKNOWN_LIST = "(?)";
+
+    private final String REPORTS_TABLE_NAME = "reports";
+    private final String REPORTS_TYPE_LIST = "id,target,reporter,date,reason";
+    private final String REPORTS_UNKNOWN_LIST = "(?,?,?,?,?)";
 
     public Database( Netuno instance ) {
         plugin = instance;
@@ -970,36 +975,130 @@ public abstract class Database {
 
         close( conn, ps, null );
     }
+
+    //
+    // Reports
+    //
+    public int addReport( Report report ) {
+        int id = getNextReportID();
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "INSERT INTO " + REPORTS_TABLE_NAME + " " + REPORTS_TYPE_LIST + " VALUES" + REPORTS_UNKNOWN_LIST );
+
+            ps.setInt( 1, id );
+            ps.setString( 2, report.getTarget().getUniqueId().toString() );
+            ps.setString( 3, report.getReporter().getUniqueId().toString() );
+            ps.setString( 4, report.getDate() + "" );
+            ps.setString( 5, report.getReason() );
+
+            ps.executeUpdate();
+        } catch ( SQLException ex ) { Utils.logError( "Unable to add report to database" ); }
+
+        close( conn, ps, null );
+        return id;
+    }
+
+    private int getNextReportID() {
+        int start = 1;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + REPORTS_TABLE_NAME );
+            rs = ps.executeQuery();
+            rs.next();
+            start = rs.getInt( "count(*)" );
+        } catch ( SQLException ex ) { Utils.logError( "Unable to get next available ID in reports database" ); }
+
+        close( conn, ps, rs );
+        // idk why i check for if "start <= 0" but it cant hurt :shrug:
+        while ( checkReportIDExists( start ) || start <= 0 ) { start++; }
+        return start;
+    }
+
+    public boolean checkReportIDExists( int id ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        boolean toReturn = false;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + REPORTS_TABLE_NAME + " WHERE id=" + id + ";" );
+            rs = ps.executeQuery();
+            rs.next();
+            if ( rs.getInt( "count(*)" ) >= 1 ) { toReturn = true; }
+        } catch ( SQLException ex ) { Utils.logError( "Unable to check if an id in the reports database exists" ); }
+
+        close( conn, ps, rs );
+        return toReturn;
+    }
+
+    public Report getReport( int id ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Report report = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT * FROM " + REPORTS_TABLE_NAME + " WHERE id = " + id + ";" );
+            rs = ps.executeQuery();
+
+            report = new Report();
+            report.setTarget( Bukkit.getOfflinePlayer( UUID.fromString( rs.getString( "target" ) ) ) );
+            report.setReporter( Bukkit.getOfflinePlayer( UUID.fromString( rs.getString( "reporter" ) ) ) );
+            report.setDate( Long.parseLong( rs.getString( "date" ) ) );
+            report.setReason( rs.getString( "reason" ) );
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
+
+        close( conn, ps, rs );
+        return report;
+    }
+
+    // Search for all reports with the target with uuid input
+    public ArrayList<Report> getReport( String uuid ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<Report> results = new ArrayList<>();
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT * FROM " + REPORTS_TABLE_NAME + " WHERE target=?;" );
+            ps.setString( 1, uuid );
+            rs = ps.executeQuery();
+
+            while ( rs.next() ) {
+                Report report = new Report();
+                report.setTarget( Bukkit.getOfflinePlayer( UUID.fromString( rs.getString( "target" ) ) ) );
+                report.setReporter( Bukkit.getOfflinePlayer( UUID.fromString( rs.getString( "reporter" ) ) ) );
+                report.setDate( Long.parseLong( rs.getString( "date" ) ) );
+                report.setReason( rs.getString( "reason" ) );
+
+                results.add( report );
+            }
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
+
+        close( conn, ps, rs );
+        return results;
+    }
+
+    public void removeReport( int id ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "DELETE FROM " + REPORTS_TABLE_NAME + " WHERE id=" + id + ";" );
+            ps.executeUpdate();
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
+
+        close( conn, ps, null );
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

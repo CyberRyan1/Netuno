@@ -57,6 +57,14 @@ public class SQLite extends Database {
             "`player` STRING NO NULL," +
             "PRIMARY KEY (`player`));";
 
+    public final String CREATE_REPORTS_TABLE = "CREATE TABLE IF NOT EXISTS reports(" +
+            "`id` INTEGER NOT NULL," +
+            "`target` STRING NOT NULL," +
+            "`reporter` STRING NOT NULL," +
+            "`date` STRING NOT NULL," +
+            "`reason` STRING NOT NULL," +
+            "PRIMARY KEY (`id`));";
+
     public Connection getSqlConnection() {
         File plugins = new File( "plugins" );
         File directory = new File( plugins, "Netuno" );
@@ -107,6 +115,9 @@ public class SQLite extends Database {
 
             s = connection.createStatement();
             s.executeUpdate( CREATE_NO_SIGN_NOTIFS_TABLE );
+
+            s = connection.createStatement();
+            s.executeUpdate( CREATE_REPORTS_TABLE );
 
             s.close();
         } catch ( SQLException e ) {
