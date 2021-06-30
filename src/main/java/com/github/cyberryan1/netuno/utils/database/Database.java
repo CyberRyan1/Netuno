@@ -1101,4 +1101,30 @@ public abstract class Database {
 
         close( conn, ps, null );
     }
+
+    // gets all reports where: startingIndex <= report row # <= endingIndex
+    public ArrayList<Report> getAllReports( int startingIndex, int endingIndex ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<Integer> idList = new ArrayList<>();
+        ArrayList<Report> toReturn = new ArrayList<>();
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT row_number() OVER ( ORDER BY id ) RowNum, id FROM " + REPORTS_TABLE_NAME + ";" );
+            rs = ps.executeQuery();
+
+            while ( rs.next() ) {
+                idList.add( rs.getInt( 2 ) );
+            }
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
+
+        close( conn, ps, rs );
+        for ( int id : idList ) {
+            toReturn.add( getReport( id ) );
+        }
+
+        return toReturn;
+    }
 }
