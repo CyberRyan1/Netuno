@@ -344,3 +344,13 @@ signs:
     - "&62) &7[LINE_2]"
     - "&63) &7[LINE_3]"
     - "&64) &7[LINE_4]"
+
+# /report command
+# Is what is used to actually by players to report other players to staff
+report:
+  # insert stuff here for regular /report command
+
+# /reports command
+# Is what is used by staff to view all reports
+reports:
+  perm: "netuno.reports"
