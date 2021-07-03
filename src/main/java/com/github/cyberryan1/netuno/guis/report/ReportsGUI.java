@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.guis.report;
 
+import com.github.cyberryan1.netuno.classes.CombinedReport;
 import com.github.cyberryan1.netuno.classes.Report;
 import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
@@ -19,6 +20,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class ReportsGUI implements Listener {
 
@@ -30,6 +32,7 @@ public class ReportsGUI implements Listener {
 
     private SortBy sort;
     private ArrayList<Report> reports;
+    private ArrayList<CombinedReport> combinedReports = new ArrayList<>();
 
     public ReportsGUI( Player staff, int page, SortBy sort ) {
         this.staff = staff;
@@ -38,6 +41,7 @@ public class ReportsGUI implements Listener {
 
         DATA.deleteAllExpiredReports();
         reports = DATA.getAllReports( 21 * ( page - 1 ), 21 * page );
+        compressReports();
         sort();
 
         String guiName = Utils.getColored( "&6Reports" );
@@ -49,9 +53,23 @@ public class ReportsGUI implements Listener {
         this( staff, page, SortBy.ONLINE );
     }
 
-    private void sort() {
+    private void compressReports() {
         if ( reports.size() == 0 ) { return; }
 
+        ArrayList<UUID> playersReported = new ArrayList<>();
+        for ( int index = reports.size() - 1; index >= 0; index-- ) {
+            UUID uuid = reports.get( index ).getTarget().getUniqueId();
+            if ( playersReported.contains( uuid ) == false ) { playersReported.add( uuid ); }
+        }
+
+        for ( UUID uuid : playersReported ) {
+            combinedReports.add( new CombinedReport( Bukkit.getOfflinePlayer( uuid ) ) );
+        }
+    }
+
+    private void sort() {
+        if ( reports.size() == 0 ) { return; }
+/* ! TEMP
         if ( sort == SortBy.FIRST_DATE ) {
             ArrayList<Report> newReports = new ArrayList<>();
             newReports.add( reports.remove( 0 ) );
@@ -118,7 +136,7 @@ public class ReportsGUI implements Listener {
             }
 
             reports = newReports;
-        }
+        } */
     }
 
     public void insertItems() {
@@ -136,8 +154,8 @@ public class ReportsGUI implements Listener {
         int guiIndex = 10;
         for ( int row = 0; row < 3; row++ ) {
             for ( int col = 0; col < 7; col++ ) {
-                if ( reportIndex >= reports.size() ) { items[guiIndex] = GUIUtils.createItem( Material.LIGHT_GRAY_STAINED_GLASS_PANE, "&7" ); }
-                else { items[guiIndex] = reports.get( reportIndex ).getAsItem(); }
+                if ( reportIndex >= combinedReports.size() ) { items[guiIndex] = GUIUtils.createItem( Material.LIGHT_GRAY_STAINED_GLASS_PANE, "&7" ); }
+                else { items[guiIndex] = combinedReports.get( reportIndex ).getAsItem(); }
 
                 guiIndex++; reportIndex++;
             }
