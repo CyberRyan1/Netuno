@@ -4,6 +4,7 @@ import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.classes.Report;
+import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
 import org.bukkit.Bukkit;
@@ -1131,5 +1132,30 @@ public abstract class Database {
         }
 
         return toReturn;
+    }
+
+    public void deleteAllExpiredReports() {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<Integer> toDelete = new ArrayList<>();
+        final int DELETE_AFTER_INT = ConfigUtils.getInt( "reports.delete-after" );
+        if ( DELETE_AFTER_INT == -1 ) { return; }
+        long deleteBefore = Time.getCurrentTimestamp() - 60L * 60 * DELETE_AFTER_INT;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT * FROM " + REPORTS_TABLE_NAME + ";" );
+            rs = ps.executeQuery();
+
+            while ( rs.next() ) {
+                if ( Long.parseLong( rs.getString( 4 ) ) <= deleteBefore ) { toDelete.add( rs.getInt( 1 ) ); }
+            }
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
+
+        close( conn, ps, rs );
+        for ( int id : toDelete ) {
+            removeReport( id );
+        }
     }
 }
