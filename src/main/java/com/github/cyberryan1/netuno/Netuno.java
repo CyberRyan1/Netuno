@@ -21,6 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 // * TODO add a reports system
 // * TODO make skulls in /reports only show up once, and show how many times they have been reported for xyz thing
+// * TODO going to have to redo sort() method in ReportsGUI to compress skulls
 
 // TODO add a notes system
 // TODO add a search by target in the reports GUI
