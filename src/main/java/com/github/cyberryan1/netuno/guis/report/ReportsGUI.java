@@ -186,7 +186,7 @@ public class ReportsGUI implements Listener {
             newGUI.openInventory( staff );
         }
 
-        else if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&7Next Page" ) ) ) {
+        else if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&6Next Page" ) ) ) {
             ReportsGUI newGUI = new ReportsGUI( staff, page + 1, sort );
             newGUI.openInventory( staff );
         }
