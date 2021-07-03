@@ -7,6 +7,7 @@ import java.time.Duration;
 
 public class Time {
 
+    // returns number of seconds since Jan 1st, 1970
     public static long getCurrentTimestamp() { return System.currentTimeMillis() / 1000; }
 
     public static String getDateFromTimestamp( long stamp ) {
