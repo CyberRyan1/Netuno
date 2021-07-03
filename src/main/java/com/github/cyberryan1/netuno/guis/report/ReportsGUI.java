@@ -36,6 +36,7 @@ public class ReportsGUI implements Listener {
         this.page = page;
         this.sort = sort;
 
+        DATA.deleteAllExpiredReports();
         reports = DATA.getAllReports( 21 * ( page - 1 ), 21 * page );
         sort();
 
