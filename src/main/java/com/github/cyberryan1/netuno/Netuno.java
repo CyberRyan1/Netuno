@@ -20,7 +20,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 // ! TODO fix history system having index out of bounds error after deleting a punishment (see Notch)
 
 // * TODO add a reports system
-// * TODO make skulls in /reports only show up once, and show how many times they have been reported for xyz thing
 // * TODO going to have to redo sort() method in ReportsGUI to compress skulls
 
 // TODO add a notes system
