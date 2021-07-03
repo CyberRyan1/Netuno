@@ -1116,7 +1116,12 @@ public abstract class Database {
             rs = ps.executeQuery();
 
             while ( rs.next() ) {
-                idList.add( rs.getInt( 2 ) );
+                if ( rs.getInt( "RowNum" ) >= startingIndex ) {
+                    if ( rs.getInt( "RowNum" ) <= endingIndex ) {
+                        idList.add( rs.getInt( 2 ) );
+                    }
+                    else { break; }
+                }
             }
         } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
 
