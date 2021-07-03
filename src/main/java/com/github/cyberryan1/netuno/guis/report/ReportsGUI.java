@@ -29,7 +29,7 @@ public class ReportsGUI implements Listener {
     private final int page;
 
     private SortBy sort;
-    private ArrayList<Report> reports = new ArrayList<>();
+    private ArrayList<Report> reports;
 
     public ReportsGUI( Player staff, int page, SortBy sort ) {
         this.staff = staff;
@@ -147,7 +147,7 @@ public class ReportsGUI implements Listener {
         items[40] = getPaper();
 
         if ( page >= 2 ) { items[47] = GUIUtils.createItem( Material.BOOK, "&6Previous Page" ); }
-        int maxPage = ( int ) Math.ceil( reports.size() / 21.0 );
+        int maxPage = ( int ) Math.ceil( DATA.getReportsCount() / 21.0 );
         if ( page < maxPage ) { items[51] = GUIUtils.createItem( Material.BOOK, "&6Next Page" ); }
 
         gui.setContents( items );
