@@ -980,7 +980,7 @@ public abstract class Database {
     // Reports
     //
     public int addReport( Report report ) {
-        int id = getNextReportID();
+        int id = getReportsCount();
         Connection conn = null;
         PreparedStatement ps = null;
 
@@ -1001,7 +1001,7 @@ public abstract class Database {
         return id;
     }
 
-    private int getNextReportID() {
+    public int getReportsCount() {
         int start = 1;
         Connection conn = null;
         PreparedStatement ps = null;
