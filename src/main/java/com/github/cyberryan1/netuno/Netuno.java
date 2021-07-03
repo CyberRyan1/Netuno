@@ -9,8 +9,20 @@ import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/* notes in to do:
+    - ! = bug needs to be fixed
+    - * = working on
+    - space = will work on later
+    - ? = unsure if doing
+*/
+
+// ! TODO fix pages in all guis potentially showing the same item twice in two separate pages, because of bad bath
+// ! TODO fix history system having index out of bounds error after deleting a punishment (see Notch)
+
+// * TODO add a reports system
+
 // TODO add a notes system
-// TODO add a reports system
+// TODO make skulls in /reports only show up once, and show how many times they have been reported for xyz thing
 // TODO add a search by target in the reports GUI
 // TODO add option to disable books for muted/ipmuted players
 // TODO add punish GUI
