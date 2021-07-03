@@ -131,7 +131,7 @@ public class ReportsGUI implements Listener {
             items[index] = GUIUtils.getBackgroundGlass();
         }
 
-        int reportIndex = 21 * ( page - 1 );
+        int reportIndex = 0;
         int guiIndex = 10;
         for ( int row = 0; row < 3; row++ ) {
             for ( int col = 0; col < 7; col++ ) {
