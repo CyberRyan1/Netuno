@@ -20,10 +20,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 // ! TODO fix history system having index out of bounds error after deleting a punishment (see Notch)
 
 // * TODO add a reports system
-// * TODO make reports automatically delete after certain amount of time (defined in config by user)
+// * TODO make skulls in /reports only show up once, and show how many times they have been reported for xyz thing
 
 // TODO add a notes system
-// TODO make skulls in /reports only show up once, and show how many times they have been reported for xyz thing
 // TODO add a search by target in the reports GUI
 // TODO add option to disable books for muted/ipmuted players
 // TODO add punish GUI
