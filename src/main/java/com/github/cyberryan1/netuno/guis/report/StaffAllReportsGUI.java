@@ -235,21 +235,3 @@ public class StaffAllReportsGUI implements Listener {
         GUIEventManager.removeEvent( this );
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
