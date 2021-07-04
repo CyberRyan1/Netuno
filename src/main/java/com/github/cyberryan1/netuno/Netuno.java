@@ -21,7 +21,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 // * TODO add a reports system
 
-// TODO add a notes system
 // TODO add a search by target in the reports GUI
 // TODO add option to disable books for muted/ipmuted players
 // TODO add punish GUI
@@ -30,7 +29,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 // TODO add a [MAIN] variable in config for the main plugin color
 // TODO update /netuno command
 
-// ? TODO make all events go through one event manager (is this really worth the time and effort?)
+// ? TODO add a notes system
 // ? TODO add a "protected" permission (basically not allowing them to be punished)
 // ? TODO staffchat command & prefix
 // ? TODO change signs.notifs-perm to "netuno.signs.notifs"
