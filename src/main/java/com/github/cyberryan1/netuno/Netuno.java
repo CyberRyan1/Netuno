@@ -21,6 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 // * TODO add a search by target in the staff reports GUI
 // * TODO add option to disable books for muted/ipmuted players
 
+// TODO use close() method in Database class
 // TODO add punish GUI
 // TODO add tab-completer
 // TODO add a way to convert vanilla bans to netuno bans
