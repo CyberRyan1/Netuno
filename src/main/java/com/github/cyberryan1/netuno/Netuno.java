@@ -30,6 +30,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 // ? TODO add a "protected" permission (basically not allowing them to be punished)
 // ? TODO staffchat command & prefix
 // ? TODO change signs.notifs-perm to "netuno.signs.notifs"
+// ? TODO change signs to redstone/emerald, depending on active (history list GUI)
 public final class Netuno extends JavaPlugin {
 
     private ConfigManager config;
