@@ -16,7 +16,6 @@ import org.bukkit.plugin.java.JavaPlugin;
     - ? = unsure if doing */
 
 // ! TODO fix pages in all guis potentially showing the same item twice in two separate pages, because of bad math
-// ! TODO fix history system having index out of bounds error after deleting a punishment (see Notch)
 
 // * TODO add a search by target in the staff reports GUI
 // * TODO add option to disable books for muted/ipmuted players
