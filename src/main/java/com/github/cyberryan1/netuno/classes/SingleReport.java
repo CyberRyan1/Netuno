@@ -10,21 +10,21 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 
-public class Report {
+public class SingleReport {
 
     private OfflinePlayer target;
     private OfflinePlayer reporter;
     private long date;
     private String reason;
 
-    public Report( OfflinePlayer target, OfflinePlayer reporter, String reason ) {
+    public SingleReport( OfflinePlayer target, OfflinePlayer reporter, String reason ) {
         this.target = target;
         this.reporter = reporter;
         this.date = Time.getCurrentTimestamp();
         this.reason = reason;
     }
 
-    public Report() {
+    public SingleReport() {
         this.target = null;
         this.reporter = null;
         this.date = -1L;

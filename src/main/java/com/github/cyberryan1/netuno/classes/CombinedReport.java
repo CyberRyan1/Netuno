@@ -17,7 +17,7 @@ public class CombinedReport {
     private final Database DATA = Utils.getDatabase();
 
     private OfflinePlayer target;
-    private ArrayList<Report> reports;
+    private ArrayList<SingleReport> reports;
     private long mostRecentDate;
 
     public CombinedReport( OfflinePlayer target ) {
@@ -26,7 +26,7 @@ public class CombinedReport {
         reports = DATA.getReport( target.getUniqueId().toString() );
         if ( reports.size() > 0 ) {
             mostRecentDate = reports.get( 0 ).getDate();
-            for ( Report r : reports ) {
+            for ( SingleReport r : reports ) {
                 if ( r.getDate() > mostRecentDate ) { mostRecentDate = r.getDate(); }
             }
         }
@@ -34,7 +34,7 @@ public class CombinedReport {
 
     public OfflinePlayer getTarget() { return target; }
 
-    public ArrayList<Report> getAllReports() { return reports; }
+    public ArrayList<SingleReport> getAllReports() { return reports; }
 
     public long getMostRecentDate() { return mostRecentDate; }
 
@@ -48,7 +48,7 @@ public class CombinedReport {
 
         //      Reason, Amount
         HashMap<String, Integer> reasonAmount = new HashMap<>();
-        for ( Report r : reports ) {
+        for ( SingleReport r : reports ) {
             if ( reasonAmount.containsKey( r.getReason() ) ) {
                 int amount = reasonAmount.get( r.getReason() ) + 1;
                 reasonAmount.replace( r.getReason(), amount );

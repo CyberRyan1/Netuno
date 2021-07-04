@@ -3,7 +3,7 @@ package com.github.cyberryan1.netuno.utils.database;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
-import com.github.cyberryan1.netuno.classes.Report;
+import com.github.cyberryan1.netuno.classes.SingleReport;
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
@@ -980,7 +980,7 @@ public abstract class Database {
     //
     // Reports
     //
-    public int addReport( Report report ) {
+    public int addReport( SingleReport report ) {
         int id = getReportsCount();
         Connection conn = null;
         PreparedStatement ps = null;
@@ -1040,18 +1040,18 @@ public abstract class Database {
         return toReturn;
     }
 
-    public Report getReport( int id ) {
+    public SingleReport getReport( int id ) {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        Report report = null;
+        SingleReport report = null;
 
         try {
             conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT * FROM " + REPORTS_TABLE_NAME + " WHERE id = " + id + ";" );
             rs = ps.executeQuery();
 
-            report = new Report();
+            report = new SingleReport();
             report.setTarget( Bukkit.getOfflinePlayer( UUID.fromString( rs.getString( "target" ) ) ) );
             report.setReporter( Bukkit.getOfflinePlayer( UUID.fromString( rs.getString( "reporter" ) ) ) );
             report.setDate( Long.parseLong( rs.getString( "date" ) ) );
@@ -1063,11 +1063,11 @@ public abstract class Database {
     }
 
     // Search for all reports with the target with uuid input
-    public ArrayList<Report> getReport( String uuid ) {
+    public ArrayList<SingleReport> getReport( String uuid ) {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        ArrayList<Report> results = new ArrayList<>();
+        ArrayList<SingleReport> results = new ArrayList<>();
 
         try {
             conn = getSqlConnection();
@@ -1076,7 +1076,7 @@ public abstract class Database {
             rs = ps.executeQuery();
 
             while ( rs.next() ) {
-                Report report = new Report();
+                SingleReport report = new SingleReport();
                 report.setTarget( Bukkit.getOfflinePlayer( UUID.fromString( rs.getString( "target" ) ) ) );
                 report.setReporter( Bukkit.getOfflinePlayer( UUID.fromString( rs.getString( "reporter" ) ) ) );
                 report.setDate( Long.parseLong( rs.getString( "date" ) ) );
@@ -1104,12 +1104,12 @@ public abstract class Database {
     }
 
     // gets all reports where: startingIndex <= report row # <= endingIndex
-    public ArrayList<Report> getAllReports( int startingIndex, int endingIndex ) {
+    public ArrayList<SingleReport> getAllReports( int startingIndex, int endingIndex ) {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         ArrayList<Integer> idList = new ArrayList<>();
-        ArrayList<Report> toReturn = new ArrayList<>();
+        ArrayList<SingleReport> toReturn = new ArrayList<>();
 
         try {
             conn = getSqlConnection();

@@ -1,7 +1,7 @@
 package com.github.cyberryan1.netuno.guis.report;
 
 import com.github.cyberryan1.netuno.classes.CombinedReport;
-import com.github.cyberryan1.netuno.classes.Report;
+import com.github.cyberryan1.netuno.classes.SingleReport;
 import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.guis.events.GUIEventType;
@@ -31,7 +31,7 @@ public class ReportsGUI implements Listener {
     private final int page;
 
     private SortBy sort;
-    private ArrayList<Report> reports;
+    private ArrayList<SingleReport> reports;
     private ArrayList<CombinedReport> combinedReports = new ArrayList<>();
 
     public ReportsGUI( Player staff, int page, SortBy sort ) {
