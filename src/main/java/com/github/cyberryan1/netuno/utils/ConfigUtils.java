@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -57,6 +58,15 @@ public class ConfigUtils {
         return config.getConfig().getString( path );
     }
 
+    // returns a string list from the path
+    public static ArrayList<String> getStrList( String path ) {
+        checkPath( path );
+        ArrayList<String> toReturn = new ArrayList<>();
+        String list[] = config.getConfig().getStringList( path ).toArray( new String[0] );
+        Collections.addAll( toReturn, list );
+        return toReturn;
+    }
+
     // gets a colored string from the path
     public static String getColoredStr( String path ) {
         if ( getStr( path ) == null ) { return null; }
@@ -67,12 +77,10 @@ public class ConfigUtils {
     public static ArrayList<String> getColoredStrList( String path ) {
         checkPath( path );
         ArrayList<String> toReturn = new ArrayList<>();
-        String list[] = config.getConfig().getStringList( path ).toArray( new String[0] );
 
-        for ( String str : list ) {
+        for ( String str : getStrList( path ) ) {
             toReturn.add( Utils.getColored( str ) );
         }
-
         return toReturn;
     }
 
