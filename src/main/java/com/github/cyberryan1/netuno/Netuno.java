@@ -29,7 +29,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 // TODO update /netuno command
 
 // ? TODO add sounds in (some) GUIs when you click
-// ? TODO add a notes system
 // ? TODO add a "protected" permission (basically not allowing them to be punished)
 // ? TODO staffchat command & prefix
 // ? TODO change signs.notifs-perm to "netuno.signs.notifs"
