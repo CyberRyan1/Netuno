@@ -22,7 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class StaffReportsGUI implements Listener {
+public class StaffAllReportsGUI implements Listener {
 
     private final Database DATA = Utils.getDatabase();
 
@@ -34,7 +34,7 @@ public class StaffReportsGUI implements Listener {
     private ArrayList<SingleReport> reports;
     private ArrayList<CombinedReport> combinedReports = new ArrayList<>();
 
-    public StaffReportsGUI( Player staff, int page, SortBy sort ) {
+    public StaffAllReportsGUI( Player staff, int page, SortBy sort ) {
         this.staff = staff;
         this.page = page;
         this.sort = sort;
@@ -49,7 +49,7 @@ public class StaffReportsGUI implements Listener {
         insertItems();
     }
 
-    public StaffReportsGUI( Player staff, int page ) {
+    public StaffAllReportsGUI( Player staff, int page ) {
         this( staff, page, SortBy.ONLINE );
     }
 
@@ -200,21 +200,21 @@ public class StaffReportsGUI implements Listener {
         if ( clicked == null || clicked.getType().isAir() ) { return; }
 
         if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&6Previous Page" ) ) ) {
-            StaffReportsGUI newGUI = new StaffReportsGUI( staff, page - 1, sort );
+            StaffAllReportsGUI newGUI = new StaffAllReportsGUI( staff, page - 1, sort );
             newGUI.openInventory( staff );
         }
 
         else if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&6Next Page" ) ) ) {
-            StaffReportsGUI newGUI = new StaffReportsGUI( staff, page + 1, sort );
+            StaffAllReportsGUI newGUI = new StaffAllReportsGUI( staff, page + 1, sort );
             newGUI.openInventory( staff );
         }
 
         else if ( clicked.equals( getPaper() ) ) {
-            StaffReportsGUI newGUI;
-            if ( sort == SortBy.FIRST_DATE ) { newGUI = new StaffReportsGUI( staff, page, SortBy.LAST_DATE ); }
-            else if ( sort == SortBy.LAST_DATE ) { newGUI = new StaffReportsGUI( staff, page, SortBy.ONLINE ); }
-            else if ( sort == SortBy.ONLINE ) { newGUI = new StaffReportsGUI( staff, page, SortBy.OFFLINE ); }
-            else { newGUI = new StaffReportsGUI( staff, page, SortBy.FIRST_DATE ); }
+            StaffAllReportsGUI newGUI;
+            if ( sort == SortBy.FIRST_DATE ) { newGUI = new StaffAllReportsGUI( staff, page, SortBy.LAST_DATE ); }
+            else if ( sort == SortBy.LAST_DATE ) { newGUI = new StaffAllReportsGUI( staff, page, SortBy.ONLINE ); }
+            else if ( sort == SortBy.ONLINE ) { newGUI = new StaffAllReportsGUI( staff, page, SortBy.OFFLINE ); }
+            else { newGUI = new StaffAllReportsGUI( staff, page, SortBy.FIRST_DATE ); }
 
             newGUI.openInventory( staff );
         }

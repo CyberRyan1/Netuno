@@ -1,6 +1,6 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.netuno.guis.report.StaffReportsGUI;
+import com.github.cyberryan1.netuno.guis.report.StaffAllReportsGUI;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
@@ -26,7 +26,7 @@ public class Reports implements CommandExecutor {
         }
 
         Player staff = ( Player ) sender;
-        StaffReportsGUI gui = new StaffReportsGUI( staff, 1 );
+        StaffAllReportsGUI gui = new StaffAllReportsGUI( staff, 1 );
         gui.openInventory( staff );
 
         return true;
