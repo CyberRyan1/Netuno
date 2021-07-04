@@ -51,6 +51,8 @@ public class HistoryListGUI implements Listener {
     }
 
     private void sort() {
+        if ( history.size() == 0 ) { return; }
+
         if ( sort == SortBy.FIRST_DATE ) {
             ArrayList<Punishment> newHistory = new ArrayList<>();
             newHistory.add( history.remove( 0 ) );
