@@ -348,7 +348,40 @@ signs:
 # /report command
 # Is what is used to actually by players to report other players to staff
 report:
-  # insert stuff here for regular /report command
+  # Set to "" for no permission needed to use this command
+  perm: ""
+
+  # List of all the reasons a player can be reported for
+  # Set to "" for nothing to be placed (can be useful to help format the gui!)
+  # Max of 18 reasons
+  reasons:
+    - "Hacking"
+    - "Spamming"
+    - "Flood"
+    - "Swearing"
+    - "Media Advertisement"
+    - "Discrimination"
+    - "Inappropriate Comments"
+    - "Toxicity"
+    - "Death Threats"
+    - "Harassment"
+    - "Inappropriate Builds"
+    - "Other"
+
+  # What's sent to the player when they submit a report
+  # Set to "" for no message to be sent
+  # Use [REASON] for the reason(s) of the report and [TARGET] for the player reported
+  confirm-msg:
+    - " &7Successfully reported &6[TARGET]&7 for &6[REASON]"
+
+  # What staff are sent when a player makes a report
+  # Sent to all players who have the "general.staff-perm" permission
+  # Set to "" for no message to be sent
+  # Use [REASON] for the reason(s) of the report, [TARGET] for the player reported, and [PLAYER] for the player who made the report
+  staff-msg:
+    - ""
+    - " &6[PLAYER]&7 has reported &6[TARGET]&7 for &6[REASON]"
+    - ""
 
 # /reports command
 # Is what is used by staff to view all reports
