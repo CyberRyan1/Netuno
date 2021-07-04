@@ -204,4 +204,17 @@ public class Utils {
         toReturn += list[ list.length - 1 ];
         return toReturn;
     }
+
+    // formats a list into a string
+    // main difference with above is that it only shows 2 things, then "and x more"
+    // ex: { "125", "812" } -> "125 and 812"
+    // Ex: { "912" } -> "912"
+    // Ex: { "192", "015", "529" } -> "192, 015, and 1 more"
+    // Ex: { "624", "856", "347", "932" } -> "192, 015, and 2 more"
+    public static String formatListIntoAmountString( String list[] ) {
+        if ( list.length <= 2 ) { return formatListIntoFancierString( list ); }
+
+        String toReturn = list[0] + ", " + list[1] + ", and ";
+        return toReturn + ( list.length - 2 ) + " more";
+    }
 }
