@@ -13,8 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
     - ! = bug needs to be fixed
     - * = working on
     - space = will work on later
-    - ? = unsure if doing
-*/
+    - ? = unsure if doing */
 
 // ! TODO fix pages in all guis potentially showing the same item twice in two separate pages, because of bad math
 // ! TODO fix history system having index out of bounds error after deleting a punishment (see Notch)
@@ -27,8 +26,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 // TODO add tab-completer
 // TODO add a way to convert vanilla bans to netuno bans
 // TODO add a [MAIN] variable in config for the main plugin color
+// TODO add a [SECONDARY] (or something of the like) variable in config for the secondary plugin color
 // TODO update /netuno command
 
+// ? TODO add sounds in (some) GUIs when you click
 // ? TODO add a notes system
 // ? TODO add a "protected" permission (basically not allowing them to be punished)
 // ? TODO staffchat command & prefix
@@ -68,6 +69,7 @@ public final class Netuno extends JavaPlugin {
         this.getCommand( "mutechat" ).setExecutor( new Mutechat() );
         this.getCommand( "clearchat" ).setExecutor( new Clearchat() );
         this.getCommand( "reports" ).setExecutor( new Reports() );
+        this.getCommand( "report" ).setExecutor( new Report() );
 
         this.getServer().getPluginManager().registerEvents( new JoinListener(), this );
         this.getServer().getPluginManager().registerEvents( new ChatListener(), this );
