@@ -64,6 +64,8 @@ public class CommandErrors {
                 return Utils.getColored( "&8/&6togglesigns &7[enable/disable]" );
             case "mutechat":
                 return Utils.getColored( "&8/&6mutechat &7[enable/disable/toggle/status]" );
+            case "report":
+                return Utils.getColored( "&8/&6report &7(player)" );
         }
 
         return null;
