@@ -41,7 +41,7 @@ public abstract class Database {
     private final String NO_SIGN_NOTIFS_UNKNOWN_LIST = "(?)";
 
     private final String REPORTS_TABLE_NAME = "reports";
-    private final String REPORTS_TYPE_LIST = "id,target,reporter,date,reason";
+    private final String REPORTS_TYPE_LIST = "(id,target,reporter,date,reason)";
     private final String REPORTS_UNKNOWN_LIST = "(?,?,?,?,?)";
 
     public Database( Netuno instance ) {
