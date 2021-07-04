@@ -116,6 +116,10 @@ public class CommandErrors {
         sender.sendMessage( Utils.getColored( "&6&lNETUNO ERROR! &7An unexpected error occurred. Please contact the plugin developer about this!" ) );
     }
 
+    public static void sendConfigError( CommandSender sender ) {
+        sender.sendMessage( Utils.getColored( "&7An error occurred because the config file is not setup correctly. Please contact a server administrator about this!" ) );
+    }
+
     public static void sendInvalidPunishmentID( CommandSender sender, String arg ) {
         sender.sendMessage( Utils.getColored( "&7Invalid punishment ID &8(&6\"" + arg + "&6\"&8)" ) );
     }
