@@ -15,8 +15,6 @@ import org.bukkit.plugin.java.JavaPlugin;
     - space = will work on later
     - ? = unsure if doing */
 
-// ! TODO fix pages in all guis potentially showing the same item twice in two separate pages, because of bad math
-
 // * TODO add a search by target in the staff reports GUI (maybe also just make a /reports (player) command?)
 // * TODO add option to disable books for muted/ipmuted players
 
