@@ -131,4 +131,8 @@ public class CommandErrors {
     public static void sendPlayerExempt( CommandSender sender, String targetName ) {
         sender.sendMessage( Utils.getColored( "&6" + targetName + " &7is exempt from this!" ) );
     }
+
+    public static void sendReportNeedsOneReason( CommandSender sender ) {
+        sender.sendMessage( Utils.getColored( "&7You must provide at least 1 reason in your report" ) );
+    }
 }
