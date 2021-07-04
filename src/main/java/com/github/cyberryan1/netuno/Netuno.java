@@ -18,10 +18,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 // ! TODO fix pages in all guis potentially showing the same item twice in two separate pages, because of bad math
 // ! TODO fix history system having index out of bounds error after deleting a punishment (see Notch)
 
-// * TODO add a reports system
+// * TODO add a search by target in the staff reports GUI
+// * TODO add option to disable books for muted/ipmuted players
 
-// TODO add a search by target in the reports GUI
-// TODO add option to disable books for muted/ipmuted players
 // TODO add punish GUI
 // TODO add tab-completer
 // TODO add a way to convert vanilla bans to netuno bans
