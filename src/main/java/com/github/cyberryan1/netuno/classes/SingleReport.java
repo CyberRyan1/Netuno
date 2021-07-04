@@ -27,7 +27,7 @@ public class SingleReport {
     public SingleReport() {
         this.target = null;
         this.reporter = null;
-        this.date = -1L;
+        this.date = Time.getCurrentTimestamp();
         this.reason = null;
     }
 
