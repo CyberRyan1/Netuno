@@ -15,11 +15,11 @@ import org.bukkit.plugin.java.JavaPlugin;
     - space = will work on later
     - ? = unsure if doing */
 
-// * TODO add option to disable books for muted/ipmuted players
+// none
 
 // TODO add punish GUI
 // TODO add tab-completer
-// TODO add a way to convert vanilla bans to netuno bans
+// TODO add option to disable books for muted/ipmuted players
 // TODO add a [MAIN] variable in config for the main plugin color
 // TODO add a [SECONDARY] (or something of the like) variable in config for the secondary plugin color
 // TODO update /netuno command
@@ -31,6 +31,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 // ? TODO staffchat command & prefix
 // ? TODO change signs.notifs-perm to "netuno.signs.notifs"
 // ? TODO change signs to redstone/emerald, depending on active (history list GUI)
+// ? TODO add a way to convert vanilla bans to netuno bans
 public final class Netuno extends JavaPlugin {
 
     private ConfigManager config;
