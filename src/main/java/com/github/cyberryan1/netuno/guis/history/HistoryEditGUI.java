@@ -169,7 +169,6 @@ public class HistoryEditGUI implements Listener {
 
     @GUIEventInterface( type = GUIEventType.PLAYER_CHAT )
     public void onPlayerChatEvent( PlayerChatEvent event ) {
-        Utils.logWarn( "onPlayerChatEvent fired sucessfully" ); // ! debug
         if ( editingLength ) {
             event.setCancelled( true );
 
