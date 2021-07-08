@@ -15,7 +15,6 @@ import org.bukkit.plugin.java.JavaPlugin;
     - space = will work on later
     - ? = unsure if doing */
 
-// * TODO add a search by target in the staff reports GUI (maybe also just make a /reports (player) command?)
 // * TODO add option to disable books for muted/ipmuted players
 
 // TODO add punish GUI
