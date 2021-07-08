@@ -6,7 +6,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class GUIUtils {
 
@@ -24,8 +23,11 @@ public class GUIUtils {
     }
 
     public static ItemStack addItemLore( ItemStack item, String ... lore ) {
-        ArrayList<String> loreLines = new ArrayList<>( item.getItemMeta().getLore() );
-        loreLines.addAll( Arrays.asList( lore ) );
+        ArrayList<String> loreLines = new ArrayList<>();
+        if ( item.getItemMeta().getLore() != null ) {
+            for ( String str : item.getItemMeta().getLore() ) { loreLines.add( Utils.getColored( str ) ); }
+        }
+        for ( String str : lore ) { loreLines.add( Utils.getColored( str ) ); }
         return setItemLore( item, loreLines );
     }
 
