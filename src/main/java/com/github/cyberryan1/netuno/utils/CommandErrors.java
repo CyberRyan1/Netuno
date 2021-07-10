@@ -32,6 +32,8 @@ public class CommandErrors {
         switch ( command.toLowerCase() ) {
             case "warn":
                 return Utils.getColored( "&8/&6warn &7(player) (reason)" );
+            case "clearchat":
+                return Utils.getColored( "&8/&6clearchat" );
             case "kick":
                 return Utils.getColored( "&8/&6kick &7(player) (reason)" );
             case "mute":
