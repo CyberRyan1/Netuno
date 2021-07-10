@@ -70,6 +70,10 @@ public class CommandErrors {
                 return Utils.getColored( "&8/&6report &7(player)" );
             case "reports":
                 return Utils.getColored( "&8/&6reports &7[player]" );
+            case "help":
+                return Utils.getColored( "&8/&6netuno &7help [page]" );
+            case "reload":
+                return Utils.getColored( "&8/&6netuno &7reload" );
         }
 
         return null;
