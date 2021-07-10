@@ -10,11 +10,8 @@ import org.bukkit.command.CommandSender;
 
 public class NetunoCmd implements CommandExecutor {
 
-    private final String helpMsg[] = { "\n", CommandErrors.getCommandUsage( "warn" ), CommandErrors.getCommandUsage( "kick" ),
-            CommandErrors.getCommandUsage( "mute" ), CommandErrors.getCommandUsage( "unmute" ), CommandErrors.getCommandUsage( "ban" ),
-            CommandErrors.getCommandUsage( "unban" ), CommandErrors.getCommandUsage( "ipinfo" ), CommandErrors.getCommandUsage( "ipmute" ),
-            CommandErrors.getCommandUsage( "unipmute" ), CommandErrors.getCommandUsage( "ipban" ), CommandErrors.getCommandUsage( "unipban" ),
-            Utils.getColored( "&8/&6netuno &7reload" ), "\n"};
+    private final String COMMAND_ORDER[] = { "help", "warn", "clearchat", "kick", "mute", "unmute", "history", "ban", "unban",
+            "ipinfo", "ipmute", "unipmute", "ipban", "unipban", "report", "reports", "togglesigns", "reload" };
 
     @Override
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
@@ -47,22 +44,52 @@ public class NetunoCmd implements CommandExecutor {
             }
 
             else if ( args[0].equalsIgnoreCase( "help" ) ) {
-                for ( String str : helpMsg ) {
-                    sender.sendMessage( str );
+                if ( Utils.isOutOfBounds( args, 1 ) == false ) {
+                    int page = 0;
+                    try { page = Integer.parseInt( args[1] ) - 1; }
+                    catch ( NumberFormatException e ) { sender.sendMessage( Utils.getColored( "&7Invalid page number!" ) ); }
+
+                    if ( page >= 0 && page < Math.ceil( COMMAND_ORDER.length / 6.0 ) ) {
+                        String toSend = "\n";
+                        for ( int index = page * 6; index < page * 6 + 6; index++ ) {
+                            toSend += CommandErrors.getCommandUsage( COMMAND_ORDER[index] ) + "\n";
+                        }
+                        toSend += "\n";
+                        Utils.sendAnyMsg( sender, toSend );
+                    }
+
+                    else {
+                        sender.sendMessage( Utils.getColored( "&7Invalid page number!" ) );
+                    }
+                }
+
+                else {
+                    String toSend = "\n";
+                    for ( int index = 0; index < 6; index++ ) {
+                        toSend += CommandErrors.getCommandUsage( COMMAND_ORDER[index] ) + "\n";
+                    }
+                    toSend += "\n";
+                    Utils.sendAnyMsg( sender, toSend );
                 }
             }
 
             else {
-                for ( String str : helpMsg ) {
-                    sender.sendMessage( str );
+                String toSend = "\n";
+                for ( int index = 0; index < 6; index++ ) {
+                    toSend += CommandErrors.getCommandUsage( COMMAND_ORDER[index] ) + "\n";
                 }
+                toSend += Utils.getColored( "\n" );
+                Utils.sendAnyMsg( sender, toSend );
             }
         }
 
         else {
-            for ( String str : helpMsg ) {
-                sender.sendMessage( str );
+            String toSend = "\n";
+            for ( int index = 0; index < 6; index++ ) {
+                toSend += CommandErrors.getCommandUsage( COMMAND_ORDER[index] ) + "\n";
             }
+            toSend += "\n";
+            Utils.sendAnyMsg( sender, toSend );
         }
 
         return true;
