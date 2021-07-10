@@ -22,8 +22,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 // TODO add option to disable books for muted/ipmuted players
 // TODO add a [MAIN] variable in config for the main plugin color
 // TODO add a [SECONDARY] (or something of the like) variable in config for the secondary plugin color
-// TODO update /netuno command
-// TODO make /netuno command more separated and into pages
 
 // ? TODO add sounds in (some) GUIs when you click
 // ? TODO add a "protected" permission (basically not allowing them to be punished)
