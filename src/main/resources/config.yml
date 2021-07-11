@@ -391,3 +391,6 @@ reports:
   # How long (in hours) to wait before a report is automatically deleted
   # Set to -1 to never delete (not recommended)
   delete-after: 48
+
+punish:
+  perm: "netuno.punish"

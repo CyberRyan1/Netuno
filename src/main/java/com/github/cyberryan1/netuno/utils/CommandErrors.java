@@ -74,6 +74,8 @@ public class CommandErrors {
                 return Utils.getColored( "&8/&6netuno &7help [page]" );
             case "reload":
                 return Utils.getColored( "&8/&6netuno &7reload" );
+            case "punish":
+                return Utils.getColored( "&8/&6punish &7(player)" );
         }
 
         return null;

@@ -72,6 +72,7 @@ public final class Netuno extends JavaPlugin {
         this.getCommand( "clearchat" ).setExecutor( new Clearchat() );
         this.getCommand( "reports" ).setExecutor( new Reports() );
         this.getCommand( "report" ).setExecutor( new Report() );
+        this.getCommand( "punish" ).setExecutor( new Punish() );
 
         this.getServer().getPluginManager().registerEvents( new JoinListener(), this );
         this.getServer().getPluginManager().registerEvents( new ChatListener(), this );
