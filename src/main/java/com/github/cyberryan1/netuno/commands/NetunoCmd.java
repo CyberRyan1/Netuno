@@ -53,12 +53,7 @@ public class NetunoCmd implements CommandExecutor {
                     catch ( NumberFormatException e ) { sender.sendMessage( Utils.getColored( "&7Invalid page number!" ) ); }
 
                     if ( page >= 0 && page < Math.ceil( COMMAND_ORDER.length / 6.0 ) ) {
-                        String toSend = "\n";
-                        for ( int index = page * 6; index < page * 6 + 6; index++ ) {
-                            toSend += CommandErrors.getCommandUsage( COMMAND_ORDER[index] ) + "\n";
-                        }
-                        toSend += "\n";
-                        Utils.sendAnyMsg( sender, toSend );
+                        sendHelpMessage( sender, page * 6, page * 6 + 6 );
                     }
 
                     else {
@@ -67,34 +62,28 @@ public class NetunoCmd implements CommandExecutor {
                 }
 
                 else {
-                    String toSend = "\n";
-                    for ( int index = 0; index < 6; index++ ) {
-                        toSend += CommandErrors.getCommandUsage( COMMAND_ORDER[index] ) + "\n";
-                    }
-                    toSend += "\n";
-                    Utils.sendAnyMsg( sender, toSend );
+                    sendHelpMessage( sender, 0, 6 );
                 }
             }
 
             else {
-                String toSend = "\n";
-                for ( int index = 0; index < 6; index++ ) {
-                    toSend += CommandErrors.getCommandUsage( COMMAND_ORDER[index] ) + "\n";
-                }
-                toSend += Utils.getColored( "\n" );
-                Utils.sendAnyMsg( sender, toSend );
+                sendHelpMessage( sender, 0, 6 );
             }
         }
 
         else {
-            String toSend = "\n";
-            for ( int index = 0; index < 6; index++ ) {
-                toSend += CommandErrors.getCommandUsage( COMMAND_ORDER[index] ) + "\n";
-            }
-            toSend += "\n";
-            Utils.sendAnyMsg( sender, toSend );
+            sendHelpMessage( sender, 0, 6 );
         }
 
         return true;
+    }
+
+    private void sendHelpMessage( CommandSender sender, int start, int end ) {
+        String toSend = "\n";
+        for ( int index = start; index < end; index++ ) {
+            toSend += CommandErrors.getCommandUsage( COMMAND_ORDER[index] ) + "\n";
+        }
+        toSend += "\n";
+        Utils.sendAnyMsg( sender, toSend );
     }
 }
