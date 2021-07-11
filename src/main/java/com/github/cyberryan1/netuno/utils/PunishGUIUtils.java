@@ -43,7 +43,7 @@ public class PunishGUIUtils {
 
     public static String getColoredStr( String path ) {
         checkPath( path );
-        return manager.getConfig().getString( path );
+        return Utils.getColored( manager.getConfig().getString( path ) );
     }
 
     private static void checkPath( String path ) {
