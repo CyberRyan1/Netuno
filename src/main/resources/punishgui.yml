@@ -25,6 +25,7 @@ main:
   history:
     index: 13
     name: "&f&lHISTORY &7[TARGET]"
+    # Type of the item
     item: WHITE_CONCRETE
 
   # Alts button
