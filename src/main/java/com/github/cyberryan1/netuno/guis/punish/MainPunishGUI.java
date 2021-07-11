@@ -4,6 +4,7 @@ import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.guis.events.GUIEventType;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
+import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.PunishGUIUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,12 +17,15 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.util.HashMap;
+
 public class MainPunishGUI {
 
     private final Inventory gui;
     private final Player staff;
     private final OfflinePlayer target;
     private final String guiName;
+    private final static HashMap<Player, OfflinePlayer> punishing = new HashMap<>();
 
     public MainPunishGUI( Player staff, OfflinePlayer target ) {
         this.staff = staff;
@@ -63,6 +67,16 @@ public class MainPunishGUI {
     }
 
     public void openInventory() {
+        if ( punishing.containsValue( target ) ) {
+            for ( Player p : punishing.keySet() ) {
+                if ( punishing.get( p ).getName().equals( target.getName() ) ) {
+                    CommandErrors.sendTargetAlreadyBeingPunished( staff, target.getName(), p.getName() );
+                    return;
+                }
+            }
+        }
+
+        punishing.put( staff, target );
         staff.openInventory( gui );
         GUIEventManager.addEvent( this );
     }
@@ -88,5 +102,6 @@ public class MainPunishGUI {
         if ( event.getView().getTitle().equals( guiName ) == false ) { return; }
 
         GUIEventManager.removeEvent( this );
+        punishing.remove( staff );
     }
 }
