@@ -18,6 +18,8 @@ import org.bukkit.plugin.java.JavaPlugin;
     - ? = unsure if doing */
 
 // * TODO add punish GUI
+// * TODO add a prevention system for /punish (player) on staff
+// * TODO add a prevention system for multiple staff being in the same player's punish GUI (configurable)
 
 // TODO add tab-completer
 // TODO add option to disable books for muted/ipmuted players
