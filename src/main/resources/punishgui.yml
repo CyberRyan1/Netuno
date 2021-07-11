@@ -1,4 +1,6 @@
 # List of all materials: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+# IMPORTANT: The same name can NOT appear more than once in a singular inventory!
+#       Ignoring this will cause things to not work as expected.
 
 # Variables:
 # [TARGET] = Player being punished
@@ -22,6 +24,7 @@ main:
     name: "&6[TARGET]"
 
   # History button
+  # This just forces the staff to execute "/history (target name)"
   history:
     index: 13
     name: "&f&lHISTORY &7[TARGET]"
@@ -29,6 +32,7 @@ main:
     item: WHITE_CONCRETE
 
   # Alts button
+  # This just forces the staff to execute "/ipinfo (target name)"
   alts:
     index: -1
     name: "&7&lALTS &7[TARGET]"
