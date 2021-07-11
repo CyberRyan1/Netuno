@@ -87,6 +87,37 @@ public class MainPunishGUI {
         if ( event.getView().getTitle().equals( guiName ) == false ) { return; }
 
         event.setCancelled( true );
+        ItemStack item = event.getCurrentItem();
+        if ( item == null || item.getType().isAir() ) { return; }
+        int eventSlot = event.getSlot();
+
+        if ( eventSlot == PunishGUIUtils.getInt( "main.history.index" ) ) {
+            staff.chat( "/history list " + target.getName() );
+        }
+
+        else if ( eventSlot == PunishGUIUtils.getInt( "main.alts.index" ) ) {
+            staff.chat( "/ipinfo " + target.getName() );
+        }
+
+        else if ( eventSlot == PunishGUIUtils.getInt( "main.warn.index" ) ) {
+            return; // * temp
+        }
+
+        else if ( eventSlot == PunishGUIUtils.getInt( "main.mute.index" ) ) {
+            return; // * temp
+        }
+
+        else if ( eventSlot == PunishGUIUtils.getInt( "main.ban.index" ) ) {
+            return; // * temp
+        }
+
+        else if ( eventSlot == PunishGUIUtils.getInt( "main.ipmute.index" ) ) {
+            return; // * temp
+        }
+
+        else if ( eventSlot == PunishGUIUtils.getInt( "main.ipban.index" ) ) {
+            return; // * temp
+        }
     }
 
     @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
