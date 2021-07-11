@@ -16,6 +16,11 @@ public class PunishGUIUtils {
 
     public static PunishGUIManager getPunishGUIManager() { return manager; }
 
+    public static Object get( String path ) {
+        checkPath( path );
+        return manager.getConfig().get( path );
+    }
+
     public static boolean getBool( String path ) {
         checkPath( path );
         return manager.getConfig().getBoolean( path );
