@@ -1,0 +1,62 @@
+# List of all materials: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+
+# Variables:
+# [TARGET] = Player being punished
+
+#
+# Main page of the GUI
+# What you see when you initially run /punish (player)
+#
+main:
+  # Name of the inventory
+  inventory-name: "&7Punishing &6[TARGET]"
+
+  # Target skull
+  skull:
+    # Index in the gui (starts at 0, ends at 53)
+    # Set to -1 to not show this item
+    index: -1
+    # Item name
+    name: "&6[TARGET]"
+
+  # History button
+  history:
+    index: 13
+    name: "&f&lHISTORY &7[TARGET]"
+    item: WHITE_CONCRETE
+
+  # Alts button
+  alts:
+    index: -1
+    name: "&7&lALTS &7[TARGET]"
+    item: LIGHT_GRAY_CONCRETE
+
+  # Warn button
+  warn:
+    index: 21
+    name: "&a&lWARN &7[TARGET]"
+    item: LIME_CONCRETE
+
+  # Mute button
+  mute:
+    index: 23
+    name: "&e&lMUTE &7[TARGET]"
+    item: YELLOW_CONCRETE
+
+  # Ban button
+  ban:
+    index: 29
+    name: "&6&lBAN &7[TARGET]"
+    item: ORANGE_CONCRETE
+
+  # IP Mute button
+  ipmute:
+    index: 31
+    name: "&c&lIPMUTE &7[TARGET]"
+    item: RED_CONCRETE
+
+  # IP Ban button
+  ipban:
+    index: 33
+    name: "&c&lIPBAN &7[TARGET]"
+    item: BLACK_CONCRETE
