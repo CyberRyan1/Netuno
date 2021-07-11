@@ -25,7 +25,7 @@ main:
   history:
     index: 13
     name: "&f&lHISTORY &7[TARGET]"
-    # Type of the item
+    # Type of the item (see list of all materials above)
     item: WHITE_CONCRETE
 
   # Alts button
