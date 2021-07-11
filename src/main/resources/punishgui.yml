@@ -8,12 +8,14 @@
 # What you see when you initially run /punish (player)
 #
 main:
+  # Inventory indexes: starts at 0, ends at 44 (5 rows total)
+
   # Name of the inventory
   inventory-name: "&7Punishing &6[TARGET]"
 
   # Target skull
   skull:
-    # Index in the gui (starts at 0, ends at 53)
+    # Index in the gui
     # Set to -1 to not show this item
     index: -1
     # Item name
