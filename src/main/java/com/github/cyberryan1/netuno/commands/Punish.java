@@ -38,6 +38,14 @@ public class Punish implements CommandExecutor {
 
             OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
             if ( target != null ) {
+
+                if ( ConfigUtils.getBool( "punish.staff-punish" ) == false ) {
+                    if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
+                        CommandErrors.sendPlayerCannotBePunished( staff, target.getName() );
+                        return true;
+                    }
+                }
+
                 MainPunishGUI gui = new MainPunishGUI( staff, target );
                 gui.openInventory();
             }

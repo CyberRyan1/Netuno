@@ -394,3 +394,6 @@ reports:
 
 punish:
   perm: "netuno.punish"
+
+  # Should staff be able to /punish each other?
+  staff-punish: false
