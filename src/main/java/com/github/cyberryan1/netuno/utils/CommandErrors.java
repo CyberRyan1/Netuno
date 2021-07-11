@@ -145,4 +145,8 @@ public class CommandErrors {
     public static void sendReportNeedsOneReason( CommandSender sender ) {
         sender.sendMessage( Utils.getColored( "&7You must provide at least 1 reason in your report" ) );
     }
+
+    public static void sendTargetAlreadyBeingPunished( CommandSender sender, String targetName, String staffPunishingName ) {
+        sender.sendMessage( Utils.getColored( "&6" + targetName + " &7is already being punished by &6" + staffPunishingName ) );
+    }
 }
