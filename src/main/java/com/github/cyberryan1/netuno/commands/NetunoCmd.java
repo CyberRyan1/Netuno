@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 
 public class NetunoCmd implements CommandExecutor {
 
-    private final String COMMAND_ORDER[] = { "help", "warn", "clearchat", "kick", "mute", "unmute", "history", "ban", "unban",
+    private final String COMMAND_ORDER[] = { "help", "punish", "warn", "clearchat", "kick", "mute", "unmute", "history", "ban", "unban",
             "ipinfo", "ipmute", "unipmute", "ipban", "unipban", "report", "reports", "togglesigns", "reload" };
 
     @Override
