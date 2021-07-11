@@ -3,6 +3,9 @@ package com.github.cyberryan1.netuno.utils;
 import com.github.cyberryan1.netuno.managers.PunishGUIManager;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class PunishGUIUtils {
 
     private static PunishGUIManager manager;
@@ -39,6 +42,14 @@ public class PunishGUIUtils {
     public static String getStr( String path ) {
         checkPath( path );
         return manager.getConfig().getString( path );
+    }
+
+    public static ArrayList<String> getStrList( String path ) {
+        checkPath( path );
+        ArrayList<String> results = new ArrayList<>();
+        String list[] = manager.getConfig().getStringList( path ).toArray( new String[0] );
+        Collections.addAll( results, list );
+        return results;
     }
 
     public static String getColoredStr( String path ) {
