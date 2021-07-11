@@ -1,9 +1,6 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
-import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.VaultUtils;
+import com.github.cyberryan1.netuno.utils.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -32,7 +29,13 @@ public class NetunoCmd implements CommandExecutor {
                         ConfigUtils.getConfigManager().saveDefaultConfig();
                     }
 
+                    if ( PunishGUIUtils.getPunishGUIManager().getConfigFile().exists() == false || PunishGUIUtils.getPunishGUIManager().getConfigFile() == null ) {
+                        Utils.logInfo( "Found no punishgui file, recreating it..." );
+                        PunishGUIUtils.getPunishGUIManager().saveDefaultConfig();
+                    }
+
                     ConfigUtils.getConfigManager().reloadConfig();
+                    PunishGUIUtils.getPunishGUIManager().reloadConfig();
 
                     sender.sendMessage( Utils.getColored( "&7Successfully reloaded &6Netuno" ) );
                     Utils.logInfo( "Successfully reloaded Netuno and its files" );

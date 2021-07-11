@@ -4,7 +4,9 @@ import com.github.cyberryan1.netuno.commands.*;
 import com.github.cyberryan1.netuno.listeners.*;
 import com.github.cyberryan1.netuno.managers.ConfigManager;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
+import com.github.cyberryan1.netuno.managers.PunishGUIManager;
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
+import com.github.cyberryan1.netuno.utils.PunishGUIUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,20 +33,24 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class Netuno extends JavaPlugin {
 
     private ConfigManager config;
+    private PunishGUIManager punishGUIConfig;
 
     private Utils util;
     private ConfigUtils configUtils;
     private VaultUtils vaultUtils;
+    private PunishGUIUtils punishGUIUtils;
 
     @Override
     public void onEnable() {
         config = new ConfigManager( this );
+        punishGUIConfig = new PunishGUIManager( this );
 
         util = new Utils(this, config );
         util.setupDatabase();
 
         configUtils = new ConfigUtils( config );
         vaultUtils = new VaultUtils();
+        punishGUIUtils = new PunishGUIUtils( punishGUIConfig );
 
         this.getCommand( "netuno" ).setExecutor( new NetunoCmd() );
         this.getCommand( "kick" ).setExecutor( new Kick() );
@@ -73,5 +79,6 @@ public final class Netuno extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents( new CommandListener(), this );
 
         ConfigUtils.getConfigManager().reloadConfig();
+        PunishGUIUtils.getPunishGUIManager().reloadConfig();
     }
 }
