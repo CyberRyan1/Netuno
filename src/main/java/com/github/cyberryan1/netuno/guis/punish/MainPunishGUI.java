@@ -100,7 +100,8 @@ public class MainPunishGUI {
         }
 
         else if ( eventSlot == PunishGUIUtils.getInt( "main.warn.index" ) ) {
-            return; // * temp
+            WarnPunishGUI gui = new WarnPunishGUI( staff, target );
+            gui.openInventory();
         }
 
         else if ( eventSlot == PunishGUIUtils.getInt( "main.mute.index" ) ) {
