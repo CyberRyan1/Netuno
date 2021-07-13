@@ -26,4 +26,12 @@ public class StaffPlayerPunishManager {
     public OfflinePlayer getWhoStaffPunishing( Player staff ) {
         return punishing.get( staff );
     }
+
+    public void addStaffTarget( Player staff, OfflinePlayer target ) {
+        punishing.put( staff, target );
+    }
+
+    public void removeStaff( Player staff ) {
+        punishing.remove( staff );
+    }
 }
