@@ -18,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
     - ? = unsure if doing */
 
 // ! TODO PlayerJoinEvent has errors (Database.java:240)
+// ! TODO Will have to check GUI reasons and remove all instances in database if needed
 
 // * TODO add punish GUI
 
