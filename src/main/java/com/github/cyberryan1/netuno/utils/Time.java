@@ -127,4 +127,16 @@ public class Time {
         if ( pun.getLength() == -1 ) { return "Never"; }
         return getLengthFromTimestamp( pun.getDate() + pun.getLength() - getCurrentTimestamp() );
     }
+
+    public static String getScaledTime( String startingTime, int punTotal ) {
+        String startingAmount = startingTime;
+        char units[] = { 's', 'm', 'h', 'd', 'w' };
+        for ( char c : units ) {
+            startingAmount = startingAmount.replace( c + "", "" );
+        }
+        int amount = Integer.parseInt( startingAmount );
+        amount = ( int ) ( amount * ( Math.pow( 2.0, ( punTotal - 1 ) ) ) );
+
+        return "" + amount + startingTime.charAt( startingTime.length() - 1 );
+    }
 }
