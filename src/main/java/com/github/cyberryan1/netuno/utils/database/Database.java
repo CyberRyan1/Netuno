@@ -1070,7 +1070,7 @@ public abstract class Database {
             ps.setInt( 1, punID );
             ps.setString( 2, target.getUniqueId().toString() );
             ps.setString( 3, type );
-            ps.setString( 4, reason );
+            ps.setString( 4, reason.toLowerCase() );
 
             ps.executeUpdate();
         } catch ( SQLException ex ) { Utils.logError( "Unable to add GUI punishment to database" ); }
@@ -1089,7 +1089,7 @@ public abstract class Database {
             ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + PUNISH_GUI_TABLE_NAME + " WHERE player=? AND type=? AND reason=?;" );
             ps.setString( 1, target.getUniqueId().toString() );
             ps.setString( 2, type );
-            ps.setString( 3, reason );
+            ps.setString( 3, reason.toLowerCase() );
             rs = ps.executeQuery();
 
             rs.next();
