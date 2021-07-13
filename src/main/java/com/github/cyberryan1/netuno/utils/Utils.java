@@ -243,12 +243,20 @@ public class Utils {
         return input;
     }
 
-    // capitalizes the first character of a string
-    public static String capitalizeString( String input ) {
-        char start = input.charAt( 0 );
-        if ( start < 90 ) { return start + input.substring( 1 ).toLowerCase(); }
-
-        start -= 32;
-        return start + input.substring( 1 ).toLowerCase();
+    // gets the capitalized version of a punishment
+    public static String getCapitalizedPunishment( String type ) {
+        switch ( type.toLowerCase() ) {
+            case "ban": return "Ban";
+            case "ipban": return "IPBan";
+            case "ipmute": return "IPMute";
+            case "kick": return "Kick";
+            case "mute": return "Mute";
+            case "unipban": return "UnIPBan";
+            case "unipmute": return "UnIPMute";
+            case "unban": return "Unban";
+            case "unmute": return "Unmute";
+            case "warn": return "Warn";
+            default: return null;
+        }
     }
 }
