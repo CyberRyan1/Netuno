@@ -73,7 +73,7 @@ warn:
   # To do so, just copy and paste the below, and remove the #'s
   # Maximum of 18 reasons
   # Use underscores (_) for spaces in the reason
-  # For a space in the punish GUI, set the reason as "air"
+  # For a space in the punish GUI, set the material as "air"
 #  REASON_HERE:
 #    item-name: "idk hi"
 #    item-material: AIR
@@ -134,18 +134,25 @@ warn:
     punishment: mute
     starting-time: 30m
 
+  air1:
+    item-name: ""
+    material: AIR
+    punish-after: 1
+    punishment: mute
+    starting-time: 30m
+
+  air2:
+    item-name: ""
+    material: AIR
+    punish-after: 1
+    punishment: mute
+    starting-time: 30m
+
   report_spam:
     item-name: "&3Report Spam"
     material: CYAN_WOOL
     punish-after: 1
     punishment: ban
-    starting-time: 30m
-
-  air:
-    item-name: ""
-    material: AIR
-    punish-after: 1
-    punishment: mute
     starting-time: 30m
 
   character_spam:
