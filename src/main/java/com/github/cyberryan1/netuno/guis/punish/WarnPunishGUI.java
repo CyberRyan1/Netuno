@@ -31,7 +31,7 @@ public class WarnPunishGUI {
         setReasons();
         setGuiSize();
 
-        this.guiName = PunishGUIUtils.getColoredStr( "warn.inventory_name" );
+        this.guiName = PunishGUIUtils.getColoredStr( "warn.inventory_name" ).replace( "[TARGET]", target.getName() );
         this.gui = Bukkit.createInventory( null, this.guiSize, this.guiName );
         insertItems();
     }
@@ -65,10 +65,10 @@ public class WarnPunishGUI {
         for ( int row = 0; row < ( int ) Math.ceil( guiSize / 9.0 ); row++ ) {
             for ( int col = 0; col < 6; col++ ) {
                 if ( punIndex >= reasons.size() ) { break; }
-                if ( reasons.get( punIndex ).equals( "air" ) == false ) {
-                    String path = "warn." + reasons.get( punIndex );
-                    Material material = Material.matchMaterial( PunishGUIUtils.getStr( path + ".material" ) );
-                    String name = PunishGUIUtils.getColoredStr( path + ".item-name" );
+                String path = "warn." + reasons.get( punIndex );
+                Material material = Material.matchMaterial( PunishGUIUtils.getStr( path + ".material" ) );
+                if ( material.isAir() == false ) {
+                    String name = PunishGUIUtils.getColoredStr( path + ".item-name" ).replace( "[TARGET]", target.getName() );
                     items[guiIndex] = GUIUtils.createItem( material, name );
                 }
 
