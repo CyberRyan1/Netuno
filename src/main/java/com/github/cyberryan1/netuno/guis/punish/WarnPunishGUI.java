@@ -4,6 +4,7 @@ import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netuno.managers.StaffPlayerPunishManager;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.PunishGUIUtils;
+import com.github.cyberryan1.netuno.utils.VaultUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -38,7 +39,7 @@ public class WarnPunishGUI {
     private void setReasons() {
         this.reasons = PunishGUIUtils.getKeys( "warn." );
         for ( int index = reasons.size() - 1; index >= 0; index-- ) {
-            if ( reasons.get( index ).equals( "warn.inventory_name" ) ) {
+            if ( reasons.get( index ).equals( "warn.inventory_name" ) || reasons.get( index ).equals( "warn.permission" ) ) {
                 reasons.remove( index );
             }
             else {
@@ -82,6 +83,12 @@ public class WarnPunishGUI {
     }
 
     public void openInventory() {
+        if ( PunishGUIUtils.getStr( "warn.permission" ).equals( "" ) == false &&
+                VaultUtils.hasPerms( staff, PunishGUIUtils.getStr( "warn.permission" ) ) == false ) {
+            CommandErrors.sendInvalidPerms( staff );
+            return;
+        }
+
         if ( StaffPlayerPunishManager.getWhoPunishingTarget( target ) != null ) {
             Player otherStaff = StaffPlayerPunishManager.getWhoPunishingTarget( target );
             if ( otherStaff.equals( staff ) == false ) {
