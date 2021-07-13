@@ -92,6 +92,7 @@ warn:
     # Material of the item in the GUI
     material: YELLOW_WOOL
     # How many warns until they get the next punishment
+    # Ex: if you set this to 1, then they will be punished for the second offense and higher
     punish-after: 1
     # What the next punishment should be
     # Options: kick, mute, ban, ipmute, ipban
