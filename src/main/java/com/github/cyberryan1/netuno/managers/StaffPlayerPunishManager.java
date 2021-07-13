@@ -5,6 +5,9 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 
+// Clarification: this class is mainly to manage the punishing list
+// This helps prevent double-punishments via the GUI
+
 public class StaffPlayerPunishManager {
 
     private final static HashMap<Player, OfflinePlayer> punishing = new HashMap<>();
