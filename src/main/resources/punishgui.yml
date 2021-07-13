@@ -4,12 +4,14 @@
 
 # Variables:
 # [TARGET] = Player being punished
+# [PREVIOUS] = Amount of previous punishments a player had for that specific punishment
 
 #
 # Main page of the GUI
 # What you see when you initially run /punish (player)
 #
 main:
+  # [PREVIOUS] variable does NOT work here
   # Inventory indexes: starts at 0, ends at 44 (5 rows total)
 
   # Name of the inventory
@@ -75,7 +77,8 @@ warn:
   # Use underscores (_) for spaces in the reason
   # For a space in the punish GUI, set the material as "air"
 #  REASON_HERE:
-#    item-name: "idk hi"
+#    item-name: "hi"
+#    item-lore: "something"
 #    item-material: AIR
 #    punish-after: 1
 #    punishment: mute
@@ -89,6 +92,9 @@ warn:
   spam:
     # Name of the item in the GUI
     item-name: "&eSpam"
+    # Lore of the item in the GUI
+    # Set to "" for no lore
+    item-lore: "&7Offenses: &6[PREVIOUS]"
     # Material of the item in the GUI
     material: YELLOW_WOOL
     # How many warns until they get the next punishment
@@ -102,6 +108,7 @@ warn:
 
   caps:
     item-name: "&6Caps"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
     material: ORANGE_WOOL
     punish-after: 1
     punishment: mute
@@ -109,6 +116,7 @@ warn:
 
   flood:
     item-name: "&aFlood"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
     material: LIME_WOOL
     punish-after: 1
     punishment: mute
@@ -116,6 +124,7 @@ warn:
 
   swearing:
     item-name: "&2Swearing"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
     material: GREEN_WOOL
     punish-after: 1
     punishment: mute
@@ -123,6 +132,7 @@ warn:
 
   general_disrespect:
     item-name: "&cGeneral Disrespect"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
     material: RED_WOOL
     punish-after: 1
     punishment: mute
@@ -130,6 +140,7 @@ warn:
 
   media_advertisement:
     item-name: "&bMedia Advertisement"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
     material: LIGHT_BLUE_WOOL
     punish-after: 1
     punishment: mute
@@ -137,6 +148,7 @@ warn:
 
   air1:
     item-name: ""
+    item-lore: ""
     material: AIR
     punish-after: 1
     punishment: mute
@@ -144,6 +156,7 @@ warn:
 
   air2:
     item-name: ""
+    item-lore: ""
     material: AIR
     punish-after: 1
     punishment: mute
@@ -151,6 +164,7 @@ warn:
 
   report_spam:
     item-name: "&3Report Spam"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
     material: CYAN_WOOL
     punish-after: 1
     punishment: ban
@@ -158,6 +172,7 @@ warn:
 
   character_spam:
     item-name: "&dCharacter Spam"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
     material: MAGENTA_WOOL
     punish-after: 1
     punishment: mute
