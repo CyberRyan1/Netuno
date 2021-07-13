@@ -178,3 +178,76 @@ warn:
     punish-after: 1
     punishment: mute
     starting-time: 30m
+
+mute:
+  # Maximum of 18 reasons
+  # Reasons no longer include the punish-after or punishment option in comparison to the warns (above)
+
+  inventory_name: "&e&lMUTE &7[TARGET]"
+  permission: ""
+
+  air1:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 30m
+
+  inappropriate_behavior:
+    item-name: "&aInappropriate Behavior"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: LIME_WOOL
+    starting-time: 5h
+
+  toxicity:
+    item-name: "&eToxicity"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: YELLOW_WOOL
+    starting-time: 1d
+
+  harassment:
+    item-name: "&6Harassment"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: ORANGE_WOOL
+    starting-time: 4d
+
+  extreme_spam:
+    item-name: "&dExtreme Spam"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: MAGENTA_WOOL
+    starting-time: 6h
+
+  air2:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 30m
+
+  air3:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 30m
+
+  suicidal_encouragement:
+    item-name: "&bSuicidal Encouragement"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: LIGHT_BLUE_WOOL
+    starting-time: 7d
+
+  death_threats:
+    item-name: "&3Death Threats"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: CYAN_WOOL
+    starting-time: 7d
+
+  ddos_threats:
+    item-name: "&9DDoS Threats"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: BLUE_WOOL
+    starting-time: 7d
+
+  discrimination:
+    item-name: "&cDiscrimination"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: RED_WOOL
+    starting-time: 7d
