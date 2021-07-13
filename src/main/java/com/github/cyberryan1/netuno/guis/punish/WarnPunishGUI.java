@@ -1,6 +1,8 @@
 package com.github.cyberryan1.netuno.guis.punish;
 
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
+import com.github.cyberryan1.netuno.managers.StaffPlayerPunishManager;
+import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.PunishGUIUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -77,5 +79,17 @@ public class WarnPunishGUI {
         }
 
         gui.setContents( items );
+    }
+
+    public void openInventory() {
+        if ( StaffPlayerPunishManager.getWhoPunishingTarget( target ) != null ) {
+            Player otherStaff = StaffPlayerPunishManager.getWhoPunishingTarget( target );
+            if ( otherStaff.equals( staff ) == false ) {
+                CommandErrors.sendTargetAlreadyBeingPunished( staff, target.getName(), otherStaff.getName() );
+            }
+        }
+
+        StaffPlayerPunishManager.addStaffTarget( staff, target );
+        staff.openInventory( gui );
     }
 }
