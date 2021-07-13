@@ -23,6 +23,7 @@ public abstract class Database {
     public final String PUN_TABLE_NAME = "database";
     private final String PUN_TYPE_LIST = "(id,player,staff,type,date,length,reason,active)";
     private final String PUN_UNKNOWN_LIST = "(?,?,?,?,?,?,?,?)";
+    private static int mostRecentPunID = -1;
 
     private final String NOTIF_TABLE_NAME = "notifs";
     private final String NOTIF_TYPE_LIST = "(id,player)";
@@ -84,6 +85,7 @@ public abstract class Database {
     // Returns the ID of the punishment, if needed
     public int addPunishment( Punishment pun ) {
         int id = getNextPunID();
+        mostRecentPunID = id;
         Connection conn = null;
         PreparedStatement ps = null;
 
@@ -511,7 +513,8 @@ public abstract class Database {
     public int addIPPunishment( IPPunishment pun ) {
         Connection conn = null;
         PreparedStatement ps = null;
-        int id = getNextIPPunId();;
+        int id = getNextIPPunId();
+        mostRecentPunID = id;
 
         try {
             conn = getSqlConnection();
@@ -835,6 +838,8 @@ public abstract class Database {
 
         close( conn, ps, null );
     }
+
+    public int getMostRecentPunishmentID() { return mostRecentPunID; }
 
     //
     // Sign Notifications
