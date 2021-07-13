@@ -217,4 +217,29 @@ public class Utils {
         String toReturn = list[0] + ", " + list[1] + ", and ";
         return toReturn + ( list.length - 2 ) + " more";
     }
+
+    // formats a number into a string with "-st", "-nd", "-rd" or "-th" at the end
+    // ex: 1 -> "1st"
+    // ex: 2 -> "2nd"
+    // ex: 3 -> "3rd"
+    // ex: 4 -> "4th"
+    // ex: 7 -> "7th"
+    public static String formatIntIntoAmountString( int number ) {
+        switch ( number ) {
+            case 1: return "1st";
+            case 2: return "2nd";
+            case 3: return "3rd";
+            default: return number + "th";
+        }
+    }
+
+    // removes all colorcodes from a string
+    public static String removeColorCodes( String input ) {
+        String colorCodes[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "a", "b", "c", "d", "e", "f", "n", "m", "l", "o" };
+        for ( String cc : colorCodes ) {
+            input = input.replace( Utils.getColored( "&" + cc ), "" );
+        }
+
+        return input;
+    }
 }
