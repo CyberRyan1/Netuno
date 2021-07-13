@@ -44,6 +44,10 @@ public abstract class Database {
     private final String REPORTS_TYPE_LIST = "(id,target,reporter,date,reason)";
     private final String REPORTS_UNKNOWN_LIST = "(?,?,?,?,?)";
 
+    private final String PUNISH_GUI_TABLE_NAME = "guipuns";
+    private final String PUNISH_GUI_TYPE_LIST = "(id,player,type,reason)";
+    private final String PUNISH_GUI_UNKNOWN_LIST = "(?,?,?,?)";
+
     public Database( Netuno instance ) {
         plugin = instance;
     }
@@ -1044,5 +1048,64 @@ public abstract class Database {
         for ( int id : toDelete ) {
             removeReport( id );
         }
+    }
+
+    //
+    // Punish GUI Database
+    //
+
+    public void addGUIPun( OfflinePlayer target, String type, String reason, int punID ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "INSERT INTO " + PUNISH_GUI_TABLE_NAME + " VALUES" + PUNISH_GUI_UNKNOWN_LIST );
+
+            ps.setInt( 1, punID );
+            ps.setString( 2, target.getUniqueId().toString() );
+            ps.setString( 3, type );
+            ps.setString( 4, reason );
+
+            ps.executeUpdate();
+        } catch ( SQLException ex ) { Utils.logError( "Unable to add GUI punishment to database" ); }
+
+        close( conn, ps, null );
+    }
+
+    public int getGUIPunCount( OfflinePlayer target, String type, String reason ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int result = -1;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + PUNISH_GUI_TABLE_NAME + " WHERE player=? AND type=? AND reason=?;" );
+            ps.setString( 1, target.getUniqueId().toString() );
+            ps.setString( 2, type );
+            ps.setString( 3, reason );
+            rs = ps.executeQuery();
+
+            rs.next();
+            result = rs.getInt( "count(*)" );
+        } catch ( SQLException ex ) { Utils.logError( "Unable to get a GUI punishment count from the database" ); }
+
+        close( conn, ps, rs );
+        return result;
+    }
+
+    public void removeGUIPun( int punID ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = null;
+            ps = conn.prepareStatement( "DELETE FROM " + PUNISH_GUI_TABLE_NAME + " WHERE id=?;" );
+            ps.setInt( 1, punID );
+            ps.executeUpdate();
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
+
+        close( conn, ps, null );
     }
 }

@@ -65,6 +65,14 @@ public class SQLite extends Database {
             "`reason` STRING NOT NULL," +
             "PRIMARY KEY (`id`));";
 
+    public final String CREATE_PUNISH_GUI_TABLE = "CREATE TABLE IF NOT EXISTS guipuns(" +
+            "`id` INTEGER NOT NULL," +
+            "`player` STRING NOT NULL," +
+            "`type` STRING NOT NULL," +
+            "`reason` STRING NOT NULL," +
+            "PRIMARY KEY (`id`));";
+
+
     public Connection getSqlConnection() {
         File plugins = new File( "plugins" );
         File directory = new File( plugins, "Netuno" );
@@ -118,6 +126,9 @@ public class SQLite extends Database {
 
             s = connection.createStatement();
             s.executeUpdate( CREATE_REPORTS_TABLE );
+
+            s = connection.createStatement();
+            s.executeUpdate( CREATE_PUNISH_GUI_TABLE );
 
             s.close();
         } catch ( SQLException e ) {
