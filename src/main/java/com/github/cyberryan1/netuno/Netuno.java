@@ -17,6 +17,8 @@ import org.bukkit.plugin.java.JavaPlugin;
     - space = will work on later
     - ? = unsure if doing */
 
+// ! TODO PlayerJoinEvent has errors (Database.java:240)
+
 // * TODO add punish GUI
 
 // TODO add a chat-slow feature
