@@ -13,6 +13,7 @@
 main:
   # [PREVIOUS] variable does NOT work here
   # Inventory indexes: starts at 0, ends at 44 (5 rows total)
+  # (note: index = slot in the inventory)
 
   # Name of the inventory
   inventory-name: "&7Punishing &6[TARGET]"
