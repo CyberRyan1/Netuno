@@ -110,6 +110,7 @@ public class WarnPunishGUI {
             Player otherStaff = StaffPlayerPunishManager.getWhoPunishingTarget( target );
             if ( otherStaff.equals( staff ) == false ) {
                 CommandErrors.sendTargetAlreadyBeingPunished( staff, target.getName(), otherStaff.getName() );
+                return;
             }
         }
 
