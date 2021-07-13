@@ -17,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
     - space = will work on later
     - ? = unsure if doing */
 
+// ! TODO InventoryClickEvent needs a check for which inventory type the click was in (if inventory type == player, stop)
 // ! TODO PlayerJoinEvent has errors (Database.java:240)
 // ! TODO Will have to check GUI reasons and remove all instances in database if needed
 
