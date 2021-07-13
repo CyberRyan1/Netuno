@@ -1077,7 +1077,7 @@ public abstract class Database {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        int result = -1;
+        int result = 0;
 
         try {
             conn = getSqlConnection();
