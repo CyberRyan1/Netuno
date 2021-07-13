@@ -1,7 +1,5 @@
 package com.github.cyberryan1.netuno.guis.punish;
 
-import com.github.cyberryan1.netuno.classes.IPPunishment;
-import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.guis.events.GUIEventType;
