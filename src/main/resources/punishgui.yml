@@ -82,6 +82,9 @@ warn:
 #    starting-time: 30m
 
   inventory_name: "&a&lWARN &7[TARGET]"
+  # Permission to open this GUI
+  # Set to "" for no permission needed
+  permission: ""
 
   spam:
     # Name of the item in the GUI
