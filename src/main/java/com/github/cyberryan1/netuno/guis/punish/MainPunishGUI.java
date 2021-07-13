@@ -69,7 +69,9 @@ public class MainPunishGUI {
     public void openInventory() {
         if ( StaffPlayerPunishManager.getWhoPunishingTarget( target ) != null ) {
             Player otherStaff = StaffPlayerPunishManager.getWhoPunishingTarget( target );
-            CommandErrors.sendTargetAlreadyBeingPunished( staff, target.getName(), otherStaff.getName() );
+            if ( otherStaff.equals( staff ) == false ) {
+                CommandErrors.sendTargetAlreadyBeingPunished( staff, target.getName(), otherStaff.getName() );
+            }
         }
 
         StaffPlayerPunishManager.addStaffTarget( staff, target );
