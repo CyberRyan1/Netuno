@@ -4,6 +4,7 @@ import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.guis.events.GUIEventType;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
+import com.github.cyberryan1.netuno.managers.StaffPlayerPunishManager;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.PunishGUIUtils;
 import org.bukkit.Bukkit;
@@ -25,7 +26,6 @@ public class MainPunishGUI {
     private final Player staff;
     private final OfflinePlayer target;
     private final String guiName;
-    private final static HashMap<Player, OfflinePlayer> punishing = new HashMap<>();
 
     public MainPunishGUI( Player staff, OfflinePlayer target ) {
         this.staff = staff;
@@ -67,16 +67,12 @@ public class MainPunishGUI {
     }
 
     public void openInventory() {
-        if ( punishing.containsValue( target ) ) {
-            for ( Player p : punishing.keySet() ) {
-                if ( punishing.get( p ).getName().equals( target.getName() ) ) {
-                    CommandErrors.sendTargetAlreadyBeingPunished( staff, target.getName(), p.getName() );
-                    return;
-                }
-            }
+        if ( StaffPlayerPunishManager.getWhoPunishingTarget( target ) != null ) {
+            Player otherStaff = StaffPlayerPunishManager.getWhoPunishingTarget( target );
+            CommandErrors.sendTargetAlreadyBeingPunished( staff, target.getName(), otherStaff.getName() );
         }
 
-        punishing.put( staff, target );
+        StaffPlayerPunishManager.addStaffTarget( staff, target );
         staff.openInventory( gui );
         GUIEventManager.addEvent( this );
     }
@@ -134,6 +130,6 @@ public class MainPunishGUI {
         if ( event.getView().getTitle().equals( guiName ) == false ) { return; }
 
         GUIEventManager.removeEvent( this );
-        punishing.remove( staff );
+        StaffPlayerPunishManager.removeStaff( staff );
     }
 }
