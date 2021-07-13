@@ -1,6 +1,7 @@
 package com.github.cyberryan1.netuno.utils;
 
 import com.github.cyberryan1.netuno.managers.PunishGUIManager;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
@@ -78,6 +79,10 @@ public class PunishGUIUtils {
         }
 
         return results;
+    }
+
+    public static String replaceVariables( String str, OfflinePlayer target, int previous ) {
+        return str.replace( "[TARGET]", target.getName() ).replace( "[PREVIOUS]", previous + "" );
     }
 
     private static void checkPath( String path ) {
