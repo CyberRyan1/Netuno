@@ -242,4 +242,13 @@ public class Utils {
 
         return input;
     }
+
+    // capitalizes the first character of a string
+    public static String capitalizeString( String input ) {
+        char start = input.charAt( 0 );
+        if ( start < 90 ) { return input; }
+
+        start -= 32;
+        return start + input.substring( 1 );
+    }
 }
