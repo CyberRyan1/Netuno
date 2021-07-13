@@ -67,3 +67,87 @@ main:
     index: 33
     name: "&c&lIPBAN &7[TARGET]"
     item: BLACK_CONCRETE
+
+warn:
+  # You can customize each reason to your liking
+  # To do so, just copy and paste the below, and remove the #'s
+  # Maximum of 18 reasons
+  # Use underscores (_) for spaces in the reason
+  # For a space in the punish GUI, set the reason as "air"
+#  REASON_HERE:
+#    item-name: "idk hi"
+#    item-material: AIR
+#    punish-after: 1
+#    punishment: mute
+#    starting-time: 30m
+
+  inventory_name: "&a&lWARN &7[TARGET]"
+
+  spam:
+    # Name of the item in the GUI
+    item-name: "&eSpam"
+    # Material of the item in the GUI
+    material: YELLOW_WOOL
+    # How many warns until they get the next punishment
+    punish-after: 1
+    # What the next punishment should be
+    # Options: kick, mute, ban, ipmute, ipban
+    punishment: mute
+    # The starting time
+    starting-time: 30m
+
+  caps:
+    item-name: "&6Caps"
+    material: ORANGE_WOOL
+    punish-after: 1
+    punishment: mute
+    starting-time: 15m
+
+  flood:
+    item-name: "&aFlood"
+    material: LIME_WOOL
+    punish-after: 1
+    punishment: mute
+    starting-time: 30m
+
+  swearing:
+    item-name: "&2Swearing"
+    material: GREEN_WOOL
+    punish-after: 1
+    punishment: mute
+    starting-time: 30m
+
+  general_disrespect:
+    item-name: "&cGeneral Disrespect"
+    material: RED_WOOL
+    punish-after: 1
+    punishment: mute
+    starting-time: 1h
+
+  media_advertisement:
+    item-name: "&bMedia Advertisement"
+    material: LIGHT_BLUE_WOOL
+    punish-after: 1
+    punishment: mute
+    starting-time: 30m
+
+  report_spam:
+    item-name: "&3Report Spam"
+    material: CYAN_WOOL
+    punish-after: 1
+    punishment: ban
+    starting-time: 30m
+
+  air:
+    item-name: ""
+    material: AIR
+    punish-after: 1
+    punishment: mute
+    starting-time: 30m
+
+  character_spam:
+    item-name: "&dCharacter Spam"
+    material: MAGENTA_WOOL
+    punish-after: 1
+    punishment: mute
+    starting-time: 30m
