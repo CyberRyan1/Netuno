@@ -57,6 +57,29 @@ public class PunishGUIUtils {
         return Utils.getColored( manager.getConfig().getString( path ) );
     }
 
+    public static ArrayList<String> getAllKeys() {
+        ArrayList<String> results = new ArrayList<>();
+        String keys[] = manager.getConfig().getKeys( true ).toArray( new String[0] );
+        Collections.addAll( results, keys );
+        return results;
+    }
+
+    public static ArrayList<String> getKeys( String path ) {
+        checkPath( path );
+        ArrayList<String> results = getAllKeys();
+        for ( int index = results.size() - 1; index >= 0; index-- ) {
+            String str = results.get( index );
+            if ( str.startsWith( path ) == false ) {
+                results.remove( index );
+            }
+            else if ( str.replace( path, "" ).contains( "." ) ) {
+                results.remove( index );
+            }
+        }
+
+        return results;
+    }
+
     private static void checkPath( String path ) {
         if ( manager.getConfig().get( path ) == null ) {
             Utils.logError( "Punish GUI path " + path + " was not found, please check your punishgui file!" );
