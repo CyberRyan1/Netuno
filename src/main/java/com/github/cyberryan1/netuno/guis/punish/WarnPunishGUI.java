@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -125,6 +126,7 @@ public class WarnPunishGUI {
         if ( event.getView().getTitle().equals( guiName ) == false ) { return; }
 
         event.setCancelled( true );
+        if ( event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
         ItemStack item = event.getCurrentItem();
         if ( item == null || item.getType().isAir() || item.equals( GUIUtils.getBackgroundGlass() ) ) { return; }
         int eventSlot = event.getSlot();
