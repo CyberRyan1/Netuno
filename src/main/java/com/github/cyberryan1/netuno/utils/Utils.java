@@ -246,9 +246,9 @@ public class Utils {
     // capitalizes the first character of a string
     public static String capitalizeString( String input ) {
         char start = input.charAt( 0 );
-        if ( start < 90 ) { return input; }
+        if ( start < 90 ) { return start + input.substring( 1 ).toLowerCase(); }
 
         start -= 32;
-        return start + input.substring( 1 );
+        return start + input.substring( 1 ).toLowerCase();
     }
 }
