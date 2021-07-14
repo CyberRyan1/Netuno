@@ -25,6 +25,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 // TODO add a chat-slow feature
 // TODO add tab-completer
+// TODO add silent feature
+// TODO add silent option in punish GUI
 // TODO add option to disable books for muted/ipmuted players
 // TODO add a [MAIN] variable in config for the main plugin color
 // TODO add a [SECONDARY] (or something of the like) variable in config for the secondary plugin color
