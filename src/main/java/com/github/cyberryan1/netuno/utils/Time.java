@@ -56,9 +56,9 @@ public class Time {
 
     // returns the unformatted length from a timestamp (unformatted length as in "5m" or "12h"
     public static String getUnformattedLengthFromTimestamp( long len ) {
-        if ( len == -1 ) { return "forever"; }
-
         String str = getLengthFromTimestamp( len );
+        if ( len == -1 || str.equalsIgnoreCase( "forever" ) ) { return "forever"; }
+
         String newStr = str.split( " " )[0] + str.split( " " )[1];
         newStr = newStr.replace( "weeks", "w" ).replace( "week", "w" ).replace( "days", "d" )
                 .replace( "day", "d" ).replace( "hours", "h" ).replace( "hour", "h" )
