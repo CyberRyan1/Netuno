@@ -478,6 +478,31 @@ public abstract class Database {
         return toReturn;
     }
 
+    // returns a list of all the accounts who are punished with the ACTIVE punishment type specified
+    public ArrayList<OfflinePlayer> getPunishedAltsByType( String playerUUID, String punType ) {
+        ArrayList<OfflinePlayer> alts = getAllAlts( playerUUID );
+        ArrayList<OfflinePlayer> toReturn = new ArrayList<>();
+
+        if ( alts.size() == 0 ) { return toReturn; }
+
+        for ( OfflinePlayer account : alts ) {
+            if ( account.getUniqueId().toString().equals( playerUUID ) == false ) {
+
+                if ( punType.equals( "mute" ) || punType.equals( "ban" ) ) {
+                    ArrayList<Punishment> activePunishments = getPunishment( account.getUniqueId().toString(), punType, true );
+                    if ( activePunishments.size() >= 1 ) { toReturn.add( account ); }
+                }
+
+                else {
+                    ArrayList<IPPunishment> activePunishments = getIPPunishment( account.getUniqueId().toString(), punType, true );
+                    if ( activePunishments.size() >= 1 ) { toReturn.add( account ); }
+                }
+            }
+        }
+
+        return toReturn;
+    }
+
     // returns all of the alts in their respective colors
     public ArrayList<String> getPunishedColoredAltList( String playerUUID ) {
         ArrayList<OfflinePlayer> alts = getAllAlts( playerUUID );
