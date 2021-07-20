@@ -129,6 +129,7 @@ public class Time {
     }
 
     public static String getScaledTime( String startingTime, int punTotal ) {
+        if ( startingTime.equalsIgnoreCase( "forever" ) ) { return "forever"; }
         String startingAmount = startingTime;
         char units[] = { 's', 'm', 'h', 'd', 'w' };
         for ( char c : units ) {
