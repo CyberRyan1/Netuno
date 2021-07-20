@@ -333,7 +333,7 @@ signs:
   # Enable sign notifications to staff
   notifs: true
   # Permission to toggle sign notifications via /togglesigns and to see sign notifications
-  notifs-perm: "netuno.signs"
+  notifs-perm: "netuno.signs.notifs"
   # What a sign notification would look like
   # Use [LINE_1], [LINE_2], [LINE_3], and [LINE_4] for the contents of the sign
   # ALl four variables above MUST be used
