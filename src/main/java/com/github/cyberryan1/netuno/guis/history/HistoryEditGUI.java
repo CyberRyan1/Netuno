@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -93,6 +94,8 @@ public class HistoryEditGUI implements Listener {
         if ( event.getView().getTitle().equals( Utils.getColored( "&7Edit Punishment &6#" + punishment.getID() ) ) == false ) { return; }
 
         event.setCancelled( true );
+        if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
+
         ItemStack itemClicked = event.getCurrentItem();
         if ( itemClicked == null || itemClicked.getType().isAir() ) { return; }
         String itemName = itemClicked.getItemMeta().getDisplayName();
