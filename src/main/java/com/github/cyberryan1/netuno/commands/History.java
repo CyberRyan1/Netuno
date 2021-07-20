@@ -137,6 +137,8 @@ public class History implements CommandExecutor {
                             DATA.removeNotif( id );
                         }
 
+                        DATA.removeAllGUIPun( target );
+
                         if ( ipPuns.size() + allPuns.size() == 0 ) { CommandErrors.sendNoPreviousPunishments( sender, target.getName() ); }
                         else {
                             String plural = "punishments";
