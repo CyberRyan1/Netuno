@@ -255,6 +255,9 @@ mute:
 ban:
   # Maximum of 18 reasons
 
+  inventory_name: "&6&lBAN &7[TARGET]"
+  permission: ""
+
   hacked_client:
     item-name: "&bHacked Client"
     item-lore: "&7Offenses: &6[PREVIOUS]"
