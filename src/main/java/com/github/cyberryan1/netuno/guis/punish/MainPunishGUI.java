@@ -113,7 +113,8 @@ public class MainPunishGUI {
         }
 
         else if ( eventSlot == PunishGUIUtils.getInt( "main.ipmute.index" ) ) {
-            return; // * temp
+            IPMutePunishGUI gui = new IPMutePunishGUI( staff, target );
+            gui.openInventory();
         }
 
         else if ( eventSlot == PunishGUIUtils.getInt( "main.ipban.index" ) ) {
