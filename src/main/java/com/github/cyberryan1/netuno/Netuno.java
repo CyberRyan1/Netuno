@@ -23,6 +23,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 // * TODO add punish GUI
 
+// TODO make /history reset (player) reset punish GUI offenses
 // TODO add a chat-slow feature
 // TODO add tab-completer
 // TODO add silent feature
