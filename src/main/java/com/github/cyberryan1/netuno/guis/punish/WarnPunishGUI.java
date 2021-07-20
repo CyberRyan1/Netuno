@@ -126,7 +126,7 @@ public class WarnPunishGUI {
         if ( event.getView().getTitle().equals( guiName ) == false ) { return; }
 
         event.setCancelled( true );
-        if ( event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
+        if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
         ItemStack item = event.getCurrentItem();
         if ( item == null || item.getType().isAir() || item.equals( GUIUtils.getBackgroundGlass() ) ) { return; }
         int eventSlot = event.getSlot();
