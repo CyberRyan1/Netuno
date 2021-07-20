@@ -16,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
     - * = working on
     - space = will work on later
     - ? = unsure if doing */
+// ! TODO history and alts may not work if they have none in Punish GUI
 
 // TODO add a chat-slow feature
 // TODO add tab-completer
