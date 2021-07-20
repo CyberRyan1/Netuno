@@ -77,7 +77,7 @@ public class MutePunishGUI {
                 String path = "mute." + reasons.get( punIndex );
                 Material material = Material.matchMaterial( PunishGUIUtils.getStr( path + ".material" ) );
                 if ( material.isAir() == false ) {
-                    int punCount = DATA.getGUIPunCount( target, "mute", reasons.get( punIndex ).replace( "_", " " ) );
+                    int punCount = DATA.getGUIPunCount( target, "mute", reasons.get( punIndex ) );
 
                     String name = PunishGUIUtils.getColoredStr( path + ".item-name" );
                     name = PunishGUIUtils.replaceVariables( name, target, punCount );
@@ -139,7 +139,7 @@ public class MutePunishGUI {
 
         int punClickedIndex = indexToSlot.indexOf( eventSlot );
         String punClickedReason = reasons.get( punClickedIndex );
-        int currentPuns = DATA.getGUIPunCount( target, "mute", punClickedReason.replace( "_", " " ) );
+        int currentPuns = DATA.getGUIPunCount( target, "mute", punClickedReason );
 
         String punishmentReason = Utils.removeColorCodes( item.getItemMeta().getDisplayName() );
         String punishmentOffense = " (" + Utils.formatIntIntoAmountString( currentPuns + 1 ) + " Offense)";
@@ -147,7 +147,7 @@ public class MutePunishGUI {
         staff.performCommand( "mute " + target.getName() + " " + punishmentLength + " " + punishmentReason + punishmentOffense );
 
         staff.closeInventory();
-        DATA.addGUIPun( target, "mute", punishmentReason, DATA.getMostRecentPunishmentID() );
+        DATA.addGUIPun( target, "mute", punClickedReason, DATA.getMostRecentPunishmentID() );
     }
 
     @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )

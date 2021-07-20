@@ -76,7 +76,7 @@ public class WarnPunishGUI {
                 String path = "warn." + reasons.get( punIndex );
                 Material material = Material.matchMaterial( PunishGUIUtils.getStr( path + ".material" ) );
                 if ( material.isAir() == false ) {
-                    int punCount = DATA.getGUIPunCount( target, "warn", reasons.get( punIndex ).replace( "_", " " ) );
+                    int punCount = DATA.getGUIPunCount( target, "warn", reasons.get( punIndex ) );
                     String name = PunishGUIUtils.getColoredStr( path + ".item-name" );
                     name = PunishGUIUtils.replaceVariables( name, target, punCount );
                     ItemStack toAdd = GUIUtils.createItem( material, name );
@@ -138,7 +138,7 @@ public class WarnPunishGUI {
         int punClickedIndex = indexToSlot.indexOf( eventSlot );
         String punClickedReason = reasons.get( punClickedIndex );
         int maxWarnsBeforePunish = PunishGUIUtils.getInt( "warn." + punClickedReason + ".punish-after" );
-        int currentWarns = DATA.getGUIPunCount( target, "warn", punClickedReason.replace( "_", " " ) );
+        int currentWarns = DATA.getGUIPunCount( target, "warn", punClickedReason );
 
         String punishmentReason = Utils.removeColorCodes( item.getItemMeta().getDisplayName() );
         String punishmentOffense = " (" + Utils.formatIntIntoAmountString( currentWarns + 1 ) + " Offense)";
@@ -160,7 +160,7 @@ public class WarnPunishGUI {
             staff.closeInventory();
         }
 
-        DATA.addGUIPun( target, "warn", punishmentReason, DATA.getMostRecentPunishmentID() );
+        DATA.addGUIPun( target, "warn", punClickedReason, DATA.getMostRecentPunishmentID() );
     }
 
     @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
