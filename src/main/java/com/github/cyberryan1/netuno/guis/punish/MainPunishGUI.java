@@ -108,7 +108,8 @@ public class MainPunishGUI {
         }
 
         else if ( eventSlot == PunishGUIUtils.getInt( "main.ban.index" ) ) {
-            return; // * temp
+            BanPunishGUI gui = new BanPunishGUI( staff, target );
+            gui.openInventory();
         }
 
         else if ( eventSlot == PunishGUIUtils.getInt( "main.ipmute.index" ) ) {
