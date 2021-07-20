@@ -323,3 +323,37 @@ ban:
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: WHITE_WOOL
     starting-time: forever
+
+ipmute:
+  # Maximum of 18 reasons
+
+  inventory_name: "&c&lIPMUTE &7[TARGET]"
+  permission: ""
+
+  air1:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 30m
+
+  air2:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 30m
+
+  mute_evasion:
+    item-name: "&cMute Evasion"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: RED_WOOL
+    # (below) Can be set to "HIGHEST_MUTED_ALT" or "HIGHEST_BANNED_ALT" to get the highest length of a mute/ban an alt of the target has
+    # HIGHEST_MUTED_ALT = highest length of a muted alt
+    # HIGHEST_BANNED_ALT = highest length of a banned alt
+    # Only works in the ipmute and ipban GUIs
+    starting-time: HIGHEST_MUTED_ALT
+
+  large_amount_mutes:
+    item-name: "&6Large Amount of Mutes"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: ORANGE_WOOL
+    starting-time: forever
