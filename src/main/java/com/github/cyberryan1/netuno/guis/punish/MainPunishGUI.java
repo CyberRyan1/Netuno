@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -85,6 +86,8 @@ public class MainPunishGUI {
         if ( event.getView().getTitle().equals( guiName ) == false ) { return; }
 
         event.setCancelled( true );
+        if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
+
         ItemStack item = event.getCurrentItem();
         if ( item == null || item.getType().isAir() ) { return; }
         int eventSlot = event.getSlot();
