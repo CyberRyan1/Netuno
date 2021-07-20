@@ -357,3 +357,39 @@ ipmute:
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: ORANGE_WOOL
     starting-time: forever
+
+ipban:
+  # Maximum of 18 reasons
+
+  inventory_name: "&c&lIPBAN &7[TARGET]"
+  permission: ""
+
+  air1:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 30m
+
+  ban_evasion:
+    item-name: "&eBan Evasion"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: YELLOW_WOOL
+    starting-time: HIGHEST_BANNED_ALT
+
+  chargeback:
+    item-name: "&6Chargeback"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: ORANGE_WOOL
+    starting-time: forever
+
+  large_amount_bans:
+    item-name: "&3Large Amount of Bans"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: CYAN_WOOL
+    starting-time: forever
+
+  blacklisted:
+    item-name: "&cBlacklisted"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: RED_WOOL
+    starting-time: forever
