@@ -1130,12 +1130,36 @@ public abstract class Database {
         PreparedStatement ps = null;
 
         try {
-            conn = null;
+            conn = getSqlConnection();
             ps = conn.prepareStatement( "DELETE FROM " + PUNISH_GUI_TABLE_NAME + " WHERE id=?;" );
             ps.setInt( 1, punID );
             ps.executeUpdate();
         } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
 
         close( conn, ps, null );
+    }
+
+    public void removeAllGUIPun( OfflinePlayer target ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<Integer> toRemove = new ArrayList<>();
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT * FROM " + PUNISH_GUI_TABLE_NAME + " WHERE player=?;" );
+            ps.setString( 1, target.getUniqueId().toString() );
+            rs = ps.executeQuery();
+
+            while ( rs.next() ) {
+                toRemove.add( rs.getInt( "id" ) );
+            }
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
+
+        close( conn, ps, null );
+        for ( int id : toRemove ) {
+            removeGUIPun( id );
+            deletePunishment( id );
+        }
     }
 }
