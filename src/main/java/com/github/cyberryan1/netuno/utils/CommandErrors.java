@@ -149,4 +149,8 @@ public class CommandErrors {
     public static void sendTargetAlreadyBeingPunished( CommandSender sender, String targetName, String staffPunishingName ) {
         sender.sendMessage( Utils.getColored( "&6" + targetName + " &7is already being punished by &6" + staffPunishingName ) );
     }
+
+    public static void sendTargetHasNoPunishedAlts( CommandSender sender, String targetName ) {
+        sender.sendMessage( Utils.getColored( "&6" + targetName + " &7has no punished alts" ) );
+    }
 }
