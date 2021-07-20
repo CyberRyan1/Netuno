@@ -16,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -196,6 +197,8 @@ public class StaffAllReportsGUI implements Listener {
         if ( event.getView().getTitle().equals( Utils.getColored( "&6Reports" ) ) == false ) { return; }
 
         event.setCancelled( true );
+        if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
+
         ItemStack clicked = event.getCurrentItem();
         if ( clicked == null || clicked.getType().isAir() ) { return; }
 
