@@ -258,6 +258,12 @@ ban:
   inventory_name: "&6&lBAN &7[TARGET]"
   permission: ""
 
+  air1:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 30m
+
   hacked_client:
     item-name: "&bHacked Client"
     item-lore: "&7Offenses: &6[PREVIOUS]"
@@ -265,39 +271,51 @@ ban:
     starting-time: 7d
 
   extreme_discrimination:
-    item-name: "&6Extreme Discrimination"
+    item-name: "&eExtreme Discrimination"
     item-lore: "&7Offenses: &6[PREVIOUS]"
-    material: ORANGE_WOOL
+    material: YELLOW_WOOL
     starting-time: 14d
 
   bug_abuse:
-    item-name: "&eBug/Exploit Abuse"
+    item-name: "&6Bug/Exploit Abuse"
     item-lore: "&7Offenses: &6[PREVIOUS]"
-    material: YELLOW_WOOL
+    material: ORANGE_WOOL
     starting-time: 5d
 
   bot:
-    item-name: "&dBot"
+    item-name: "&cBot"
     item-lore: "&7Offenses: &6[PREVIOUS]"
-    material: PURPLE_WOOL
+    material: RED_WOOL
     starting-time: forever
+
+  air2:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 30m
+
+  air3:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 30m
 
   inappropriate_name_skin:
-    item-name: "&dInappropriate Name/Skin"
-    item-lore: "&7Offenses: &6[PREVIOUS]"
-    material: MAGENTA_WOOL
-    starting-time: forever
-
-  leaking_info:
-    item-name: "&3Releasing Personal Information"
+    item-name: "&3Inappropriate Name/Skin"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: CYAN_WOOL
     starting-time: forever
 
-  irl_scamming:
-    item-name: "&cIRL Scamming"
+  leaking_info:
+    item-name: "&dReleasing Personal Information"
     item-lore: "&7Offenses: &6[PREVIOUS]"
-    material: RED_WOOL
+    material: MAGENTA_WOOL
+    starting-time: forever
+
+  irl_scamming:
+    item-name: "&dIRL Scamming"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: PURPLE_WOOL
     starting-time: forever
 
   server_advertisement:
