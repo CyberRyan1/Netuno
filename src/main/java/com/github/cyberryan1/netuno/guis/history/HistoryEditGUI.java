@@ -17,6 +17,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -172,6 +173,7 @@ public class HistoryEditGUI implements Listener {
 
     @GUIEventInterface( type = GUIEventType.PLAYER_CHAT )
     public void onPlayerChatEvent( PlayerChatEvent event ) {
+        if ( event.getPlayer().getName().equals( staff.getName() ) == false ) { return; }
         if ( editingLength ) {
             event.setCancelled( true );
 
@@ -207,6 +209,16 @@ public class HistoryEditGUI implements Listener {
             HistoryEditGUI newGUI = new HistoryEditGUI( target, event.getPlayer(), punishment.getID() );
             newGUI.openInventory( event.getPlayer() );
             editingReason = false;
+        }
+    }
+
+    @GUIEventInterface( type = GUIEventType.PLAYER_COMMAND )
+    public void onPlayerCommand( PlayerCommandPreprocessEvent event ) {
+        if ( event.getPlayer().getName().equals( staff.getName() ) == false ) { return; }
+        if ( editingLength || editingReason ) {
+            editingLength = false;
+            editingReason = false;
+            event.getPlayer().sendMessage( Utils.getColored( "&7The punishment edit has been cancelled" ) );
         }
     }
 }
