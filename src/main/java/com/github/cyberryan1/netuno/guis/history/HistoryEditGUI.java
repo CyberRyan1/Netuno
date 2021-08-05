@@ -187,6 +187,7 @@ public class HistoryEditGUI implements Listener {
                 punishment.setLength( Time.getTimestampFromLength( event.getMessage() ) );
                 DATA.setPunishmentLength( punishment.getID(), punishment.getLength() );
 
+                GUIEventManager.removeEvent( this );
                 HistoryEditGUI newGUI = new HistoryEditGUI( target, event.getPlayer(), punishment.getID() );
                 newGUI.openInventory( event.getPlayer() );
                 editingLength = false;
@@ -206,6 +207,7 @@ public class HistoryEditGUI implements Listener {
                 DATA.setPunishmentReason( punishment.getID(), punishment.getReason() );
             }
 
+            GUIEventManager.removeEvent( this );
             HistoryEditGUI newGUI = new HistoryEditGUI( target, event.getPlayer(), punishment.getID() );
             newGUI.openInventory( event.getPlayer() );
             editingReason = false;
@@ -219,6 +221,7 @@ public class HistoryEditGUI implements Listener {
             editingLength = false;
             editingReason = false;
             event.getPlayer().sendMessage( Utils.getColored( "&7The punishment edit has been cancelled" ) );
+            GUIEventManager.removeEvent( this );
         }
     }
 }
