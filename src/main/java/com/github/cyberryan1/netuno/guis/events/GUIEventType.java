@@ -4,5 +4,6 @@ public enum GUIEventType {
     INVENTORY_CLICK,
     INVENTORY_DRAG,
     INVENTORY_CLOSE,
-    PLAYER_CHAT;
+    PLAYER_CHAT,
+    PLAYER_COMMAND;
 }
