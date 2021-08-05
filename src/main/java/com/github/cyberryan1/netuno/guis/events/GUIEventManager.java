@@ -6,6 +6,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -70,6 +71,22 @@ public class GUIEventManager implements Listener {
             for ( Method method : obj.getClass().getMethods() ) {
                 if ( method.isAnnotationPresent( GUIEventInterface.class ) && method.getParameterTypes().length == 1 ) {
                     if ( method.getAnnotation( GUIEventInterface.class ).type() == GUIEventType.PLAYER_CHAT ) {
+                        try { method.invoke( obj, event );
+                        } catch ( InvocationTargetException e ) { e.printStackTrace();
+                        } catch ( IllegalAccessException e ) { e.printStackTrace(); }
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerCommand( PlayerCommandPreprocessEvent event ) {
+        for ( int index = objects.size() - 1; index >= 0; index-- ) {
+            Object obj = objects.get( index );
+            for ( Method method : obj.getClass().getMethods() ) {
+                if ( method.isAnnotationPresent( GUIEventInterface.class ) && method.getParameterTypes().length == 1 ) {
+                    if ( method.getAnnotation( GUIEventInterface.class ).type() == GUIEventType.PLAYER_COMMAND ) {
                         try { method.invoke( obj, event );
                         } catch ( InvocationTargetException e ) { e.printStackTrace();
                         } catch ( IllegalAccessException e ) { e.printStackTrace(); }
