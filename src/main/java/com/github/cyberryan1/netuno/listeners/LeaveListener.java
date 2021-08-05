@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.listeners;
 
+import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.database.Database;
@@ -17,6 +18,11 @@ public class LeaveListener implements Listener {
     public void onPlayerLeave( PlayerQuitEvent event ) {
         ArrayList<Punishment> banPunishments = DATA.getPunishment( event.getPlayer().getUniqueId().toString(), "ban", true );
         if ( banPunishments.size() >= 1 ) {
+            event.setQuitMessage( null );
+        }
+
+        ArrayList<IPPunishment> ipPunishments = DATA.getIPPunishment( event.getPlayer().getUniqueId().toString(), "ipban", true );
+        if ( ipPunishments.size() >= 1 ) {
             event.setQuitMessage( null );
         }
     }
