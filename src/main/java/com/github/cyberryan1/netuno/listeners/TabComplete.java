@@ -107,6 +107,10 @@ public class TabComplete implements TabCompleter {
                 if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "punish.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); }
                 break;
             }
+            case "chatslow": {
+                if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "chatslow.perm" ) ) ) { argOne.add( "get" ); argOne.add( "set" ); }
+                break;
+            }
         }
     }
 
