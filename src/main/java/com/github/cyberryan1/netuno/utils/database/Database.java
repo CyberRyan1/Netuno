@@ -49,6 +49,10 @@ public abstract class Database {
     private final String PUNISH_GUI_TYPE_LIST = "(id,player,type,reason)";
     private final String PUNISH_GUI_UNKNOWN_LIST = "(?,?,?,?)";
 
+    private final String OTHER_TABLE_NAME = "other";
+    private final String OTHER_TYPE_LIST = "(key,value)";
+    private final String OTHER_UNKNOWN_LIST = "(?,?)";
+
     public Database( Netuno instance ) {
         plugin = instance;
     }
@@ -1161,5 +1165,73 @@ public abstract class Database {
             removeGUIPun( id );
             deletePunishment( id );
         }
+    }
+
+    //
+    // Other Database
+    //
+
+    public void addOther( String key, String value ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "INSERT INTO " + OTHER_TABLE_NAME + " VALUES" + OTHER_UNKNOWN_LIST );
+
+            ps.setString( 1, key );
+            ps.setString( 2, value );
+
+            ps.executeUpdate();
+        } catch ( SQLException ex ) { Utils.logError( "Unable to add to the other database" ); }
+
+        close( conn, ps, null );
+    }
+
+    public void updateOther( String key, String newValue ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "UPDATE " + OTHER_TABLE_NAME + " SET value=? WHERE key=?;" );
+
+            ps.setString( 1, newValue );
+            ps.setString( 2, key );
+            ps.executeUpdate();
+        } catch ( SQLException ex ) { Utils.logError( "Unable to update the other database" ); }
+
+        close( conn, ps, null );
+    }
+
+    public String getOther( String key ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String result = "";
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT * FROM " + OTHER_TABLE_NAME + " WHERE key=?;" );
+
+            ps.setString( 1, key );
+            rs = ps.executeQuery();
+            result = rs.getString( "value" );
+        } catch ( SQLException ex ) { Utils.logError( "Unable to select from the other database" ); }
+
+        close( conn, ps, rs );
+        return result;
+    }
+
+    public void deleteOther( String key ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "DELETE FROM " + OTHER_TABLE_NAME + " WHERE key=?;" );
+            ps.setString( 1, key );
+            ps.executeUpdate();
+        } catch ( SQLException ex ) { Utils.logError( "Unable to delete from the other database" ); }
     }
 }
