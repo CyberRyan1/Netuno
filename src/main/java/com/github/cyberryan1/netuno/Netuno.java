@@ -21,6 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 // % TODO add a chat-slow feature
 
+// TODO add a way so that you don't have to delete the config.yml in between each update
 // TODO add silent feature
 // TODO add silent option in punish GUI
 // TODO add option to disable books for muted/ipmuted players
