@@ -1216,6 +1216,8 @@ public abstract class Database {
 
             ps.setString( 1, key );
             rs = ps.executeQuery();
+
+            rs.next();
             result = rs.getString( "value" );
         } catch ( SQLException ex ) { Utils.logError( "Unable to select from the other database" ); }
 
@@ -1233,5 +1235,27 @@ public abstract class Database {
             ps.setString( 1, key );
             ps.executeUpdate();
         } catch ( SQLException ex ) { Utils.logError( "Unable to delete from the other database" ); }
+
+        close( conn, ps, null );
+    }
+
+    public boolean otherCheckKeyExists( String key ) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        boolean result = false;
+
+        try {
+            conn = getSqlConnection();
+            ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + OTHER_TABLE_NAME + " WHERE key=?;" );
+            ps.setString( 1, key );
+
+            rs = ps.executeQuery();
+            rs.next();
+            result = ( rs.getInt( "count(*) " ) >= 1 );
+        } catch ( SQLException ex ) { Utils.logError( "Unable to check if a key exists in the other database" ); }
+
+        close( conn, ps, rs );
+        return result;
     }
 }
