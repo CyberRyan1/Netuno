@@ -303,6 +303,20 @@ clearchat:
   # If set to "", then the default broadcast will be sent
   staff-broadcast: "&7The chat has been cleared by &6[STAFF]"
 
+chatslow:
+  perm: "netuno.chatslow"
+  # Default value to set the chatslow to (in seconds)
+  # Set to 0 for none
+  default-value: 0
+  # What to send to everyone when the chatslow amount is changed
+  # Set to "" for nothing
+  # All the messages in this (chatslow) section can use the variable [AMOUNT],
+          # which is the amount of time the chatslow is
+  broadcast: ""
+  # What to send when a player chats quicker then the chatslow allows
+  msg: "&7You must wait &6[AMOUNT] seconds&7 before you can chat again"
+
+
 history:
   # note: players MUST have this permission to use any of the other sub-commands
   # also gives them access to /history list (player)
