@@ -72,6 +72,10 @@ public class SQLite extends Database {
             "`reason` STRING NOT NULL," +
             "PRIMARY KEY (`id`));";
 
+    private final String CREATE_OTHER_TABLE = "CREATE TABLE IF NOT EXISTS other(" +
+            "`key` STRING NOT NULL," +
+            "`value` STRING NOT NULL;";
+
 
     public Connection getSqlConnection() {
         File plugins = new File( "plugins" );
@@ -129,6 +133,9 @@ public class SQLite extends Database {
 
             s = connection.createStatement();
             s.executeUpdate( CREATE_PUNISH_GUI_TABLE );
+
+            s = connection.createStatement();
+            s.executeUpdate( CREATE_OTHER_TABLE );
 
             s.close();
         } catch ( SQLException e ) {
