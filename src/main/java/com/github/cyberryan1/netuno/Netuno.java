@@ -18,7 +18,8 @@ import org.bukkit.plugin.java.JavaPlugin;
     - ? = unsure if doing */
 // ! TODO history and alts may not work if they have none in Punish GUI
 
-// TODO add a chat-slow feature
+// * TODO add a chat-slow feature
+
 // TODO add silent feature
 // TODO add silent option in punish GUI
 // TODO add option to disable books for muted/ipmuted players
