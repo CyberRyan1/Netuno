@@ -92,6 +92,8 @@ public final class Netuno extends JavaPlugin {
         this.getCommand( "report" ).setTabCompleter( new TabComplete( "report" ) );
         this.getCommand( "punish" ).setExecutor( new Punish() );
         this.getCommand( "punish" ).setTabCompleter( new TabComplete( "punish" ) );
+        this.getCommand( "chatslow" ).setExecutor( new Chatslow() );
+        this.getCommand( "chatslow" ).setTabCompleter( new TabComplete( "chatslow" ) );
 
         this.getServer().getPluginManager().registerEvents( new JoinListener(), this );
         this.getServer().getPluginManager().registerEvents( new ChatListener(), this );
