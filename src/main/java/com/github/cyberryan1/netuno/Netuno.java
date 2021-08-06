@@ -15,10 +15,11 @@ import org.bukkit.plugin.java.JavaPlugin;
     - ! = bug needs to be fixed
     - * = working on
     - space = will work on later
-    - ? = unsure if doing */
+    - ? = unsure if doing
+    - % = needs testing */
 // ! TODO history and alts may not work if they have none in Punish GUI
 
-// * TODO add a chat-slow feature
+// % TODO add a chat-slow feature
 
 // TODO add silent feature
 // TODO add silent option in punish GUI
