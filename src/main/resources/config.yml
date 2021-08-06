@@ -1,14 +1,24 @@
+########################################
+#                Netuno                #
+#         Developer: CyberRyan         #
+#    Discord: discord.gg/8gxG4KfvBK    #
+########################################
 
+########################################
+#     Netuno Config Msg Variables      #
+########################################
 
-#
-# Netuno Config Message Variables:
 # [STAFF] = Staff executing the command
 # [TARGET] = Player being punished
 # [LENGTH] = Length of a punishment (ex: 30 minutes, 3 hours, etc)
 # [REMAIN] = Length remaining of a punishment
 # [REASON] = Reason for a punishment
-#
+# Note: some variables may be disabled in certain sections,
+  # and more may be introduced in certain sections
 
+########################################
+#                General               #
+########################################
 general:
   # Permission for staff so that they can see silent punishments, etc
   staff-perm: "netuno.staff"
@@ -26,6 +36,9 @@ general:
   # Permission to reload the plugin
   reload-perm: "netuno.reload"
 
+########################################
+#        General Moderation Cmds       #
+########################################
 warn:
   # Permission
   perm: "netuno.warn"
@@ -255,6 +268,15 @@ unipban:
   message:
     - ""
 
+punish:
+  perm: "netuno.punish"
+
+  # Should staff be able to /punish each other?
+  staff-punish: false
+
+########################################
+#                 Alts                 #
+########################################
 ipinfo:
   perm: "netuno.ipinfo"
   # Players cannot view players with this permissions alt list,
@@ -276,6 +298,9 @@ ipinfo:
   # Supported variables: [TARGET]
   notif-hover: "&7Click to view &6[TARGET]&7's punished alts"
 
+########################################
+#                 Chat                 #
+########################################
 mutechat:
   perm: "netuno.mutechat"
   # Players with the below permission and the general.staff-perm permission will bypass mutechat
@@ -316,7 +341,9 @@ chatslow:
   # What to send when a player chats quicker then the chatslow allows
   msg: "&7You must wait &6[AMOUNT] seconds&7 before you can chat again"
 
-
+########################################
+#                History               #
+########################################
 history:
   # note: players MUST have this permission to use any of the other sub-commands
   # also gives them access to /history list (player)
@@ -338,6 +365,9 @@ history:
   reset:
     perm: "netuno.history.reset"
 
+########################################
+#                Signs                 #
+########################################
 signs:
   # Allow ipmuted/muted players to place signs while ipmuted/mute
   allow-while-muted: false
@@ -359,6 +389,9 @@ signs:
     - "&63) &7[LINE_3]"
     - "&64) &7[LINE_4]"
 
+########################################
+#                Reports               #
+########################################
 # /report command
 # Is what is used to actually by players to report other players to staff
 report:
@@ -405,9 +438,3 @@ reports:
   # How long (in hours) to wait before a report is automatically deleted
   # Set to -1 to never delete (not recommended)
   delete-after: 48
-
-punish:
-  perm: "netuno.punish"
-
-  # Should staff be able to /punish each other?
-  staff-punish: false
