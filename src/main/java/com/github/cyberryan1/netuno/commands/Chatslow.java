@@ -6,6 +6,7 @@ import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -42,8 +43,17 @@ public class Chatslow implements CommandExecutor {
                         return true;
                     }
 
+                    if ( newSlow < 0 ) {
+                        sender.sendMessage( Utils.getColored( "&7The chatslow must be a positive integer or zero" ) );
+                        return true;
+                    }
+
                     ChatslowManager.setSlow( newSlow );
                     sender.sendMessage( Utils.getColored( "&7The chatslow has been set to &6" + ChatslowManager.getSlow() + " seconds" ) );
+
+                    if ( ConfigUtils.getStr( "chatslow.broadcast" ).equals( "" ) == false ) {
+                        Bukkit.broadcastMessage( ConfigUtils.getColoredStr( "chatslow.broadcast" ).replace( "[AMOUNT]", newSlow + "" ) );
+                    }
                 }
 
                 else {
