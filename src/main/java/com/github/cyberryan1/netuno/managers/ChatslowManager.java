@@ -12,8 +12,9 @@ public class ChatslowManager {
     private static int slow;
 
     public ChatslowManager() {
-        if ( DATA.otherCheckKeyExists( "chatslow-amount" ) == false ) {
-            setSlow( ConfigUtils.getInt( "chatslow.default-value" ) );
+        if ( DATA.otherCheckKeyExists( DATA_KEY ) == false ) {
+            slow = ConfigUtils.getInt( "chatslow.default-value" );
+            DATA.addOther( DATA_KEY, slow + "" );
         }
         else {
             setSlow( Integer.parseInt( DATA.getOther( DATA_KEY ) ) );
