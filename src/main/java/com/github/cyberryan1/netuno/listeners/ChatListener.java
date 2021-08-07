@@ -2,6 +2,7 @@ package com.github.cyberryan1.netuno.listeners;
 
 import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
+import com.github.cyberryan1.netuno.managers.ChatslowManager;
 import com.github.cyberryan1.netuno.managers.MutechatManager;
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
@@ -12,10 +13,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ChatListener implements Listener {
 
     private final Database DATA = Utils.getDatabase();
+
+    private final HashMap<Player, Long> CHAT_SLOW = new HashMap<>();
 
     @EventHandler
     public void onPlayerChatEvent( AsyncPlayerChatEvent event ) {
@@ -118,6 +122,24 @@ public class ChatListener implements Listener {
                     return;
                 }
             }
+        }
+
+        if ( ChatslowManager.getSlow() != 0
+                && VaultUtils.hasPerms( event.getPlayer(), ConfigUtils.getStr( "general.staff-perm" ) ) == false
+                && VaultUtils.hasPerms( event.getPlayer(), ConfigUtils.getStr( "chatslow.bypass-perm" ) ) == false ) {
+            if ( CHAT_SLOW.containsKey( event.getPlayer() ) ) {
+                long timeSince = Time.getCurrentTimestamp() - CHAT_SLOW.get( event.getPlayer() );
+                if ( timeSince < ChatslowManager.getSlow() ) {
+                    event.setCancelled( true );
+
+                    if ( ConfigUtils.getStr( "chatslow.msg" ).equals( "" ) == false ) {
+                        event.getPlayer().sendMessage( ConfigUtils.getColoredStr( "chatslow.msg" ).replace( "[AMOUNT]", ChatslowManager.getSlow() + "" ) );
+                    }
+                    return;
+                }
+            }
+
+            CHAT_SLOW.put( event.getPlayer(), Time.getCurrentTimestamp() );
         }
     }
 }
