@@ -77,7 +77,7 @@ public class CommandErrors {
             case "punish":
                 return Utils.getColored( "&8/&6punish &7(player)" );
             case "chatslow":
-                return getCommandUsage( "chatslow-get" ) + "\n" + getCommandUsage( "chatslow-use" );
+                return getCommandUsage( "chatslow-get" ) + "\n" + getCommandUsage( "chatslow-set" );
             case "chatslow-get":
                 return Utils.getColored( "&8/&6chatslow &7get" );
             case "chatslow-set":
