@@ -74,7 +74,7 @@ public class SQLite extends Database {
 
     private final String CREATE_OTHER_TABLE = "CREATE TABLE IF NOT EXISTS other(" +
             "`key` STRING NOT NULL," +
-            "`value` STRING NOT NULL;";
+            "`value` STRING NOT NULL);";
 
 
     public Connection getSqlConnection() {
