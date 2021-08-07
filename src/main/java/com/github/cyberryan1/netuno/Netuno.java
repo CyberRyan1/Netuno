@@ -20,8 +20,6 @@ import org.bukkit.plugin.java.JavaPlugin;
     - % = needs testing */
 // ! TODO history and alts may not work if they have none in Punish GUI
 
-// % TODO add a chat-slow feature
-
 // TODO add a way so that you don't have to delete the config.yml in between each update
 // TODO add silent feature
 // TODO add silent option in punish GUI
