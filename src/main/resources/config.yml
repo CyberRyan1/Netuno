@@ -24,6 +24,10 @@ general:
   staff-perm: "netuno.staff"
   # Permission for all netuno commands
   all-perms: "netuno.*"
+  # Primary color for netuno messages (besides what you define in this file)
+  primary-color: "&6"
+  # Secondary color for netuno messages (besides what you define in this file)
+  secondary-color: "&7"
   # What to send when a player is denied permission to a command
   perm-denied-msg: "&cInsufficient permissions!"
   # What to send when a non-player (ex console) tries to run a command that can only be run by a player
