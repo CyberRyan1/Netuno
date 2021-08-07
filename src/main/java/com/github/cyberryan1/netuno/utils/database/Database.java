@@ -1252,7 +1252,7 @@ public abstract class Database {
 
             rs = ps.executeQuery();
             rs.next();
-            result = ( rs.getInt( "count(*) " ) >= 1 );
+            result = ( rs.getInt( 1 ) >= 1 );
         } catch ( SQLException ex ) { Utils.logError( "Unable to check if a key exists in the other database" ); }
 
         close( conn, ps, rs );
