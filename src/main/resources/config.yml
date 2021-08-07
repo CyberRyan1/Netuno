@@ -334,11 +334,12 @@ chatslow:
   # Set to 0 for none
   default-value: 0
   # What to send to everyone when the chatslow amount is changed
-  # Set to "" for nothing
-  # All the messages in this (chatslow) section can use the variable [AMOUNT],
+  # Set to "" for nothing to be sent
+  # All the messages in this (chatslow) section can ONLY use the variable [AMOUNT],
           # which is the amount of time the chatslow is
   broadcast: ""
   # What to send when a player chats quicker then the chatslow allows
+  # Set to "" for nothing to be sent
   msg: "&7You must wait &6[AMOUNT] seconds&7 before you can chat again"
 
 ########################################
