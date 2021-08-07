@@ -329,7 +329,10 @@ clearchat:
   staff-broadcast: "&7The chat has been cleared by &6[STAFF]"
 
 chatslow:
+  # Note: players with the netuno staff permission bypass the chatslow by default
   perm: "netuno.chatslow"
+  # Permission to bypass the chatslow
+  bypass-perm: "netuno.chatslow.bypass"
   # Default value to set the chatslow to (in seconds)
   # Set to 0 for none
   default-value: 0
