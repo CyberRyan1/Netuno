@@ -2,6 +2,7 @@ package com.github.cyberryan1.netuno;
 
 import com.github.cyberryan1.netuno.commands.*;
 import com.github.cyberryan1.netuno.listeners.*;
+import com.github.cyberryan1.netuno.managers.ChatslowManager;
 import com.github.cyberryan1.netuno.managers.ConfigManager;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.managers.PunishGUIManager;
@@ -37,6 +38,7 @@ public final class Netuno extends JavaPlugin {
 
     private ConfigManager config;
     private PunishGUIManager punishGUIConfig;
+    private ChatslowManager chatslowManager;
 
     private Utils util;
     private ConfigUtils configUtils;
@@ -54,6 +56,7 @@ public final class Netuno extends JavaPlugin {
         configUtils = new ConfigUtils( config );
         vaultUtils = new VaultUtils();
         punishGUIUtils = new PunishGUIUtils( punishGUIConfig );
+        chatslowManager = new ChatslowManager();
 
         this.getCommand( "netuno" ).setExecutor( new NetunoCmd() );
         this.getCommand( "netuno" ).setTabCompleter( new TabComplete( "netuno" ) );
