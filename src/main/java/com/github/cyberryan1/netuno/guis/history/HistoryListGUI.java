@@ -42,7 +42,7 @@ public class HistoryListGUI implements Listener {
         history.addAll( DATA.getAllPunishments( target.getUniqueId().toString() ) );
         sort();
 
-        String guiName = Utils.getColored( "&6" + target.getName() + "&7's history" );
+        String guiName = Utils.getColored( "&g" + target.getName() + "&h's history" );
         gui = Bukkit.createInventory( null, 54, guiName );
         insertItems();
     }
@@ -155,11 +155,11 @@ public class HistoryListGUI implements Listener {
         items[49] = getSortHopper();
 
         if ( page >= 2 ) {
-            items[47] = GUIUtils.createItem( Material.BOOK, "&6Previous Page" );
+            items[47] = GUIUtils.createItem( Material.BOOK, "&gPrevious Page" );
         }
         int maxPage = ( int ) Math.ceil( history.size() / 21.0 ) ;
         if ( page < maxPage ) {
-            items[51] = GUIUtils.createItem( Material.BOOK, "&6Next Page" );
+            items[51] = GUIUtils.createItem( Material.BOOK, "&gNext Page" );
         }
 
         gui.setContents( items );
@@ -173,10 +173,10 @@ public class HistoryListGUI implements Listener {
     private ItemStack getCurrentPagePaper() {
         ItemStack paper = new ItemStack( Material.PAPER );
         ItemMeta meta = paper.getItemMeta();
-        meta.setDisplayName( Utils.getColored( "&7Page &6#" + page ) );
+        meta.setDisplayName( Utils.getColored( "&hPage &g#" + page ) );
 
         ArrayList<String> lore = new ArrayList<>();
-        lore.add( Utils.getColored( "&7&oClick any sign to edit the punishment!" ) );
+        lore.add( Utils.getColored( "&h&oClick any sign to edit the punishment!" ) );
         meta.setLore( lore );
 
         paper.setItemMeta( meta );
@@ -185,34 +185,34 @@ public class HistoryListGUI implements Listener {
 
     private ItemStack getSortHopper() {
         if ( sort == SortBy.FIRST_DATE ) {
-            ItemStack hopper = GUIUtils.createItem( Material.HOPPER, "&7Current Sort: &6Oldest -> Newest" );
+            ItemStack hopper = GUIUtils.createItem( Material.HOPPER, "&hCurrent Sort: &gOldest -> Newest" );
             ArrayList<String> lore = new ArrayList<>();
-            lore.add( Utils.getColored( "&7Next Sort: &6Newest -> Oldest" ) );
-            lore.add( Utils.getColored( "&7Click to change sort method" ) );
+            lore.add( Utils.getColored( "&hNext Sort: &gNewest -> Oldest" ) );
+            lore.add( Utils.getColored( "&hClick to change sort method" ) );
             return GUIUtils.setItemLore( hopper, lore );
         }
 
         else if ( sort == SortBy.LAST_DATE ) {
-            ItemStack hopper = GUIUtils.createItem( Material.HOPPER, "&7Current Sort: &6Newest -> Oldest" );
+            ItemStack hopper = GUIUtils.createItem( Material.HOPPER, "&hCurrent Sort: &gNewest -> Oldest" );
             ArrayList<String> lore = new ArrayList<>();
-            lore.add( Utils.getColored( "&7Next Sort: &6Active -> Not Active" ) );
-            lore.add( Utils.getColored( "&7Click to change sort method" ) );
+            lore.add( Utils.getColored( "&hNext Sort: &gActive -> Not Active" ) );
+            lore.add( Utils.getColored( "&hClick to change sort method" ) );
             return GUIUtils.setItemLore( hopper, lore );
         }
 
         else if ( sort == SortBy.FIRST_ACTIVE ) {
-            ItemStack hopper = GUIUtils.createItem( Material.HOPPER, "&7Current Sort: &6Active -> Not Active" );
+            ItemStack hopper = GUIUtils.createItem( Material.HOPPER, "&hCurrent Sort: &gActive -> Not Active" );
             ArrayList<String> lore = new ArrayList<>();
-            lore.add( Utils.getColored( "&7Next Sort: &6Not Active -> Active" ) );
-            lore.add( Utils.getColored( "&7Click to change sort method" ) );
+            lore.add( Utils.getColored( "&hNext Sort: &gNot Active -> Active" ) );
+            lore.add( Utils.getColored( "&hClick to change sort method" ) );
             return GUIUtils.setItemLore( hopper, lore );
         }
 
         else if ( sort == SortBy.LAST_ACTIVE ) {
-            ItemStack hopper = GUIUtils.createItem( Material.HOPPER, "&7Current Sort: &6Not Active -> Active" );
+            ItemStack hopper = GUIUtils.createItem( Material.HOPPER, "&hCurrent Sort: &gNot Active -> Active" );
             ArrayList<String> lore = new ArrayList<>();
-            lore.add( Utils.getColored( "&7Next Sort: &6Newest -> Oldest" ) );
-            lore.add( Utils.getColored( "&7Click to change sort method" ) );
+            lore.add( Utils.getColored( "&hNext Sort: &gNewest -> Oldest" ) );
+            lore.add( Utils.getColored( "&hClick to change sort method" ) );
             return GUIUtils.setItemLore( hopper, lore );
         }
 
@@ -230,7 +230,7 @@ public class HistoryListGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLICK )
     public void onInventoryClick( InventoryClickEvent event ) {
         if ( event.getWhoClicked().getName().equals( staff.getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&6" + target.getName() + "&7's history" ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( Utils.getColored( "&g" + target.getName() + "&h's history" ) ) == false ) { return; }
 
         event.setCancelled( true );
         if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
@@ -238,18 +238,18 @@ public class HistoryListGUI implements Listener {
         ItemStack itemClicked = event.getCurrentItem();
         if ( itemClicked == null || itemClicked.getType().isAir() ) { return; }
 
-        if ( itemClicked.equals( GUIUtils.createItem( Material.BOOK, "&6Next Page" ) ) ) {
+        if ( itemClicked.equals( GUIUtils.createItem( Material.BOOK, "&gNext Page" ) ) ) {
             HistoryListGUI next = new HistoryListGUI( target, staff, page + 1, sort );
             next.openInventory( staff );
         }
 
-        else if ( itemClicked.equals( GUIUtils.createItem( Material.BOOK, "&6Previous Page" ) ) ) {
+        else if ( itemClicked.equals( GUIUtils.createItem( Material.BOOK, "&gPrevious Page" ) ) ) {
             HistoryListGUI previous = new HistoryListGUI( target, staff, page - 1, sort );
             previous.openInventory( staff );
         }
 
         else if ( itemClicked.getType() == Material.OAK_SIGN
-                && itemClicked.getItemMeta().getDisplayName().contains( Utils.getColored( "&7Punishment &6#" ) ) ) {
+                && itemClicked.getItemMeta().getDisplayName().contains( Utils.getColored( "&hPunishment &g#" ) ) ) {
             int punClicked = ( ( page - 1 ) * 21 ) + event.getSlot() - 10;
             if ( event.getSlot() >= 18 ) { punClicked -= 2; }
             if ( event.getSlot() >= 27 ) { punClicked -= 2; }
@@ -285,7 +285,7 @@ public class HistoryListGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
     public void onInventoryDrag( InventoryDragEvent event ) {
         if ( event.getWhoClicked().getName().equals( staff.getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&6" + target.getName() + "&7's history" ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( Utils.getColored( "&g" + target.getName() + "&h's history" ) ) == false ) { return; }
 
         event.setCancelled( true );
     }
@@ -293,7 +293,7 @@ public class HistoryListGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLOSE )
     public void onInventoryClose( InventoryCloseEvent event ) {
         if ( event.getPlayer().equals( staff ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&6" + target.getName() + "&7's history" ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( Utils.getColored( "&g" + target.getName() + "&h's history" ) ) == false ) { return; }
 
         GUIEventManager.removeEvent( this );
     }

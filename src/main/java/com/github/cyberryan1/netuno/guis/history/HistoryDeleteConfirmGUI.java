@@ -33,7 +33,7 @@ public class HistoryDeleteConfirmGUI implements Listener {
         this.staff = staff;
         this.punishment = pun;
 
-        String guiName = Utils.getColored( "&7Confirm Deletion" );
+        String guiName = Utils.getColored( "&hConfirm Deletion" );
         gui = Bukkit.createInventory( null, 45, guiName );
         insertItems();
     }
@@ -73,7 +73,7 @@ public class HistoryDeleteConfirmGUI implements Listener {
             if ( itemClicked.equals( GUIUtils.createItem( Material.LIME_WOOL, "&aConfirm" ) ) ) {
                 staff.closeInventory();
                 DATA.deletePunishment( punishment.getID() );
-                staff.sendMessage( Utils.getColored( "&7Successfully deleted punishment &6#" + punishment.getID() ) );
+                staff.sendMessage( Utils.getColored( "&hSuccessfully deleted punishment &g#" + punishment.getID() ) );
             }
 
             else if ( itemClicked.equals( GUIUtils.createItem( Material.RED_WOOL, "&cCancel" ) ) ) {
