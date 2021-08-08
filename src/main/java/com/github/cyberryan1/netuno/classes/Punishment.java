@@ -104,29 +104,29 @@ public class Punishment implements Serializable {
     public ItemStack getPunishmentAsSign() {
         ItemStack sign = new ItemStack( Material.OAK_SIGN );
         ItemMeta meta = sign.getItemMeta();
-        meta.setDisplayName( Utils.getColored( "&7Punishment &6#" + id ) );
+        meta.setDisplayName( Utils.getColored( "&hPunishment &g#" + id ) );
 
         ArrayList<String> lore = new ArrayList<>();
-        lore.add( Utils.getColored( "&6Player: &7" + Bukkit.getOfflinePlayer( UUID.fromString( playerUUID ) ).getName() ) );
-        lore.add( Utils.getColored( "&6Date: &7" + Time.getDateFromTimestamp( date ) ) );
-        lore.add( Utils.getColored( "&6Type: &7" + type.toUpperCase() ) );
+        lore.add( Utils.getColored( "&gPlayer: &h" + Bukkit.getOfflinePlayer( UUID.fromString( playerUUID ) ).getName() ) );
+        lore.add( Utils.getColored( "&gDate: &h" + Time.getDateFromTimestamp( date ) ) );
+        lore.add( Utils.getColored( "&gType: &h" + type.toUpperCase() ) );
 
         if ( checkIsUnpunish() == false && checkHasNoTime() == false ) {
-            lore.add( Utils.getColored( "&6Length: &7" + Time.getLengthFromTimestamp( length ) ) );
+            lore.add( Utils.getColored( "&gLength: &h" + Time.getLengthFromTimestamp( length ) ) );
         }
 
-        if ( staffUUID.equals( "CONSOLE" ) ) { lore.add( Utils.getColored( "&6Staff: &7CONSOLE" ) ); }
+        if ( staffUUID.equals( "CONSOLE" ) ) { lore.add( Utils.getColored( "&gStaff: &hCONSOLE" ) ); }
         else {
             String staffName = Bukkit.getOfflinePlayer( UUID.fromString( staffUUID ) ).getName();
-            lore.add( Utils.getColored( "&6Staff: &7" + staffName ) );
+            lore.add( Utils.getColored( "&gStaff: &h" + staffName ) );
         }
 
         if ( checkIsIPPun() ) {
             String originalPlayerName = Bukkit.getOfflinePlayer( UUID.fromString( playerUUID ) ).getName();
-            lore.add( Utils.getColored( "&6Original Player: &7" + originalPlayerName ) );
+            lore.add( Utils.getColored( "&gOriginal Player: &h" + originalPlayerName ) );
         }
 
-        if ( checkIsUnpunish() == false ) { lore.add( Utils.getColored( "&6Reason: &7" + reason ) ); }
+        if ( checkIsUnpunish() == false ) { lore.add( Utils.getColored( "&gReason: &h" + reason ) ); }
 
         meta.setLore( lore );
 

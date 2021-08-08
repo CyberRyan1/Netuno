@@ -44,7 +44,7 @@ public class CombinedReport {
         meta.setOwningPlayer( target );
         skull.setItemMeta( meta );
 
-        skull = GUIUtils.setItemName( skull, "&6" + target.getName() );
+        skull = GUIUtils.setItemName( skull, "&g" + target.getName() );
 
         //      Reason, Amount
         HashMap<String, Integer> reasonAmount = new HashMap<>();
@@ -61,12 +61,12 @@ public class CombinedReport {
         ArrayList<String> reasons = new ArrayList<>();
         for ( String rea : reasonAmount.keySet() ) {
             int amount = reasonAmount.get( rea );
-            reasons.add( Utils.getColored( " &8- &6" + amount + "x &7" + rea ) );
+            reasons.add( Utils.getColored( " &8- &g" + amount + "x &h" + rea ) );
         }
 
         ArrayList<String> lore = new ArrayList<>();
-        lore.add( Utils.getColored( "&6Date: &7" + Time.getDateFromTimestamp( mostRecentDate ) ) );
-        lore.add( Utils.getColored( "&6Reason(s):" ) );
+        lore.add( Utils.getColored( "&gDate: &h" + Time.getDateFromTimestamp( mostRecentDate ) ) );
+        lore.add( Utils.getColored( "&gReason(s):" ) );
         lore.addAll( reasons );
 
         return GUIUtils.setItemLore( skull, lore );

@@ -53,11 +53,11 @@ public class SingleReport {
         meta.setOwningPlayer( target );
         skull.setItemMeta( meta );
 
-        skull = GUIUtils.setItemName( skull, "&6" + target.getName() );
+        skull = GUIUtils.setItemName( skull, "&g" + target.getName() );
         ArrayList<String> lore = new ArrayList<>();
-        lore.add( Utils.getColored( "&6Date: &7" + Time.getDateFromTimestamp( date ) ) );
-        lore.add( Utils.getColored( "&6Reporter: &7" + reporter.getName() ) );
-        lore.add( Utils.getColored( "&6Reason: &7" + reason ) );
+        lore.add( Utils.getColored( "&gDate: &h" + Time.getDateFromTimestamp( date ) ) );
+        lore.add( Utils.getColored( "&gReporter: &h" + reporter.getName() ) );
+        lore.add( Utils.getColored( "&gReason: &h" + reason ) );
 
         return GUIUtils.setItemLore( skull, lore );
     }

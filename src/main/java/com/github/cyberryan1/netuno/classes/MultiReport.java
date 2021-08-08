@@ -55,11 +55,11 @@ public class MultiReport {
         meta.setOwningPlayer( reporter );
         skull.setItemMeta( meta );
 
-        skull = GUIUtils.setItemName( skull, "&6Reporter: &7" + reporter.getName() );
+        skull = GUIUtils.setItemName( skull, "&gReporter: &h" + reporter.getName() );
 
-        skull = GUIUtils.addItemLore( skull, "&6Date: &7" + Time.getDateFromTimestamp( date ), "&6Reason(s):" );
+        skull = GUIUtils.addItemLore( skull, "&gDate: &h" + Time.getDateFromTimestamp( date ), "&gReason(s):" );
         for ( String r : getReasons() ) {
-            skull = GUIUtils.addItemLore( skull, " &8- &7" + r );
+            skull = GUIUtils.addItemLore( skull, " &8- &h" + r );
         }
 
         return skull;
