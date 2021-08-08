@@ -45,7 +45,7 @@ public class ReportGUI implements Listener {
         //this.guiSize = 18 + ( ( int ) ( Math.ceil( reasons.size() / 6.0 ) ) * 9 );
 
         setGuiSize();
-        String guiName = Utils.getColored( "&6Reporting " + target.getName() );
+        String guiName = Utils.getColored( "&gReporting " + target.getName() );
         gui = Bukkit.createInventory( null, guiSize, guiName );
         insertItems();
     }
@@ -100,7 +100,7 @@ public class ReportGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLICK )
     public void onInventoryClick( InventoryClickEvent event ) {
         if ( player.getName().equals( event.getWhoClicked().getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&6Reporting " + target.getName() ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( Utils.getColored( "&gReporting " + target.getName() ) ) == false ) { return; }
 
         event.setCancelled( true );
         if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
@@ -174,14 +174,14 @@ public class ReportGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
     public void onInventoryDrag( InventoryDragEvent event ) {
         if ( player.getName().equals( event.getWhoClicked().getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&6Reporting " + target.getName() ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( Utils.getColored( "&gReporting " + target.getName() ) ) == false ) { return; }
         event.setCancelled( true );
     }
 
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLOSE )
     public void onInventoryClose( InventoryCloseEvent event ) {
         if ( player.getName().equals( event.getPlayer().getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&6Reporting " + target.getName() ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( Utils.getColored( "&gReporting " + target.getName() ) ) == false ) { return; }
 
         GUIEventManager.removeEvent( this );
     }
