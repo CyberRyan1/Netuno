@@ -26,8 +26,8 @@ public class SignChangeListener implements Listener {
             Player player = event.getPlayer();
 
             if ( ConfigUtils.getBool( "signs.allow-while-muted" ) == false ) {
-                ArrayList<Punishment> puns = DATA.getPunishment( player.getUniqueId().toString() );
-                ArrayList<IPPunishment> ipPuns = DATA.getIPPunishment( player.getUniqueId().toString() );
+                ArrayList<Punishment> puns = DATA.getPunishment( player.getUniqueId().toString(), "mute", true );
+                ArrayList<IPPunishment> ipPuns = DATA.getIPPunishment( player.getUniqueId().toString(), "ipmute", true );
                 if ( ipPuns.size() + puns.size() > 0 ) {
                     event.setCancelled( true );
                     player.sendMessage( ConfigUtils.getColoredStr( "signs.sign-while-muted-attempt" ) );
