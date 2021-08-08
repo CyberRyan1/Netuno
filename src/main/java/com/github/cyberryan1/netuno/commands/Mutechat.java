@@ -29,7 +29,7 @@ public class Mutechat implements CommandExecutor {
         if ( Utils.isOutOfBounds( args, 0 ) == false ) {
             if ( args[0].equalsIgnoreCase( "enable" ) || args[0].equalsIgnoreCase( "e" ) ) {
                 if ( MutechatManager.chatIsMuted() ) {
-                    sender.sendMessage( Utils.getColored( "&7Chat is already muted" ) );
+                    sender.sendMessage( Utils.getColored( "&hChat is already muted" ) );
                     return true;
                 }
 
@@ -42,14 +42,14 @@ public class Mutechat implements CommandExecutor {
                 }
 
                 else {
-                    sender.sendMessage( Utils.getColored( "&7Chatmute has been &aenabled&7!" ) );
+                    sender.sendMessage( Utils.getColored( "&hChatmute has been &aenabled&h!" ) );
                 }
 
             }
 
             else if ( args[0].equalsIgnoreCase( "disable" ) || args[0].equalsIgnoreCase( "d" ) ) {
                 if ( MutechatManager.chatIsMuted() == false ) {
-                    sender.sendMessage( Utils.getColored( "&7Chat is already muted" ) );
+                    sender.sendMessage( Utils.getColored( "&hChat is already muted" ) );
                     return true;
                 }
 
@@ -62,7 +62,7 @@ public class Mutechat implements CommandExecutor {
                 }
 
                 else {
-                    sender.sendMessage( Utils.getColored( "&7Chatmute has been &cdisabled&7!" ) );
+                    sender.sendMessage( Utils.getColored( "&hChatmute has been &cdisabled&h!" ) );
                 }
             }
 
@@ -78,7 +78,7 @@ public class Mutechat implements CommandExecutor {
                     }
 
                     else {
-                        sender.sendMessage( Utils.getColored( "&7Chatmute has been &cdisabled&7!" ) );
+                        sender.sendMessage( Utils.getColored( "&hChatmute has been &cdisabled&h!" ) );
                     }
 
                 }
@@ -94,7 +94,7 @@ public class Mutechat implements CommandExecutor {
                     }
 
                     else {
-                        sender.sendMessage( Utils.getColored( "&7Chatmute has been &aenabled&7!" ) );
+                        sender.sendMessage( Utils.getColored( "&hChatmute has been &aenabled&h!" ) );
                     }
                 }
             }
@@ -102,12 +102,12 @@ public class Mutechat implements CommandExecutor {
             else if ( args[0].equalsIgnoreCase( "status" ) || args[0].equalsIgnoreCase( "s" ) ) {
                 // mutechat is enabled
                 if ( MutechatManager.chatIsMuted() ) {
-                    sender.sendMessage( Utils.getColored( "&7Chatmute is currently &aenabled" ) );
+                    sender.sendMessage( Utils.getColored( "&hChatmute is currently &aenabled" ) );
                 }
 
                 // mutechat is disabled
                 else {
-                    sender.sendMessage( Utils.getColored( "&7Chatemute is currently &cdisabled" ) );
+                    sender.sendMessage( Utils.getColored( "&hChatemute is currently &cdisabled" ) );
                 }
             }
 
