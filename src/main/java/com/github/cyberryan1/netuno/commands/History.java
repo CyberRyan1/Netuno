@@ -143,8 +143,8 @@ public class History implements CommandExecutor {
                         else {
                             String plural = "punishments";
                             if ( ipPuns.size() + allPuns.size() == 1 ) { plural = "punishment"; }
-                            sender.sendMessage( Utils.getColored( "&7Successfully deleted &6" + ( ipPuns.size() + allPuns.size() )
-                                    + " &7" + plural + " from &6" + target.getName() + "&7's history" ) );
+                            sender.sendMessage( Utils.getColored( "&hSuccessfully deleted &g" + ( ipPuns.size() + allPuns.size() )
+                                    + " &h" + plural + " from &g" + target.getName() + "&h's history" ) );
                         }
                     }
 
