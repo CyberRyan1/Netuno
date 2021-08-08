@@ -1,12 +1,15 @@
 package com.github.cyberryan1.netuno.managers;
 
 import com.github.cyberryan1.netuno.Netuno;
+import com.tchristofferson.configupdater.ConfigUpdater;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
 
 public class PunishGUIManager {
 
@@ -52,5 +55,22 @@ public class PunishGUIManager {
         if ( configFile == null ) { configFile = new File( plugin.getDataFolder(), "punishgui.yml" ); }
 
         if ( configFile.exists() == false ) { plugin.saveResource( "punishgui.yml", false ); }
+    }
+
+    // Checks if any new keys, comments, etc, have been added via a plugin update
+    // And adds them to the current punishgui.yml (if needed)
+    // Note: must reload the config afterward for changes to come into effect
+    public void updateConfig() {
+        if ( configFile == null ) {
+            configFile = new File( plugin.getDataFolder(), "config.yml" );
+        }
+        if ( configFile.exists() == false ) {
+            plugin.saveResource( "config.yml", false );
+        }
+
+        try { ConfigUpdater.update( plugin, "config.yml", configFile, Collections.emptyList() );
+        } catch ( IOException e ) { e.printStackTrace(); }
+
+        reloadConfig();
     }
 }
