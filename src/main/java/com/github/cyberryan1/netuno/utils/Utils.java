@@ -58,7 +58,10 @@ public class Utils {
         plugin.getLogger().log( Level.SEVERE, error, thrown );
     }
 
-    public static String getColored( String in ) { return ChatColor.translateAlternateColorCodes( '&', in ); }
+    public static String getColored( String in ) {
+        in = in.replace( "&g", ConfigUtils.getStr( "general.primary-color" ) ).replace( "&h", ConfigUtils.getStr( "general.secondary-color" ) );
+        return ChatColor.translateAlternateColorCodes( '&', in );
+    }
 
     // Checks if an index in an array is out of bounds
     // true = out of bounds, false = within range
