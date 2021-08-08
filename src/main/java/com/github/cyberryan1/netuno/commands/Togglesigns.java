@@ -35,13 +35,13 @@ public class Togglesigns implements CommandExecutor {
             // currently has sign notifs enabled
             if ( DATA.checkPlayerNoSignNotifs( player ) == false ) {
                 DATA.addPlayerNoSignNotifs( player );
-                player.sendMessage( Utils.getColored( "&cDisabled&7 sign notifications" ) );
+                player.sendMessage( Utils.getColored( "&cDisabled&h sign notifications" ) );
             }
 
             // currently has sign notifs disabled
             else {
                 DATA.removePlayerNoSignNotifs( player );
-                player.sendMessage( Utils.getColored( "&aEnabled&7 sign notifications" ) );
+                player.sendMessage( Utils.getColored( "&aEnabled&h sign notifications" ) );
             }
         }
 
@@ -50,11 +50,11 @@ public class Togglesigns implements CommandExecutor {
             if ( args[0].equalsIgnoreCase( "enable" ) ) {
                 if ( DATA.checkPlayerNoSignNotifs( player ) ) {
                     DATA.removePlayerNoSignNotifs( player );
-                    player.sendMessage( Utils.getColored( "&aEnabled&7 sign notifications" ) );
+                    player.sendMessage( Utils.getColored( "&aEnabled&h sign notifications" ) );
                 }
 
                 else {
-                    player.sendMessage( Utils.getColored( "&7Sign notifications are already &aenabled" ) );
+                    player.sendMessage( Utils.getColored( "&hSign notifications are already &aenabled" ) );
                 }
 
             }
@@ -62,11 +62,11 @@ public class Togglesigns implements CommandExecutor {
             else if ( args[0].equalsIgnoreCase( "disable" ) ) {
                 if ( DATA.checkPlayerNoSignNotifs( player ) == false ) {
                     DATA.addPlayerNoSignNotifs( player );
-                    player.sendMessage( Utils.getColored( "&cDisabled&7 sign notifications" ) );
+                    player.sendMessage( Utils.getColored( "&cDisabled&h sign notifications" ) );
                 }
 
                 else {
-                    player.sendMessage( Utils.getColored( "&7Sign notifications are already &cdisabled" ) );
+                    player.sendMessage( Utils.getColored( "&hSign notifications are already &cdisabled" ) );
                 }
             }
 
