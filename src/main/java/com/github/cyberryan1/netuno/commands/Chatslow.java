@@ -29,7 +29,7 @@ public class Chatslow implements CommandExecutor {
 
             // /chatslow get
             if ( args[0].equalsIgnoreCase( "get" ) ) {
-                sender.sendMessage( Utils.getColored( "&7The chatslow is currently &6" + ChatslowManager.getSlow() ) + " seconds" );
+                sender.sendMessage( Utils.getColored( "&hThe chatslow is currently &g" + ChatslowManager.getSlow() ) + " seconds" );
             }
 
             // /chatslow set (amount)
@@ -44,12 +44,12 @@ public class Chatslow implements CommandExecutor {
                     }
 
                     if ( newSlow < 0 ) {
-                        sender.sendMessage( Utils.getColored( "&7The chatslow must be a positive integer or zero" ) );
+                        sender.sendMessage( Utils.getColored( "&hThe chatslow must be a positive integer or zero" ) );
                         return true;
                     }
 
                     ChatslowManager.setSlow( newSlow );
-                    sender.sendMessage( Utils.getColored( "&7The chatslow has been set to &6" + ChatslowManager.getSlow() + " seconds" ) );
+                    sender.sendMessage( Utils.getColored( "&hThe chatslow has been set to &g" + ChatslowManager.getSlow() + " seconds" ) );
 
                     if ( ConfigUtils.getStr( "chatslow.broadcast" ).equals( "" ) == false ) {
                         Bukkit.broadcastMessage( ConfigUtils.getColoredStr( "chatslow.broadcast" ).replace( "[AMOUNT]", newSlow + "" ) );
