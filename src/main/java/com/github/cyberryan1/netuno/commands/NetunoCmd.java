@@ -50,14 +50,14 @@ public class NetunoCmd implements CommandExecutor {
                 if ( Utils.isOutOfBounds( args, 1 ) == false ) {
                     int page = 0;
                     try { page = Integer.parseInt( args[1] ) - 1; }
-                    catch ( NumberFormatException e ) { sender.sendMessage( Utils.getColored( "&7Invalid page number!" ) ); }
+                    catch ( NumberFormatException e ) { sender.sendMessage( Utils.getColored( "&hInvalid page number!" ) ); }
 
                     if ( page >= 0 && page < Math.ceil( COMMAND_ORDER.length / 6.0 ) ) {
                         sendHelpMessage( sender, page * 6, page * 6 + 6 );
                     }
 
                     else {
-                        sender.sendMessage( Utils.getColored( "&7Invalid page number!" ) );
+                        sender.sendMessage( Utils.getColored( "&hInvalid page number!" ) );
                     }
                 }
 
