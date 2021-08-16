@@ -20,7 +20,7 @@ public class Utils {
     private static ConfigManager configManager;
     private static Database db;
 
-    private static final char SPECIAL_CHARS[] = { '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '=', '+', '`', '~', '[', ']',
+    private static final char SPECIAL_CHARS[] = { '!', '@', '#', '$', '%', '^', '&', '(', ')', '-', '=', '+', '`', '~', '[', ']',
                                                     '{', '}', '\\', '|', ':', ';', '\'', '\"', ',', '<', '.', '>', '/', '?' };
 
     public Utils( Netuno pl, ConfigManager cm ) {
