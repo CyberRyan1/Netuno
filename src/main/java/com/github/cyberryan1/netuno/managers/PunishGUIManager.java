@@ -62,13 +62,13 @@ public class PunishGUIManager {
     // Note: must reload the config afterward for changes to come into effect
     public void updateConfig() {
         if ( configFile == null ) {
-            configFile = new File( plugin.getDataFolder(), "config.yml" );
+            configFile = new File( plugin.getDataFolder(), "punishgui.yml" );
         }
         if ( configFile.exists() == false ) {
-            plugin.saveResource( "config.yml", false );
+            plugin.saveResource( "punishgui.yml", false );
         }
 
-        try { ConfigUpdater.update( plugin, "config.yml", configFile, Collections.emptyList() );
+        try { ConfigUpdater.update( plugin, "punishgui.yml", configFile, Collections.emptyList() );
         } catch ( IOException e ) { e.printStackTrace(); }
 
         reloadConfig();
