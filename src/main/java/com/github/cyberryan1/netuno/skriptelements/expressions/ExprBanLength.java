@@ -2,9 +2,9 @@ package com.github.cyberryan1.netuno.skriptelements.expressions;
 
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
-import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import com.github.cyberryan1.netuno.classes.Punishment;
+import com.github.cyberryan1.netuno.skriptelements.expressions.types.StringExpression;
 import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
 import org.bukkit.OfflinePlayer;
@@ -13,7 +13,7 @@ import org.bukkit.event.Event;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
-public class ExprBanLength extends SimpleExpression<String> {
+public class ExprBanLength extends StringExpression {
 
     private Expression<OfflinePlayer> player;
 
