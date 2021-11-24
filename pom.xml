@@ -74,6 +74,10 @@
             <id>maven-central</id>
             <url>https://oss.sonatype.org/content/groups/public</url>
         </repository>
+        <repository>
+            <id>aikar</id>
+            <url>https://ci.emc.gs/nexus/content/groups/aikar/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -93,6 +97,12 @@
             <groupId>com.tchristofferson</groupId>
             <artifactId>ConfigUpdater</artifactId>
             <version>1.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.SkriptLang</groupId>
+            <artifactId>Skript</artifactId>
+            <version>dev37c</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
