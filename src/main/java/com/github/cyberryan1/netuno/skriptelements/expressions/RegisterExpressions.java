@@ -9,5 +9,14 @@ public final class RegisterExpressions {
 
         // ExprBanLength
         Skript.registerExpression( ExprBanLength.class, String.class, ExpressionType.COMBINED, "length of netuno ban [of] %offlineplayer%" );
+
+        // ExprIPBanLength
+        Skript.registerExpression( ExprIPBanLength.class, String.class, ExpressionType.COMBINED, "length of netuno ipban [of] %offlineplayer%" );
+
+        // ExprMuteLength
+        Skript.registerExpression( ExprMuteLength.class, String.class, ExpressionType.COMBINED, "length of netuno mute [of] %offlineplayer%" );
+
+        // ExprIPMuteLength
+        Skript.registerExpression( ExprIPMuteLength.class, String.class, ExpressionType.COMBINED, "length of netuno ipmute [of] %offlineplayer%" );
     }
 }
