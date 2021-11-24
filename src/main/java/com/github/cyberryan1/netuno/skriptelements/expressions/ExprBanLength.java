@@ -36,7 +36,7 @@ public class ExprBanLength extends SimpleExpression<String> {
 
     @Override
     public String toString( @Nullable Event event, boolean debug ) {
-        return "length of netuno ban [of] %offlineplayer%";
+        return "length of netuno ban [of] %offlineplayer%" + player.toString( event, debug );
     }
 
     @Override
