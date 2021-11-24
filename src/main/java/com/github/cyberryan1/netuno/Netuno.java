@@ -1,16 +1,21 @@
 package com.github.cyberryan1.netuno;
 
+import ch.njol.skript.Skript;
+import ch.njol.skript.SkriptAddon;
 import com.github.cyberryan1.netuno.commands.*;
 import com.github.cyberryan1.netuno.listeners.*;
 import com.github.cyberryan1.netuno.managers.ChatslowManager;
 import com.github.cyberryan1.netuno.managers.ConfigManager;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.managers.PunishGUIManager;
+import com.github.cyberryan1.netuno.skriptelements.expressions.RegisterExpressions;
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.PunishGUIUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.IOException;
 
 /* notes in to do:
     - ! = bug needs to be fixed
@@ -42,6 +47,10 @@ public final class Netuno extends JavaPlugin {
     private VaultUtils vaultUtils;
     private PunishGUIUtils punishGUIUtils;
 
+    // Skript
+    public SkriptAddon addon;
+    public boolean enabled = true;
+
     @Override
     public void onEnable() {
         config = new ConfigManager( this );
@@ -54,6 +63,17 @@ public final class Netuno extends JavaPlugin {
         vaultUtils = new VaultUtils();
         punishGUIUtils = new PunishGUIUtils( punishGUIConfig );
         chatslowManager = new ChatslowManager();
+
+        // Skript
+        addon = Skript.registerAddon( this );
+        try {
+            addon.loadClasses( "com.github.cyberryan1", "skriptelements" );
+        } catch ( IOException e ) {
+            Utils.logWarn( "Could not enable as a skript addon, will still enable without this syntax!" );
+            enabled = false;
+        }
+        Utils.logInfo( "Successfully enabled as a skript addon" );
+        RegisterExpressions.register();
 
         this.getCommand( "netuno" ).setExecutor( new NetunoCmd() );
         this.getCommand( "netuno" ).setTabCompleter( new TabComplete( "netuno" ) );
