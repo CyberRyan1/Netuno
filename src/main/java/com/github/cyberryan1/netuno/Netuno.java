@@ -8,6 +8,7 @@ import com.github.cyberryan1.netuno.managers.ChatslowManager;
 import com.github.cyberryan1.netuno.managers.ConfigManager;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.managers.PunishGUIManager;
+import com.github.cyberryan1.netuno.skriptelements.conditions.RegisterConditions;
 import com.github.cyberryan1.netuno.skriptelements.expressions.RegisterExpressions;
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.PunishGUIUtils;
@@ -74,6 +75,7 @@ public final class Netuno extends JavaPlugin {
         }
         Utils.logInfo( "Successfully enabled as a skript addon" );
         RegisterExpressions.register();
+        RegisterConditions.register();
 
         this.getCommand( "netuno" ).setExecutor( new NetunoCmd() );
         this.getCommand( "netuno" ).setTabCompleter( new TabComplete( "netuno" ) );
