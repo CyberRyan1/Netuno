@@ -13,7 +13,7 @@ Netuno does offer support for Skript. Documentation for everything Netuno suppor
 
 **Is Netuno Muted**\
 Checks if a player is currently muted by Netuno.\
-`%offlineplayer% is [currently] netuno muted`\
+`%offlineplayer% is [currently] netuno muted`
   ```
   command /checkmuted [<offlineplayer>]:
       trigger:
@@ -24,7 +24,7 @@ Checks if a player is currently muted by Netuno.\
 
 **Is Netuno Banned**\
 Checks if a player is currently banned by Netuno.\
-`%offlineplayer% is [currently] netuno banned`\
+`%offlineplayer% is [currently] netuno banned`
   ```
   command /checkbanned [<offlineplayer>]:
       trigger:
@@ -34,7 +34,7 @@ Checks if a player is currently banned by Netuno.\
 ---
 **Is Netuno IP Muted**\
 Checks if a player is currently IP muted by Netuno.\
-`%offlineplayer% is [currently] netuno ipmuted`\
+`%offlineplayer% is [currently] netuno ipmuted`
   ```
   command /checkipmuted [<offlineplayer>]:
       trigger:
@@ -44,7 +44,7 @@ Checks if a player is currently IP muted by Netuno.\
 ---
 **Is Netuno IP Banned**\
 Checks if a player is currently IP banned by Netuno.\
-`%offlineplayer% is [currently] netuno ipbanned`\
+`%offlineplayer% is [currently] netuno ipbanned`
   ```
   command /checkipbanned [<offlineplayer>]:
       trigger:
