@@ -1,7 +1,6 @@
 package com.github.cyberryan1.netuno.skriptelements.conditions;
 
 import ch.njol.skript.Skript;
-import com.github.cyberryan1.netuno.utils.Utils;
 
 public final class RegisterConditions {
 
