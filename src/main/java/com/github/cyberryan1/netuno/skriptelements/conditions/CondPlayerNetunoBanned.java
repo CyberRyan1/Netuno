@@ -36,6 +36,6 @@ public class CondPlayerNetunoBanned extends RegularCondition {
 
     @Override
     public String toString( @Nullable Event event, boolean debug ) {
-        return "%offlineplayer% (is¦1|is(n't¦ not)) [currently] netuno banned";
+        return "%offlineplayer% (1¦is|2¦is(n't¦ not)) [currently] netuno banned";
     }
 }
