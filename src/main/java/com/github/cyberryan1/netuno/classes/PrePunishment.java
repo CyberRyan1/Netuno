@@ -84,9 +84,11 @@ public class PrePunishment {
         }
 
         pun.setReason( reasonMsg );
+        boolean silent = false;
         if ( reasonMsg.contains( "-s" ) ) {
             if ( consoleSender || VaultUtils.hasPerms( staff, ConfigUtils.getStr( "general.silent-perm" ) ) ) {
                 pun.setReason( reasonMsg.replaceAll( "-s", "" ) );
+                silent = true;
             }
         }
 
@@ -139,18 +141,11 @@ public class PrePunishment {
             }
         }
 
-        doBroadcasts( pun );
+        doBroadcasts( pun, silent );
     }
 
-    private void doBroadcasts( Punishment pun ) {
+    private void doBroadcasts( Punishment pun, boolean silent ) {
         String typeLowercase = pun.getType().toLowerCase();
-        boolean silent = false;
-        if ( pun.getReason().contains( "-s" ) ) {
-            if ( consoleSender || VaultUtils.hasPerms( staff, ConfigUtils.getStr( "general.silent-perm" ) ) ) {
-                pun.setReason( pun.getReason().replaceAll( "-s", "" ) );
-                silent = true;
-            }
-        }
 
         // send the punishment to the target, if the target is online and the punishment does not kick them from the server
         if ( target.isOnline() ) {
@@ -206,12 +201,13 @@ public class PrePunishment {
                 ArrayList<String> list = ConfigUtils.getColoredStrList( typeLowercase + ".staff-broadcast" );
                 for ( int i = 0; i < list.size(); i++ ) {
                     if ( list.get( i ).equals( "" ) == false && list.get( i ).equals( "\n" ) == false ) {
-                        broadcast += prefix + list.get( i );
+                        broadcast += "\n" + prefix + list.get( i );
                     }
                     else {
                         broadcast += list.get( i );
                     }
                 }
+                broadcast += "\n";
             }
 
             else {
