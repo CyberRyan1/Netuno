@@ -101,8 +101,10 @@ public class Punishment implements Serializable {
     }
 
     // Returns the punishment as it would be seen on a sign in a GUI
-    public ItemStack getPunishmentAsSign() {
-        ItemStack sign = new ItemStack( Material.OAK_SIGN );
+    public ItemStack getPunishmentAsItem() {
+        Material itemMaterial = Material.REDSTONE;
+        if ( active ) { itemMaterial = Material.EMERALD; }
+        ItemStack sign = new ItemStack( itemMaterial );
         ItemMeta meta = sign.getItemMeta();
         meta.setDisplayName( Utils.getColored( "&hPunishment &g#" + id ) );
 

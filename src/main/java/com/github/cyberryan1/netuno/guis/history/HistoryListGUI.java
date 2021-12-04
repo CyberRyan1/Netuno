@@ -20,7 +20,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -114,7 +113,7 @@ public class HistoryListGUI implements Listener {
 
     private ItemStack getPunishmentItem( int index ) {
         Punishment current = history.get( index );
-        return current.getPunishmentAsSign();
+        return current.getPunishmentAsItem();
     }
 
     private ItemStack getCurrentPagePaper() {
@@ -167,7 +166,9 @@ public class HistoryListGUI implements Listener {
     }
 
     public void openInventory( Player staff ) {
-        if ( gui.contains( Material.OAK_SIGN ) == false && page == 1 ) { CommandErrors.sendNoPreviousPunishments( staff, target.getName() ); }
+        if ( gui.contains( Material.EMERALD ) == false && gui.contains( Material.REDSTONE ) == false && page == 1 ) {
+            CommandErrors.sendNoPreviousPunishments( staff, target.getName() );
+        }
         else {
             staff.openInventory( gui );
             GUIEventManager.addEvent( this );

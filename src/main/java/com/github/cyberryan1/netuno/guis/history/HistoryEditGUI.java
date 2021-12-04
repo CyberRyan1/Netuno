@@ -66,7 +66,7 @@ public class HistoryEditGUI implements Listener {
             items[index] = GUIUtils.getBackgroundGlass();
         }
 
-        items[13] = punishment.getPunishmentAsSign();
+        items[13] = punishment.getPunishmentAsItem();
 
         if ( punishment.checkIsUnpunish() ) {
             items[31] = GUIUtils.createItem( Material.BARRIER, "&hDelete punishment" );

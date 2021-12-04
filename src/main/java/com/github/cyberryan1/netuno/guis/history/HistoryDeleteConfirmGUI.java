@@ -49,7 +49,7 @@ public class HistoryDeleteConfirmGUI implements Listener {
             items[index] = GUIUtils.getBackgroundGlass();
         }
 
-        items[13] = punishment.getPunishmentAsSign();
+        items[13] = punishment.getPunishmentAsItem();
         items[30] = GUIUtils.createItem( Material.LIME_WOOL, "&aConfirm" );
         items[32] = GUIUtils.createItem( Material.RED_WOOL, "&cCancel" );
 
