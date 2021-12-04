@@ -34,6 +34,8 @@ general:
   player-only-msg: "&cThis command can only be ran by a player!"
   # Prefix for broadcasts for a silently executed command
   silent-prefix: "&8[&7S&8]"
+  # Permission to use silent commands
+  silent-perm: "netuno.silent"
   # Whether staff can punish other staff or not
   # Can be bypassed by players who have the permission defined in all-perms
   staff-punishments: false
