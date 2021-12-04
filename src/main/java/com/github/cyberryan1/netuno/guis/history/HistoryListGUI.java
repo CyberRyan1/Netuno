@@ -54,76 +54,21 @@ public class HistoryListGUI implements Listener {
     private void sort() {
         if ( history.size() == 0 ) { return; }
 
-        if ( sort == SortBy.FIRST_DATE ) {
-            ArrayList<Punishment> newHistory = new ArrayList<>();
-            newHistory.add( history.remove( 0 ) );
-            for ( Punishment pun : history ) {
-                for ( int index = 0; index < newHistory.size(); index++ ) {
-                    if ( pun.getDate() < newHistory.get( index ).getDate() ) {
-                        newHistory.add( index, pun );
-                        break;
-                    }
-                }
-
-                if ( newHistory.contains( pun ) == false ) { newHistory.add( pun ); }
-            }
-
-            history = newHistory;
+        if ( sort == SortBy.FIRST_DATE || sort == SortBy.LAST_DATE ) {
+            history = history.stream()
+                    .sorted( ( o1, o2 ) -> ( int ) (
+                            sort == SortBy.FIRST_DATE ? o1.getDate() - o2.getDate() : o2.getDate() - o1.getDate()
+                    ) )
+                    .collect( Collectors.toList() );
         }
 
-        else if ( sort == SortBy.LAST_DATE ) {
-            ArrayList<Punishment> newHistory = new ArrayList<>();
-            newHistory.add( history.remove( 0 ) );
-            for ( Punishment pun : history ) {
-                for ( int index = 0; index < newHistory.size(); index++ ) {
-                    if ( pun.getDate() > newHistory.get( index ).getDate() ) {
-                        newHistory.add( index, pun );
-                        break;
-                    }
-                }
-
-                if ( newHistory.contains( pun ) == false ) { newHistory.add( pun ); }
-            }
-
-            history = newHistory;
-        }
-
-        else if ( sort == SortBy.FIRST_ACTIVE ) {
-            ArrayList<Punishment> newHistory = new ArrayList<>();
-            newHistory.add( history.remove( 0 ) );
-            for ( Punishment pun : history ) {
-                if ( pun.getActive() ) {
-                    for ( int index = 0; index < newHistory.size(); index++ ) {
-                        if ( newHistory.get( index ).getActive() == false ) {
-                            newHistory.add( index, pun );
-                            break;
-                        }
-                    }
-                }
-
-                if ( newHistory.contains( pun ) == false ) { newHistory.add( pun ); }
-            }
-
-            history = newHistory;
-        }
-
-        else if ( sort == SortBy.LAST_ACTIVE ) {
-            ArrayList<Punishment> newHistory = new ArrayList<>();
-            newHistory.add( history.remove( 0 ) );
-            for ( Punishment pun : history ) {
-                if ( pun.getActive() == false ) {
-                    for ( int index = 0; index < newHistory.size(); index++ ) {
-                        if ( newHistory.get( index ).getActive() ) {
-                            newHistory.add( index, pun );
-                            break;
-                        }
-                    }
-                }
-
-                if ( newHistory.contains( pun ) == false ) { newHistory.add( pun ); }
-            }
-
-            history = newHistory;
+        else if ( sort == SortBy.FIRST_ACTIVE || sort == SortBy.LAST_ACTIVE ) {
+            history = history.stream()
+                    .sorted( ( o1, o2 ) -> (
+                            sort == SortBy.FIRST_ACTIVE ? ( o1.getActive() == o2.getActive() ? 0 : -1 )
+                                    : ( o1.getActive() == o2.getActive() ? 1 : 0 )
+                            ) )
+                    .collect( Collectors.toList() );
         }
     }
 
