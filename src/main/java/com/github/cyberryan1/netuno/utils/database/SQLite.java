@@ -94,13 +94,13 @@ public class SQLite extends Database {
         }
 
         try {
-            if ( connection != null && connection.isClosed() == false ) {
-                return connection;
+            if ( conn != null && conn.isClosed() == false ) {
+                return conn;
             }
 
             Class.forName( "org.sqlite.JDBC" );
-            connection = DriverManager.getConnection( "jdbc:sqlite:" + dataFolder );
-            return connection;
+            conn = DriverManager.getConnection( "jdbc:sqlite:" + dataFolder );
+            return conn;
         } catch ( SQLException ex ) {
             Utils.logError( "SQLite exception on initialize ", ex );
         } catch ( ClassNotFoundException ex ) {
@@ -111,30 +111,30 @@ public class SQLite extends Database {
     }
 
     public void load() {
-        connection = getSqlConnection();
+        conn = getSqlConnection();
         try {
-            Statement s = connection.createStatement();
+            Statement s = conn.createStatement();
             s.executeUpdate( CREATE_PUNS_TABLE );
 
-            s = connection.createStatement();
+            s = conn.createStatement();
             s.executeUpdate( CREATE_NOTIFS_TABLE );
 
-            s = connection.createStatement();
+            s = conn.createStatement();
             s.executeUpdate( CREATE_IP_TABLE );
 
-            s = connection.createStatement();
+            s = conn.createStatement();
             s.executeUpdate( CREATE_IP_PUNS_TABLE );
 
-            s = connection.createStatement();
+            s = conn.createStatement();
             s.executeUpdate( CREATE_NO_SIGN_NOTIFS_TABLE );
 
-            s = connection.createStatement();
+            s = conn.createStatement();
             s.executeUpdate( CREATE_REPORTS_TABLE );
 
-            s = connection.createStatement();
+            s = conn.createStatement();
             s.executeUpdate( CREATE_PUNISH_GUI_TABLE );
 
-            s = connection.createStatement();
+            s = conn.createStatement();
             s.executeUpdate( CREATE_OTHER_TABLE );
 
             s.close();

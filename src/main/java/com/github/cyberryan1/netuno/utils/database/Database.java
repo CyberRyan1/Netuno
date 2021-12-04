@@ -18,7 +18,7 @@ import java.util.UUID;
 public abstract class Database {
 
     Netuno plugin;
-    Connection connection;
+    public Connection conn;
 
     public final String PUN_TABLE_NAME = "database";
     private final String PUN_TYPE_LIST = "(id,player,staff,type,date,length,reason,active)";
@@ -62,25 +62,23 @@ public abstract class Database {
     public abstract void load();
 
     public void initialize() {
-        connection = getSqlConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement( "SELECT * FROM " + PUN_TABLE_NAME + " WHERE id = ?" );
+            conn = getSqlConnection(); // do not close this one until the server is stopping
+            PreparedStatement ps = conn.prepareStatement( "SELECT * FROM " + PUN_TABLE_NAME + " WHERE id = ?" );
             ResultSet rs = ps.executeQuery();
-            close( connection, ps, rs );
+            ps.close();
+            rs.close();
         } catch ( SQLException ex ) {
             Utils.logError( "Unable to retrieve connection", ex );
         }
     }
 
-    public void close( Connection conn, PreparedStatement ps, ResultSet rs ) {
-        return; // ? bug fix?
-//        try {
-//            if ( conn != null ) { conn.close(); }
-//            if ( ps != null ) { ps.close(); }
-//            if ( rs != null ) { rs.close(); }
-//        } catch ( SQLException e ) {
-//            Error.close( plugin, e );
-//        }
+    public void close() {
+        try {
+            if ( conn != null ) { conn.close(); }
+        } catch ( SQLException e ) {
+            Error.close( plugin, e );
+        }
     }
 
     //
@@ -91,11 +89,10 @@ public abstract class Database {
     public int addPunishment( Punishment pun ) {
         int id = getNextPunID();
         mostRecentPunID = id;
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
+//        
             ps = conn.prepareStatement( "INSERT INTO " + PUN_TABLE_NAME + " " + PUN_TYPE_LIST + " VALUES" + PUN_UNKNOWN_LIST );
 
             if ( id == -1 ) {
@@ -112,65 +109,67 @@ public abstract class Database {
             ps.setString( 8, pun.getActive() + "" );
 
             ps.executeUpdate();
+            ps.close();
 
         } catch ( SQLException ex ) { Utils.logError( "Unable to add punishment to database" ); }
 
-        close( conn, ps, null );
         return id;
     }
 
     // note: ipPuns and regular puns cannot share the same ID
+    // TODO can just execute once during server startup and cache value
     private int getNextPunID() {
         int start = 1;
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
-            conn = getSqlConnection();
+//        
             ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + PUN_TABLE_NAME );
             rs = ps.executeQuery();
             rs.next();
             start = rs.getInt( "count(*)" );
+
+            ps.close();
+            rs.close();
         } catch ( SQLException ex ) {
             Utils.logError( "Unable to get next available ID in punishments database" );
         }
 
-        close( conn, ps, rs );
         while ( checkPunIDExists( start ) || checkIpPunIDExists( start ) || start <= 0 ) { start++; }
         return start;
     }
 
     // sees if a punishment id exists
     public boolean checkPunIDExists( int id ) {
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         boolean toReturn = false;
 
         try {
-            conn = getSqlConnection();
+//        
             ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + PUN_TABLE_NAME + " WHERE id = " + id + ";" );
             rs = ps.executeQuery();
             rs.next();
             if ( rs.getInt( "count(*)" ) >= 1 ) { toReturn = true; }
+            
+            ps.close();
+            rs.close();
         } catch ( SQLException ex ) {
             Utils.logError( "Unable to check if an id in the punishment database exists" );
         }
 
-        close( conn, ps, rs );
         return toReturn;
     }
 
     // Get a punishment from an ID
     public Punishment getPunishment( int id ) {
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         Punishment pun = new Punishment();
 
         try {
-            conn = getSqlConnection();
+//        
             ps = conn.prepareStatement( "SELECT * FROM " + PUN_TABLE_NAME + " WHERE id = " + id + ";" );
             rs = ps.executeQuery();
 
@@ -182,22 +181,23 @@ public abstract class Database {
             pun.setLength( Long.parseLong( rs.getString( "length" ) ) );
             pun.setReason( rs.getString( "reason" ) );
             pun.setActive( Boolean.parseBoolean( rs.getString( "active" ) ) );
+            
+            ps.close();
+            rs.close();
 
         } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
 
-        close( conn, ps, rs );
         return pun;
     }
 
     // Search for a punishment by UUID
     public ArrayList<Punishment> getPunishment( String uuid ) {
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         ArrayList<Punishment> results = new ArrayList<>();
 
         try {
-            conn = getSqlConnection();
+//        
             ps = conn.prepareStatement( "SELECT * FROM " + PUN_TABLE_NAME + " WHERE player=?;" );
             ps.setString( 1, uuid );
             rs = ps.executeQuery();
@@ -215,11 +215,13 @@ public abstract class Database {
 
                 results.add( pun );
             }
+            
+            ps.close();
+            rs.close();
         } catch ( SQLException e ) {
             Utils.logError( "Couldn't execute MySQL statement: ", e );
         }
 
-        close( conn, ps, rs );
         return results;
     }
 
@@ -264,31 +266,27 @@ public abstract class Database {
     // Notifs Database
     //
     public void addNotif( int punID, String playerUUID ) {
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "INSERT INTO " + NOTIF_TABLE_NAME + " " + NOTIF_TYPE_LIST + " VALUES" + NOTIF_UNKNOWN_LIST );
 
             ps.setInt( 1, punID );
             ps.setString( 2, playerUUID );
 
             ps.executeUpdate();
+            ps.close();
 
         } catch ( SQLException ex ) { Utils.logError( "Unable to add notification to database" ); }
-
-        close( conn, ps, null );
+        
     }
 
     public ArrayList<Integer> searchNotifByUUID( String uuid ) {
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         ArrayList<Integer> toReturn = new ArrayList<>();
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT * FROM " + NOTIF_TABLE_NAME + " WHERE player=?;" );
 
             ps.setString( 1, uuid );
@@ -298,23 +296,23 @@ public abstract class Database {
                 toReturn.add( rs.getInt( "id" ) );
             }
 
-        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
+            ps.close();
+            rs.close();
 
-        close( conn, ps, rs );
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
+        
         return toReturn;
     }
 
     public void removeNotif( int id ) {
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "DELETE FROM " + NOTIF_TABLE_NAME + " WHERE id=" + id + ";" );
             ps.executeUpdate();
-        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
 
-        close( conn, ps, null );
+            ps.close();
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
     }
 
     //
@@ -322,11 +320,9 @@ public abstract class Database {
     //
     public void addIP( String playerUUID, String ip ) {
         int id = getNextIpID();
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "INSERT INTO " + IP_TABLE_NAME + " " + IP_TYPE_LIST + " VALUES" + IP_UNKNOWN_LIST );
 
             ps.setInt( 1, id );
@@ -334,13 +330,13 @@ public abstract class Database {
             ps.setString( 3, ip );
 
             ps.executeUpdate();
+            ps.close();
         } catch ( SQLException ex ) { Utils.logError( "Unable to add ip to database" ); }
 
-        close( conn, ps, null );
+        
     }
 
     private int getNextIpID() {
-        Connection conn = getSqlConnection();
         int toReturn = -1;
 
         try {
@@ -348,21 +344,21 @@ public abstract class Database {
             ResultSet rs = stmt.executeQuery( "SELECT COUNT(*) FROM " + IP_TABLE_NAME );
             rs.next();
             toReturn = rs.getInt( "count(*)" );
+
+            rs.close();
+            stmt.close();
         } catch ( SQLException ex ) {
             Utils.logError( "Unable to get next available ID for the IP database" );
         }
 
-        close( conn, null, null );
         return toReturn;
     }
 
     public boolean playerHasIP( String playerUUID, String ip ) {
-        Connection conn = null;
         PreparedStatement ps = null;
         boolean toReturn = false;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT * FROM " + IP_TABLE_NAME + " WHERE player=?;" );
 
             ps.setString( 1, playerUUID );
@@ -374,19 +370,19 @@ public abstract class Database {
                 }
             }
 
+            ps.close();
+            rs.close();
+
         } catch ( SQLException e ) { Utils.logError( "Unable to check if a player's IP address has already been saved!" ); }
 
-        close( conn, ps, null );
         return toReturn;
     }
 
     public ArrayList<String> getAllAccountsOnIP( String ip ) {
         ArrayList<String> toReturn = new ArrayList<>();
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT * FROM " + IP_TABLE_NAME + " WHERE ip=?;" );
             ps.setString( 1, ip );
 
@@ -395,19 +391,19 @@ public abstract class Database {
                 toReturn.add( rs.getString( "player" ) );
             }
 
+            ps.close();
+            rs.close();
+
         } catch ( SQLException e ) { Utils.logError( "Unable to get all accounts on an IP address" ); }
 
-        close( conn, ps, null );
         return toReturn;
     }
 
     public ArrayList<String> getAllIPFromPlayer( String playerUUID ) {
         ArrayList<String> toReturn = new ArrayList<>();
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT * FROM " + IP_TABLE_NAME + " WHERE player=?;" );
             ps.setString( 1, playerUUID );
 
@@ -416,9 +412,11 @@ public abstract class Database {
                 toReturn.add( rs.getString( "ip" ) );
             }
 
+            ps.close();
+            rs.close();
+
         } catch ( SQLException e ) { Utils.logError( "Unable to get all IPs from a player" ); }
 
-        close( conn, ps, null );
         return toReturn;
     }
 
@@ -541,13 +539,11 @@ public abstract class Database {
     // IP-Punishments database
     //
     public int addIPPunishment( IPPunishment pun ) {
-        Connection conn = null;
         PreparedStatement ps = null;
         int id = getNextIPPunId();
         mostRecentPunID = id;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "INSERT INTO " + IP_PUN_TABLE_NAME + " " + IP_PUN_TYPE_LIST + " VALUES" + IP_PUN_UNKNOWN_LIST );
 
             ps.setInt( 1, id );
@@ -561,62 +557,60 @@ public abstract class Database {
             ps.setString( 9, pun.getAltListAsString() );
 
             ps.executeUpdate();
+            ps.close();
         } catch ( SQLException ex ) {
             Utils.logError( "Unable to add ip punishment to database" );
             ex.printStackTrace();
         }
 
-        close( conn, ps, null );
         return id;
     }
 
     // note: ipPuns and regular puns cannot share the same ID
     public int getNextIPPunId() {
         int start = 1;
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + IP_PUN_TABLE_NAME );
             rs = ps.executeQuery();
             rs.next();
             start = rs.getInt( "count(*)" );
+
+            ps.close();
+            rs.close();
         } catch ( SQLException ex ) { Utils.logError( "Unable to get next available ID in ip punishments database" ); }
 
-        close( conn, ps, rs );
         while ( checkIpPunIDExists( start ) == true || checkPunIDExists( start ) == true || start <= 0 ) { start++; }
         return start;
     }
 
     public boolean checkIpPunIDExists( int id ) {
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         boolean toReturn = false;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + IP_PUN_TABLE_NAME + " WHERE id = " + id + ";" );
             rs = ps.executeQuery();
             rs.next();
             if ( rs.getInt( "count(*)" ) >= 1 ) { toReturn = true; }
+
+            ps.close();
+            rs.close();
         } catch ( SQLException ex ) { Utils.logError( "Unable to check if an id in the IP punishments database exists" ); }
 
-        close( conn, ps, rs );
         return toReturn;
     }
 
     // Gets an IP punishment from an ID
     public IPPunishment getIPPunishment( int id ) {
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         IPPunishment toReturn = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT * FROM " + IP_PUN_TABLE_NAME + " WHERE id = " + id + ";" );
             rs = ps.executeQuery();
 
@@ -631,22 +625,22 @@ public abstract class Database {
             toReturn.setActive( Boolean.parseBoolean( rs.getString( "active" ) ) );
             toReturn.setAltListFromString( rs.getString( "alts" ) );
 
+            ps.close();
+            rs.close();
+
         } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
 
-        close( conn, ps, rs );
         return toReturn;
     }
 
     // Search for an ippunishment by UUID
     public ArrayList<IPPunishment> getIPPunishment( String uuid ) {
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         ArrayList<IPPunishment> results = new ArrayList<>();
         ArrayList<Integer> idResults = new ArrayList<>();
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT * FROM " + IP_PUN_TABLE_NAME + " WHERE player=?;" );
             ps.setString( 1, uuid );
             rs = ps.executeQuery();
@@ -690,9 +684,11 @@ public abstract class Database {
                 }
             }
 
+            ps.close();
+            rs.close();
+
         } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
 
-        close( conn, ps, rs );
         return results;
     }
 
@@ -714,38 +710,36 @@ public abstract class Database {
 
     // Sets whether an ippunishment is still active or not
     public void setIPPunishmentActive( int id, boolean active ) {
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "UPDATE " + IP_PUN_TABLE_NAME + " SET active=? WHERE id=?;" );
             ps.setString( 1, active + "" );
             ps.setInt( 2, id );
             ps.executeUpdate();
-        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
 
-        close( conn, ps, null );
+            ps.close();
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
     }
 
     // returns true if player has no sign notifs enabled, false if not
     public boolean checkPlayerNoSignNotifs( Player player ) {
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         boolean toReturn = false;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT count(*) FROM " + NO_SIGN_NOTIFS_TABLE_NAME + " WHERE player=?;" );
             ps.setString( 1, player.getUniqueId().toString() );
 
             rs = ps.executeQuery();
             rs.next();
             if ( rs.getInt( "count(*)" ) >= 1 ) { toReturn = true; }
+
+            ps.close();
+            rs.close();
         } catch ( SQLException ex ) { Utils.logError( "Unable to check if a player has no sign notifs enabled in the no sign notif database" ); }
 
-        close( conn, ps, rs );
         return toReturn;
     }
 
@@ -784,11 +778,9 @@ public abstract class Database {
     // Deletes a punishment
     // Works for both regular and IP punishments
     public void deletePunishment( int id ) {
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "DELETE FROM " + PUN_TABLE_NAME + " WHERE id=?;" );
             ps.setInt( 1, id );
             ps.executeUpdate();
@@ -796,19 +788,18 @@ public abstract class Database {
             ps = conn.prepareStatement( "DELETE FROM " + IP_PUN_TABLE_NAME + " WHERE id=?;" );
             ps.setInt( 1, id );
             ps.executeUpdate();
+
+            ps.close();
         } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
 
-        close( conn, ps, null );
     }
 
     // Sets whether a punishment is still active or not
     // Works for both regular punishments and IP punishments
     public void setPunishmentActive( int id, boolean active ) {
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             // regular punishments
             ps = conn.prepareStatement( "UPDATE " + PUN_TABLE_NAME + " SET active=? WHERE id=?;" );
             ps.setString( 1, active + "" );
@@ -820,19 +811,17 @@ public abstract class Database {
             ps.setString( 1, active + "" );
             ps.setInt( 2, id );
             ps.executeUpdate();
-        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
 
-        close( conn, ps, null );
+            ps.close();
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
     }
 
     // Sets a punishment's length
     // Works for both regular punishments and IP punishments
     public void setPunishmentLength( int id, long length ) {
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "UPDATE " + PUN_TABLE_NAME + " SET length=? WHERE id=?;" );
             ps.setString( 1, length + "" );
             ps.setInt( 2, id );
@@ -842,19 +831,17 @@ public abstract class Database {
             ps.setString( 1, length + "" );
             ps.setInt( 2, id );
             ps.executeUpdate();
-        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
 
-        close( conn, ps, null );
+            ps.close();
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
     }
 
     // Sets a punishments reason
     // Works for both regular punishments and IP punishments
     public void setPunishmentReason( int id, String reason ) {
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "UPDATE " + PUN_TABLE_NAME + " SET reason=? WHERE id=?;" );
             ps.setString( 1, reason );
             ps.setInt( 2, id );
@@ -864,9 +851,9 @@ public abstract class Database {
             ps.setString( 1, reason );
             ps.setInt( 2, id );
             ps.executeUpdate();
-        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
 
-        close( conn, ps, null );
+            ps.close();
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
     }
 
     public int getMostRecentPunishmentID() { return mostRecentPunID; }
@@ -875,32 +862,26 @@ public abstract class Database {
     // Sign Notifications
     //
     public void addPlayerNoSignNotifs( Player player ) {
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "INSERT INTO " + NO_SIGN_NOTIFS_TABLE_NAME + " VALUES" + NO_SIGN_NOTIFS_UNKNOWN_LIST );
 
             ps.setString( 1, player.getUniqueId().toString() );
             ps.executeUpdate();
+            ps.close();
         } catch ( SQLException ex ) { Utils.logError( "Unable to add sign notif to database", ex ); }
-
-        close( conn, ps, null );
     }
 
     public void removePlayerNoSignNotifs( Player player ) {
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "DELETE FROM " + NO_SIGN_NOTIFS_TABLE_NAME + " WHERE player=?;" );
             ps.setString( 1, player.getUniqueId().toString() );
             ps.executeUpdate();
+            ps.close();
         } catch ( SQLException ex ) { Utils.logError( "Unable to remove sign notif from database", ex ); }
-
-        close( conn, ps, null );
     }
 
     //
@@ -908,11 +889,9 @@ public abstract class Database {
     //
     public int addReport( SingleReport report ) {
         int id = getReportsCount();
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "INSERT INTO " + REPORTS_TABLE_NAME + " " + REPORTS_TYPE_LIST + " VALUES" + REPORTS_UNKNOWN_LIST );
 
             ps.setInt( 1, id );
@@ -922,58 +901,56 @@ public abstract class Database {
             ps.setString( 5, report.getReason() );
 
             ps.executeUpdate();
+            ps.close();
         } catch ( SQLException ex ) { Utils.logError( "Unable to add report to database" ); }
 
-        close( conn, ps, null );
         return id;
     }
 
     public int getReportsCount() {
         int start = 1;
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + REPORTS_TABLE_NAME );
             rs = ps.executeQuery();
             rs.next();
             start = rs.getInt( "count(*)" );
+
+            ps.close();
+            rs.close();
         } catch ( SQLException ex ) { Utils.logError( "Unable to get next available ID in reports database" ); }
 
-        close( conn, ps, rs );
         // idk why i check for if "start <= 0" but it cant hurt :shrug:
         while ( checkReportIDExists( start ) || start <= 0 ) { start++; }
         return start;
     }
 
     public boolean checkReportIDExists( int id ) {
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         boolean toReturn = false;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + REPORTS_TABLE_NAME + " WHERE id=" + id + ";" );
             rs = ps.executeQuery();
             rs.next();
             if ( rs.getInt( "count(*)" ) >= 1 ) { toReturn = true; }
+
+            ps.close();
+            rs.close();
         } catch ( SQLException ex ) { Utils.logError( "Unable to check if an id in the reports database exists" ); }
 
-        close( conn, ps, rs );
         return toReturn;
     }
 
     public SingleReport getReport( int id ) {
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         SingleReport report = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT * FROM " + REPORTS_TABLE_NAME + " WHERE id = " + id + ";" );
             rs = ps.executeQuery();
 
@@ -982,21 +959,21 @@ public abstract class Database {
             report.setReporter( Bukkit.getOfflinePlayer( UUID.fromString( rs.getString( "reporter" ) ) ) );
             report.setDate( Long.parseLong( rs.getString( "date" ) ) );
             report.setReason( rs.getString( "reason" ) );
+
+            ps.close();
+            rs.close();
         } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
 
-        close( conn, ps, rs );
         return report;
     }
 
     // Search for all reports with the target with uuid input
     public ArrayList<SingleReport> getReport( String uuid ) {
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         ArrayList<SingleReport> results = new ArrayList<>();
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT * FROM " + REPORTS_TABLE_NAME + " WHERE target=?;" );
             ps.setString( 1, uuid );
             rs = ps.executeQuery();
@@ -1010,35 +987,32 @@ public abstract class Database {
 
                 results.add( report );
             }
+
+            ps.close();
+            rs.close();
         } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
 
-        close( conn, ps, rs );
         return results;
     }
 
     public void removeReport( int id ) {
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "DELETE FROM " + REPORTS_TABLE_NAME + " WHERE id=" + id + ";" );
             ps.executeUpdate();
+            ps.close();
         } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
-
-        close( conn, ps, null );
     }
 
     // gets all reports where: startingIndex <= report row # <= endingIndex
     public ArrayList<SingleReport> getAllReports( int startingIndex, int endingIndex ) {
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         ArrayList<Integer> idList = new ArrayList<>();
         ArrayList<SingleReport> toReturn = new ArrayList<>();
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT row_number() OVER ( ORDER BY id ) RowNum, id FROM " + REPORTS_TABLE_NAME + ";" );
             rs = ps.executeQuery();
 
@@ -1050,9 +1024,11 @@ public abstract class Database {
                     else { break; }
                 }
             }
+
+            ps.close();
+            rs.close();
         } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
 
-        close( conn, ps, rs );
         for ( int id : idList ) {
             toReturn.add( getReport( id ) );
         }
@@ -1061,7 +1037,6 @@ public abstract class Database {
     }
 
     public void deleteAllExpiredReports() {
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         ArrayList<Integer> toDelete = new ArrayList<>();
@@ -1070,16 +1045,17 @@ public abstract class Database {
         long deleteBefore = Time.getCurrentTimestamp() - 60L * 60 * DELETE_AFTER_INT;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT * FROM " + REPORTS_TABLE_NAME + ";" );
             rs = ps.executeQuery();
 
             while ( rs.next() ) {
                 if ( Long.parseLong( rs.getString( 4 ) ) <= deleteBefore ) { toDelete.add( rs.getInt( 1 ) ); }
             }
+
+            ps.close();
+            rs.close();
         } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
 
-        close( conn, ps, rs );
         for ( int id : toDelete ) {
             removeReport( id );
         }
@@ -1090,11 +1066,9 @@ public abstract class Database {
     //
 
     public void addGUIPun( OfflinePlayer target, String type, String reason, int punID ) {
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "INSERT INTO " + PUNISH_GUI_TABLE_NAME + " VALUES" + PUNISH_GUI_UNKNOWN_LIST );
 
             ps.setInt( 1, punID );
@@ -1103,19 +1077,16 @@ public abstract class Database {
             ps.setString( 4, reason.toLowerCase() );
 
             ps.executeUpdate();
+            ps.close();
         } catch ( SQLException ex ) { Utils.logError( "Unable to add GUI punishment to database" ); }
-
-        close( conn, ps, null );
     }
 
     public int getGUIPunCount( OfflinePlayer target, String type, String reason ) {
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         int result = 0;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + PUNISH_GUI_TABLE_NAME + " WHERE player=? AND type=? AND reason=?;" );
             ps.setString( 1, target.getUniqueId().toString() );
             ps.setString( 2, type );
@@ -1124,34 +1095,31 @@ public abstract class Database {
 
             rs.next();
             result = rs.getInt( "count(*)" );
+
+            ps.close();
+            rs.close();
         } catch ( SQLException ex ) { Utils.logError( "Unable to get a GUI punishment count from the database" ); }
 
-        close( conn, ps, rs );
         return result;
     }
 
     public void removeGUIPun( int punID ) {
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "DELETE FROM " + PUNISH_GUI_TABLE_NAME + " WHERE id=?;" );
             ps.setInt( 1, punID );
             ps.executeUpdate();
+            ps.close();
         } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
-
-        close( conn, ps, null );
     }
 
     public void removeAllGUIPun( OfflinePlayer target ) {
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         ArrayList<Integer> toRemove = new ArrayList<>();
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT * FROM " + PUNISH_GUI_TABLE_NAME + " WHERE player=?;" );
             ps.setString( 1, target.getUniqueId().toString() );
             rs = ps.executeQuery();
@@ -1159,9 +1127,11 @@ public abstract class Database {
             while ( rs.next() ) {
                 toRemove.add( rs.getInt( "id" ) );
             }
+
+            ps.close();
+            rs.close();
         } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
 
-        close( conn, ps, null );
         for ( int id : toRemove ) {
             removeGUIPun( id );
             deletePunishment( id );
@@ -1173,46 +1143,38 @@ public abstract class Database {
     //
 
     public void addOther( String key, String value ) {
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "INSERT INTO " + OTHER_TABLE_NAME + " VALUES" + OTHER_UNKNOWN_LIST );
 
             ps.setString( 1, key );
             ps.setString( 2, value );
 
             ps.executeUpdate();
+            ps.close();
         } catch ( SQLException ex ) { Utils.logError( "Unable to add to the other database" ); }
-
-        close( conn, ps, null );
     }
 
     public void updateOther( String key, String newValue ) {
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "UPDATE " + OTHER_TABLE_NAME + " SET value=? WHERE key=?;" );
 
             ps.setString( 1, newValue );
             ps.setString( 2, key );
             ps.executeUpdate();
+            ps.close();
         } catch ( SQLException ex ) { Utils.logError( "Unable to update the other database" ); }
-
-        close( conn, ps, null );
     }
 
     public String getOther( String key ) {
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         String result = "";
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT * FROM " + OTHER_TABLE_NAME + " WHERE key=?;" );
 
             ps.setString( 1, key );
@@ -1220,43 +1182,42 @@ public abstract class Database {
 
             rs.next();
             result = rs.getString( "value" );
+
+            ps.close();
+            rs.close();
         } catch ( SQLException ex ) { Utils.logError( "Unable to select from the other database" ); }
 
-        close( conn, ps, rs );
         return result;
     }
 
     public void deleteOther( String key ) {
-        Connection conn = null;
         PreparedStatement ps = null;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "DELETE FROM " + OTHER_TABLE_NAME + " WHERE key=?;" );
             ps.setString( 1, key );
             ps.executeUpdate();
+            ps.close();
         } catch ( SQLException ex ) { Utils.logError( "Unable to delete from the other database" ); }
-
-        close( conn, ps, null );
     }
 
     public boolean otherCheckKeyExists( String key ) {
-        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         boolean result = false;
 
         try {
-            conn = getSqlConnection();
             ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + OTHER_TABLE_NAME + " WHERE key=?;" );
             ps.setString( 1, key );
 
             rs = ps.executeQuery();
             rs.next();
             result = ( rs.getInt( 1 ) >= 1 );
+
+            ps.close();
+            rs.close();
         } catch ( SQLException ex ) { Utils.logError( "Unable to check if a key exists in the other database" ); }
 
-        close( conn, ps, rs );
         return result;
     }
 }

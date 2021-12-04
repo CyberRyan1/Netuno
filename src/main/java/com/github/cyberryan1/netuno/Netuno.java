@@ -128,4 +128,9 @@ public final class Netuno extends JavaPlugin {
         ConfigUtils.getConfigManager().updateConfig();
         PunishGUIUtils.getPunishGUIManager().updateConfig();
     }
+
+    @Override
+    public void onDisable() {
+        Utils.getDatabase().close();
+    }
 }
