@@ -138,4 +138,17 @@ public class Punishment implements Serializable {
         sign.setItemMeta( meta );
         return sign;
     }
+
+    // Returns the punishment as an IPPunishment
+    public IPPunishment toIPPunishment() {
+        IPPunishment ippun = new IPPunishment();
+        ippun.setActive( this.getActive() );
+        ippun.setDate( this.getDate() );
+        ippun.setLength( this.getLength() );
+        ippun.setReason( this.getReason() );
+        ippun.setStaffUUID( this.getStaffUUID() );
+        ippun.setPlayerUUID( this.getPlayerUUID() );
+        ippun.setType( this.getType() );
+        return ippun;
+    }
 }
