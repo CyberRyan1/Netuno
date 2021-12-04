@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.netuno.classes.PrePunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
@@ -33,18 +34,18 @@ public class Ban implements CommandExecutor {
             if ( Time.isAllowableLength( args[1] ) ) {
                 OfflinePlayer target = Bukkit.getServer().getOfflinePlayer( args[0] );
                 if ( target != null ) {
-                    Punishment pun = new Punishment();
-                    pun.setReason( Utils.getRemainingArgs( args, 2 ) );
-                    pun.setPlayerUUID( target.getUniqueId().toString() );
-                    pun.setActive( true );
-                    pun.setDate( Time.getCurrentTimestamp() );
-                    pun.setLength( Time.getTimestampFromLength( args[1] ) );
-                    pun.setType( "Ban" );
+                    PrePunishment pun = new PrePunishment(
+                            target,
+                            "Ban",
+                            args[1],
+                            Utils.getRemainingArgs( args, 2 )
+                    );
 
-                    pun.setStaffUUID( "CONSOLE" );
+                    pun.setConsoleSender( true );
                     if ( sender instanceof Player ) {
                         Player staff = ( Player ) sender;
-                        pun.setStaffUUID( staff.getUniqueId().toString() );
+                        pun.setStaff( staff );
+                        pun.setConsoleSender( false );
 
                         if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
                             CommandErrors.sendPlayerCannotBePunished( staff, target.getName() );
@@ -52,13 +53,7 @@ public class Ban implements CommandExecutor {
                         }
                     }
 
-                    DATA.addPunishment( pun );
-                    if ( target.isOnline() ) {
-                        target.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables( ConfigUtils.getColoredStrFromList( "ban.banned-lines" ), pun ) );
-                    }
-
-                    Utils.doPublicPunBroadcast( pun );
-                    Utils.doStaffPunBroadcast( pun );
+                    pun.executePunishment();
                 }
 
                 else {

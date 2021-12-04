@@ -1,6 +1,7 @@
 package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.netuno.classes.IPPunishment;
+import com.github.cyberryan1.netuno.classes.PrePunishment;
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
@@ -35,24 +36,18 @@ public class IPBan implements CommandExecutor {
             if ( Time.isAllowableLength( args[1] ) ) {
                 OfflinePlayer target = Bukkit.getServer().getOfflinePlayer( args[0] );
                 if ( target != null ) {
-                    IPPunishment pun = new IPPunishment();
-                    pun.setReason( Utils.getRemainingArgs( args, 2 ) );
-                    pun.setPlayerUUID( target.getUniqueId().toString() );
-                    pun.setActive( true );
-                    pun.setDate( Time.getCurrentTimestamp() );
-                    pun.setLength( Time.getTimestampFromLength( args[1] ) );
-                    pun.setType( "IPBan" );
+                    PrePunishment pun = new PrePunishment(
+                            target,
+                            "IPBan",
+                            args[1],
+                            Utils.getRemainingArgs( args, 2 )
+                    );
 
-                    ArrayList<String> altList = new ArrayList<>();
-                    for ( OfflinePlayer alt : DATA.getAllAlts( target.getUniqueId().toString() ) ) {
-                        altList.add( alt.getUniqueId().toString() );
-                    }
-                    pun.setAltList( altList );
-
-                    pun.setStaffUUID( "CONSOLE" );
+                    pun.setConsoleSender( true );
                     if ( sender instanceof Player ) {
                         Player staff = ( Player ) sender;
-                        pun.setStaffUUID( staff.getUniqueId().toString() );
+                        pun.setStaff( staff );
+                        pun.setConsoleSender( false );
 
                         if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
                             CommandErrors.sendPlayerCannotBePunished( staff, target.getName() );
@@ -60,22 +55,7 @@ public class IPBan implements CommandExecutor {
                         }
                     }
 
-                    DATA.addIPPunishment( pun );
-                    if ( target.isOnline() ) {
-                        target.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables( ConfigUtils.getColoredStrFromList( "ipban.banned-lines" ), pun ) );
-                    }
-
-                    Utils.doPublicPunBroadcast( pun );
-                    Utils.doStaffPunBroadcast( pun );
-
-                    // Kicks all online alts for the same reason
-                    for ( OfflinePlayer alt : DATA.getAllAlts( target.getUniqueId().toString() ) ) {
-                        if ( alt.isOnline() ) {
-                            pun.setPlayerUUID( alt.getUniqueId().toString() );
-                            alt.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables( ConfigUtils.getColoredStrFromList( "ipban.banned-lines" ), pun ) );
-                        }
-                    }
-
+                    pun.executePunishment();
                 }
 
                 else {

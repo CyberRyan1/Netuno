@@ -1,6 +1,6 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.netuno.classes.Punishment;
+import com.github.cyberryan1.netuno.classes.PrePunishment;
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
@@ -25,21 +25,19 @@ public class Warn implements CommandExecutor {
                     return true;
                 }
 
-                Punishment pun = new Punishment();
-                pun.setReason( Utils.getRemainingArgs( args, 1 ) );
-                pun.setDate( Time.getCurrentTimestamp() );
-                pun.setType( "Warn" );
-                pun.setActive( false );
-
                 OfflinePlayer target = Bukkit.getServer().getOfflinePlayer( args[0] );
                 if ( target != null ) {
+                    PrePunishment pun = new PrePunishment(
+                            target,
+                            "Warn",
+                            Utils.getRemainingArgs( args, 1 )
+                    );
 
-                    pun.setPlayerUUID( target.getUniqueId().toString() );
-
-                    pun.setStaffUUID( "CONSOLE" );
+                    pun.setConsoleSender( true );
                     if ( sender instanceof Player ) {
                         Player staff = ( Player ) sender;
-                        pun.setStaffUUID( staff.getUniqueId().toString() );
+                        pun.setStaff( staff );
+                        pun.setConsoleSender( false );
 
                         if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
                             CommandErrors.sendPlayerCannotBePunished( staff, target.getName() );
@@ -47,18 +45,7 @@ public class Warn implements CommandExecutor {
                         }
                     }
 
-                    int id = DATA.addPunishment( pun );
-
-                    if ( target.isOnline() ) {
-                        Utils.sendPunishmentMsg( target.getPlayer(), pun );
-                    }
-
-                    else {
-                        DATA.addNotif( id, target.getUniqueId().toString() );
-                    }
-
-                    Utils.doPublicPunBroadcast( pun );
-                    Utils.doStaffPunBroadcast( pun );
+                    pun.executePunishment();
                 }
 
                 else {

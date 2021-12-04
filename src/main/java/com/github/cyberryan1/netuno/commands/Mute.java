@@ -1,6 +1,6 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.netuno.classes.Punishment;
+import com.github.cyberryan1.netuno.classes.PrePunishment;
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
@@ -33,18 +33,18 @@ public class Mute implements CommandExecutor {
             if ( Time.isAllowableLength( args[1] ) ) {
                 OfflinePlayer target = Bukkit.getServer().getOfflinePlayer( args[0] );
                 if ( target != null ) {
-                    Punishment pun = new Punishment();
-                    pun.setReason( Utils.getRemainingArgs( args, 2 ) );
-                    pun.setDate( Time.getCurrentTimestamp() );
-                    pun.setLength( Time.getTimestampFromLength( args[1] ) );
-                    pun.setActive( true );
-                    pun.setType( "Mute" );
-                    pun.setPlayerUUID( target.getUniqueId().toString() );
+                    PrePunishment pun = new PrePunishment(
+                            target,
+                            "Mute",
+                            args[1],
+                            Utils.getRemainingArgs( args, 2 )
+                    );
 
-                    pun.setStaffUUID( "CONSOLE" );
+                    pun.setConsoleSender( true );
                     if ( sender instanceof Player ) {
                         Player staff = ( Player ) sender;
-                        pun.setStaffUUID( staff.getUniqueId().toString() );
+                        pun.setStaff( staff );
+                        pun.setConsoleSender( false );
 
                         if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
                             CommandErrors.sendPlayerCannotBePunished( staff, target.getName() );
@@ -52,13 +52,7 @@ public class Mute implements CommandExecutor {
                         }
                     }
 
-                    DATA.addPunishment( pun );
-                    if ( target.isOnline() ) {
-                        Utils.sendPunishmentMsg( target.getPlayer(), pun );
-                    }
-
-                    Utils.doPublicPunBroadcast( pun );
-                    Utils.doStaffPunBroadcast( pun );
+                    pun.executePunishment();
                 }
 
                 else {

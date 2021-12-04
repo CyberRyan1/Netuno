@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.netuno.classes.PrePunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
@@ -26,17 +27,17 @@ public class Kick implements CommandExecutor {
 
                 Player target = Bukkit.getServer().getPlayer( args[0] );
                 if ( target != null ) {
-                    Punishment pun = new Punishment();
-                    pun.setPlayerUUID( target.getUniqueId().toString() );
-                    pun.setReason( Utils.getRemainingArgs( args, 1 ) );
-                    pun.setDate( Time.getCurrentTimestamp() );
-                    pun.setType( "Kick" );
-                    pun.setActive( false );
+                    PrePunishment pun = new PrePunishment(
+                            target,
+                            "Kick",
+                            Utils.getRemainingArgs( args, 1 )
+                    );
 
-                    pun.setStaffUUID( "CONSOLE" );
+                    pun.setConsoleSender( true );
                     if ( sender instanceof Player ) {
                         Player staff = ( Player ) sender;
-                        pun.setStaffUUID( staff.getUniqueId().toString() );
+                        pun.setStaff( staff );
+                        pun.setConsoleSender( false );
 
                         if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
                             CommandErrors.sendPlayerCannotBePunished( sender, target.getName() );
@@ -44,18 +45,7 @@ public class Kick implements CommandExecutor {
                         }
                     }
 
-                    DATA.addPunishment( pun );
-
-                    String kickMsg = "";
-                    for ( String str : ConfigUtils.getColoredStrList( "kick.kicked-lines" ) ) {
-                        String replaced = ConfigUtils.replaceAllVariables( str, pun );
-                        kickMsg += replaced + "\n";
-                    }
-
-                    target.kickPlayer( kickMsg );
-
-                    Utils.doPublicPunBroadcast( pun );
-                    Utils.doStaffPunBroadcast( pun );
+                    pun.executePunishment();
                 }
 
                 else {

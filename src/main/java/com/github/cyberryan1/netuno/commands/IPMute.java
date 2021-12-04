@@ -1,6 +1,7 @@
 package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.netuno.classes.IPPunishment;
+import com.github.cyberryan1.netuno.classes.PrePunishment;
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
@@ -35,24 +36,18 @@ public class IPMute implements CommandExecutor {
             if ( Time.isAllowableLength( args[1] ) ) {
                 OfflinePlayer target = Bukkit.getServer().getOfflinePlayer( args[0] );
                 if ( target != null ) {
-                    IPPunishment pun = new IPPunishment();
-                    pun.setReason( Utils.getRemainingArgs( args, 2 ) );
-                    pun.setPlayerUUID( target.getUniqueId().toString() );
-                    pun.setActive( true );
-                    pun.setDate( Time.getCurrentTimestamp() );
-                    pun.setLength( Time.getTimestampFromLength( args[1] ) );
-                    pun.setType( "IPMute" );
+                    PrePunishment pun = new PrePunishment(
+                            target,
+                            "IPMute",
+                            args[1],
+                            Utils.getRemainingArgs( args, 2 )
+                    );
 
-                    ArrayList<String> altList = new ArrayList<>();
-                    for ( OfflinePlayer alt : DATA.getAllAlts( target.getUniqueId().toString() ) ) {
-                        altList.add( alt.getUniqueId().toString() );
-                    }
-                    pun.setAltList( altList );
-
-                    pun.setStaffUUID( "CONSOLE" );
+                    pun.setConsoleSender( true );
                     if ( sender instanceof Player ) {
                         Player staff = ( Player ) sender;
-                        pun.setStaffUUID( staff.getUniqueId().toString() );
+                        pun.setStaff( staff );
+                        pun.setConsoleSender( false );
 
                         if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
                             CommandErrors.sendPlayerCannotBePunished( staff, target.getName() );
@@ -60,22 +55,7 @@ public class IPMute implements CommandExecutor {
                         }
                     }
 
-                    DATA.addIPPunishment( pun );
-                    if ( target.isOnline() ) {
-                        Utils.sendPunishmentMsg( target.getPlayer(), pun );
-                    }
-
-                    Utils.doPublicPunBroadcast( pun );
-                    Utils.doStaffPunBroadcast( pun );
-
-                    // Sends a notification to all online alts for the same punishment
-                    for ( OfflinePlayer alt : DATA.getAllAlts( target.getUniqueId().toString() ) ) {
-                        if ( alt.isOnline() && alt.getName().equals( target.getName() ) == false ) {
-                            pun.setPlayerUUID( alt.getUniqueId().toString() );
-                            Utils.sendPunishmentMsg( alt.getPlayer(), pun );
-                        }
-                    }
-
+                    pun.executePunishment();
                 }
 
                 else {
