@@ -20,6 +20,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class HistoryListGUI implements Listener {
 
@@ -30,8 +33,7 @@ public class HistoryListGUI implements Listener {
     private final Player staff;
     private final int page;
     private final SortBy sort;
-    private ArrayList<Punishment> history = new ArrayList<>();
-
+    private List<Punishment> history = new ArrayList<>();
 
     public HistoryListGUI( OfflinePlayer target, Player staff, int page, SortBy sort ) {
         this.target = target;
