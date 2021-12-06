@@ -62,7 +62,6 @@ public class AltsListGUI implements Listener {
 
     private void sortAlts() {
         if ( sort == SortBy.ALPHABETICAL ) {
-
             alts = alts.stream()
                     .sorted( ( a1, a2 ) -> (
                             a1.getName().compareTo( a2.getName() )
