@@ -12,6 +12,7 @@ import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -276,36 +277,43 @@ public class AltsListGUI implements Listener {
         if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&gPrevious Page" ) ) ) {
             AltsListGUI newGUI = new AltsListGUI( target, staff, page - 1 );
             newGUI.openInventory( staff );
+            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
         }
 
         else if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&gNext Page" ) ) ) {
             AltsListGUI newGUI = new AltsListGUI( target, staff, page + 1 );
             newGUI.openInventory( staff );
+            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
         }
 
         else if ( clicked.equals( getAlphabeticalPaper() ) ) {
             AltsListGUI newGUI = new AltsListGUI( target, staff, page, SortBy.FIRST_DATE );
             newGUI.openInventory( staff );
+            staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
         }
 
         else if ( clicked.equals( getFirstDatePaper() ) ) {
             AltsListGUI newGUI = new AltsListGUI( target, staff, page, SortBy.LAST_DATE );
             newGUI.openInventory( staff );
+            staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
         }
 
         else if ( clicked.equals( getLastDatePaper() ) ) {
             AltsListGUI newGUI = new AltsListGUI( target, staff, page, SortBy.FIRST_PUNISHED );
             newGUI.openInventory( staff );
+            staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
         }
 
         else if ( clicked.equals( getFirstPunPaper() ) ) {
             AltsListGUI newGUI = new AltsListGUI( target, staff, page, SortBy.LAST_PUNISHED );
             newGUI.openInventory( staff );
+            staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
         }
 
         else if ( clicked.equals( getLastPunPaper() ) ) {
             AltsListGUI newGUI = new AltsListGUI( target, staff, page, SortBy.ALPHABETICAL );
             newGUI.openInventory( staff );
+            staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
         }
     }
 
