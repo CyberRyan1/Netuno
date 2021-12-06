@@ -24,6 +24,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class AltsListGUI implements Listener {
 
@@ -34,7 +36,7 @@ public class AltsListGUI implements Listener {
     private final OfflinePlayer target;
     private final int page;
     private SortBy sort;
-    private ArrayList<OfflinePlayer> alts;
+    private List<OfflinePlayer> alts;
     private final ArrayList<OfflinePlayer> punishedAlts;
 
     public AltsListGUI( OfflinePlayer target, Player staff, int page, SortBy sort ) {
@@ -60,77 +62,33 @@ public class AltsListGUI implements Listener {
 
     private void sortAlts() {
         if ( sort == SortBy.ALPHABETICAL ) {
-            ArrayList<OfflinePlayer> accounts = new ArrayList<>();
-            accounts.add( alts.remove( 0 ) );
-            for ( OfflinePlayer player : alts ) {
-                for ( int index = 0; index < accounts.size(); index++ ) {
-                    if ( player.getName().compareTo( accounts.get( index ).getName() ) < 0 ) {
-                        accounts.add( index, player );
-                        break;
-                    }
-                }
 
-                if ( accounts.contains( player ) == false ) { accounts.add( player ); }
-            }
-
-            alts = accounts;
+            alts = alts.stream()
+                    .sorted( ( a1, a2 ) -> (
+                            a1.getName().compareTo( a2.getName() )
+                    ) )
+                    .collect( Collectors.toList() );
         }
 
-        else if ( sort == SortBy.FIRST_DATE ) {
-            ArrayList<OfflinePlayer> accounts = new ArrayList<>();
-            accounts.add( alts.remove( 0 ) );
-            for ( OfflinePlayer player : alts ) {
-                for ( int index = 0; index < accounts.size(); index++ ) {
-                    if ( player.getFirstPlayed() < accounts.get( index ).getFirstPlayed() ) {
-                        accounts.add( index, player );
-                        break;
-                    }
-                }
-
-                if ( accounts.contains( player ) == false ) { accounts.add( player ); }
-            }
-
-            alts = accounts;
+        else if ( sort == SortBy.FIRST_DATE || sort == SortBy.LAST_DATE ) {
+            alts = alts.stream()
+                    .sorted( ( a1, a2 ) -> ( int ) (
+                            sort == SortBy.FIRST_DATE ? ( a1.getFirstPlayed() - a2.getFirstPlayed() )
+                                    : ( a2.getFirstPlayed() - a1.getFirstPlayed() )
+                    ) )
+                    .collect( Collectors.toList() );
         }
 
-        else if ( sort == SortBy.LAST_DATE ) {
-            ArrayList<OfflinePlayer> accounts = new ArrayList<>();
-            accounts.add( alts.remove( 0 ) );
-            for ( OfflinePlayer player : alts ) {
-                for ( int index = 0; index < accounts.size(); index++ ) {
-                    if ( player.getFirstPlayed() > accounts.get( index ).getFirstPlayed() ) {
-                        accounts.add( index, player );
-                        break;
-                    }
-                }
-
-                if ( accounts.contains( player ) == false ) { accounts.add( player ); }
-            }
-
-            alts = accounts;
-        }
-
-        else if ( sort == SortBy.FIRST_PUNISHED ) {
-            ArrayList<OfflinePlayer> accounts = new ArrayList<>();
-            accounts.addAll( punishedAlts );
-            for ( OfflinePlayer player : alts ) {
-                if ( accounts.contains( player ) == false ) {
-                    accounts.add( player );
-                }
-            }
-
-            alts = accounts;
-        }
-
-        else if ( sort == SortBy.LAST_PUNISHED ) {
-            ArrayList<OfflinePlayer> accounts = new ArrayList<>();
-            accounts.addAll( alts );
-            for ( int index = accounts.size() - 1; index >= 0; index-- ) {
-                if ( punishedAlts.contains( accounts.get( index ) ) ) { accounts.remove( index ); }
-            }
-
-            accounts.addAll( punishedAlts );
-            alts = accounts;
+        else if ( sort == SortBy.FIRST_PUNISHED || sort == SortBy.LAST_PUNISHED ) {
+            alts = alts.stream()
+                    .sorted( ( a1, a2 ) -> (
+                            sort == SortBy.FIRST_PUNISHED ?
+                                    ( punishedAlts.contains( a1 ) == punishedAlts.contains( a2 ) ? 0 :
+                                            ( punishedAlts.contains( a1 ) ? -1 : 1 ) ) :
+                                    ( punishedAlts.contains( a1 ) == punishedAlts.contains( a2 ) ? 0 :
+                                            ( punishedAlts.contains( a1 ) ? 1 : -1 ) )
+                    ) )
+                    .collect( Collectors.toList() );
         }
     }
 
