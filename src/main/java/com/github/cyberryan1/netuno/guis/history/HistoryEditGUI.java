@@ -10,6 +10,7 @@ import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -140,6 +141,7 @@ public class HistoryEditGUI implements Listener {
                 event.getWhoClicked().closeInventory(); // like this close inventory here, helps prevent accidental deletes
                 HistoryDeleteConfirmGUI deleteGUI = new HistoryDeleteConfirmGUI( target, staff, punishment );
                 deleteGUI.openInventory( staff );
+                staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
             }
         }
 
@@ -147,6 +149,7 @@ public class HistoryEditGUI implements Listener {
             event.getWhoClicked().closeInventory();
             HistoryListGUI gui = new HistoryListGUI( target, staff, 1 );
             gui.openInventory( staff );
+            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
 
             GUIEventManager.removeEvent( this );
         }
