@@ -11,6 +11,7 @@ import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -178,6 +179,7 @@ public class IPMutePunishGUI {
         staff.performCommand( "ipmute " + target.getName() + " " + punishmentLength + " " + punishmentReason + punishmentOffense );
         staff.closeInventory();
         DATA.addGUIPun( target, "ipmute", punClickedReason, DATA.getMostRecentPunishmentID() );
+        staff.playSound( staff.getLocation(), Sound.ENTITY_ENDER_EYE_DEATH, 10, 1 );
     }
 
     @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )

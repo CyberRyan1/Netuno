@@ -62,16 +62,16 @@ public final class Netuno extends JavaPlugin {
         chatslowManager = new ChatslowManager();
 
         // Skript
-        addon = Skript.registerAddon( this );
-        try {
-            addon.loadClasses( "com.github.cyberryan1", "skriptelements" );
-        } catch ( IOException e ) {
-            Utils.logWarn( "Could not enable as a skript addon, will still enable without this syntax!" );
-            enabled = false;
-        }
-        Utils.logInfo( "Successfully enabled as a skript addon" );
-        RegisterExpressions.register();
-        RegisterConditions.register();
+//        addon = Skript.registerAddon( this );
+//        try {
+//            addon.loadClasses( "com.github.cyberryan1", "skriptelements" );
+//        } catch ( IOException e ) {
+//            Utils.logWarn( "Could not enable as a skript addon, will still enable without this syntax!" );
+//            enabled = false;
+//        }
+//        Utils.logInfo( "Successfully enabled as a skript addon" );
+//        RegisterExpressions.register();
+//        RegisterConditions.register();
 
         this.getCommand( "netuno" ).setExecutor( new NetunoCmd() );
         this.getCommand( "netuno" ).setTabCompleter( new TabComplete( "netuno" ) );

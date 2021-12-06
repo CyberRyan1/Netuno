@@ -10,6 +10,7 @@ import com.github.cyberryan1.netuno.utils.PunishGUIUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -124,6 +125,8 @@ public class MainPunishGUI {
             IPBanPunishGUI gui = new IPBanPunishGUI( staff, target );
             gui.openInventory();
         }
+
+        staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
     }
 
     @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
