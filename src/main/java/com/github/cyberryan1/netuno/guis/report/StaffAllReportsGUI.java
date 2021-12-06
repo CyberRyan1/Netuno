@@ -73,13 +73,6 @@ public class StaffAllReportsGUI implements Listener {
 
     private void sort() {
         if ( reports.size() == 0 ) { return; }
-//        if ( sort == SortBy.ALPHABETICAL ) {
-//            alts = alts.stream()
-//                    .sorted( ( a1, a2 ) -> (
-//                            a1.getName().compareTo( a2.getName() )
-//                    ) )
-//                    .collect( Collectors.toList() );
-//        }
         if ( sort == SortBy.ONLINE || sort == SortBy.OFFLINE ) {
             combinedReports = combinedReports.stream()
                     .sorted( ( r1, r2 ) -> (
@@ -102,73 +95,6 @@ public class StaffAllReportsGUI implements Listener {
                     ) )
                     .collect( Collectors.toList() );
         }
-
-//        ArrayList<CombinedReport> newCombined = new ArrayList<>();
-//        newCombined.add( combinedReports.remove( 0 ) );
-//
-//        switch ( sort ) {
-//            case ONLINE: {
-//                for ( CombinedReport cr : combinedReports ) {
-//                    for ( int index = 0; index < newCombined.size(); index++ ) {
-//                        if ( cr.getTarget().isOnline() && newCombined.get( index ).getTarget().isOnline() == false ) {
-//                            newCombined.add( index, cr );
-//                            break;
-//                        }
-//                    }
-//
-//                    if ( newCombined.contains( cr ) == false ) { newCombined.add( cr ); }
-//                }
-//
-//                break;
-//            }
-//
-//            case OFFLINE: {
-//                for ( CombinedReport cr : combinedReports ) {
-//                    for ( int index = 0; index < newCombined.size(); index++ ) {
-//                        if ( cr.getTarget().isOnline() == false && newCombined.get( index ).getTarget().isOnline() ) {
-//                            newCombined.add( index, cr );
-//                            break;
-//                        }
-//                    }
-//
-//                    if ( newCombined.contains( cr ) == false ) { newCombined.add( cr ); }
-//                }
-//
-//                break;
-//            }
-//
-//            case FIRST_DATE: {
-//                for ( CombinedReport cr : combinedReports ) {
-//                    for ( int index = 0; index < newCombined.size(); index++ ) {
-//                        if ( cr.getMostRecentDate() < newCombined.get( index ).getMostRecentDate() ) {
-//                            newCombined.add( cr );
-//                            break;
-//                        }
-//                    }
-//
-//                    if ( newCombined.contains( cr ) == false ) { newCombined.add( cr ); }
-//                }
-//
-//                break;
-//            }
-//
-//            case LAST_DATE: {
-//                for ( CombinedReport cr : combinedReports ) {
-//                    for ( int index = 0; index < newCombined.size(); index++ ) {
-//                        if ( cr.getMostRecentDate() > newCombined.get( index ).getMostRecentDate() ) {
-//                            newCombined.add( cr );
-//                            break;
-//                        }
-//                    }
-//
-//                    if ( newCombined.contains( cr ) == false ) { newCombined.add( cr ); }
-//                }
-//
-//                break;
-//            }
-//        }
-//
-//        combinedReports = newCombined;
     }
 
     public void insertItems() {
