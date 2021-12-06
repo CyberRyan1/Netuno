@@ -9,6 +9,7 @@ import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -189,14 +190,16 @@ public class HistoryListGUI implements Listener {
         if ( itemClicked.equals( GUIUtils.createItem( Material.BOOK, "&gNext Page" ) ) ) {
             HistoryListGUI next = new HistoryListGUI( target, staff, page + 1, sort );
             next.openInventory( staff );
+            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
         }
 
         else if ( itemClicked.equals( GUIUtils.createItem( Material.BOOK, "&gPrevious Page" ) ) ) {
             HistoryListGUI previous = new HistoryListGUI( target, staff, page - 1, sort );
             previous.openInventory( staff );
+            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
         }
 
-        else if ( itemClicked.getType() == Material.OAK_SIGN
+        else if ( ( itemClicked.getType() == Material.EMERALD || itemClicked.getType() == Material.REDSTONE )
                 && itemClicked.getItemMeta().getDisplayName().contains( Utils.getColored( "&hPunishment &g#" ) ) ) {
             int punClicked = ( ( page - 1 ) * 21 ) + event.getSlot() - 10;
             if ( event.getSlot() >= 18 ) { punClicked -= 2; }
@@ -205,9 +208,11 @@ public class HistoryListGUI implements Listener {
             int punID = history.get( punClicked ).getID();
             HistoryEditGUI editGUI = new HistoryEditGUI( target, staff, punID );
             editGUI.openInventory( staff );
+            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
         }
 
         else if ( itemClicked.equals( getSortHopper() ) ) {
+            staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
             if ( sort == SortBy.FIRST_DATE ) {
                 HistoryListGUI gui = new HistoryListGUI( target, staff, page, SortBy.LAST_DATE );
                 gui.openInventory( staff );
