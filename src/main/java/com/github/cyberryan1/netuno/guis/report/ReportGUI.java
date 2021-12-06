@@ -14,6 +14,7 @@ import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -113,6 +114,7 @@ public class ReportGUI implements Listener {
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName( meta.getDisplayName().replace( Utils.getColored( "&7" ), Utils.getColored( "&a" ) ) );
             item.setItemMeta( meta );
+            player.playSound( player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
         }
 
         else if ( item.getType() == Material.LIME_WOOL ) {
@@ -120,15 +122,18 @@ public class ReportGUI implements Listener {
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName( meta.getDisplayName().replace( Utils.getColored( "&a" ), Utils.getColored( "&7" ) ) );
             item.setItemMeta( meta );
+            player.playSound( player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
         }
 
         else if ( item.equals( GUIUtils.createItem( Material.RED_WOOL, "&cReset Selections" ) ) ) {
             insertItems();
             openInventory( player );
+            player.playSound( player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
         }
 
         else if ( item.equals( GUIUtils.createItem( Material.GREEN_WOOL, "&2Submit Report" ) ) ) {
             player.closeInventory();
+            player.playSound( player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
 
             ArrayList<SingleReport> reports = new ArrayList<>();
             for ( ItemStack i : event.getClickedInventory().getContents() ) {

@@ -11,6 +11,7 @@ import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -205,11 +206,13 @@ public class StaffAllReportsGUI implements Listener {
         if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&gPrevious Page" ) ) ) {
             StaffAllReportsGUI newGUI = new StaffAllReportsGUI( staff, page - 1, sort );
             newGUI.openInventory( staff );
+            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
         }
 
         else if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&gNext Page" ) ) ) {
             StaffAllReportsGUI newGUI = new StaffAllReportsGUI( staff, page + 1, sort );
             newGUI.openInventory( staff );
+            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
         }
 
         else if ( clicked.equals( getPaper() ) ) {
@@ -220,6 +223,7 @@ public class StaffAllReportsGUI implements Listener {
             else { newGUI = new StaffAllReportsGUI( staff, page, SortBy.FIRST_DATE ); }
 
             newGUI.openInventory( staff );
+            staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
         }
     }
 
