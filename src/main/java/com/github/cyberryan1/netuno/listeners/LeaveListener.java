@@ -2,6 +2,7 @@ package com.github.cyberryan1.netuno.listeners;
 
 import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
+import com.github.cyberryan1.netuno.managers.DisableQuitMsg;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.event.EventHandler;
@@ -23,6 +24,10 @@ public class LeaveListener implements Listener {
 
         ArrayList<IPPunishment> ipPunishments = DATA.getIPPunishment( event.getPlayer().getUniqueId().toString(), "ipban", true );
         if ( ipPunishments.size() >= 1 ) {
+            event.setQuitMessage( null );
+        }
+
+        if ( DisableQuitMsg.containsPlayer( event.getPlayer() ) ) {
             event.setQuitMessage( null );
         }
     }

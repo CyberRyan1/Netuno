@@ -2,6 +2,7 @@ package com.github.cyberryan1.netuno.listeners;
 
 import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
+import com.github.cyberryan1.netuno.managers.DisableQuitMsg;
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -59,6 +60,8 @@ public class JoinListener implements Listener {
                 }
             }
 
+            event.setJoinMessage( null ); // disable the join message from sending
+            DisableQuitMsg.addPlayer( event.getPlayer() );
             event.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables( ConfigUtils.getColoredStrFromList( "ipban.attempt" ), highest ) );
             return;
         }
@@ -99,6 +102,8 @@ public class JoinListener implements Listener {
                 }
             }
 
+            event.setJoinMessage( null ); // disable the join message from sending
+            DisableQuitMsg.addPlayer( event.getPlayer() );
             event.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables( ConfigUtils.getColoredStrFromList( "ban.attempt" ), highest ) );
             return;
         }
