@@ -13,10 +13,13 @@ commands:
   ban:
   unban:
   ipinfo:
+    aliases: [ipi, ipc, ipcheck, alts]
   ipmute:
   unipmute:
+    aliases: [unmuteip]
   ipban:
   unipban:
+    aliases: [unbanip]
   history:
   togglesigns:
   clearchat:
@@ -24,4 +27,6 @@ commands:
   reports:
   report:
   punish:
+    aliases: [pun]
   chatslow:
+    aliases: [slowchat]
