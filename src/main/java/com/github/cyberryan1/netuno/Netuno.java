@@ -74,16 +74,21 @@ public final class Netuno extends JavaPlugin {
     }
 
     private void registerSkript() {
-        addon = Skript.registerAddon( this );
         try {
-            addon.loadClasses( "com.github.cyberryan1", "skriptelements" );
-        } catch ( IOException e ) {
+            addon = Skript.registerAddon( this );
+            try {
+                addon.loadClasses( "com.github.cyberryan1", "skriptelements" );
+            } catch ( IOException e ) {
+                Utils.logWarn( "Could not enable as a skript addon, will still enable without this syntax!" );
+                enabled = false;
+            }
+            Utils.logInfo( "Successfully enabled as a skript addon" );
+            RegisterExpressions.register();
+            RegisterConditions.register();
+        } catch ( NoClassDefFoundError error ) {
             Utils.logWarn( "Could not enable as a skript addon, will still enable without this syntax!" );
             enabled = false;
         }
-        Utils.logInfo( "Successfully enabled as a skript addon" );
-        RegisterExpressions.register();
-        RegisterConditions.register();
     }
 
     private void registerCommands() {
