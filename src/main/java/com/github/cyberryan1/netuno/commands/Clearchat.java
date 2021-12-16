@@ -1,17 +1,27 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
-import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class Clearchat implements CommandExecutor {
+import java.util.List;
+
+public class Clearchat extends BaseCommand {
+
+    public Clearchat() {
+        super( "clearchat", ConfigUtils.getStr( "clearchat.perm" ),  ConfigUtils.getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&uclearchat" ))
+    }
+
+    @Override
+    public List<String> onTabComplete( CommandSender sender, Command command, String label, String[] args ) {
+        return null;
+    }
 
     @Override
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
