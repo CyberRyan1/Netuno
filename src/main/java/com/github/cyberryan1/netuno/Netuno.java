@@ -60,7 +60,20 @@ public final class Netuno extends JavaPlugin {
         punishGUIUtils = new PunishGUIUtils( punishGUIConfig );
         chatslowManager = new ChatslowManager();
 
-        // Skript
+        registerSkript();
+        registerCommands();
+        registerEvents();
+
+        ConfigUtils.getConfigManager().updateConfig();
+        PunishGUIUtils.getPunishGUIManager().updateConfig();
+    }
+
+    @Override
+    public void onDisable() {
+        Utils.getDatabase().close();
+    }
+
+    private void registerSkript() {
         addon = Skript.registerAddon( this );
         try {
             addon.loadClasses( "com.github.cyberryan1", "skriptelements" );
@@ -71,7 +84,9 @@ public final class Netuno extends JavaPlugin {
         Utils.logInfo( "Successfully enabled as a skript addon" );
         RegisterExpressions.register();
         RegisterConditions.register();
+    }
 
+    private void registerCommands() {
         this.getCommand( "netuno" ).setExecutor( new NetunoCmd() );
         this.getCommand( "netuno" ).setTabCompleter( new TabComplete( "netuno" ) );
         this.getCommand( "kick" ).setExecutor( new Kick() );
@@ -112,20 +127,14 @@ public final class Netuno extends JavaPlugin {
         this.getCommand( "punish" ).setTabCompleter( new TabComplete( "punish" ) );
         this.getCommand( "chatslow" ).setExecutor( new Chatslow() );
         this.getCommand( "chatslow" ).setTabCompleter( new TabComplete( "chatslow" ) );
+    }
 
+    private void registerEvents() {
         this.getServer().getPluginManager().registerEvents( new JoinListener(), this );
         this.getServer().getPluginManager().registerEvents( new ChatListener(), this );
         this.getServer().getPluginManager().registerEvents( new LeaveListener(), this );
         this.getServer().getPluginManager().registerEvents( new SignChangeListener(), this );
         this.getServer().getPluginManager().registerEvents( new GUIEventManager(), this );
         this.getServer().getPluginManager().registerEvents( new CommandListener(), this );
-
-        ConfigUtils.getConfigManager().updateConfig();
-        PunishGUIUtils.getPunishGUIManager().updateConfig();
-    }
-
-    @Override
-    public void onDisable() {
-        Utils.getDatabase().close();
     }
 }
