@@ -148,7 +148,7 @@ public class WarnPunishGUI {
         if ( currentWarns >= maxWarnsBeforePunish ) {
             String punishmentType = PunishGUIUtils.getStr( "warn." + punClickedReason + ".punishment" );
             String punishmentLength = Time.getScaledTime( PunishGUIUtils.getStr( "warn." + punClickedReason + ".starting-time" ),
-                    currentWarns - maxWarnsBeforePunish );
+                    ( 1 + currentWarns - maxWarnsBeforePunish ) );
             if ( punishmentType.equalsIgnoreCase( "kick" ) ||
                     punishmentType.equalsIgnoreCase( "warn" ) ) { punishmentLength = ""; }
 
