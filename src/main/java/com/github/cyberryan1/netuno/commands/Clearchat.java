@@ -15,7 +15,7 @@ import java.util.List;
 public class Clearchat extends BaseCommand {
 
     public Clearchat() {
-        super( "clearchat", ConfigUtils.getStr( "clearchat.perm" ),  ConfigUtils.getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&uclearchat" ))
+        super( "clearchat", ConfigUtils.getStr( "clearchat.perm" ),  ConfigUtils.getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&uclearchat" ) );
     }
 
     @Override
