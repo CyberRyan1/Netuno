@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.managers.ChatslowManager;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
@@ -11,9 +12,44 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class Chatslow implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class Chatslow extends BaseCommand {
 
     private final Database DATA = Utils.getDatabase();
+
+    public Chatslow() {
+        super( "chatslow", ConfigUtils.getStr( "chatslow.perm" ), ConfigUtils.getColoredStr( "general.perm-denied-msg" ), null );
+    }
+
+    @Override
+    public List<String> onTabComplete( CommandSender sender, Command command, String label, String[] args ) {
+        if ( permissionsAllowed( sender ) ) {
+            if ( args.length == 1 ) {
+                if ( args[0].length() == 0 ) {
+                    List<String> toReturn = new ArrayList<>();
+                    Collections.addAll( toReturn, "get", "set" );
+                    return toReturn;
+                }
+
+                if ( "GET".startsWith( args[0].toUpperCase() ) ) {
+                    List<String> toReturn = new ArrayList<>();
+                    toReturn.add( "get" );
+                    return toReturn;
+                }
+
+                else if ( "SET".startsWith( args[0].toUpperCase() ) ) {
+                    List<String> toReturn = new ArrayList<>();
+                    toReturn.add( "set" );
+                    return toReturn;
+                }
+            }
+        }
+
+        return null;
+    }
 
     @Override
     // /chatslow get
