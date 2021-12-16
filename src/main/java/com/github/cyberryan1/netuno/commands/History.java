@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.guis.history.HistoryEditGUI;
@@ -14,11 +15,61 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
-public class History implements CommandExecutor {
+public class History extends BaseCommand {
 
     private final Database DATA = Utils.getDatabase();
+
+    public History() {
+        super( "history", ConfigUtils.getStr( "history.perm" ), ConfigUtils.getColoredStr( "general.perm-denied-msg" ), null );
+    }
+
+
+    @Override
+    public List<String> onTabComplete( CommandSender sender, Command command, String label, String[] args ) {
+        if ( permissionsAllowed( sender ) ) {
+            if ( args.length <= 1 ) {
+                if ( args[0].length() == 0 ) {
+                    List<String> toReturn = new ArrayList<>();
+                    Collections.addAll( toReturn, "list", "edit", "reset" );
+                    return toReturn;
+                }
+
+                else if ( "LIST".startsWith( args[0].toUpperCase() ) ) {
+                    List<String> toReturn = new ArrayList<>();
+                    toReturn.add( "list" );
+                    return toReturn;
+                }
+
+                else if ( "EDIT".startsWith( args[0].toUpperCase() ) ) {
+                    List<String> toReturn = new ArrayList<>();
+                    toReturn.add( "edit" );
+                    return toReturn;
+                }
+
+                else if ( "RESET".startsWith( args[0].toUpperCase() ) ) {
+                    List<String> toReturn = new ArrayList<>();
+                    toReturn.add( "reset" );
+                    return toReturn;
+                }
+            }
+
+            else if ( args.length == 2 && args[0].equalsIgnoreCase( "edit" ) == false ) {
+                if ( args[1].length() == 0 ) {
+                    return getAllOnlinePlayerNames();
+                }
+
+                else {
+                    return matchOnlinePlayers( args[1] );
+                }
+            }
+        }
+
+        return null;
+    }
 
     @Override
     // /history list (player)
