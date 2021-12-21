@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
@@ -10,9 +11,34 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class Togglesigns implements CommandExecutor {
+import java.util.Collections;
+import java.util.List;
+
+public class Togglesigns extends BaseCommand {
 
     private final Database DATA = Utils.getDatabase();
+
+    public Togglesigns() {
+        super( "reports", ConfigUtils.getStr( "signs.notifs-perm" ), getColorizedStr( "&8/&ureports &y[player]" ) );
+    }
+
+
+    @Override
+    public List<String> onTabComplete( CommandSender sender, Command command, String label, String[] args ) {
+        if ( permissionsAllowed( sender ) ) {
+            if ( args.length == 0 || args[0].length() == 0 ) {
+                return addAllToList( "enable", "disable" );
+            }
+            else if ( "ENABLE".startsWith( args[0].toUpperCase() ) ) {
+                return addAllToList( "enable" );
+            }
+            else if ( "DISABLE".startsWith( args[0].toUpperCase() ) ) {
+                return addAllToList( "disable" );
+            }
+        }
+
+        return Collections.emptyList();
+    }
 
     @Override
     // /togglesigns
