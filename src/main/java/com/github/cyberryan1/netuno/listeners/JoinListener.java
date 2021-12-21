@@ -9,6 +9,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,6 +18,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class JoinListener implements Listener {
 
@@ -40,6 +44,7 @@ public class JoinListener implements Listener {
 
         // ipban handling
         ArrayList<IPPunishment> allIPPunishments = DATA.getIPPunishment( event.getPlayer().getUniqueId().toString() );
+        Bukkit.broadcastMessage( "allIPPunishments.size() == " + allIPPunishments.size() ); // ! debug
         boolean hadActiveIPBan = false;
         for ( IPPunishment pun : allIPPunishments ) {
             if ( pun.getActive() && pun.getType().equalsIgnoreCase( "ipban" ) ) {
@@ -47,22 +52,26 @@ public class JoinListener implements Listener {
                 break;
             }
         }
+        Bukkit.broadcastMessage( "hadActiveIPBan == " + hadActiveIPBan ); // ! debug
 
-        ArrayList<IPPunishment> ipbanPunishments = DATA.getIPPunishment( event.getPlayer().getUniqueId().toString(), "ipban", true );
-        if ( ipbanPunishments.size() >= 1 ) {
-            event.setJoinMessage( null );
+        ArrayList<OfflinePlayer> accountsIpbanned = DATA.getPunishedAltsByType( event.getPlayer().getUniqueId().toString(), "ipban" );
+        if ( accountsIpbanned.size() >= 1 ) {
 
-            long highestExpire = ipbanPunishments.get( 0 ).getExpirationDate();
-            IPPunishment highest = ipbanPunishments.get( 0 );
-            for ( int index = 1; index < ipbanPunishments.size(); index++ ) {
-                if ( ipbanPunishments.get( index ).getExpirationDate() > highest.getExpirationDate() ) {
-                    highest = ipbanPunishments.get( index );
+            List<IPPunishment> ipbanPunishments = new ArrayList<>();
+            for ( OfflinePlayer account : accountsIpbanned ) {
+                for ( IPPunishment ippun : DATA.getIPPunishment( account.getUniqueId().toString(), "ipban", true ) ) {
+                    ipbanPunishments.add( ippun );
                 }
             }
 
-            event.setJoinMessage( null ); // disable the join message from sending
-            DisableQuitMsg.addPlayer( event.getPlayer() );
-            event.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables( ConfigUtils.getColoredStrFromList( "ipban.attempt" ), highest ) );
+            ipbanPunishments = ipbanPunishments.stream()
+                    .sorted( ( p1, p2 ) -> ( int ) (
+                            p1.getExpirationDate() - p2.getExpirationDate()
+                    ) )
+                    .collect( Collectors.toList() );
+
+            event.setJoinMessage( null ); // disable the join msg from sending
+            event.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables( ConfigUtils.getColoredStrFromList( "ipban.attempt" ), ipbanPunishments.get( 0 ) ) );
             return;
         }
 
