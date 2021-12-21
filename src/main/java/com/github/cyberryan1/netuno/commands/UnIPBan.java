@@ -2,6 +2,7 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.classes.IPPunishment;
+import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
@@ -45,7 +46,15 @@ public class UnIPBan extends BaseCommand {
 
             OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
             if ( target != null ) {
-                ArrayList<IPPunishment> punishments = DATA.getIPPunishment( target.getUniqueId().toString(), "ipban", true );
+
+                List<OfflinePlayer> punishedAccounts = DATA.getPunishedAltsByType( target.getUniqueId().toString(), "ipban" );
+                List<IPPunishment> punishments = new ArrayList<>();
+                for ( OfflinePlayer account : punishedAccounts ) {
+                    for ( IPPunishment ippun : DATA.getIPPunishment( account.getUniqueId().toString(), "ipban", true ) ) {
+                        punishments.add( ippun );
+                    }
+                }
+
                 if ( punishments.size() >= 1 ) {
                     for ( IPPunishment pun : punishments ) {
                         DATA.setIPPunishmentActive( pun.getID(), false );
