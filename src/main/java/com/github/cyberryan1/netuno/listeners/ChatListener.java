@@ -7,6 +7,7 @@ import com.github.cyberryan1.netuno.managers.MutechatManager;
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +15,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ChatListener implements Listener {
 
@@ -34,20 +37,21 @@ public class ChatListener implements Listener {
             }
         }
 
-        ArrayList<IPPunishment> ipmutePuns = DATA.getIPPunishment( event.getPlayer().getUniqueId().toString(), "ipmute", true );
-        if ( ipmutePuns.size() >= 1 ) {
-            event.setCancelled( true );
-
-            long highestExpire = ipmutePuns.get( 0 ).getExpirationDate();
-            Punishment highest = ipmutePuns.get( 0 );
-            for ( int index = 1; index < ipmutePuns.size(); index++ ) {
-                if ( ipmutePuns.get( index ).getExpirationDate() > highestExpire ) {
-                    highest = ipmutePuns.get( index );
-                    highestExpire = highest.getExpirationDate();
-                }
+        List<OfflinePlayer> accountsIpmuted = DATA.getPunishedAltsByType( event.getPlayer().getUniqueId().toString(), "ipmute" );
+        if ( accountsIpmuted.size() >= 1 ) {
+            List<IPPunishment> ipmutePunishments = new ArrayList<>();
+            for ( OfflinePlayer account : accountsIpmuted ) {
+                ipmutePunishments.addAll( DATA.getIPPunishment( account.getUniqueId().toString(), "ipmute", true ) );
             }
 
-            Utils.sendDeniedMsg( event.getPlayer(), highest );
+            ipmutePunishments = ipmutePunishments.stream()
+                    .sorted( ( p1, p2 ) -> ( int ) (
+                            p2.getExpirationDate() - p1.getExpirationDate()
+                    ) )
+                    .collect( Collectors.toList() );
+
+            event.setCancelled( true );
+            Utils.sendDeniedMsg( event.getPlayer(), ipmutePunishments.get( 0 ) );
             return;
         }
 
