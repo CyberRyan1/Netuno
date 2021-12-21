@@ -14,6 +14,7 @@ import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.PunishGUIUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -60,12 +61,12 @@ public final class Netuno extends JavaPlugin {
         punishGUIUtils = new PunishGUIUtils( punishGUIConfig );
         chatslowManager = new ChatslowManager();
 
-        registerSkript();
+        //registerSkript();
         registerCommands();
         registerEvents();
 
         ConfigUtils.getConfigManager().updateConfig();
-        PunishGUIUtils.getPunishGUIManager().updateConfig();
+        PunishGUIUtils.getPunishGUIManager().reloadConfig();
     }
 
     @Override
@@ -92,46 +93,75 @@ public final class Netuno extends JavaPlugin {
     }
 
     private void registerCommands() {
-        this.getCommand( "netuno" ).setExecutor( new NetunoCmd() );
-        this.getCommand( "netuno" ).setTabCompleter( new TabComplete( "netuno" ) );
-        this.getCommand( "kick" ).setExecutor( new Kick() );
-        this.getCommand( "kick" ).setTabCompleter( new TabComplete( "kick" ) );
+        NetunoCmd netunoCmd = new NetunoCmd();
+        this.getCommand( "netuno" ).setExecutor( netunoCmd );
+        this.getCommand( "netuno" ).setTabCompleter( netunoCmd );
+
+        Kick kick = new Kick();
+        this.getCommand( "kick" ).setExecutor( kick );
+        this.getCommand( "kick" ).setTabCompleter( kick );
+
         this.getCommand( "warn" ).setExecutor( new Warn() );
         this.getCommand( "warn" ).setTabCompleter( new TabComplete( "warn" ) );
-        this.getCommand( "mute" ).setExecutor( new Mute() );
-        this.getCommand( "mute" ).setTabCompleter( new TabComplete( "mute" ) );
+
+        Mute mute = new Mute();
+        this.getCommand( "mute" ).setExecutor( mute );
+        this.getCommand( "mute" ).setTabCompleter( mute );
+
         this.getCommand( "unmute" ).setExecutor( new Unmute() );
         this.getCommand( "unmute" ).setTabCompleter( new TabComplete( "unmute" ) );
-        this.getCommand( "ban" ).setExecutor( new Ban() );
-        this.getCommand( "ban" ).setTabCompleter( new TabComplete( "ban" ) );
+
+        Ban ban = new Ban();
+        this.getCommand( "ban" ).setExecutor( ban );
+        this.getCommand( "ban" ).setTabCompleter( ban );
+
         this.getCommand( "unban" ).setExecutor( new Unban() );
         this.getCommand( "unban" ).setTabCompleter( new TabComplete( "unban" ) );
-        this.getCommand( "ipinfo" ).setExecutor( new IPInfo() );
-        this.getCommand( "ipinfo" ).setTabCompleter( new TabComplete( "ipinfo" ) );
-        this.getCommand( "ipmute" ).setExecutor( new IPMute() );
-        this.getCommand( "ipmute" ).setTabCompleter( new TabComplete( "ipmute" ) );
+
+        IPInfo ipinfo = new IPInfo();
+        this.getCommand( "ipinfo" ).setExecutor( ipinfo );
+        this.getCommand( "ipinfo" ).setTabCompleter( ipinfo );
+
+        IPMute ipmute = new IPMute();
+        this.getCommand( "ipmute" ).setExecutor( ipmute );
+        this.getCommand( "ipmute" ).setTabCompleter( ipmute );
+
         this.getCommand( "unipmute" ).setExecutor( new UnIPMute() );
         this.getCommand( "unipmute" ).setTabCompleter( new TabComplete( "unipmute" ) );
-        this.getCommand( "ipban" ).setExecutor( new IPBan() );
-        this.getCommand( "ipban" ).setTabCompleter( new TabComplete( "ipban" ) );
+
+        IPBan ipban = new IPBan();
+        this.getCommand( "ipban" ).setExecutor( ipban );
+        this.getCommand( "ipban" ).setTabCompleter( ipban );
+
         this.getCommand( "unipban" ).setExecutor( new UnIPBan() );
         this.getCommand( "unipban" ).setTabCompleter( new TabComplete( "unipban" ) );
-        this.getCommand( "history" ).setExecutor( new History() );
-        this.getCommand( "history" ).setTabCompleter( new TabComplete( "history" ) );
+
+        History history = new History();
+        this.getCommand( "history" ).setExecutor( history );
+        this.getCommand( "history" ).setTabCompleter( history );
+
         this.getCommand( "togglesigns" ).setExecutor( new Togglesigns() );
         this.getCommand( "togglesigns" ).setTabCompleter( new TabComplete( "togglesigns" ) );
-        this.getCommand( "mutechat" ).setExecutor( new Mutechat() );
-        this.getCommand( "mutechat" ).setTabCompleter( new TabComplete( "mutechat" ) );
-        this.getCommand( "clearchat" ).setExecutor( new Clearchat() );
-        this.getCommand( "clearchat" ).setTabCompleter( new TabComplete( "clearchat" ) );
+
+        Mutechat mutechat = new Mutechat();
+        this.getCommand( "mutechat" ).setExecutor( mutechat );
+        this.getCommand( "mutechat" ).setTabCompleter( mutechat );
+
+        Clearchat clearchat = new Clearchat();
+        this.getCommand( "clearchat" ).setExecutor( clearchat );
+
         this.getCommand( "reports" ).setExecutor( new Reports() );
         this.getCommand( "reports" ).setTabCompleter( new TabComplete( "reports" ) );
+
         this.getCommand( "report" ).setExecutor( new Report() );
         this.getCommand( "report" ).setTabCompleter( new TabComplete( "report" ) );
+
         this.getCommand( "punish" ).setExecutor( new Punish() );
         this.getCommand( "punish" ).setTabCompleter( new TabComplete( "punish" ) );
-        this.getCommand( "chatslow" ).setExecutor( new Chatslow() );
-        this.getCommand( "chatslow" ).setTabCompleter( new TabComplete( "chatslow" ) );
+
+        Chatslow chatslow = new Chatslow();
+        this.getCommand( "chatslow" ).setExecutor( chatslow );
+        this.getCommand( "chatslow" ).setTabCompleter( chatslow );
     }
 
     private void registerEvents() {
