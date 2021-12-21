@@ -11,6 +11,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class BaseCommand implements CommandExecutor, TabCompleter {
@@ -52,6 +53,13 @@ public abstract class BaseCommand implements CommandExecutor, TabCompleter {
             }
         }
 
+        return toReturn;
+    }
+
+    // returns an List<String> of all the strings inputted
+    public static List<String> addAllToList( String ... strings ) {
+        List<String> toReturn = new ArrayList<String>();
+        Collections.addAll( toReturn, strings );
         return toReturn;
     }
 
