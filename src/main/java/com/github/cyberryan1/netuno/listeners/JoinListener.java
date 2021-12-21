@@ -44,7 +44,6 @@ public class JoinListener implements Listener {
 
         // ipban handling
         ArrayList<IPPunishment> allIPPunishments = DATA.getIPPunishment( event.getPlayer().getUniqueId().toString() );
-        Bukkit.broadcastMessage( "allIPPunishments.size() == " + allIPPunishments.size() ); // ! debug
         boolean hadActiveIPBan = false;
         for ( IPPunishment pun : allIPPunishments ) {
             if ( pun.getActive() && pun.getType().equalsIgnoreCase( "ipban" ) ) {
@@ -52,7 +51,6 @@ public class JoinListener implements Listener {
                 break;
             }
         }
-        Bukkit.broadcastMessage( "hadActiveIPBan == " + hadActiveIPBan ); // ! debug
 
         ArrayList<OfflinePlayer> accountsIpbanned = DATA.getPunishedAltsByType( event.getPlayer().getUniqueId().toString(), "ipban" );
         if ( accountsIpbanned.size() >= 1 ) {
