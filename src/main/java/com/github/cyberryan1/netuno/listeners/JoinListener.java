@@ -57,9 +57,7 @@ public class JoinListener implements Listener {
 
             List<IPPunishment> ipbanPunishments = new ArrayList<>();
             for ( OfflinePlayer account : accountsIpbanned ) {
-                for ( IPPunishment ippun : DATA.getIPPunishment( account.getUniqueId().toString(), "ipban", true ) ) {
-                    ipbanPunishments.add( ippun );
-                }
+                ipbanPunishments.addAll( DATA.getIPPunishment( account.getUniqueId().toString(), "ipban", true ) );
             }
 
             ipbanPunishments = ipbanPunishments.stream()
