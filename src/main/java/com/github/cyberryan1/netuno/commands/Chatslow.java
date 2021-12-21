@@ -48,7 +48,7 @@ public class Chatslow extends BaseCommand {
             }
         }
 
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

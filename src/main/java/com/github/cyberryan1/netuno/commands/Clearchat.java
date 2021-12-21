@@ -10,6 +10,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Clearchat extends BaseCommand {
@@ -20,7 +21,7 @@ public class Clearchat extends BaseCommand {
 
     @Override
     public List<String> onTabComplete( CommandSender sender, Command command, String label, String[] args ) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

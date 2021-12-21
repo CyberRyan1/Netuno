@@ -68,7 +68,7 @@ public class History extends BaseCommand {
             }
         }
 
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

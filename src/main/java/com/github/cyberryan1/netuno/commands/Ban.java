@@ -38,7 +38,7 @@ public class Ban extends BaseCommand {
             }
         }
 
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
