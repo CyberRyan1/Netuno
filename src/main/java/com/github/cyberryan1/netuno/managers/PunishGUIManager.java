@@ -1,14 +1,12 @@
 package com.github.cyberryan1.netuno.managers;
 
 import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.netuno.utils.Utils;
 import com.tchristofferson.configupdater.ConfigUpdater;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Collections;
 
 public class PunishGUIManager {
@@ -47,7 +45,9 @@ public class PunishGUIManager {
     public void saveConfig() {
         if ( config == null || configFile == null ) { return; }
 
-        plugin.saveConfig();
+        try {
+            config.save( configFile );
+        } catch ( IOException io ) { io.printStackTrace(); }
     }
 
     // Saves the default config
