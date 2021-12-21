@@ -100,20 +100,19 @@ public class JoinListener implements Listener {
             }
         }
 
-        ArrayList<Punishment> banPunishments = DATA.getPunishment( event.getPlayer().getUniqueId().toString(), "ban", true );
+        List<Punishment> banPunishments = DATA.getPunishment( event.getPlayer().getUniqueId().toString(), "ban", true );
         if ( banPunishments.size() >= 1 ) {
             event.setJoinMessage( null );
 
-            Punishment highest = banPunishments.get( 0 );
-            for ( int index = 1; index < banPunishments.size(); index++ ) {
-                if ( banPunishments.get( index ).getExpirationDate() > highest.getExpirationDate() ) {
-                    highest = banPunishments.get( index );
-                }
-            }
+            banPunishments = banPunishments.stream()
+                    .sorted( ( p1, p2 ) -> ( int ) (
+                            p2.getExpirationDate() - p1.getExpirationDate()
+                    ) )
+                    .collect( Collectors.toList() );
 
             event.setJoinMessage( null ); // disable the join message from sending
             DisableQuitMsg.addPlayer( event.getPlayer() );
-            event.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables( ConfigUtils.getColoredStrFromList( "ban.attempt" ), highest ) );
+            event.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables( ConfigUtils.getColoredStrFromList( "ban.attempt" ), banPunishments.get( 0 ) ) );
             return;
         }
 
