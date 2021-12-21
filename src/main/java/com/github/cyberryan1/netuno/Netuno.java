@@ -61,7 +61,7 @@ public final class Netuno extends JavaPlugin {
         punishGUIUtils = new PunishGUIUtils( punishGUIConfig );
         chatslowManager = new ChatslowManager();
 
-        //registerSkript();
+        registerSkript();
         registerCommands();
         registerEvents();
 
@@ -101,22 +101,25 @@ public final class Netuno extends JavaPlugin {
         this.getCommand( "kick" ).setExecutor( kick );
         this.getCommand( "kick" ).setTabCompleter( kick );
 
-        this.getCommand( "warn" ).setExecutor( new Warn() );
-        this.getCommand( "warn" ).setTabCompleter( new TabComplete( "warn" ) );
+        Warn warn = new Warn();
+        this.getCommand( "warn" ).setExecutor( warn );
+        this.getCommand( "warn" ).setTabCompleter( warn );
 
         Mute mute = new Mute();
         this.getCommand( "mute" ).setExecutor( mute );
         this.getCommand( "mute" ).setTabCompleter( mute );
 
-        this.getCommand( "unmute" ).setExecutor( new Unmute() );
-        this.getCommand( "unmute" ).setTabCompleter( new TabComplete( "unmute" ) );
+        Unmute unmute = new Unmute();
+        this.getCommand( "unmute" ).setExecutor( unmute );
+        this.getCommand( "unmute" ).setTabCompleter( unmute );
 
         Ban ban = new Ban();
         this.getCommand( "ban" ).setExecutor( ban );
         this.getCommand( "ban" ).setTabCompleter( ban );
 
-        this.getCommand( "unban" ).setExecutor( new Unban() );
-        this.getCommand( "unban" ).setTabCompleter( new TabComplete( "unban" ) );
+        Unban unban = new Unban();
+        this.getCommand( "unban" ).setExecutor( unban );
+        this.getCommand( "unban" ).setTabCompleter( unban );
 
         IPInfo ipinfo = new IPInfo();
         this.getCommand( "ipinfo" ).setExecutor( ipinfo );
@@ -126,22 +129,25 @@ public final class Netuno extends JavaPlugin {
         this.getCommand( "ipmute" ).setExecutor( ipmute );
         this.getCommand( "ipmute" ).setTabCompleter( ipmute );
 
-        this.getCommand( "unipmute" ).setExecutor( new UnIPMute() );
-        this.getCommand( "unipmute" ).setTabCompleter( new TabComplete( "unipmute" ) );
+        UnIPMute unipmute = new UnIPMute();
+        this.getCommand( "unipmute" ).setExecutor( unipmute );
+        this.getCommand( "unipmute" ).setTabCompleter( unipmute );
 
         IPBan ipban = new IPBan();
         this.getCommand( "ipban" ).setExecutor( ipban );
         this.getCommand( "ipban" ).setTabCompleter( ipban );
 
-        this.getCommand( "unipban" ).setExecutor( new UnIPBan() );
-        this.getCommand( "unipban" ).setTabCompleter( new TabComplete( "unipban" ) );
+        UnIPBan unipban = new UnIPBan();
+        this.getCommand( "unipban" ).setExecutor( unipban );
+        this.getCommand( "unipban" ).setTabCompleter( unipban );
 
         History history = new History();
         this.getCommand( "history" ).setExecutor( history );
         this.getCommand( "history" ).setTabCompleter( history );
 
-        this.getCommand( "togglesigns" ).setExecutor( new Togglesigns() );
-        this.getCommand( "togglesigns" ).setTabCompleter( new TabComplete( "togglesigns" ) );
+        Togglesigns togglesigns = new Togglesigns();
+        this.getCommand( "togglesigns" ).setExecutor( togglesigns );
+        this.getCommand( "togglesigns" ).setTabCompleter( togglesigns );
 
         Mutechat mutechat = new Mutechat();
         this.getCommand( "mutechat" ).setExecutor( mutechat );
@@ -150,14 +156,17 @@ public final class Netuno extends JavaPlugin {
         Clearchat clearchat = new Clearchat();
         this.getCommand( "clearchat" ).setExecutor( clearchat );
 
-        this.getCommand( "reports" ).setExecutor( new Reports() );
-        this.getCommand( "reports" ).setTabCompleter( new TabComplete( "reports" ) );
+        Reports reports = new Reports();
+        this.getCommand( "reports" ).setExecutor( reports );
+        this.getCommand( "reports" ).setTabCompleter( reports );
 
-        this.getCommand( "report" ).setExecutor( new Report() );
-        this.getCommand( "report" ).setTabCompleter( new TabComplete( "report" ) );
+        Report report = new Report();
+        this.getCommand( "report" ).setExecutor( report );
+        this.getCommand( "report" ).setTabCompleter( report );
 
-        this.getCommand( "punish" ).setExecutor( new Punish() );
-        this.getCommand( "punish" ).setTabCompleter( new TabComplete( "punish" ) );
+        Punish punish = new Punish();
+        this.getCommand( "punish" ).setExecutor( punish );
+        this.getCommand( "punish" ).setTabCompleter( punish );
 
         Chatslow chatslow = new Chatslow();
         this.getCommand( "chatslow" ).setExecutor( chatslow );
