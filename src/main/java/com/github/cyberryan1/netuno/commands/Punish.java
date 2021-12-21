@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.guis.punish.MainPunishGUI;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
@@ -12,7 +13,27 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class Punish implements CommandExecutor {
+import java.util.Collections;
+import java.util.List;
+
+public class Punish extends BaseCommand {
+
+    public Punish() {
+        super( "punish", ConfigUtils.getStr( "punish.perm" ), getColorizedStr( "&8/&upunish &y(player)") );
+    }
+
+    @Override
+    public List<String> onTabComplete( CommandSender sender, Command command, String label, String[] args ) {
+        if ( permissionsAllowed( sender ) ) {
+            if ( args.length == 0 || args[0].length() == 0 ) {
+                return getAllOnlinePlayerNames();
+            }
+            else if ( args.length == 1 ) {
+                return matchOnlinePlayers( args[0] );
+            }
+        }
+        return Collections.emptyList();
+    }
 
     @Override
     // /punish (player)
