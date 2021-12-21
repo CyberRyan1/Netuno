@@ -66,7 +66,7 @@ public class JoinListener implements Listener {
 
             ipbanPunishments = ipbanPunishments.stream()
                     .sorted( ( p1, p2 ) -> ( int ) (
-                            p1.getExpirationDate() - p2.getExpirationDate()
+                            p2.getExpirationDate() - p1.getExpirationDate()
                     ) )
                     .collect( Collectors.toList() );
 
