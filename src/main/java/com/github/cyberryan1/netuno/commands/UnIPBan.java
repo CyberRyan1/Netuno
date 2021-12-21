@@ -50,9 +50,7 @@ public class UnIPBan extends BaseCommand {
                 List<OfflinePlayer> punishedAccounts = DATA.getPunishedAltsByType( target.getUniqueId().toString(), "ipban" );
                 List<IPPunishment> punishments = new ArrayList<>();
                 for ( OfflinePlayer account : punishedAccounts ) {
-                    for ( IPPunishment ippun : DATA.getIPPunishment( account.getUniqueId().toString(), "ipban", true ) ) {
-                        punishments.add( ippun );
-                    }
+                    punishments.addAll( DATA.getIPPunishment( account.getUniqueId().toString(), "ipban", true ) );
                 }
 
                 if ( punishments.size() >= 1 ) {
