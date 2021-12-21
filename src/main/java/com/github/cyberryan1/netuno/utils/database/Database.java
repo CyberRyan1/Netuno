@@ -489,17 +489,14 @@ public abstract class Database {
         if ( alts.size() == 0 ) { return toReturn; }
 
         for ( OfflinePlayer account : alts ) {
-            if ( account.getUniqueId().toString().equals( playerUUID ) == false ) {
+            if ( punType.equals( "mute" ) || punType.equals( "ban" ) ) {
+                ArrayList<Punishment> activePunishments = getPunishment( account.getUniqueId().toString(), punType, true );
+                if ( activePunishments.size() >= 1 ) { toReturn.add( account ); }
+            }
 
-                if ( punType.equals( "mute" ) || punType.equals( "ban" ) ) {
-                    ArrayList<Punishment> activePunishments = getPunishment( account.getUniqueId().toString(), punType, true );
-                    if ( activePunishments.size() >= 1 ) { toReturn.add( account ); }
-                }
-
-                else {
-                    ArrayList<IPPunishment> activePunishments = getIPPunishment( account.getUniqueId().toString(), punType, true );
-                    if ( activePunishments.size() >= 1 ) { toReturn.add( account ); }
-                }
+            else {
+                ArrayList<IPPunishment> activePunishments = getIPPunishment( account.getUniqueId().toString(), punType, true );
+                if ( activePunishments.size() >= 1 ) { toReturn.add( account ); }
             }
         }
 
