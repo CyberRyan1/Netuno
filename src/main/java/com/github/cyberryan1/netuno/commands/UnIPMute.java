@@ -54,7 +54,13 @@ public class UnIPMute extends BaseCommand {
 
             OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
             if ( target != null ) {
-                ArrayList<IPPunishment> punishments = DATA.getIPPunishment( target.getUniqueId().toString(), "ipmute", true );
+
+                List<OfflinePlayer> punishedAccounts = DATA.getPunishedAltsByType( target.getUniqueId().toString(), "ipmute" );
+                List<IPPunishment> punishments = new ArrayList<>();
+                for ( OfflinePlayer account : punishedAccounts ) {
+                    punishments.addAll( DATA.getIPPunishment( account.getUniqueId().toString(), "ipmute", true ) );
+                }
+
                 if ( punishments.size() >= 1 ) {
                     for ( IPPunishment pun : punishments ) {
                         DATA.setPunishmentActive( pun.getID(), false );
