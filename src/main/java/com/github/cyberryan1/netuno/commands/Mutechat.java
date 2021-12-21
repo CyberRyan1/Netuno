@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.managers.MutechatManager;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
@@ -12,10 +13,57 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class Mutechat implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class Mutechat extends BaseCommand {
 
     private final String CHAT_MUTE_ENABLE = ConfigUtils.getColoredStrFromList( "mutechat.enable-broadcast" );
     private final String CHAT_MUTE_DISABLE = ConfigUtils.getColoredStrFromList( "mutechat.disable-broadcast" );
+
+    public Mutechat() {
+        super( "mutechat", ConfigUtils.getStr( "mutechat.perm" ), ConfigUtils.getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&umutechat &y[toggle/enable/disable/status]" ) );
+    }
+
+    @Override
+    public List<String> onTabComplete( CommandSender sender, Command command, String label, String[] args ) {
+        if ( permissionsAllowed( sender ) ) {
+            if ( args.length <= 1 ) {
+                if ( args[0].length() == 0 ) {
+                    List<String> toReturn = new ArrayList<>();
+                    Collections.addAll( toReturn, "toggle", "enable", "disable", "status" );
+                    return toReturn;
+                }
+
+                else if ( "TOGGLE".startsWith( args[0].toUpperCase() ) ) {
+                    List<String> toReturn = new ArrayList<>();
+                    Collections.addAll( toReturn, "toggle" );
+                    return toReturn;
+                }
+
+                else if ( "ENABLE".startsWith( args[0].toUpperCase() ) ) {
+                    List<String> toReturn = new ArrayList<>();
+                    Collections.addAll( toReturn, "enable" );
+                    return toReturn;
+                }
+
+                else if ( "DISABLE".startsWith( args[0].toUpperCase() ) ) {
+                    List<String> toReturn = new ArrayList<>();
+                    Collections.addAll( toReturn, "disable" );
+                    return toReturn;
+                }
+
+                else if ( "STATUS".startsWith( args[0].toUpperCase() ) ) {
+                    List<String> toReturn = new ArrayList<>();
+                    Collections.addAll( toReturn, "status" );
+                    return toReturn;
+                }
+            }
+        }
+
+        return Collections.emptyList();
+    }
 
     @Override
     // /mutechat [toggle/enable/disable/status]

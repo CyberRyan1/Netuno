@@ -1,18 +1,45 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.classes.PrePunishment;
 import com.github.cyberryan1.netuno.utils.*;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class Mute implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class Mute extends BaseCommand {
 
     private final Database DATA = Utils.getDatabase();
+
+    public Mute() {
+        super( "mute", ConfigUtils.getStr( "mute.perm" ), ConfigUtils.getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&umute &y(player) (length/forever) (reason) [-s]" ) );
+    }
+
+    @Override
+    public List<String> onTabComplete( CommandSender sender, Command command, String label, String[] args ) {
+        if ( permissionsAllowed( sender ) ) {
+            if ( args.length == 0 ) {
+                return getAllOnlinePlayerNames();
+            }
+            else if ( args.length == 1 ) {
+                return matchOnlinePlayers( args[0] );
+            }
+            else if ( args.length == 2 ) {
+                List<String> toReturn = new ArrayList<>();
+                Collections.addAll( toReturn, "15m", "1h", "12h", "1d", "3d", "1w", "forever" );
+                return toReturn;
+            }
+        }
+
+        return Collections.emptyList();
+    }
 
     @Override
     // /mute (player) (length/forever) (reason)
