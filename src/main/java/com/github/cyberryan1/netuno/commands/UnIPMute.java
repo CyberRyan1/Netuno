@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.utils.*;
@@ -12,10 +13,29 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class UnIPMute implements CommandExecutor {
+public class UnIPMute extends BaseCommand {
 
     private final Database DATA = Utils.getDatabase();
+
+    public UnIPMute() {
+        super( "unipmute", ConfigUtils.getStr( "unipmute.perm" ), getColorizedStr( "&8/&uunipmute &y(player)" ) );
+    }
+
+    @Override
+    public List<String> onTabComplete( CommandSender sender, Command command, String label, String[] args ) {
+        if ( permissionsAllowed( sender ) ) {
+            if ( args.length == 0 || args[0].length() == 0 ) {
+                return getAllOnlinePlayerNames();
+            }
+            else if ( args.length == 1 ) {
+                return matchOnlinePlayers( args[0] );
+            }
+        }
+        return Collections.emptyList();
+    }
 
     @Override
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
