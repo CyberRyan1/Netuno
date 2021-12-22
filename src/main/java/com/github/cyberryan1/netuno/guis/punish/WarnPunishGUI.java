@@ -40,19 +40,19 @@ public class WarnPunishGUI {
         setReasons();
         setGuiSize();
 
-        this.guiName = PunishGUIUtils.getColoredStr( "warn.inventory_name" ).replace( "[TARGET]", target.getName() );
+        this.guiName = ConfigUtils.getColoredStr( "warn-gui.inventory_name" ).replace( "[TARGET]", target.getName() );
         this.gui = Bukkit.createInventory( null, this.guiSize, this.guiName );
         insertItems();
     }
 
     private void setReasons() {
-        this.reasons = PunishGUIUtils.getKeys( "warn." );
+        this.reasons = ConfigUtils.getKeys( "warn-gui." );
         for ( int index = reasons.size() - 1; index >= 0; index-- ) {
-            if ( reasons.get( index ).equals( "warn.inventory_name" ) || reasons.get( index ).equals( "warn.permission" ) ) {
+            if ( reasons.get( index ).equals( "warn-gui.inventory_name" ) || reasons.get( index ).equals( "warn-gui.permission" ) ) {
                 reasons.remove( index );
             }
             else {
-                reasons.set( index, reasons.get( index ).replace( "warn.", "" ) );
+                reasons.set( index, reasons.get( index ).replace( "warn-gui.", "" ) );
             }
         }
     }
@@ -74,18 +74,18 @@ public class WarnPunishGUI {
         for ( int row = 0; row < ( int ) Math.ceil( guiSize / 9.0 ); row++ ) {
             for ( int col = 0; col < 6; col++ ) {
                 if ( punIndex >= reasons.size() ) { break; }
-                String path = "warn." + reasons.get( punIndex );
-                Material material = Material.matchMaterial( PunishGUIUtils.getStr( path + ".material" ) );
+                String path = "warn-gui." + reasons.get( punIndex );
+                Material material = Material.matchMaterial( ConfigUtils.getStr( path + ".material" ) );
                 if ( material.isAir() == false ) {
                     int punCount = DATA.getGUIPunCount( target, "warn", reasons.get( punIndex ) );
-                    String name = PunishGUIUtils.getColoredStr( path + ".item-name" );
-                    name = PunishGUIUtils.replaceVariables( name, target, punCount );
+                    String name = ConfigUtils.getColoredStr( path + ".item-name" );
+                    name = ConfigUtils.replacePunGUIVariables( name, target, punCount );
                     ItemStack toAdd = GUIUtils.createItem( material, name );
 
-                    String lore = PunishGUIUtils.getColoredStr( path + ".item-lore" );
+                    String lore = ConfigUtils.getColoredStr( path + ".item-lore" );
                     if ( lore.equals( "" ) ) { items[guiIndex] = toAdd; }
                     else {
-                        lore = PunishGUIUtils.replaceVariables( lore, target, punCount );
+                        lore = ConfigUtils.replacePunGUIVariables( lore, target, punCount );
                         String split[] = lore.split( "\n" );
                         items[guiIndex] = GUIUtils.setItemLore( toAdd, split );
                     }
@@ -102,8 +102,8 @@ public class WarnPunishGUI {
     }
 
     public void openInventory() {
-        if ( PunishGUIUtils.getStr( "warn.permission" ).equals( "" ) == false &&
-                VaultUtils.hasPerms( staff, PunishGUIUtils.getStr( "warn.permission" ) ) == false ) {
+        if ( ConfigUtils.getStr( "warn-gui.permission" ).equals( "" ) == false &&
+                VaultUtils.hasPerms( staff, ConfigUtils.getStr( "warn-gui.permission" ) ) == false ) {
             CommandErrors.sendInvalidPerms( staff );
             return;
         }
@@ -138,7 +138,7 @@ public class WarnPunishGUI {
 
         int punClickedIndex = indexToSlot.indexOf( eventSlot );
         String punClickedReason = reasons.get( punClickedIndex );
-        int maxWarnsBeforePunish = PunishGUIUtils.getInt( "warn." + punClickedReason + ".punish-after" );
+        int maxWarnsBeforePunish = ConfigUtils.getInt( "warn-gui." + punClickedReason + ".punish-after" );
         int currentWarns = DATA.getGUIPunCount( target, "warn", punClickedReason );
 
         String punishmentReason = Utils.removeColorCodes( item.getItemMeta().getDisplayName() );
@@ -146,8 +146,8 @@ public class WarnPunishGUI {
         int punID = -1;
 
         if ( currentWarns >= maxWarnsBeforePunish ) {
-            String punishmentType = PunishGUIUtils.getStr( "warn." + punClickedReason + ".punishment" );
-            String punishmentLength = Time.getScaledTime( PunishGUIUtils.getStr( "warn." + punClickedReason + ".starting-time" ),
+            String punishmentType = ConfigUtils.getStr( "warn-gui." + punClickedReason + ".punishment" );
+            String punishmentLength = Time.getScaledTime( ConfigUtils.getStr( "warn-gui." + punClickedReason + ".starting-time" ),
                     ( 1 + currentWarns - maxWarnsBeforePunish ) );
             if ( punishmentType.equalsIgnoreCase( "kick" ) ||
                     punishmentType.equalsIgnoreCase( "warn" ) ) { punishmentLength = ""; }

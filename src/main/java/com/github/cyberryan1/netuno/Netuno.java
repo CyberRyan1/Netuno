@@ -7,14 +7,11 @@ import com.github.cyberryan1.netuno.listeners.*;
 import com.github.cyberryan1.netuno.managers.ChatslowManager;
 import com.github.cyberryan1.netuno.managers.ConfigManager;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
-import com.github.cyberryan1.netuno.managers.PunishGUIManager;
 import com.github.cyberryan1.netuno.skriptelements.conditions.RegisterConditions;
 import com.github.cyberryan1.netuno.skriptelements.expressions.RegisterExpressions;
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
-import com.github.cyberryan1.netuno.utils.PunishGUIUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -36,13 +33,11 @@ import java.io.IOException;
 public final class Netuno extends JavaPlugin {
 
     private ConfigManager config;
-    private PunishGUIManager punishGUIConfig;
     private ChatslowManager chatslowManager;
 
     private Utils util;
     private ConfigUtils configUtils;
     private VaultUtils vaultUtils;
-    private PunishGUIUtils punishGUIUtils;
 
     // Skript
     public SkriptAddon addon;
@@ -51,22 +46,19 @@ public final class Netuno extends JavaPlugin {
     @Override
     public void onEnable() {
         config = new ConfigManager( this );
-        punishGUIConfig = new PunishGUIManager( this );
 
         util = new Utils(this, config );
         util.setupDatabase();
 
         configUtils = new ConfigUtils( config );
         vaultUtils = new VaultUtils();
-        punishGUIUtils = new PunishGUIUtils( punishGUIConfig );
         chatslowManager = new ChatslowManager();
 
-        registerSkript();
+        //registerSkript();
         registerCommands();
         registerEvents();
 
         ConfigUtils.getConfigManager().updateConfig();
-        PunishGUIUtils.getPunishGUIManager().reloadConfig();
     }
 
     @Override

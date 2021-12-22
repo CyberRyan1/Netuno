@@ -6,7 +6,7 @@ import com.github.cyberryan1.netuno.guis.events.GUIEventType;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netuno.managers.StaffPlayerPunishManager;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.PunishGUIUtils;
+import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -20,8 +20,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.HashMap;
-
 public class MainPunishGUI {
 
     private final Inventory gui;
@@ -33,7 +31,7 @@ public class MainPunishGUI {
         this.staff = staff;
         this.target = target;
 
-        this.guiName = PunishGUIUtils.getColoredStr( "main.inventory-name" ).replace( "[TARGET]", target.getName() );
+        this.guiName = ConfigUtils.getColoredStr( "main-gui.inventory-name" ).replace( "[TARGET]", target.getName() );
         gui = Bukkit.createInventory( null, 45, guiName );
         insertItems();
     }
@@ -45,22 +43,22 @@ public class MainPunishGUI {
         ItemStack items[] = new ItemStack[45];
         for ( int index = 0; index < items.length; index++ ) { items[index] = GUIUtils.getBackgroundGlass(); }
 
-        if ( PunishGUIUtils.getInt( "main.skull.index" ) != -1 ) {
-            int index = PunishGUIUtils.getInt( "main.skull.index" );
+        if ( ConfigUtils.getInt( "main-gui.skull.index" ) != -1 ) {
+            int index = ConfigUtils.getInt( "main-gui.skull.index" );
             ItemStack skull = new ItemStack( Material.PLAYER_HEAD );
             SkullMeta meta = ( SkullMeta ) skull.getItemMeta();
             meta.setOwningPlayer( target );
             skull.setItemMeta( meta );
-            String name = PunishGUIUtils.getColoredStr( "main.skull.name" );
+            String name = ConfigUtils.getColoredStr( "main-gui.skull.name" );
             items[index] = GUIUtils.setItemName( skull, name.replace( "[TARGET]", target.getName() ) );
         }
 
         String buttons[] = { "history", "alts", "warn", "mute", "ban", "ipmute", "ipban" };
         for ( String bu : buttons ) {
-            int index = PunishGUIUtils.getInt( "main." + bu + ".index" );
+            int index = ConfigUtils.getInt( "main-gui." + bu + ".index" );
             if ( index >= 0 && index < items.length ) {
-                String name = PunishGUIUtils.getColoredStr( "main." + bu + ".name" );
-                ItemStack item = new ItemStack( Material.matchMaterial( PunishGUIUtils.getStr( "main." + bu + ".item" ) ) );
+                String name = ConfigUtils.getColoredStr( "main-gui." + bu + ".name" );
+                ItemStack item = new ItemStack( Material.matchMaterial( ConfigUtils.getStr( "main-gui." + bu + ".item" ) ) );
                 items[index] = GUIUtils.setItemName( item, name.replace( "[TARGET]", target.getName() ) );
             }
         }
@@ -93,35 +91,35 @@ public class MainPunishGUI {
         if ( item == null || item.getType().isAir() ) { return; }
         int eventSlot = event.getSlot();
 
-        if ( eventSlot == PunishGUIUtils.getInt( "main.history.index" ) ) {
+        if ( eventSlot == ConfigUtils.getInt( "main-gui.history.index" ) ) {
             staff.chat( "/history list " + target.getName() );
         }
 
-        else if ( eventSlot == PunishGUIUtils.getInt( "main.alts.index" ) ) {
+        else if ( eventSlot == ConfigUtils.getInt( "main-gui.alts.index" ) ) {
             staff.chat( "/ipinfo " + target.getName() );
         }
 
-        else if ( eventSlot == PunishGUIUtils.getInt( "main.warn.index" ) ) {
+        else if ( eventSlot == ConfigUtils.getInt( "main-gui.warn.index" ) ) {
             WarnPunishGUI gui = new WarnPunishGUI( staff, target );
             gui.openInventory();
         }
 
-        else if ( eventSlot == PunishGUIUtils.getInt( "main.mute.index" ) ) {
+        else if ( eventSlot == ConfigUtils.getInt( "main-gui.mute.index" ) ) {
             MutePunishGUI gui = new MutePunishGUI( staff, target );
             gui.openInventory();
         }
 
-        else if ( eventSlot == PunishGUIUtils.getInt( "main.ban.index" ) ) {
+        else if ( eventSlot == ConfigUtils.getInt( "main-gui.ban.index" ) ) {
             BanPunishGUI gui = new BanPunishGUI( staff, target );
             gui.openInventory();
         }
 
-        else if ( eventSlot == PunishGUIUtils.getInt( "main.ipmute.index" ) ) {
+        else if ( eventSlot == ConfigUtils.getInt( "main-gui.ipmute.index" ) ) {
             IPMutePunishGUI gui = new IPMutePunishGUI( staff, target );
             gui.openInventory();
         }
 
-        else if ( eventSlot == PunishGUIUtils.getInt( "main.ipban.index" ) ) {
+        else if ( eventSlot == ConfigUtils.getInt( "main-gui.ipban.index" ) ) {
             IPBanPunishGUI gui = new IPBanPunishGUI( staff, target );
             gui.openInventory();
         }

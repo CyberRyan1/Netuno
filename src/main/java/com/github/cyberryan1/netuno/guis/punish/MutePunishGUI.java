@@ -40,19 +40,19 @@ public class MutePunishGUI {
         setReasons();
         setGuiSize();
 
-        this.guiName = PunishGUIUtils.getColoredStr( "mute.inventory_name" ).replace( "[TARGET]", target.getName() );
+        this.guiName = ConfigUtils.getColoredStr( "mute-gui.inventory_name" ).replace( "[TARGET]", target.getName() );
         this.gui = Bukkit.createInventory( null, this.guiSize, this.guiName );
         insertItems();
     }
 
     private void setReasons() {
-        this.reasons = PunishGUIUtils.getKeys( "mute." );
+        this.reasons = ConfigUtils.getKeys( "mute-gui." );
         for ( int index = reasons.size() - 1; index >= 0; index-- ) {
-            if ( reasons.get( index ).equals( "mute.inventory_name" ) || reasons.get( index ).equals( "mute.permission" ) ) {
+            if ( reasons.get( index ).equals( "mute-gui.inventory_name" ) || reasons.get( index ).equals( "mute-gui.permission" ) ) {
                 reasons.remove( index );
             }
             else {
-                reasons.set( index, reasons.get( index ).replace( "mute.", "" ) );
+                reasons.set( index, reasons.get( index ).replace( "mute-gui.", "" ) );
             }
         }
     }
@@ -75,19 +75,19 @@ public class MutePunishGUI {
             for ( int col = 0; col < 6; col++ ) {
                 if ( punIndex >= reasons.size() ) { break; }
 
-                String path = "mute." + reasons.get( punIndex );
-                Material material = Material.matchMaterial( PunishGUIUtils.getStr( path + ".material" ) );
+                String path = "mute-gui." + reasons.get( punIndex );
+                Material material = Material.matchMaterial( ConfigUtils.getStr( path + ".material" ) );
                 if ( material.isAir() == false ) {
                     int punCount = DATA.getGUIPunCount( target, "mute", reasons.get( punIndex ) );
 
-                    String name = PunishGUIUtils.getColoredStr( path + ".item-name" );
-                    name = PunishGUIUtils.replaceVariables( name, target, punCount );
+                    String name = ConfigUtils.getColoredStr( path + ".item-name" );
+                    name = ConfigUtils.replacePunGUIVariables( name, target, punCount );
                     ItemStack toAdd = GUIUtils.createItem( material, name );
 
-                    String lore = PunishGUIUtils.getColoredStr( path + ".item-lore" );
+                    String lore = ConfigUtils.getColoredStr( path + ".item-lore" );
                     if ( lore.equals( "" ) ) { items[guiIndex] = toAdd; }
                     else {
-                        String split[] = PunishGUIUtils.replaceVariables( lore, target, punCount ).split("\n" );
+                        String split[] = ConfigUtils.replacePunGUIVariables( lore, target, punCount ).split("\n" );
                         items[guiIndex] = GUIUtils.setItemLore( toAdd, split );
                     }
                 }
@@ -103,8 +103,8 @@ public class MutePunishGUI {
     }
 
     public void openInventory() {
-        if ( PunishGUIUtils.getStr( "mute.permission" ).equals( "" ) == false &&
-                VaultUtils.hasPerms( staff, PunishGUIUtils.getStr( "mute.permission" ) ) == false ) {
+        if ( ConfigUtils.getStr( "mute-gui.permission" ).equals( "" ) == false &&
+                VaultUtils.hasPerms( staff, ConfigUtils.getStr( "mute-gui.permission" ) ) == false ) {
             CommandErrors.sendInvalidPerms( staff );
             return;
         }
@@ -144,7 +144,7 @@ public class MutePunishGUI {
 
         String punishmentReason = Utils.removeColorCodes( item.getItemMeta().getDisplayName() );
         String punishmentOffense = " (" + Utils.formatIntIntoAmountString( currentPuns + 1 ) + " Offense)";
-        String punishmentLength = Time.getScaledTime( PunishGUIUtils.getStr( "mute." + punClickedReason + ".starting-time" ), currentPuns + 1 );
+        String punishmentLength = Time.getScaledTime( ConfigUtils.getStr( "mute-gui." + punClickedReason + ".starting-time" ), currentPuns + 1 );
         staff.performCommand( "mute " + target.getName() + " " + punishmentLength + " " + punishmentReason + punishmentOffense );
 
         staff.closeInventory();

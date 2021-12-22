@@ -41,19 +41,19 @@ public class IPBanPunishGUI {
         setReasons();
         setGuiSize();
 
-        this.guiName = PunishGUIUtils.getColoredStr( "ipban.inventory_name" ).replace( "[TARGET]", target.getName() );
+        this.guiName = ConfigUtils.getColoredStr( "ipban-gui.inventory_name" ).replace( "[TARGET]", target.getName() );
         this.gui = Bukkit.createInventory( null, this.guiSize, this.guiName );
         insertItems();
     }
 
     private void setReasons() {
-        this.reasons = PunishGUIUtils.getKeys( "ipban." );
+        this.reasons = ConfigUtils.getKeys( "ipban-gui." );
         for ( int index = reasons.size() - 1; index >= 0; index-- ) {
-            if ( reasons.get( index ).equals( "ipban.inventory_name" ) || reasons.get( index ).equals( "ipban.permission" ) ) {
+            if ( reasons.get( index ).equals( "ipban-gui.inventory_name" ) || reasons.get( index ).equals( "ipban-gui.permission" ) ) {
                 reasons.remove( index );
             }
             else {
-                reasons.set( index, reasons.get( index ).replace( "ipban.", "" ) );
+                reasons.set( index, reasons.get( index ).replace( "ipban-gui.", "" ) );
             }
         }
     }
@@ -76,19 +76,19 @@ public class IPBanPunishGUI {
             for ( int col = 0; col < 6; col++ ) {
                 if ( punIndex >= reasons.size() ) { break; }
 
-                String path = "ipban." + reasons.get( punIndex );
-                Material material = Material.matchMaterial( PunishGUIUtils.getStr( path + ".material" ) );
+                String path = "ipban-gui." + reasons.get( punIndex );
+                Material material = Material.matchMaterial( ConfigUtils.getStr( path + ".material" ) );
                 if ( material.isAir() == false ) {
                     int punCount = DATA.getGUIPunCount( target, "ipban", reasons.get( punIndex ) );
 
-                    String name = PunishGUIUtils.getColoredStr( path + ".item-name" );
-                    name = PunishGUIUtils.replaceVariables( name, target, punCount );
+                    String name = ConfigUtils.getColoredStr( path + ".item-name" );
+                    name = ConfigUtils.replacePunGUIVariables( name, target, punCount );
                     ItemStack toAdd = GUIUtils.createItem( material, name );
 
-                    String lore = PunishGUIUtils.getColoredStr( path + ".item-lore" );
+                    String lore = ConfigUtils.getColoredStr( path + ".item-lore" );
                     if ( lore.equals( "" ) ) { items[guiIndex] = toAdd; }
                     else {
-                        String split[] = PunishGUIUtils.replaceVariables( lore, target, punCount ).split( "\n" );
+                        String split[] = ConfigUtils.replacePunGUIVariables( lore, target, punCount ).split( "\n" );
                         items[guiIndex] = GUIUtils.setItemLore( toAdd, split );
                     }
                 }
@@ -104,8 +104,8 @@ public class IPBanPunishGUI {
     }
 
     public void openInventory() {
-        if ( PunishGUIUtils.getStr( "ipban.permission" ).equals( "" ) == false &&
-                VaultUtils.hasPerms( staff, PunishGUIUtils.getStr( "ipban.permission" ) ) == false ) {
+        if ( ConfigUtils.getStr( "ipban-gui.permission" ).equals( "" ) == false &&
+                VaultUtils.hasPerms( staff, ConfigUtils.getStr( "ipban-gui.permission" ) ) == false ) {
             CommandErrors.sendInvalidPerms( staff );
             return;
         }
@@ -146,7 +146,7 @@ public class IPBanPunishGUI {
         String punishmentReason = Utils.removeColorCodes( item.getItemMeta().getDisplayName() );
         String punishmentOffense = " (" + Utils.formatIntIntoAmountString( currentPuns + 1 ) + " Offense)";
 
-        String punishmentLength = PunishGUIUtils.getStr( "ipban." + punClickedReason + ".starting-time" );
+        String punishmentLength = ConfigUtils.getStr( "ipban-gui." + punClickedReason + ".starting-time" );
         if ( punishmentLength.equals( "HIGHEST_MUTED_ALT" ) || punishmentLength.equals( "HIGHEST_BANNED_ALT" ) ) {
             String punType = "mute";
             if ( punishmentLength.equals( "HIGHEST_BANNED_ALT" ) ) { punType = "ban"; }

@@ -61,13 +61,13 @@ public class NetunoCmd extends BaseCommand {
                         ConfigUtils.getConfigManager().saveDefaultConfig();
                     }
 
-                    if ( PunishGUIUtils.getPunishGUIManager().getConfigFile().exists() == false || PunishGUIUtils.getPunishGUIManager().getConfigFile() == null ) {
-                        Utils.logInfo( "Found no punishgui file, recreating it..." );
-                        PunishGUIUtils.getPunishGUIManager().saveDefaultConfig();
-                    }
+                    //if ( PunishGUIUtils.getPunishGUIManager().getConfigFile().exists() == false || PunishGUIUtils.getPunishGUIManager().getConfigFile() == null ) {
+                    //    Utils.logInfo( "Found no punishgui file, recreating it..." );
+                        //PunishGUIUtils.getPunishGUIManager().saveDefaultConfig();
+                   // }
 
                     ConfigUtils.getConfigManager().reloadConfig();
-                    PunishGUIUtils.getPunishGUIManager().reloadConfig();
+                    //PunishGUIUtils.getPunishGUIManager().reloadConfig();
 
                     sender.sendMessage( Utils.getColored( "&7Successfully reloaded &6Netuno" ) );
                     Utils.logInfo( "Successfully reloaded Netuno and its files" );

@@ -41,19 +41,19 @@ public class IPMutePunishGUI {
         setReasons();
         setGuiSize();
 
-        this.guiName = PunishGUIUtils.getColoredStr( "ipmute.inventory_name" ).replace( "[TARGET]", target.getName() );
+        this.guiName = ConfigUtils.getColoredStr( "ipmute-gui.inventory_name" ).replace( "[TARGET]", target.getName() );
         this.gui = Bukkit.createInventory( null, this.guiSize, this.guiName );
         insertItems();
     }
 
     private void setReasons() {
-        this.reasons = PunishGUIUtils.getKeys( "ipmute." );
+        this.reasons = ConfigUtils.getKeys( "ipmute-gui." );
         for ( int index = reasons.size() - 1; index >= 0; index-- ) {
-            if ( reasons.get( index ).equals( "ipmute.inventory_name" ) || reasons.get( index ).equals( "ipmute.permission" ) ) {
+            if ( reasons.get( index ).equals( "ipmute-gui.inventory_name" ) || reasons.get( index ).equals( "ipmute-gui.permission" ) ) {
                 reasons.remove( index );
             }
             else {
-                reasons.set( index, reasons.get( index ).replace( "ipmute.", "" ) );
+                reasons.set( index, reasons.get( index ).replace( "ipmute-gui.", "" ) );
             }
         }
     }
@@ -76,19 +76,19 @@ public class IPMutePunishGUI {
             for ( int col = 0; col < 6; col++ ) {
                 if ( punIndex >= reasons.size() ) { break; }
 
-                String path = "ipmute." + reasons.get( punIndex );
-                Material material = Material.matchMaterial( PunishGUIUtils.getStr( path + ".material" ) );
+                String path = "ipmute-gui." + reasons.get( punIndex );
+                Material material = Material.matchMaterial( ConfigUtils.getStr( path + ".material" ) );
                 if ( material.isAir() == false ) {
                     int punCount = DATA.getGUIPunCount( target, "ipmute", reasons.get( punIndex ) );
 
-                    String name = PunishGUIUtils.getColoredStr( path + ".item-name" );
-                    name = PunishGUIUtils.replaceVariables( name, target, punCount );
+                    String name = ConfigUtils.getColoredStr( path + ".item-name" );
+                    name = ConfigUtils.replacePunGUIVariables( name, target, punCount );
                     ItemStack toAdd = GUIUtils.createItem( material, name );
 
-                    String lore = PunishGUIUtils.getColoredStr( path + ".item-lore" );
+                    String lore = ConfigUtils.getColoredStr( path + ".item-lore" );
                     if ( lore.equals( "" ) ) { items[guiIndex] = toAdd; }
                     else {
-                        String split[] = PunishGUIUtils.replaceVariables( lore, target, punCount ).split( "\n" );
+                        String split[] = ConfigUtils.replacePunGUIVariables( lore, target, punCount ).split( "\n" );
                         items[guiIndex] = GUIUtils.setItemLore( toAdd, split );
                     }
                 }
@@ -104,8 +104,8 @@ public class IPMutePunishGUI {
     }
 
     public void openInventory() {
-        if ( PunishGUIUtils.getStr( "ipmute.permission" ).equals( "" ) == false &&
-                VaultUtils.hasPerms( staff, PunishGUIUtils.getStr( "ipmute.permission" ) ) == false ) {
+        if ( ConfigUtils.getStr( "ipmute-gui.permission" ).equals( "" ) == false &&
+                VaultUtils.hasPerms( staff, ConfigUtils.getStr( "ipmute-gui.permission" ) ) == false ) {
             CommandErrors.sendInvalidPerms( staff );
             return;
         }
@@ -146,7 +146,7 @@ public class IPMutePunishGUI {
         String punishmentReason = Utils.removeColorCodes( item.getItemMeta().getDisplayName() );
         String punishmentOffense = " (" + Utils.formatIntIntoAmountString( currentPuns + 1 ) + " Offense)";
 
-        String punishmentLength = PunishGUIUtils.getStr( "ipmute." + punClickedReason + ".starting-time" );
+        String punishmentLength = ConfigUtils.getStr( "ipmute-gui." + punClickedReason + ".starting-time" );
         if ( punishmentLength.equals( "HIGHEST_MUTED_ALT" ) || punishmentLength.equals( "HIGHEST_BANNED_ALT" ) ) {
             ArrayList<OfflinePlayer> punishedAlts;
             String punType = "mute";
