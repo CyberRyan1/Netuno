@@ -20,6 +20,7 @@ public abstract class Database {
     Netuno plugin;
     public Connection conn;
 
+    //region FinalVariables
     public final String PUN_TABLE_NAME = "database";
     private final String PUN_TYPE_LIST = "(id,player,staff,type,date,length,reason,active)";
     private final String PUN_UNKNOWN_LIST = "(?,?,?,?,?,?,?,?)";
@@ -53,6 +54,8 @@ public abstract class Database {
     private final String OTHER_TYPE_LIST = "(key,value)";
     private final String OTHER_UNKNOWN_LIST = "(?,?)";
 
+    //endregion
+
     public Database( Netuno instance ) {
         plugin = instance;
     }
@@ -83,7 +86,7 @@ public abstract class Database {
 
     //
     // Punishments Database
-    //
+    //region Punishments
 
     // Returns the ID of the punishment, if needed
     public int addPunishment( Punishment pun ) {
@@ -262,9 +265,11 @@ public abstract class Database {
         return true;
     }
 
+    //endregion
+
     //
     // Notifs Database
-    //
+    //region Notifs
     public void addNotif( int punID, String playerUUID ) {
         PreparedStatement ps = null;
 
@@ -315,9 +320,11 @@ public abstract class Database {
         } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
     }
 
+    //endregion
+
     //
     // IP database
-    //
+    //region IP
     public void addIP( String playerUUID, String ip ) {
         int id = getNextIpID();
         PreparedStatement ps = null;
@@ -532,9 +539,11 @@ public abstract class Database {
         return toReturn;
     }
 
+    //endregion
+
     //
     // IP-Punishments database
-    //
+    //region IP-Punishments
     public int addIPPunishment( IPPunishment pun ) {
         PreparedStatement ps = null;
         int id = getNextIPPunId();
@@ -740,9 +749,11 @@ public abstract class Database {
         return toReturn;
     }
 
+    //endregion
+
     //
     // Works for both IP punishments and regular punishments
-    //
+    //region Both
 
     // Gets all punishments a player has
     public ArrayList<Punishment> getAllPunishments( String uuid ) {
@@ -855,9 +866,11 @@ public abstract class Database {
 
     public int getMostRecentPunishmentID() { return mostRecentPunID; }
 
+    //endregion
+
     //
     // Sign Notifications
-    //
+    //region Sign
     public void addPlayerNoSignNotifs( Player player ) {
         PreparedStatement ps = null;
 
@@ -881,9 +894,11 @@ public abstract class Database {
         } catch ( SQLException ex ) { Utils.logError( "Unable to remove sign notif from database", ex ); }
     }
 
+    //endregion
+
     //
     // Reports
-    //
+    //region Reports
     public int addReport( SingleReport report ) {
         int id = getReportsCount();
         PreparedStatement ps = null;
@@ -1058,9 +1073,11 @@ public abstract class Database {
         }
     }
 
+    //endregion
+
     //
     // Punish GUI Database
-    //
+    //region Punish
 
     public void addGUIPun( OfflinePlayer target, String type, String reason, int punID ) {
         PreparedStatement ps = null;
@@ -1135,9 +1152,11 @@ public abstract class Database {
         }
     }
 
+    //endregion
+
     //
     // Other Database
-    //
+    //region Other
 
     public void addOther( String key, String value ) {
         PreparedStatement ps = null;
@@ -1217,4 +1236,6 @@ public abstract class Database {
 
         return result;
     }
+
+    //endregion
 }
