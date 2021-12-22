@@ -4,6 +4,7 @@ import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.guis.events.GUIEventType;
+import com.github.cyberryan1.netuno.guis.history.HistoryListGUI;
 import com.github.cyberryan1.netuno.guis.utils.SortBy;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
@@ -231,7 +232,22 @@ public class AltsListGUI implements Listener {
         ItemStack clicked = event.getCurrentItem();
         if ( clicked == null || clicked.getType().isAir() ) { return; }
 
-        if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&gPrevious Page" ) ) ) {
+        if ( clicked.getItemMeta().getLore() != null && clicked.getItemMeta().getLore().size() > 0 ) {
+            staff.closeInventory();
+            String playerName = clicked.getItemMeta().getDisplayName().replace( Utils.getColored( "&c" ), "" );
+            OfflinePlayer target = Bukkit.getOfflinePlayer( playerName );
+            if ( target != null ) {
+                HistoryListGUI gui = new HistoryListGUI( target, staff, 1 );
+                gui.openInventory( staff );
+                staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+            }
+
+            else {
+                CommandErrors.sendPlayerNotFound( staff, playerName );
+            }
+        }
+
+        else if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&gPrevious Page" ) ) ) {
             AltsListGUI newGUI = new AltsListGUI( target, staff, page - 1 );
             newGUI.openInventory( staff );
             staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
