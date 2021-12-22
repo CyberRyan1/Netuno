@@ -60,6 +60,18 @@ public class Ban extends BaseCommand {
             if ( Time.isAllowableLength( args[1] ) ) {
                 OfflinePlayer target = Bukkit.getServer().getOfflinePlayer( args[0] );
                 if ( target != null ) {
+
+                    if ( ConfigUtils.getBool( "ban.max-time-enable" ) ) {
+                        long maxBanLength = Time.getTimestampFromLength( ConfigUtils.getStr( "ban.max-time-length" ) );
+                        long banLength = Time.getTimestampFromLength( args[1] );
+                        if ( maxBanLength < banLength ) {
+                            if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "ban.max-time-bypass" ) ) == false ) {
+                                CommandErrors.sendBanLengthTooLarge( sender );
+                                return true;
+                            }
+                        }
+                    }
+
                     PrePunishment pun = new PrePunishment(
                             target,
                             "Ban",

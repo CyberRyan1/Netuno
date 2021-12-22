@@ -155,6 +155,16 @@ ban:
   broadcast:
     - " &6[TARGET] &7has been &6banned &8[&7[LENGTH]&8]"
     - " &6Reason: &7[REASON]"
+  # Whether a player without a certain permission can't ban past a certain amount of time
+  # This only applies for the /ban command
+  max-time-enable: false
+  # What the maximum time a player without a certain permission (defined below) can ban for
+  # For example, if you set this to two days, players without the bypass permission that's defined below can only ban for up to two days
+  # Set this in the format of "2d" or "30m" or something like that format
+  # Only works if max-time-enable is true
+  max-time-length: "2d"
+  # The permission needed to ban for longer than the max-time-length, as defined above
+  max-time-bypass: "server.maxtime.bypass"
   staff-broadcast:
     - ""
     - " &6[TARGET] &7has been &6banned &8[&7[LENGTH]&8]"

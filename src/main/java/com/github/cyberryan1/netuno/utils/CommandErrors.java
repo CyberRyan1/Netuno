@@ -159,4 +159,8 @@ public class CommandErrors {
     public static void sendTargetHasNoPunishedAlts( CommandSender sender, String targetName ) {
         sender.sendMessage( Utils.getColored( "&g" + targetName + " &hhas no punished alts" ) );
     }
+
+    public static void sendBanLengthTooLarge( CommandSender sender ) {
+        sender.sendMessage( Utils.getColored( "&hYou can only ban for a maximum of " + Time.getFormattedLength( ConfigUtils.getStr( "ban.max-time-length" ) ) ) );
+    }
 }

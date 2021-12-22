@@ -148,6 +148,19 @@ public class BanPunishGUI {
         if ( ConfigUtils.getBool( "ban-gui." + punClickedReason + ".autoscale" ) ) {
             punishmentLength = Time.getScaledTime( ConfigUtils.getStr( "ban-gui." + punClickedReason + ".starting-time" ), currentPuns + 1 );
         }
+
+        if ( ConfigUtils.getBool( "ban.max-time-enable" ) ) {
+            long maxBanLength = Time.getTimestampFromLength( ConfigUtils.getStr( "ban.max-time-length" ) );
+            long banLength = Time.getTimestampFromLength( punishmentLength );
+            if ( maxBanLength < banLength ) {
+                if ( VaultUtils.hasPerms( staff, ConfigUtils.getStr( "ban.max-time-bypass" ) ) == false ) {
+                    CommandErrors.sendBanLengthTooLarge( staff );
+                    staff.closeInventory();
+                    return;
+                }
+            }
+        }
+
         staff.performCommand( "ban " + target.getName() + " " + punishmentLength + " " + punishmentReason + punishmentOffense );
 
         staff.closeInventory();
