@@ -58,7 +58,7 @@ public class IPInfo extends BaseCommand {
 
             OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
             // want the target to have joined before
-            if ( target.hasPlayedBefore() ) {
+            if ( target.hasPlayedBefore() || target.isOnline() ) {
                 if ( VaultUtils.hasPerms( target, ConfigUtils.getStr( "ipinfo.exempt-perm" ) )
                         && VaultUtils.hasPerms( staff, ConfigUtils.getStr( "general.all-perms" ) ) == false ) {
                     CommandErrors.sendPlayerExempt( staff, target.getName() );
