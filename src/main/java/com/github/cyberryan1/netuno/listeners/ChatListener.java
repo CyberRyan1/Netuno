@@ -71,10 +71,6 @@ public class ChatListener implements Listener {
             event.setCancelled( true );
 
             Collections.sort( mutePuns );
-            for ( Punishment pun : mutePuns ) {
-                Bukkit.broadcastMessage( pun.toString() ); // ! debug
-            }
-
 
             Utils.sendDeniedMsg( event.getPlayer(), mutePuns.get( 0 ) );
             return;
