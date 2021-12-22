@@ -60,11 +60,7 @@ public class JoinListener implements Listener {
                 ipbanPunishments.addAll( DATA.getIPPunishment( account.getUniqueId().toString(), "ipban", true ) );
             }
 
-            ipbanPunishments = ipbanPunishments.stream()
-                    .sorted( ( p1, p2 ) -> ( int ) (
-                            p2.getExpirationDate() - p1.getExpirationDate()
-                    ) )
-                    .collect( Collectors.toList() );
+            Collections.sort( ipbanPunishments );
 
             event.setJoinMessage( null ); // disable the join msg from sending
             event.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables( ConfigUtils.getColoredStrFromList( "ipban.attempt" ), ipbanPunishments.get( 0 ) ) );
@@ -100,11 +96,7 @@ public class JoinListener implements Listener {
         if ( banPunishments.size() >= 1 ) {
             event.setJoinMessage( null );
 
-            banPunishments = banPunishments.stream()
-                    .sorted( ( p1, p2 ) -> ( int ) (
-                            p2.getExpirationDate() - p1.getExpirationDate()
-                    ) )
-                    .collect( Collectors.toList() );
+            Collections.sort( banPunishments );
 
             event.setJoinMessage( null ); // disable the join message from sending
             DisableQuitMsg.addPlayer( event.getPlayer() );
