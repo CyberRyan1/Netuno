@@ -54,7 +54,7 @@ public final class Netuno extends JavaPlugin {
         vaultUtils = new VaultUtils();
         chatslowManager = new ChatslowManager();
 
-        //registerSkript();
+        registerSkript();
         registerCommands();
         registerEvents();
 
