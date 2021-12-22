@@ -147,7 +147,8 @@ public class IPMutePunishGUI {
         String punishmentOffense = " (" + Utils.formatIntIntoAmountString( currentPuns + 1 ) + " Offense)";
 
         String punishmentLength = ConfigUtils.getStr( "ipmute-gui." + punClickedReason + ".starting-time" );
-        if ( punishmentLength.equals( "HIGHEST_MUTED_ALT" ) || punishmentLength.equals( "HIGHEST_BANNED_ALT" ) ) {
+        if ( ( ConfigUtils.getBool( "ipmute-gui." + punClickedReason + ".autoscale" ) ) &&
+                ( punishmentLength.equals( "HIGHEST_MUTED_ALT" ) || punishmentLength.equals( "HIGHEST_BANNED_ALT" ) ) ) {
             ArrayList<OfflinePlayer> punishedAlts;
             String punType = "mute";
             if ( punishmentLength.equals( "HIGHEST_BANNED_ALT" ) ) { punType = "ban"; }
@@ -172,7 +173,7 @@ public class IPMutePunishGUI {
             punishmentLength = Time.getUnformattedLengthFromTimestamp( highest.getLength() );
         }
 
-        else {
+        else if ( ( ConfigUtils.getBool( "ipmute-gui." + punClickedReason + ".autoscale" ) ) ){
             punishmentLength = Time.getScaledTime( punishmentLength, currentPuns + 1 );
         }
 

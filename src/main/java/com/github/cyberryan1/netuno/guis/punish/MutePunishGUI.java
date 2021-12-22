@@ -144,7 +144,10 @@ public class MutePunishGUI {
 
         String punishmentReason = Utils.removeColorCodes( item.getItemMeta().getDisplayName() );
         String punishmentOffense = " (" + Utils.formatIntIntoAmountString( currentPuns + 1 ) + " Offense)";
-        String punishmentLength = Time.getScaledTime( ConfigUtils.getStr( "mute-gui." + punClickedReason + ".starting-time" ), currentPuns + 1 );
+        String punishmentLength = ConfigUtils.getStr( "mute-gui." + punClickedReason + ".starting-time" );
+        if ( ConfigUtils.getBool( "mute-gui." + punClickedReason + ".autoscale" ) ) {
+            punishmentLength = Time.getScaledTime( ConfigUtils.getStr( "mute-gui." + punClickedReason + ".starting-time" ), currentPuns + 1 );
+        }
         staff.performCommand( "mute " + target.getName() + " " + punishmentLength + " " + punishmentReason + punishmentOffense );
 
         staff.closeInventory();

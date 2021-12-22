@@ -147,8 +147,11 @@ public class WarnPunishGUI {
 
         if ( currentWarns >= maxWarnsBeforePunish ) {
             String punishmentType = ConfigUtils.getStr( "warn-gui." + punClickedReason + ".punishment" );
-            String punishmentLength = Time.getScaledTime( ConfigUtils.getStr( "warn-gui." + punClickedReason + ".starting-time" ),
-                    ( 1 + currentWarns - maxWarnsBeforePunish ) );
+            String punishmentLength = ConfigUtils.getStr( "warn-gui." + punClickedReason + ".starting-time" );
+            if ( ConfigUtils.getBool( "warn-gui." + punClickedReason + ".autoscale" ) ) {
+                punishmentLength = Time.getScaledTime( ConfigUtils.getStr( "warn-gui." + punClickedReason + ".starting-time" ),
+                        ( 1 + currentWarns - maxWarnsBeforePunish ) );
+            }
             if ( punishmentType.equalsIgnoreCase( "kick" ) ||
                     punishmentType.equalsIgnoreCase( "warn" ) ) { punishmentLength = ""; }
 

@@ -144,7 +144,10 @@ public class BanPunishGUI {
 
         String punishmentReason = Utils.removeColorCodes( item.getItemMeta().getDisplayName() );
         String punishmentOffense = " (" + Utils.formatIntIntoAmountString( currentPuns + 1 ) + " Offense)";
-        String punishmentLength = Time.getScaledTime( ConfigUtils.getStr( "ban-gui." + punClickedReason + ".starting-time" ), currentPuns + 1 );
+        String punishmentLength = ConfigUtils.getStr( "ban-gui." + punClickedReason + ".starting-time" );
+        if ( ConfigUtils.getBool( "ban-gui." + punClickedReason + ".autoscale" ) ) {
+            punishmentLength = Time.getScaledTime( ConfigUtils.getStr( "ban-gui." + punClickedReason + ".starting-time" ), currentPuns + 1 );
+        }
         staff.performCommand( "ban " + target.getName() + " " + punishmentLength + " " + punishmentReason + punishmentOffense );
 
         staff.closeInventory();
