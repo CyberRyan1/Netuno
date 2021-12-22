@@ -45,11 +45,7 @@ public class ChatListener implements Listener {
                 ipmutePunishments.addAll( DATA.getIPPunishment( account.getUniqueId().toString(), "ipmute", true ) );
             }
 
-            ipmutePunishments = ipmutePunishments.stream()
-                    .sorted( ( p1, p2 ) -> ( int ) (
-                            p2.getExpirationDate() - p1.getExpirationDate()
-                    ) )
-                    .collect( Collectors.toList() );
+            Collections.sort( ipmutePunishments );
 
             event.setCancelled( true );
             Utils.sendDeniedMsg( event.getPlayer(), ipmutePunishments.get( 0 ) );
