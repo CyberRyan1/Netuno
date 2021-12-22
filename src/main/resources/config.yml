@@ -539,6 +539,7 @@ warn-gui:
   #    punish-after: 1
   #    punishment: mute
   #    starting-time: 30m
+  #    autoscale: true
 
   inventory_name: "&a&lWARN &7[TARGET]"
   # Permission to open this GUI
@@ -561,6 +562,11 @@ warn-gui:
     punishment: mute
     # The starting time
     starting-time: 30m
+    # Whether to autoscale the punishment length or not
+    # For example, if you set the starting-time to 30m, the second warn will result in a 30 minute mute, the third mute will result in a 60 minute mute, and so on
+    # For warns, the autoscale only applies to the punishment after the warn
+    # (ex: the first punishment is a warn, the second punishment is a 30 minute mute, and the third punishment is also a 30 minute mute
+    autoscale: true
 
   caps:
     item-name: "&6Caps"
@@ -569,6 +575,7 @@ warn-gui:
     punish-after: 1
     punishment: mute
     starting-time: 15m
+    autoscale: true
 
   flood:
     item-name: "&aFlood"
@@ -577,6 +584,7 @@ warn-gui:
     punish-after: 1
     punishment: mute
     starting-time: 30m
+    autoscale: true
 
   swearing:
     item-name: "&2Swearing"
@@ -585,6 +593,7 @@ warn-gui:
     punish-after: 1
     punishment: mute
     starting-time: 30m
+    autoscale: true
 
   general_disrespect:
     item-name: "&cGeneral Disrespect"
@@ -593,6 +602,7 @@ warn-gui:
     punish-after: 1
     punishment: mute
     starting-time: 1h
+    autoscale: true
 
   media_advertisement:
     item-name: "&bMedia Advertisement"
@@ -601,6 +611,7 @@ warn-gui:
     punish-after: 1
     punishment: mute
     starting-time: 30m
+    autoscale: true
 
   air1:
     item-name: ""
@@ -609,6 +620,7 @@ warn-gui:
     punish-after: 1
     punishment: mute
     starting-time: 30m
+    autoscale: true
 
   air2:
     item-name: ""
@@ -617,6 +629,7 @@ warn-gui:
     punish-after: 1
     punishment: mute
     starting-time: 30m
+    autoscale: true
 
   report_spam:
     item-name: "&3Report Spam"
@@ -625,6 +638,7 @@ warn-gui:
     punish-after: 1
     punishment: ban
     starting-time: 30m
+    autoscale: true
 
   character_spam:
     item-name: "&dCharacter Spam"
@@ -633,6 +647,7 @@ warn-gui:
     punish-after: 1
     punishment: mute
     starting-time: 30m
+    autoscale: true
 
 mute-gui:
   # Maximum of 18 reasons
@@ -646,66 +661,77 @@ mute-gui:
     item-lore: ""
     material: AIR
     starting-time: 30m
+    autoscale: true
 
   inappropriate_behavior:
     item-name: "&aInappropriate Behavior"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: LIME_WOOL
     starting-time: 5h
+    autoscale: true
 
   toxicity:
     item-name: "&eToxicity"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: YELLOW_WOOL
     starting-time: 1d
+    autoscale: true
 
   harassment:
     item-name: "&6Harassment"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: ORANGE_WOOL
     starting-time: 4d
+    autoscale: true
 
   extreme_spam:
     item-name: "&dExtreme Spam"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: MAGENTA_WOOL
     starting-time: 6h
+    autoscale: true
 
   air2:
     item-name: ""
     item-lore: ""
     material: AIR
     starting-time: 30m
+    autoscale: true
 
   air3:
     item-name: ""
     item-lore: ""
     material: AIR
     starting-time: 30m
+    autoscale: true
 
   suicidal_encouragement:
     item-name: "&bSuicidal Encouragement"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: LIGHT_BLUE_WOOL
     starting-time: 7d
+    autoscale: true
 
   death_threats:
     item-name: "&3Death Threats"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: CYAN_WOOL
     starting-time: 7d
+    autoscale: true
 
   ddos_threats:
     item-name: "&9DDoS Threats"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: BLUE_WOOL
     starting-time: 7d
+    autoscale: true
 
   discrimination:
     item-name: "&cDiscrimination"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: RED_WOOL
     starting-time: 7d
+    autoscale: true
 
 ban-gui:
   # Maximum of 18 reasons
@@ -718,66 +744,77 @@ ban-gui:
     item-lore: ""
     material: AIR
     starting-time: 30m
+    autoscale: true
 
   hacked_client:
     item-name: "&bHacked Client"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: LIGHT_BLUE_WOOL
     starting-time: 7d
+    autoscale: true
 
   extreme_discrimination:
     item-name: "&eExtreme Discrimination"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: YELLOW_WOOL
     starting-time: 14d
+    autoscale: true
 
   bug_abuse:
     item-name: "&6Bug/Exploit Abuse"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: ORANGE_WOOL
     starting-time: 5d
+    autoscale: true
 
   bot:
     item-name: "&cBot"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: RED_WOOL
     starting-time: forever
+    autoscale: true
 
   air2:
     item-name: ""
     item-lore: ""
     material: AIR
     starting-time: 30m
+    autoscale: true
 
   air3:
     item-name: ""
     item-lore: ""
     material: AIR
     starting-time: 30m
+    autoscale: true
 
   inappropriate_name_skin:
     item-name: "&3Inappropriate Name/Skin"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: CYAN_WOOL
     starting-time: forever
+    autoscale: true
 
   leaking_info:
     item-name: "&dReleasing Personal Information"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: MAGENTA_WOOL
     starting-time: forever
+    autoscale: true
 
   irl_scamming:
     item-name: "&dIRL Scamming"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: PURPLE_WOOL
     starting-time: forever
+    autoscale: true
 
   server_advertisement:
     item-name: "&fServer Advertisement"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: WHITE_WOOL
     starting-time: forever
+    autoscale: true
 
 ipmute-gui:
   # Maximum of 18 reasons
@@ -790,12 +827,14 @@ ipmute-gui:
     item-lore: ""
     material: AIR
     starting-time: 30m
+    autoscale: true
 
   air2:
     item-name: ""
     item-lore: ""
     material: AIR
     starting-time: 30m
+    autoscale: true
 
   mute_evasion:
     item-name: "&cMute Evasion"
@@ -806,12 +845,14 @@ ipmute-gui:
     # HIGHEST_BANNED_ALT = highest length of a banned alt
     # Only works in the ipmute and ipban GUIs
     starting-time: HIGHEST_MUTED_ALT
+    autoscale: true
 
   large_amount_mutes:
     item-name: "&6Large Amount of Mutes"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: ORANGE_WOOL
     starting-time: forever
+    autoscale: true
 
 ipban-gui:
   # Maximum of 18 reasons
@@ -824,27 +865,32 @@ ipban-gui:
     item-lore: ""
     material: AIR
     starting-time: 30m
+    autoscale: true
 
   ban_evasion:
     item-name: "&eBan Evasion"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: YELLOW_WOOL
     starting-time: HIGHEST_BANNED_ALT
+    autoscale: true
 
   chargeback:
     item-name: "&6Chargeback"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: ORANGE_WOOL
     starting-time: forever
+    autoscale: true
 
   large_amount_bans:
     item-name: "&3Large Amount of Bans"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: CYAN_WOOL
     starting-time: forever
+    autoscale: true
 
   blacklisted:
     item-name: "&cBlacklisted"
     item-lore: "&7Offenses: &6[PREVIOUS]"
     material: RED_WOOL
     starting-time: forever
+    autoscale: true
