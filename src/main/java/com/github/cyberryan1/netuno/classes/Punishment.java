@@ -14,7 +14,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class Punishment implements Serializable {
+public class Punishment implements Serializable, Comparable<Punishment> {
 
     private final static Database DATA = Utils.getDatabase();
 
@@ -152,5 +152,11 @@ public class Punishment implements Serializable {
         ippun.setPlayerUUID( this.getPlayerUUID() );
         ippun.setType( this.getType() );
         return ippun;
+    }
+
+    public int compareTo( Punishment that ) {
+        if ( this.getLength() == -1 ) { return Integer.MIN_VALUE; }
+        if ( that.getLength() == -1 ) { return Integer.MAX_VALUE; }
+        return ( int ) ( that.getExpirationDate() - this.getExpirationDate() );
     }
 }
