@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,20 +66,17 @@ public class ChatListener implements Listener {
             }
         }
 
-        ArrayList<Punishment> mutePuns = DATA.getPunishment( event.getPlayer().getUniqueId().toString(), "mute", true );
+        List<Punishment> mutePuns = DATA.getPunishment( event.getPlayer().getUniqueId().toString(), "mute", true );
         if ( mutePuns.size() >= 1 ) {
             event.setCancelled( true );
 
-            long highestExpire = mutePuns.get( 0 ).getExpirationDate();
-            Punishment highest = mutePuns.get( 0 );
-            for ( int index = 1; index < mutePuns.size(); index++ ) {
-                if ( mutePuns.get( index ).getExpirationDate() > highestExpire ) {
-                    highest = mutePuns.get( index );
-                    highestExpire = highest.getExpirationDate();
-                }
+            Collections.sort( mutePuns );
+            for ( Punishment pun : mutePuns ) {
+                Bukkit.broadcastMessage( pun.toString() ); // ! debug
             }
 
-            Utils.sendDeniedMsg( event.getPlayer(), highest );
+
+            Utils.sendDeniedMsg( event.getPlayer(), mutePuns.get( 0 ) );
             return;
         }
 
