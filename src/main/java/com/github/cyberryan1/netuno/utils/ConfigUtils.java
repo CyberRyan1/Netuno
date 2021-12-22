@@ -143,6 +143,33 @@ public class ConfigUtils {
         return str.replace( "[STAFF]", "CONSOLE" );
     }
 
+    public static ArrayList<String> getAllKeys() {
+        ArrayList<String> results = new ArrayList<>();
+        String keys[] = config.getConfig().getKeys( true ).toArray( new String[0] );
+        Collections.addAll( results, keys );
+        return results;
+    }
+
+    public static ArrayList<String> getKeys( String path ) {
+        checkPath( path );
+        ArrayList<String> results = getAllKeys();
+        for ( int index = results.size() - 1; index >= 0; index-- ) {
+            String str = results.get( index );
+            if ( str.startsWith( path ) == false ) {
+                results.remove( index );
+            }
+            else if ( str.replace( path, "" ).contains( "." ) ) {
+                results.remove( index );
+            }
+        }
+
+        return results;
+    }
+
+    public static String replacePunGUIVariables( String str, OfflinePlayer target, int previous ) {
+        return str.replace( "[TARGET]", target.getName() ).replace( "[PREVIOUS]", previous + "" );
+    }
+
     // checks if a list in the config is just full of nothing ("")
     public static boolean checkListNotEmpty( String path ) {
         checkPath( path );
