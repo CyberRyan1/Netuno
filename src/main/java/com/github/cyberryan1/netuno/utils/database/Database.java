@@ -157,7 +157,8 @@ public class Database {
 
         try {
 //        
-            ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + PUN_TABLE_NAME + " WHERE id = " + id + ";" );
+            ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + PUN_TABLE_NAME + " WHERE id = ?;" );
+            ps.setInt( 1, id );
             rs = ps.executeQuery();
             rs.next();
             if ( rs.getInt( "count(*)" ) >= 1 ) { toReturn = true; }
@@ -179,9 +180,11 @@ public class Database {
 
         try {
 //        
-            ps = conn.prepareStatement( "SELECT * FROM " + PUN_TABLE_NAME + " WHERE id = " + id + ";" );
+            ps = conn.prepareStatement( "SELECT * FROM " + PUN_TABLE_NAME + " WHERE id = ?;" );
+            ps.setInt( 1, id );
             rs = ps.executeQuery();
 
+            rs.next();
             pun.setID( rs.getInt( "id" ) );
             pun.setPlayerUUID( rs.getString( "player" ) );
             pun.setStaffUUID( rs.getString( "staff" ) );
@@ -319,7 +322,8 @@ public class Database {
         PreparedStatement ps = null;
 
         try {
-            ps = conn.prepareStatement( "DELETE FROM " + NOTIF_TABLE_NAME + " WHERE id=" + id + ";" );
+            ps = conn.prepareStatement( "DELETE FROM " + NOTIF_TABLE_NAME + " WHERE id=?;" );
+            ps.setInt( 1, id );
             ps.executeUpdate();
 
             ps.close();
@@ -604,7 +608,8 @@ public class Database {
         boolean toReturn = false;
 
         try {
-            ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + IP_PUN_TABLE_NAME + " WHERE id = " + id + ";" );
+            ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + IP_PUN_TABLE_NAME + " WHERE id = ?;" );
+            ps.setInt( 1, id );
             rs = ps.executeQuery();
             rs.next();
             if ( rs.getInt( "count(*)" ) >= 1 ) { toReturn = true; }
@@ -623,9 +628,11 @@ public class Database {
         IPPunishment toReturn = null;
 
         try {
-            ps = conn.prepareStatement( "SELECT * FROM " + IP_PUN_TABLE_NAME + " WHERE id = " + id + ";" );
+            ps = conn.prepareStatement( "SELECT * FROM " + IP_PUN_TABLE_NAME + " WHERE id = ?;" );
+            ps.setInt( 1, id );
             rs = ps.executeQuery();
 
+            rs.next();
             toReturn = new IPPunishment();
             toReturn.setID( rs.getInt( "id" ) );
             toReturn.setPlayerUUID( rs.getString( "player" ) );
@@ -951,7 +958,8 @@ public class Database {
         boolean toReturn = false;
 
         try {
-            ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + REPORTS_TABLE_NAME + " WHERE id=" + id + ";" );
+            ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + REPORTS_TABLE_NAME + " WHERE id=?;" );
+            ps.setInt( 1, id );
             rs = ps.executeQuery();
             rs.next();
             if ( rs.getInt( "count(*)" ) >= 1 ) { toReturn = true; }
@@ -969,8 +977,10 @@ public class Database {
         SingleReport report = null;
 
         try {
-            ps = conn.prepareStatement( "SELECT * FROM " + REPORTS_TABLE_NAME + " WHERE id = " + id + ";" );
+            ps = conn.prepareStatement( "SELECT * FROM " + REPORTS_TABLE_NAME + " WHERE id = ?;" );
+            ps.setInt( 1, id );
             rs = ps.executeQuery();
+            rs.next();
 
             report = new SingleReport();
             report.setTarget( Bukkit.getOfflinePlayer( UUID.fromString( rs.getString( "target" ) ) ) );
@@ -1017,7 +1027,8 @@ public class Database {
         PreparedStatement ps = null;
 
         try {
-            ps = conn.prepareStatement( "DELETE FROM " + REPORTS_TABLE_NAME + " WHERE id=" + id + ";" );
+            ps = conn.prepareStatement( "DELETE FROM " + REPORTS_TABLE_NAME + " WHERE id=?;" );
+            ps.setInt( 1, id );
             ps.executeUpdate();
             ps.close();
         } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
