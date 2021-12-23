@@ -61,9 +61,7 @@ public class Database {
     public Database( Netuno instance ) {
         plugin = instance;
 
-        Utils.logError( "Database Constructor -- SQL.isEnabled() == " + SQL.isEnabled() ); // ! debug
         if ( SQL.isEnabled() ) {
-            Utils.logError( "Database Constructor -- SQL.isEnabled() is true" ); // ! debug
             PUN_TABLE_NAME = "punishments";
             OTHER_TYPE_LIST = "(key,value)";
         }
