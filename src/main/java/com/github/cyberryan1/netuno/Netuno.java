@@ -12,6 +12,9 @@ import com.github.cyberryan1.netuno.skriptelements.expressions.RegisterExpressio
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
+import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.database.sql.SQL;
+import com.github.cyberryan1.netuno.utils.database.sqlite.SQLite;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -48,10 +51,11 @@ public final class Netuno extends JavaPlugin {
         config = new ConfigManager( this );
 
         util = new Utils(this, config );
-        util.setupDatabase();
 
         configUtils = new ConfigUtils( config );
         vaultUtils = new VaultUtils();
+
+        setupDatabase();
         chatslowManager = new ChatslowManager();
 
         registerSkript();
@@ -64,6 +68,15 @@ public final class Netuno extends JavaPlugin {
     @Override
     public void onDisable() {
         Utils.getDatabase().close();
+    }
+
+    private void setupDatabase() {
+        new SQL();
+        if ( SQL.isEnabled() == false ) {
+            new SQLite( this );
+        }
+
+        Utils.setDatabase( new Database( this ) );
     }
 
     private void registerSkript() {
