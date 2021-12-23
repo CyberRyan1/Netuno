@@ -7,6 +7,8 @@ import com.github.cyberryan1.netuno.classes.SingleReport;
 import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.database.sql.SQL;
+import com.github.cyberryan1.netuno.utils.database.sqlite.SQLite;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -15,13 +17,13 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public abstract class Database {
+public class Database {
 
     Netuno plugin;
     public Connection conn;
 
     //region FinalVariables
-    public final String PUN_TABLE_NAME = "database";
+    public String PUN_TABLE_NAME = "database";
     private final String PUN_TYPE_LIST = "(id,player,staff,type,date,length,reason,active)";
     private final String PUN_UNKNOWN_LIST = "(?,?,?,?,?,?,?,?)";
     private static int mostRecentPunID = -1;
@@ -51,28 +53,34 @@ public abstract class Database {
     private final String PUNISH_GUI_UNKNOWN_LIST = "(?,?,?,?)";
 
     private final String OTHER_TABLE_NAME = "other";
-    private final String OTHER_TYPE_LIST = "(key,value)";
+    private String OTHER_TYPE_LIST = "(key,value)";
     private final String OTHER_UNKNOWN_LIST = "(?,?)";
 
     //endregion
 
     public Database( Netuno instance ) {
         plugin = instance;
+
+        Utils.logError( "Database Constructor -- SQL.isEnabled() == " + SQL.isEnabled() ); // ! debug
+        if ( SQL.isEnabled() ) {
+            Utils.logError( "Database Constructor -- SQL.isEnabled() is true" ); // ! debug
+            PUN_TABLE_NAME = "punishments";
+            OTHER_TYPE_LIST = "(key,value)";
+        }
+
+        initialize();
     }
-
-    public abstract Connection getSqlConnection();
-
-    public abstract void load();
 
     public void initialize() {
         try {
-            conn = getSqlConnection(); // do not close this one until the server is stopping
-            PreparedStatement ps = conn.prepareStatement( "SELECT * FROM " + PUN_TABLE_NAME + " WHERE id = ?" );
+            if ( SQL.isEnabled() ) { conn = SQL.getConnection(); }
+            else { conn = SQLite.getConnection(); }
+            PreparedStatement ps = conn.prepareStatement( "SELECT * FROM " + PUN_TABLE_NAME + " WHERE id = 1" );
             ResultSet rs = ps.executeQuery();
             ps.close();
             rs.close();
-        } catch ( SQLException ex ) {
-            Utils.logError( "Unable to retrieve connection", ex );
+        } catch ( SQLException e ) {
+            Utils.logError( "Unable to retrieve and initialize connection: ", e );
         }
     }
 
@@ -114,7 +122,7 @@ public abstract class Database {
             ps.executeUpdate();
             ps.close();
 
-        } catch ( SQLException ex ) { Utils.logError( "Unable to add punishment to database" ); }
+        } catch ( SQLException ex ) { Utils.logError( "Unable to add punishment to database: ", ex ); }
 
         return id;
     }
@@ -1176,7 +1184,7 @@ public abstract class Database {
         PreparedStatement ps = null;
 
         try {
-            ps = conn.prepareStatement( "UPDATE " + OTHER_TABLE_NAME + " SET value=? WHERE key=?;" );
+            ps = conn.prepareStatement( "UPDATE " + OTHER_TABLE_NAME + " SET " + value() + "=? WHERE " + key() + "=?;" );
 
             ps.setString( 1, newValue );
             ps.setString( 2, key );
@@ -1191,13 +1199,13 @@ public abstract class Database {
         String result = "";
 
         try {
-            ps = conn.prepareStatement( "SELECT * FROM " + OTHER_TABLE_NAME + " WHERE key=?;" );
+            ps = conn.prepareStatement( "SELECT * FROM " + OTHER_TABLE_NAME + " WHERE " + key() + "=?;" );
 
             ps.setString( 1, key );
             rs = ps.executeQuery();
 
             rs.next();
-            result = rs.getString( "value" );
+            result = rs.getString( value() );
 
             ps.close();
             rs.close();
@@ -1210,7 +1218,7 @@ public abstract class Database {
         PreparedStatement ps = null;
 
         try {
-            ps = conn.prepareStatement( "DELETE FROM " + OTHER_TABLE_NAME + " WHERE key=?;" );
+            ps = conn.prepareStatement( "DELETE FROM " + OTHER_TABLE_NAME + " WHERE " + key() + "=?;" );
             ps.setString( 1, key );
             ps.executeUpdate();
             ps.close();
@@ -1223,7 +1231,7 @@ public abstract class Database {
         boolean result = false;
 
         try {
-            ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + OTHER_TABLE_NAME + " WHERE key=?;" );
+            ps = conn.prepareStatement( "SELECT COUNT(*) FROM " + OTHER_TABLE_NAME + " WHERE " + key() + "=?;" );
             ps.setString( 1, key );
 
             rs = ps.executeQuery();
@@ -1232,9 +1240,23 @@ public abstract class Database {
 
             ps.close();
             rs.close();
-        } catch ( SQLException ex ) { Utils.logError( "Unable to check if a key exists in the other database" ); }
+        } catch ( SQLException ex ) { Utils.logError( "Unable to check if a key exists in the other database - ", ex ); }
 
         return result;
+    }
+
+    // returns the name of the key column as it depends on whether SQL or SQLite is enabled
+    private String key() {
+        String toReturn = "key";
+        if ( SQL.isEnabled() ) { toReturn = "k"; }
+        return toReturn;
+    }
+
+    // returns the name of the value column as it depends on whether SQL or SQLite is enabled
+    private String value() {
+        String toReturn = "value";
+        if ( SQL.isEnabled() ) { toReturn = "val"; }
+        return toReturn;
     }
 
     //endregion
