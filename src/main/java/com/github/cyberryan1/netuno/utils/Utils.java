@@ -4,7 +4,6 @@ import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.managers.ConfigManager;
 import com.github.cyberryan1.netuno.utils.database.Database;
-import com.github.cyberryan1.netuno.utils.database.SQLite;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -34,11 +33,7 @@ public class Utils {
 
     public static Database getDatabase() { return db; }
 
-    // Setup SQLite
-    public void setupDatabase() {
-        db = new SQLite( plugin );
-        db.load();
-    }
+    public static void setDatabase( Database database ) { db = database; }
 
     // Loggers
     public static void logInfo( String info ) {
