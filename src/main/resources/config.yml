@@ -904,3 +904,23 @@ ipban-gui:
     material: RED_WOOL
     starting-time: forever
     autoscale: true
+
+#########################
+#        Database       #
+#########################
+database:
+  # Note: changing any of the values in this section of the config will require a restart in order to kick in.
+  # SQLite is what is provided by Netuno automatically. Do not change this if you don't have a SQL server setup.
+  use-sqlite: true
+
+  sql: # Only works if use-sqlite is set to false
+    # Host of your database
+    host: localhost
+    # Port to your database
+    port: 3306
+    # Name of your database
+    database: database
+    # Username to your database
+    username: root
+    # Password to your database
+    password: password
