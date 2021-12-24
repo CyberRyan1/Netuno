@@ -680,8 +680,14 @@ public class Database {
                 idResults.add( pun.getID() );
             }
 
-            ps = conn.prepareStatement( "SELECT * FROM " + IP_PUN_TABLE_NAME + " WHERE instr(alts, ?) > 0;" );
-            ps.setString( 1, uuid );
+            if ( Utils.getJavaVersion() <= 10 ) {
+                String escapedUuid = uuid.replaceAll( "\"", "" ).replaceAll( "'", "" ).replaceAll( ";", "" );
+                ps = conn.prepareStatement( "SELECT * FROM " + IP_PUN_TABLE_NAME + " WHERE alts LIKE '%" + escapedUuid + "%';" );
+            }
+            else {
+                ps = conn.prepareStatement( "SELECT * FROM " + IP_PUN_TABLE_NAME + " WHERE instr(alts, ?) > 0;" );
+                ps.setString( 1, uuid );
+            }
             rs = ps.executeQuery();
 
             while ( rs.next() ) {
