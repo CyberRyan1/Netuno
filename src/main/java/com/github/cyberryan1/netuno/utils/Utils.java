@@ -268,4 +268,14 @@ public class Utils {
             if(dot != -1) { version = version.substring(0, dot); }
         } return Integer.parseInt(version);
     }
+
+    // gets the server version
+    // ex: if server is 1.8, returns 8. if server is 1.16, returns 16
+    public static int getServerVersion() {
+        String ver = Bukkit.getServer().getVersion();
+        for ( int i = 8; i < 18; i++ ) {
+            if ( ver.contains( "1." + i ) ) { return i; }
+        }
+        return 18;
+    }
 }
