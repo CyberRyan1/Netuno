@@ -7,10 +7,12 @@ import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.guis.events.GUIEventType;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netuno.guis.utils.SortBy;
+import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -44,7 +46,18 @@ public class StaffAllReportsGUI implements Listener {
         this.sort = sort;
 
         DATA.deleteAllExpiredReports();
-        reports = DATA.getAllReports( 21 * ( page - 1 ), 21 * page );
+        if ( Utils.getJavaVersion() >= 10 ) {
+            reports = DATA.getAllReports( 21 * ( page - 1 ), 21 * page );
+        }
+        else {
+            reports = DATA.getAllReports();
+            ArrayList<SingleReport> tempReports = new ArrayList<>();
+            for ( int i = 21 * ( page - 1 ); i <= 21 * page; i++ ) {
+                if ( reports.size() <= i ) { break; }
+                tempReports.add( reports.get( i ) );
+            }
+            reports = tempReports;
+        }
         compressReports();
         sort();
 
@@ -112,7 +125,7 @@ public class StaffAllReportsGUI implements Listener {
         int guiIndex = 10;
         for ( int row = 0; row < 3; row++ ) {
             for ( int col = 0; col < 7; col++ ) {
-                if ( reportIndex >= combinedReports.size() ) { items[guiIndex] = GUIUtils.createItem( Material.LIGHT_GRAY_STAINED_GLASS_PANE, "&7" ); }
+                if ( reportIndex >= combinedReports.size() ) { items[guiIndex] = GUIUtils.getBackgroundGlass(); }
                 else { items[guiIndex] = combinedReports.get( reportIndex ).getAsItem(); }
 
                 guiIndex++; reportIndex++;
@@ -158,18 +171,18 @@ public class StaffAllReportsGUI implements Listener {
         if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
 
         ItemStack clicked = event.getCurrentItem();
-        if ( clicked == null || clicked.getType().isAir() ) { return; }
+        if ( clicked == null || clicked.getType() == Material.AIR ) { return; }
 
         if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&gPrevious Page" ) ) ) {
             StaffAllReportsGUI newGUI = new StaffAllReportsGUI( staff, page - 1, sort );
             newGUI.openInventory( staff );
-            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+            staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
         }
 
         else if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&gNext Page" ) ) ) {
             StaffAllReportsGUI newGUI = new StaffAllReportsGUI( staff, page + 1, sort );
             newGUI.openInventory( staff );
-            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+            staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
         }
 
         else if ( clicked.equals( getPaper() ) ) {
@@ -180,7 +193,24 @@ public class StaffAllReportsGUI implements Listener {
             else { newGUI = new StaffAllReportsGUI( staff, page, SortBy.FIRST_DATE ); }
 
             newGUI.openInventory( staff );
-            staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
+            staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "ITEM_BOOK_PAGE_TURN", "NOTE_PLING" ), 10, 1 );
+        }
+
+        else if ( clicked.getType().equals( GUIUtils.getItemForVersion( "PLAYER_HEAD", "SKULL_ITEM" ).getType() ) ) {
+            String itemName = clicked.getItemMeta().getDisplayName();
+            itemName = Utils.removeColorCodes( itemName );
+            OfflinePlayer target = Bukkit.getOfflinePlayer( itemName );
+
+            if ( target != null ) {
+                StaffPlayerReportsGUI newGui = new StaffPlayerReportsGUI( staff, target );
+                staff.closeInventory();
+                staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
+                newGui.openInventory( staff );
+            }
+
+            else { // just in case
+                CommandErrors.sendPlayerNotFound( staff, itemName );
+            }
         }
     }
 
