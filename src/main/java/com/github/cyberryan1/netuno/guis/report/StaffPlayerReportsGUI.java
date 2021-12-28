@@ -36,6 +36,7 @@ public class StaffPlayerReportsGUI implements Listener {
     private SortBy sort;
     private ArrayList<SingleReport> reports;
     private ArrayList<MultiReport> multiReports = new ArrayList<>();
+    int totalMultiReportCount = 0;
 
     public StaffPlayerReportsGUI( Player staff, OfflinePlayer target, int page, SortBy sort ) {
         this.staff = staff;
@@ -76,6 +77,16 @@ public class StaffPlayerReportsGUI implements Listener {
         for ( ArrayList<SingleReport> srList : datesToReport.values() ) {
             multiReports.add( new MultiReport( srList ) );
         }
+        totalMultiReportCount = multiReports.size();
+
+        ArrayList<MultiReport> tempReports = new ArrayList<>();
+        final int START = 21 * ( page - 1 );
+        final int END = 21 * page;
+        for ( int index = START; index <= END; index++ ) {
+            if ( index >= multiReports.size() ) { break; }
+            tempReports.add( multiReports.get( index ) );
+        }
+        multiReports = tempReports;
     }
 
     private void sort() {
@@ -144,7 +155,7 @@ public class StaffPlayerReportsGUI implements Listener {
         items[40] = getPaper();
 
         if ( page >= 2 ) { items[47] = GUIUtils.createItem( Material.BOOK, "&gPrevious Page" ); }
-        if ( page < ( ( int ) Math.ceil( reports.size() / 21.0 ) ) ) { items[51] = GUIUtils.createItem( Material.BOOK, "&gNext Page" ); }
+        if ( page < ( ( int ) Math.ceil( totalMultiReportCount / 21.0 ) ) ) { items[51] = GUIUtils.createItem( Material.BOOK, "&gNext Page" ); }
 
         gui.setContents( items );
     }
