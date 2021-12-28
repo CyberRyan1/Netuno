@@ -71,7 +71,7 @@ public class ReportGUI implements Listener {
             for ( int col = 0; col < 6; col++ ) {
                 if ( reasonIndex >= reasons.size() ) { break; }
                 if ( reasons.get( reasonIndex ).equals( "" ) == false ) {
-                    items[guiIndex] = GUIUtils.createItem( Material.LIGHT_GRAY_WOOL, "&7" + reasons.get( reasonIndex ) );
+                    items[guiIndex] = GUIUtils.setItemName( GUIUtils.getItemForVersion( "LIGHT_GRAY_WOOL", "WOOL", 8 ), "&7" + reasons.get( reasonIndex ) );
                 }
 
                 if ( guiIndex % 9 == 3 ) { guiIndex++; }
@@ -81,8 +81,8 @@ public class ReportGUI implements Listener {
             guiIndex += 2;
         }
 
-        items[11] = GUIUtils.createItem( Material.RED_WOOL, "&cReset Selections" );
-        items[15] = GUIUtils.createItem( Material.GREEN_WOOL, "&2Submit Report" );
+        items[11] = GUIUtils.setItemName( GUIUtils.getItemForVersion( "RED_WOOL", "WOOL", 14 ), "&cReset Selections" );
+        items[15] = GUIUtils.setItemName( GUIUtils.getItemForVersion( "GREEN_WOOL", "WOOL", 13 ), "&2Submit Report" );
 
         gui.setContents( items );
     }
@@ -107,37 +107,46 @@ public class ReportGUI implements Listener {
         if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
 
         ItemStack item = event.getCurrentItem();
-        if ( item == null || item.getType().isAir() ) { return; }
+        if ( item == null || item.getType() == Material.AIR ) { return; }
 
-        if ( item.getType() == Material.LIGHT_GRAY_WOOL ) {
-            item.setType( Material.LIME_WOOL );
-            ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName( meta.getDisplayName().replace( Utils.getColored( "&7" ), Utils.getColored( "&a" ) ) );
-            item.setItemMeta( meta );
-            player.playSound( player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+        if ( GUIUtils.checkItemEqualsForVersion( item, "LIGHT_GRAY_WOOL", "WOOL", 8 ) ) {
+            ItemStack newItem = GUIUtils.getItemForVersion( "LIME_WOOL", "WOOL", 5 );
+            ItemMeta newItemMeta = newItem.getItemMeta();
+            String newName = event.getCurrentItem().getItemMeta().getDisplayName();
+            newName = newName.replaceAll( Utils.getColored( "&7" ), Utils.getColored( "&a" ) );
+            newItemMeta.setDisplayName( newName );
+            newItem.setItemMeta( newItemMeta );
+
+            gui.setItem( event.getSlot(), newItem );
+            player.playSound( player.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
         }
 
-        else if ( item.getType() == Material.LIME_WOOL ) {
-            item.setType( Material.LIGHT_GRAY_WOOL );
-            ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName( meta.getDisplayName().replace( Utils.getColored( "&a" ), Utils.getColored( "&7" ) ) );
-            item.setItemMeta( meta );
-            player.playSound( player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+        else if ( GUIUtils.checkItemEqualsForVersion( item, "LIME_WOOL", "WOOL", 5 ) ) {
+
+            ItemStack newItem = GUIUtils.getItemForVersion( "LIGHT_GRAY_WOOL", "WOOL", 8 );
+            ItemMeta newItemMeta = newItem.getItemMeta();
+            String newName = event.getCurrentItem().getItemMeta().getDisplayName();
+            newName = newName.replaceAll( Utils.getColored( "&a" ), Utils.getColored( "&7" ) );
+            newItemMeta.setDisplayName( newName );
+            newItem.setItemMeta( newItemMeta );
+
+            gui.setItem( event.getSlot(), newItem );
+            player.playSound( player.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
         }
 
-        else if ( item.equals( GUIUtils.createItem( Material.RED_WOOL, "&cReset Selections" ) ) ) {
+        else if ( GUIUtils.checkItemEqualsForVersion( item, "RED_WOOL", "WOOL", 14 ) ) {
             insertItems();
             openInventory( player );
-            player.playSound( player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+            player.playSound( player.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
         }
 
-        else if ( item.equals( GUIUtils.createItem( Material.GREEN_WOOL, "&2Submit Report" ) ) ) {
+        else if ( GUIUtils.checkItemEqualsForVersion( item,"GREEN_WOOL", "WOOL", 13 ) ) {
             player.closeInventory();
-            player.playSound( player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+            player.playSound( player.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
 
             ArrayList<SingleReport> reports = new ArrayList<>();
             for ( ItemStack i : event.getClickedInventory().getContents() ) {
-                if ( i.getType() == Material.LIME_WOOL ) {
+                if ( GUIUtils.checkItemEqualsForVersion( i, "LIME_WOOL", "WOOL", 5 ) ) {
                     SingleReport sr = new SingleReport();
                     sr.setReporter( player );
                     sr.setTarget( target );
