@@ -50,10 +50,7 @@ public class MultiReport {
     }
 
     public ItemStack getAsItem() {
-        ItemStack skull = new ItemStack( Material.PLAYER_HEAD );
-        SkullMeta meta = ( SkullMeta ) skull.getItemMeta();
-        meta.setOwningPlayer( reporter );
-        skull.setItemMeta( meta );
+        ItemStack skull = GUIUtils.getPlayerSkull( reporter );
 
         skull = GUIUtils.setItemName( skull, "&gReporter: &h" + reporter.getName() );
 
