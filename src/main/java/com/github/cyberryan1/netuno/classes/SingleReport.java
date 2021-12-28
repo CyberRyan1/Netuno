@@ -48,10 +48,7 @@ public class SingleReport {
     public void setReason( String reason ) { this.reason = reason; }
 
     public ItemStack getAsItem() {
-        ItemStack skull = new ItemStack( Material.PLAYER_HEAD );
-        SkullMeta meta = ( SkullMeta ) skull.getItemMeta();
-        meta.setOwningPlayer( target );
-        skull.setItemMeta( meta );
+        ItemStack skull = GUIUtils.getPlayerSkull( target );
 
         skull = GUIUtils.setItemName( skull, "&g" + target.getName() );
         ArrayList<String> lore = new ArrayList<>();
