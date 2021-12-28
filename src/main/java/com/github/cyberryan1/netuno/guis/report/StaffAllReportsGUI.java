@@ -39,6 +39,7 @@ public class StaffAllReportsGUI implements Listener {
     private SortBy sort;
     private ArrayList<SingleReport> reports;
     private List<CombinedReport> combinedReports = new ArrayList<>();
+    private int totalCombinedReportCount = 0;
 
     public StaffAllReportsGUI( Player staff, int page, SortBy sort ) {
         this.staff = staff;
@@ -46,18 +47,7 @@ public class StaffAllReportsGUI implements Listener {
         this.sort = sort;
 
         DATA.deleteAllExpiredReports();
-        if ( Utils.getJavaVersion() >= 10 ) {
-            reports = DATA.getAllReports( 21 * ( page - 1 ), 21 * page );
-        }
-        else {
-            reports = DATA.getAllReports();
-            ArrayList<SingleReport> tempReports = new ArrayList<>();
-            for ( int i = 21 * ( page - 1 ); i <= 21 * page; i++ ) {
-                if ( reports.size() <= i ) { break; }
-                tempReports.add( reports.get( i ) );
-            }
-            reports = tempReports;
-        }
+        reports = DATA.getAllReports(); // ? very laggy, will need to fix in the future
         compressReports();
         sort();
 
@@ -82,6 +72,16 @@ public class StaffAllReportsGUI implements Listener {
         for ( UUID uuid : playersReported ) {
             combinedReports.add( new CombinedReport( Bukkit.getOfflinePlayer( uuid ) ) );
         }
+        totalCombinedReportCount = combinedReports.size();
+
+        ArrayList<CombinedReport> tempReports = new ArrayList<>();
+        final int START = 21 * ( page - 1 );
+        final int END = 21 * page;
+        for ( int index = START; index <= END; index++ ) {
+            if ( index >= combinedReports.size() ) { break; }
+            tempReports.add( combinedReports.get( index ) );
+        }
+        combinedReports = tempReports;
     }
 
     private void sort() {
@@ -137,7 +137,7 @@ public class StaffAllReportsGUI implements Listener {
         items[40] = getPaper();
 
         if ( page >= 2 ) { items[47] = GUIUtils.createItem( Material.BOOK, "&gPrevious Page" ); }
-        int maxPage = ( int ) Math.ceil( DATA.getReportsCount() / 21.0 );
+        int maxPage = ( int ) Math.ceil( totalCombinedReportCount / 21.0 );
         if ( page < maxPage ) { items[51] = GUIUtils.createItem( Material.BOOK, "&gNext Page" ); }
 
         gui.setContents( items );
