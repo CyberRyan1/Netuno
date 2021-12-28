@@ -1041,6 +1041,7 @@ public class Database {
     }
 
     // gets all reports where: startingIndex <= report row # <= endingIndex
+    // * important note: does NOT work with java versions less than 10 (i think!)
     public ArrayList<SingleReport> getAllReports( int startingIndex, int endingIndex ) {
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -1055,8 +1056,9 @@ public class Database {
                 if ( rs.getInt( "RowNum" ) >= startingIndex ) {
                     if ( rs.getInt( "RowNum" ) <= endingIndex ) {
                         idList.add( rs.getInt( 2 ) );
+                    } else {
+                        break;
                     }
-                    else { break; }
                 }
             }
 
@@ -1067,6 +1069,33 @@ public class Database {
         for ( int id : idList ) {
             toReturn.add( getReport( id ) );
         }
+
+        return toReturn;
+    }
+
+    // mainly for use with java versions less than java version 10
+
+    public ArrayList<SingleReport> getAllReports() {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<SingleReport> toReturn = new ArrayList<>();
+
+        try {
+            ps = conn.prepareStatement( "SELECT * FROM " + REPORTS_TABLE_NAME + ";" );
+            rs = ps.executeQuery();
+
+            while ( rs.next() ) {
+                SingleReport report = new SingleReport();
+                report.setTarget( Bukkit.getOfflinePlayer( UUID.fromString( rs.getString( "target" ) ) ) );
+                report.setReporter( Bukkit.getOfflinePlayer( UUID.fromString( rs.getString( "reporter" ) ) ) );
+                report.setDate( Long.parseLong( rs.getString( "date" ) ) );
+                report.setReason( rs.getString( "reason" ) );
+                toReturn.add( report );
+            }
+
+            ps.close();
+            rs.close();
+        } catch ( SQLException e ) { Utils.logError( "Couldn't execute MySQL statement: ", e ); }
 
         return toReturn;
     }
