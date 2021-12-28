@@ -132,7 +132,7 @@ public class StaffPlayerReportsGUI implements Listener {
         int guiIndex = 10;
         for ( int row = 0; row < 3; row++ ) {
             for ( int col = 0; col < 7; col++ ) {
-                if ( reportIndex >= multiReports.size() ) { items[guiIndex] = GUIUtils.createItem( Material.LIGHT_GRAY_STAINED_GLASS_PANE, "&7" ); }
+                if ( reportIndex >= multiReports.size() ) { items[guiIndex] = GUIUtils.getBackgroundGlass(); }
                 else { items[guiIndex] = multiReports.get( reportIndex ).getAsItem(); }
 
                 guiIndex++; reportIndex++;
