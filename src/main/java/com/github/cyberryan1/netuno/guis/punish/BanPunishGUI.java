@@ -77,12 +77,19 @@ public class BanPunishGUI {
 
                 String path = "ban-gui." + reasons.get( punIndex );
                 Material material = Material.matchMaterial( ConfigUtils.getStr( path + ".material" ) );
-                if ( material.isAir() == false ) {
+                if ( material != Material.AIR ) {
                     int punCount = DATA.getGUIPunCount( target, "ban", reasons.get( punIndex ) );
 
                     String name = ConfigUtils.getColoredStr( path + ".item-name" );
                     name = ConfigUtils.replacePunGUIVariables( name, target, punCount );
-                    ItemStack toAdd = GUIUtils.createItem( material, name );
+
+                    ItemStack toAdd;
+                    String materialName = ConfigUtils.getStr( path + ".material" );
+                    if ( GUIUtils.isColorable( materialName ) ) {
+                        toAdd = GUIUtils.getColoredItemForVersion( materialName );
+                        toAdd = GUIUtils.setItemName( toAdd, name );
+                    }
+                    else { toAdd = GUIUtils.createItem( material, name ); }
 
                     String lore = ConfigUtils.getColoredStr( path + ".item-lore" );
                     if ( lore.equals( "" ) ) { items[guiIndex] = toAdd; }
@@ -131,7 +138,7 @@ public class BanPunishGUI {
         if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
 
         ItemStack item = event.getCurrentItem();
-        if ( item == null || item.getType().isAir() || item.equals( GUIUtils.getBackgroundGlass() ) ) { return; }
+        if ( item == null || item.getType() == Material.AIR || item.equals( GUIUtils.getBackgroundGlass() ) ) { return; }
         int eventSlot = event.getSlot();
 
         int list[] = { 10, 11, 12, 14, 15, 16, 19, 20, 21, 23, 24, 25, 28, 29, 30, 32, 33, 34 };
@@ -165,7 +172,7 @@ public class BanPunishGUI {
 
         staff.closeInventory();
         DATA.addGUIPun( target, "ban", punClickedReason, DATA.getMostRecentPunishmentID() );
-        staff.playSound( staff.getLocation(), Sound.ENTITY_ENDER_EYE_DEATH, 10, 1 );
+        staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "ENTITY_ENDER_EYE_DEATH", "NOTE_PLING" ), 10, 1 );
     }
 
     @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
