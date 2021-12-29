@@ -117,4 +117,38 @@ public class GUIUtils {
         }
         return Sound.valueOf( newerSound );
     }
+
+    public static boolean isColorable( String material ) {
+        if ( Utils.getServerVersion() > 8 ) { return false; }
+        return ( material.toLowerCase().contains( "wool" ) || material.toLowerCase().contains( "terracotta" )
+                || material.toLowerCase().contains( "glass" ) || material.toLowerCase().contains( "carpet" ) );
+    }
+
+    public static ItemStack getColoredItemForVersion( String material ) {
+        if ( Utils.getServerVersion() >= 10 ) { return new ItemStack( Material.matchMaterial( material ) ); }
+        String baseType = "WOOL";
+        String baseTypeStr = "_WOOL";
+        if ( material.toUpperCase().contains( "_GLASS_PANE" ) ) { baseType = "STAINED_GLASS_PANE"; baseTypeStr = "_STAINED_GLASS_PANE"; }
+        else if ( material.toUpperCase().contains( "_GLASS" ) ) { baseType = "STAINED_GLASS"; baseTypeStr = "_GLASS"; }
+        else if ( material.toUpperCase().contains( "STAINED_CLAY" ) ) { baseType = "STAINED_CLAY"; baseTypeStr = "_TERRACOTTA"; }
+        else if ( material.toUpperCase().contains( "CARPET" ) ) { baseType = "CARPET"; baseTypeStr = "_CARPET"; }
+
+        if ( material.equalsIgnoreCase( "WHITE" + baseTypeStr ) ) { return new ItemStack( Material.matchMaterial( baseType ), 1, ( short ) 0 ); }
+        if ( material.equalsIgnoreCase( "ORANGE" + baseTypeStr ) ) { return new ItemStack( Material.matchMaterial( baseType ), 1, ( short ) 1 ); }
+        if ( material.equalsIgnoreCase( "MAGENTA" + baseTypeStr ) ) { return new ItemStack( Material.matchMaterial( baseType ), 1, ( short ) 2 ); }
+        if ( material.equalsIgnoreCase( "LIGHT_BLUE" + baseTypeStr ) ) { return new ItemStack( Material.matchMaterial( baseType ), 1, ( short ) 3 ); }
+        if ( material.equalsIgnoreCase( "YELLOW" + baseTypeStr ) ) { return new ItemStack( Material.matchMaterial( baseType ), 1, ( short ) 4 ); }
+        if ( material.equalsIgnoreCase( "LIME" + baseTypeStr ) ) { return new ItemStack( Material.matchMaterial( baseType ), 1, ( short ) 5 ); }
+        if ( material.equalsIgnoreCase( "PINK" + baseTypeStr ) ) { return new ItemStack( Material.matchMaterial( baseType ), 1, ( short ) 6 ); }
+        if ( material.equalsIgnoreCase( "GRAY" + baseTypeStr ) ) { return new ItemStack( Material.matchMaterial( baseType ), 1, ( short ) 7 ); }
+        if ( material.equalsIgnoreCase( "LIGHT_GRAY" + baseTypeStr ) ) { return new ItemStack( Material.matchMaterial( baseType ), 1, ( short ) 8 ); }
+        if ( material.equalsIgnoreCase( "CYAN" + baseTypeStr ) ) { return new ItemStack( Material.matchMaterial( baseType ), 1, ( short ) 9 ); }
+        if ( material.equalsIgnoreCase( "PURPLE" + baseTypeStr ) ) { return new ItemStack( Material.matchMaterial( baseType ), 1, ( short ) 10 ); }
+        if ( material.equalsIgnoreCase( "BLUE" + baseTypeStr ) ) { return new ItemStack( Material.matchMaterial( baseType ), 1, ( short ) 11 ); }
+        if ( material.equalsIgnoreCase( "BROWN" + baseTypeStr ) ) { return new ItemStack( Material.matchMaterial( baseType ), 1, ( short ) 12 ); }
+        if ( material.equalsIgnoreCase( "GREEN" + baseTypeStr ) ) { return new ItemStack( Material.matchMaterial( baseType ), 1, ( short ) 13 ); }
+        if ( material.equalsIgnoreCase( "RED" + baseTypeStr ) ) { return new ItemStack( Material.matchMaterial( baseType ), 1, ( short ) 14 ); }
+        if ( material.equalsIgnoreCase( "BLACK" + baseTypeStr ) ) { return new ItemStack( Material.matchMaterial( baseType ), 1, ( short ) 15 ); }
+        return null;
+    }
 }
