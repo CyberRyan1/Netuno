@@ -77,7 +77,7 @@ public class HistoryEditGUI implements Listener {
             items[32] = GUIUtils.createItem( Material.BARRIER, "&hDelete punishment" );
         }
         else {
-            items[29] = GUIUtils.createItem( Material.CLOCK, "&hEdit length" );
+            items[29] = GUIUtils.setItemName( GUIUtils.getItemForVersion( "CLOCK", "WATCH" ), "&hEdit length" );
             items[31] = GUIUtils.createItem( Material.PAPER, "&hEdit reason" );
             items[33] = GUIUtils.createItem( Material.BARRIER, "&hDelete punishment" );
         }
@@ -99,14 +99,14 @@ public class HistoryEditGUI implements Listener {
         if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
 
         ItemStack itemClicked = event.getCurrentItem();
-        if ( itemClicked == null || itemClicked.getType().isAir() ) { return; }
+        if ( itemClicked == null || itemClicked.getType() == Material.AIR ) { return; }
         String itemName = itemClicked.getItemMeta().getDisplayName();
         if ( itemName.equals( Utils.getColored( "&hEdit length" ) ) == false
             && itemName.equals( Utils.getColored( "&hEdit reason" ) ) == false
             && itemName.equals( Utils.getColored( "&hDelete punishment" ) ) == false
             && itemName.equals( Utils.getColored( "&hGo back" ) ) == false ) { return; }
 
-        if ( itemClicked.equals( GUIUtils.createItem( Material.CLOCK, "&hEdit length" ) ) ) {
+        if ( itemClicked.equals( GUIUtils.setItemName( GUIUtils.getItemForVersion( "CLOCK", "WATCH" ), "&hEdit length" ) ) ) {
             if ( VaultUtils.hasPerms( staff, ConfigUtils.getStr( "history.time.perm" ) ) == false ) {
                 CommandErrors.sendInvalidPerms( staff );
             }
@@ -141,7 +141,7 @@ public class HistoryEditGUI implements Listener {
                 event.getWhoClicked().closeInventory(); // like this close inventory here, helps prevent accidental deletes
                 HistoryDeleteConfirmGUI deleteGUI = new HistoryDeleteConfirmGUI( target, staff, punishment );
                 deleteGUI.openInventory( staff );
-                staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+                staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
             }
         }
 
@@ -149,7 +149,7 @@ public class HistoryEditGUI implements Listener {
             event.getWhoClicked().closeInventory();
             HistoryListGUI gui = new HistoryListGUI( target, staff, 1 );
             gui.openInventory( staff );
-            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+            staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
 
             GUIEventManager.removeEvent( this );
         }
