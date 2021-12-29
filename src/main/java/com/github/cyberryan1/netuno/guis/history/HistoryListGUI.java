@@ -185,18 +185,18 @@ public class HistoryListGUI implements Listener {
         if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
 
         ItemStack itemClicked = event.getCurrentItem();
-        if ( itemClicked == null || itemClicked.getType().isAir() ) { return; }
+        if ( itemClicked == null || itemClicked.getType() == Material.AIR ) { return; }
 
         if ( itemClicked.equals( GUIUtils.createItem( Material.BOOK, "&gNext Page" ) ) ) {
             HistoryListGUI next = new HistoryListGUI( target, staff, page + 1, sort );
             next.openInventory( staff );
-            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+            staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
         }
 
         else if ( itemClicked.equals( GUIUtils.createItem( Material.BOOK, "&gPrevious Page" ) ) ) {
             HistoryListGUI previous = new HistoryListGUI( target, staff, page - 1, sort );
             previous.openInventory( staff );
-            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+            staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
         }
 
         else if ( ( itemClicked.getType() == Material.EMERALD || itemClicked.getType() == Material.REDSTONE )
@@ -208,11 +208,11 @@ public class HistoryListGUI implements Listener {
             int punID = history.get( punClicked ).getID();
             HistoryEditGUI editGUI = new HistoryEditGUI( target, staff, punID );
             editGUI.openInventory( staff );
-            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+            staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
         }
 
         else if ( itemClicked.equals( getSortHopper() ) ) {
-            staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
+            staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "ITEM_BOOK_PAGE_TURN", "NOTE_PLING" ), 10, 1 );
             if ( sort == SortBy.FIRST_DATE ) {
                 HistoryListGUI gui = new HistoryListGUI( target, staff, page, SortBy.LAST_DATE );
                 gui.openInventory( staff );

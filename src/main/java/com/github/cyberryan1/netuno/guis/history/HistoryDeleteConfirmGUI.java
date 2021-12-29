@@ -51,8 +51,8 @@ public class HistoryDeleteConfirmGUI implements Listener {
         }
 
         items[13] = punishment.getPunishmentAsItem();
-        items[30] = GUIUtils.createItem( Material.LIME_WOOL, "&aConfirm" );
-        items[32] = GUIUtils.createItem( Material.RED_WOOL, "&cCancel" );
+        items[30] = GUIUtils.setItemName( GUIUtils.getColoredItemForVersion( "LIME_WOOL" ), "&aConfirm" );
+        items[32] = GUIUtils.setItemName( GUIUtils.getColoredItemForVersion( "RED_WOOL" ), "&cCancel" );
 
         gui.setContents( items );
     }
@@ -69,19 +69,19 @@ public class HistoryDeleteConfirmGUI implements Listener {
             if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
 
             ItemStack itemClicked = event.getCurrentItem();
-            if ( itemClicked == null || itemClicked.getType().isAir() ) { return; }
+            if ( itemClicked == null || itemClicked.getType() == Material.AIR ) { return; }
 
-            if ( itemClicked.equals( GUIUtils.createItem( Material.LIME_WOOL, "&aConfirm" ) ) ) {
+            if ( itemClicked.equals( GUIUtils.setItemName( GUIUtils.getColoredItemForVersion( "LIME_WOOL" ), "&aConfirm" ) ) ) {
                 staff.closeInventory();
                 DATA.deletePunishment( punishment.getID() );
                 staff.sendMessage( Utils.getColored( "&hSuccessfully deleted punishment &g#" + punishment.getID() ) );
-                staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+                staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
             }
 
-            else if ( itemClicked.equals( GUIUtils.createItem( Material.RED_WOOL, "&cCancel" ) ) ) {
+            else if ( itemClicked.equals( GUIUtils.setItemName( GUIUtils.getColoredItemForVersion( "RED_WOOL" ), "&cCancel" ) ) ) {
                 HistoryEditGUI editGUI = new HistoryEditGUI( target, staff, punishment.getID() );
                 editGUI.openInventory( staff );
-                staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+                staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
             }
         }
     }
