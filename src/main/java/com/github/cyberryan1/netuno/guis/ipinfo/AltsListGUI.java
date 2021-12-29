@@ -107,7 +107,9 @@ public class AltsListGUI implements Listener {
         int guiIndex = 10;
         for ( int row = 0; row < 3; row++ ) {
             for ( int col = 0; col < 7; col++ ) {
-                if ( altIndex >= alts.size() ) { items[guiIndex] = GUIUtils.createItem( Material.LIGHT_GRAY_STAINED_GLASS_PANE, "&h" ); }
+                if ( altIndex >= alts.size() ) {
+                    items[guiIndex] = GUIUtils.setItemName( GUIUtils.getColoredItemForVersion( "LIGHT_GRAY_STAINED_GLASS_PANE" ), "&f" );
+                }
                 else { items[guiIndex] = getAltSkull( altIndex ); }
 
                 guiIndex++;
@@ -182,10 +184,7 @@ public class AltsListGUI implements Listener {
 
     private ItemStack getAltSkull( int index ) {
         OfflinePlayer account = alts.get( index );
-        ItemStack skull = new ItemStack( Material.PLAYER_HEAD );
-        SkullMeta meta = ( SkullMeta ) skull.getItemMeta();
-        meta.setOwningPlayer( account );
-        skull.setItemMeta( meta );
+        ItemStack skull = GUIUtils.getPlayerSkull( account );
 
         if ( punishedAlts.contains( account ) ) {
             skull = GUIUtils.setItemName( skull, "&c" + account.getName() );
@@ -230,7 +229,7 @@ public class AltsListGUI implements Listener {
         if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
 
         ItemStack clicked = event.getCurrentItem();
-        if ( clicked == null || clicked.getType().isAir() ) { return; }
+        if ( clicked == null || clicked.getType() == Material.AIR ) { return; }
 
         if ( clicked.getItemMeta().getLore() != null && clicked.getItemMeta().getLore().size() > 0 ) {
             staff.closeInventory();
@@ -239,7 +238,7 @@ public class AltsListGUI implements Listener {
             if ( target != null ) {
                 HistoryListGUI gui = new HistoryListGUI( target, staff, 1 );
                 gui.openInventory( staff );
-                staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+                staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
             }
 
             else {
@@ -250,43 +249,43 @@ public class AltsListGUI implements Listener {
         else if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&gPrevious Page" ) ) ) {
             AltsListGUI newGUI = new AltsListGUI( target, staff, page - 1 );
             newGUI.openInventory( staff );
-            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+            staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
         }
 
         else if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&gNext Page" ) ) ) {
             AltsListGUI newGUI = new AltsListGUI( target, staff, page + 1 );
             newGUI.openInventory( staff );
-            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+            staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
         }
 
         else if ( clicked.equals( getAlphabeticalPaper() ) ) {
             AltsListGUI newGUI = new AltsListGUI( target, staff, page, SortBy.FIRST_DATE );
             newGUI.openInventory( staff );
-            staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
+            staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "ITEM_BOOK_PAGE_TURN", "NOTE_PLING" ), 10, 1 );
         }
 
         else if ( clicked.equals( getFirstDatePaper() ) ) {
             AltsListGUI newGUI = new AltsListGUI( target, staff, page, SortBy.LAST_DATE );
             newGUI.openInventory( staff );
-            staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
+            staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "ITEM_BOOK_PAGE_TURN", "NOTE_PLING" ), 10, 1 );
         }
 
         else if ( clicked.equals( getLastDatePaper() ) ) {
             AltsListGUI newGUI = new AltsListGUI( target, staff, page, SortBy.FIRST_PUNISHED );
             newGUI.openInventory( staff );
-            staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
+            staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "ITEM_BOOK_PAGE_TURN", "NOTE_PLING" ), 10, 1 );
         }
 
         else if ( clicked.equals( getFirstPunPaper() ) ) {
             AltsListGUI newGUI = new AltsListGUI( target, staff, page, SortBy.LAST_PUNISHED );
             newGUI.openInventory( staff );
-            staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
+            staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "ITEM_BOOK_PAGE_TURN", "NOTE_PLING" ), 10, 1 );
         }
 
         else if ( clicked.equals( getLastPunPaper() ) ) {
             AltsListGUI newGUI = new AltsListGUI( target, staff, page, SortBy.ALPHABETICAL );
             newGUI.openInventory( staff );
-            staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
+            staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "ITEM_BOOK_PAGE_TURN", "NOTE_PLING" ), 10, 1 );
         }
     }
 
