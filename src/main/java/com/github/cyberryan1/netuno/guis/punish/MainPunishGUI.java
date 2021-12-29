@@ -10,7 +10,6 @@ import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -18,7 +17,6 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 
 public class MainPunishGUI {
 
@@ -45,10 +43,7 @@ public class MainPunishGUI {
 
         if ( ConfigUtils.getInt( "main-gui.skull.index" ) != -1 ) {
             int index = ConfigUtils.getInt( "main-gui.skull.index" );
-            ItemStack skull = new ItemStack( Material.PLAYER_HEAD );
-            SkullMeta meta = ( SkullMeta ) skull.getItemMeta();
-            meta.setOwningPlayer( target );
-            skull.setItemMeta( meta );
+            ItemStack skull = GUIUtils.getPlayerSkull( target );
             String name = ConfigUtils.getColoredStr( "main-gui.skull.name" );
             items[index] = GUIUtils.setItemName( skull, name.replace( "[TARGET]", target.getName() ) );
         }
@@ -58,7 +53,10 @@ public class MainPunishGUI {
             int index = ConfigUtils.getInt( "main-gui." + bu + ".index" );
             if ( index >= 0 && index < items.length ) {
                 String name = ConfigUtils.getColoredStr( "main-gui." + bu + ".name" );
-                ItemStack item = new ItemStack( Material.matchMaterial( ConfigUtils.getStr( "main-gui." + bu + ".item" ) ) );
+                ItemStack item;
+                String materialName = ConfigUtils.getStr( "main-gui." + bu +".item" );
+                if ( GUIUtils.isColorable( materialName ) ) { item = GUIUtils.getColoredItemForVersion( materialName );}
+                else { item = new ItemStack( Material.matchMaterial( materialName ) ); }
                 items[index] = GUIUtils.setItemName( item, name.replace( "[TARGET]", target.getName() ) );
             }
         }
@@ -88,7 +86,7 @@ public class MainPunishGUI {
         if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
 
         ItemStack item = event.getCurrentItem();
-        if ( item == null || item.getType().isAir() ) { return; }
+        if ( item == null || item.getType() == Material.AIR ) { return; }
         int eventSlot = event.getSlot();
 
         if ( eventSlot == ConfigUtils.getInt( "main-gui.history.index" ) ) {
@@ -124,7 +122,7 @@ public class MainPunishGUI {
             gui.openInventory();
         }
 
-        staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+        staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
     }
 
     @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
