@@ -231,7 +231,7 @@ public class AltsListGUI implements Listener {
         ItemStack clicked = event.getCurrentItem();
         if ( clicked == null || clicked.getType() == Material.AIR ) { return; }
 
-        if ( clicked.getItemMeta().getLore() != null && clicked.getItemMeta().getLore().size() > 0 ) {
+        if ( clicked.getItemMeta().getLore() != null && clicked.getItemMeta().getLore().size() > 0 && GUIUtils.getPlayerSkull( target ).getType() == clicked.getType() ) {
             staff.closeInventory();
             String playerName = clicked.getItemMeta().getDisplayName().replace( Utils.getColored( "&c" ), "" );
             OfflinePlayer target = Bukkit.getOfflinePlayer( playerName );
