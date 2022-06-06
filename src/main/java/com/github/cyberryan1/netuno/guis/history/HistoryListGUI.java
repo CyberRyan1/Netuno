@@ -167,7 +167,8 @@ public class HistoryListGUI implements Listener {
     }
 
     public void openInventory( Player staff ) {
-        if ( gui.contains( Material.EMERALD ) == false && gui.contains( Material.REDSTONE ) == false && page == 1 ) {
+        if ( gui.contains( Material.EMERALD ) == false && gui.contains( Material.REDSTONE ) == false
+                && gui.contains( Material.GUNPOWDER ) == false && page == 1 ) {
             CommandErrors.sendNoPreviousPunishments( staff, target.getName() );
         }
         else {

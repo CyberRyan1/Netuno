@@ -104,6 +104,11 @@ public class Punishment implements Serializable, Comparable<Punishment> {
     public ItemStack getPunishmentAsItem() {
         Material itemMaterial = Material.REDSTONE;
         if ( active ) { itemMaterial = Material.EMERALD; }
+        if ( type.equalsIgnoreCase( "unmute" ) || type.equalsIgnoreCase( "unban" )
+                || type.equalsIgnoreCase( "unipmute" ) || type.equalsIgnoreCase( "unipban" ) ) {
+            itemMaterial = Material.GUNPOWDER;
+        }
+
         ItemStack sign = new ItemStack( itemMaterial );
         ItemMeta meta = sign.getItemMeta();
         meta.setDisplayName( Utils.getColored( "&hPunishment &g#" + id ) );
