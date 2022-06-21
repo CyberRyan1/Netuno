@@ -27,6 +27,6 @@ commands:
   reports:
   report:
   punish:
-    aliases: [pun]
+    aliases: [pun, p]
   chatslow:
     aliases: [slowchat]
