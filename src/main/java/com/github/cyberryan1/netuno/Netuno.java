@@ -2,6 +2,7 @@ package com.github.cyberryan1.netuno;
 
 import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
+import com.github.cyberryan1.netuno.utils.data.Database;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,10 +17,16 @@ public final class Netuno extends JavaPlugin {
         // Update/reload config files
         YMLUtils.getConfig().getYMLManager().reloadConfig();
         YMLUtils.getConfig().getYMLManager().updateConfig();
+
+        // Initialize the database
+        Database.initialize();
     }
 
     @Override
     public void onDisable() {
+
+        // Close the database (should be last thing done)
+        Database.close();
     }
 
     private void registerSkript() {
