@@ -15,6 +15,7 @@ public class SettingsEntry {
     private float f;
     private double d;
     private long l;
+    private boolean b;
     private Material mat;
     private String strList[];
 
@@ -28,6 +29,7 @@ public class SettingsEntry {
             case "float" -> this.f = YMLUtils.getConfig().getFloat( path );
             case "double" -> this.d = YMLUtils.getConfig().getDouble( path );
             case "long" -> this.l = YMLUtils.getConfig().getYMLManager().getConfig().getLong( path );
+            case "boolean" -> this.b = YMLUtils.getConfig().getBool( path );
             case "material" -> this.mat = Material.valueOf( YMLUtils.getConfig().getStr( path ) );
             case "strlist" -> this.strList = YMLUtils.getConfig().getStrList( path );
         }
@@ -44,6 +46,8 @@ public class SettingsEntry {
     public double getDouble() { return this.d; }
 
     public long getLong() { return this.l; }
+
+    public boolean bool() { return this.b; }
 
     public Material material() { return this.mat; }
 
