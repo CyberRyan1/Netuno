@@ -23,6 +23,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,14 +63,14 @@ public class AltsListGUI implements Listener {
     private void sortAlts() {
         if ( sort == SortBy.ALPHABETICAL ) {
             alts = alts.stream()
-                    .sorted( ( a1, a2 ) -> (
-                            a1.getName().compareTo( a2.getName() )
-                    ) )
+                    .filter( ( alt ) -> ( alt.getName() != null ) )
+                    .sorted( Comparator.comparing( OfflinePlayer::getName ) )
                     .collect( Collectors.toList() );
         }
 
         else if ( sort == SortBy.FIRST_DATE || sort == SortBy.LAST_DATE ) {
             alts = alts.stream()
+                    .filter( ( alt ) -> ( alt.getName() != null ) )
                     .sorted( ( a1, a2 ) -> ( int ) (
                             sort == SortBy.FIRST_DATE ? ( a1.getFirstPlayed() - a2.getFirstPlayed() )
                                     : ( a2.getFirstPlayed() - a1.getFirstPlayed() )
@@ -79,6 +80,7 @@ public class AltsListGUI implements Listener {
 
         else if ( sort == SortBy.FIRST_PUNISHED || sort == SortBy.LAST_PUNISHED ) {
             alts = alts.stream()
+                    .filter( ( alt ) -> ( alt.getName() != null ) )
                     .sorted( ( a1, a2 ) -> (
                             sort == SortBy.FIRST_PUNISHED ?
                                     ( punishedAlts.contains( a1 ) == punishedAlts.contains( a2 ) ? 0 :
