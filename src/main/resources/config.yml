@@ -916,3 +916,14 @@ database:
     username: root
     # Password to your database
     password: password
+
+  cache:
+    # Cache is always enabled and cannot be turned off
+    # The cache is used to store data in memory, such as the punishments list, reports list, etc.
+
+    # An "edit" is when a new item is added to the cache, an item is removed from the cache, or an item in the cache is updated.
+    # The below setting determines how many "edits" need to be made to the cache before it is saved to the database.
+    # Obviously, the lower, the less of a chance of your database being saved improperly, but your server can experience more lag.
+    # The higher, the more of a chance of your database being saved improperly, but your server will experience less lag.
+    # The default value is 10.
+    edits-before-save: 10

@@ -179,6 +179,8 @@ public enum Settings {
     DATABASE_SQL_USERNAME( "database.sql.userNAME", "string" ),
     DATABASE_SQL_PASSWORD( "database.sql.password", "string" ),
 
+    CACHE_EDITS_BEFORE_SAVE( "database.cache.edits-before-save", "int" )
+
     ;
 
     private String path;
