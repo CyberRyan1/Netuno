@@ -25,4 +25,11 @@ public class Database {
         }
     }
 
+    public static Connection getConnection() {
+        return connection;
+    }
+
+    public static Connection getConn() {
+        return connection;
+    }
 }
