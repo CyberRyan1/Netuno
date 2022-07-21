@@ -88,6 +88,7 @@ public class Utils {
 
     public static void sendAnyMsg( CommandSender target, String str ) {
         target.sendMessage( str );
+        if ( str.length() < 1 ) { return; }
         if ( str.charAt( str.length() - 1 ) == '\n' ) {
             target.sendMessage( "" );
         }
