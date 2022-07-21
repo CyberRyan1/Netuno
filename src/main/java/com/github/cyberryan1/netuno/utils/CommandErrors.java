@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.utils;
 
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.command.CommandSender;
 
 public class CommandErrors {
@@ -17,7 +18,7 @@ public class CommandErrors {
     }
 
     public static void sendInvalidPerms( CommandSender sender ) {
-        sender.sendMessage( ConfigUtils.getColoredStr( "general.perm-denied-msg" ) );
+        sender.sendMessage( YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" ) );
     }
 
     public static void sendPlayerCannotBePunished( CommandSender sender, String target ) {
@@ -125,7 +126,7 @@ public class CommandErrors {
     }
 
     public static void sendCanOnlyBeRanByPlayer( CommandSender sender ) {
-        sender.sendMessage( ConfigUtils.getColoredStr( "general.player-only-msg" ) );
+        sender.sendMessage( YMLUtils.getConfig().getColoredStr( "general.player-only-msg" ) );
     }
 
     public static void sendUnexpectedError( CommandSender sender ) {
@@ -161,6 +162,6 @@ public class CommandErrors {
     }
 
     public static void sendBanLengthTooLarge( CommandSender sender ) {
-        sender.sendMessage( Utils.getColored( "&hYou can only ban for a maximum of " + Time.getFormattedLength( ConfigUtils.getStr( "ban.max-time-length" ) ) ) );
+        sender.sendMessage( Utils.getColored( "&hYou can only ban for a maximum of " + Time.getFormattedLength( YMLUtils.getConfig().getStr( "ban.max-time-length" ) ) ) );
     }
 }

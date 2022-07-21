@@ -2,8 +2,8 @@ package com.github.cyberryan1.netuno.utils;
 
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.classes.Punishment;
-import com.github.cyberryan1.netuno.managers.ConfigManager;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -11,20 +11,23 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class Utils {
 
     private static Netuno plugin;
-    private static ConfigManager configManager;
     private static Database db;
 
     private static final char SPECIAL_CHARS[] = { '!', '@', '#', '$', '%', '^', '&', '(', ')', '-', '=', '+', '`', '~', '[', ']',
-                                                    '{', '}', '\\', '|', ':', ';', '\'', '\"', ',', '<', '.', '>', '/', '?' };
+                                                    '{', '}', '\\', '|', ':', ';', '\'', '\"', ',', '<', '>', '/', '?' };
 
-    public Utils( Netuno pl, ConfigManager cm ) {
+    private static final ArrayList<String> punsWithNoLength = new ArrayList<>( List.of( "kick", "warn", "unmute", "unban" ) );
+
+    public Utils( Netuno pl ) {
         plugin = pl;
-        configManager = cm;
     }
 
     public static Netuno getPlugin() { return plugin; }
@@ -54,7 +57,8 @@ public class Utils {
     }
 
     public static String getColored( String in ) {
-        in = in.replace( "&g", ConfigUtils.getStr( "general.primary-color" ) ).replace( "&h", ConfigUtils.getStr( "general.secondary-color" ) );
+        in = in.replace( "&g", YMLUtils.getConfig().getStr( "general.primary-color" ) )
+                .replace( "&h", YMLUtils.getConfig().getStr( "general.secondary-color" ) );
         return ChatColor.translateAlternateColorCodes( '&', in );
     }
 
@@ -91,25 +95,26 @@ public class Utils {
 
     public static void sendPunishmentMsg( Player target, Punishment pun ) {
         String type = pun.getType().toLowerCase();
-        if ( ConfigUtils.checkListNotEmpty( type + ".message" ) ) {
-            String message = ConfigUtils.getColoredStrFromList( type + ".message" );
-            sendAnyMsg( target, ConfigUtils.replaceAllVariables( message, pun ) );
+        String list[] = YMLUtils.getConfig().getColoredStrList( type + ".message" );
+        if ( list != null && list.length > 0 ) {
+            String msg = getCombinedString( list );
+            sendAnyMsg( target, replaceAllVariables( msg, pun ) );
         }
     }
 
     public static void sendDeniedMsg( Player target, Punishment pun ) {
         String type = pun.getType().toLowerCase();
-        String message = ConfigUtils.getColoredStrFromList( type + ".attempt" );
+        String message = getCombinedString( YMLUtils.getConfig().getColoredStrList( type + ".attempt" ) );
 
-        sendAnyMsg( target, ConfigUtils.replaceAllVariables( message, pun ) );
+        sendAnyMsg( target, replaceAllVariables( message, pun ) );
     }
 
     // Checks if a staff punishing another staff is allowable or not
     // false = not allowed, true = allowed
     public static boolean checkStaffPunishmentAllowable( Player staff, OfflinePlayer target ) {
-        if ( ConfigUtils.getBool( "general.staff-punishments" ) == false ) {
-            if ( VaultUtils.hasPerms( target, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
-                if ( VaultUtils.hasPerms( staff, ConfigUtils.getStr( "general.all-perms" ) ) == false ) {
+        if ( YMLUtils.getConfig().getBool( "general.staff-punishments" ) == false ) {
+            if ( VaultUtils.hasPerms( target, YMLUtils.getConfig().getStr( "general.staff-perm" ) ) ) {
+                if ( VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "general.all-perms" ) ) == false ) {
                     return false;
                 }
             }
@@ -121,19 +126,23 @@ public class Utils {
     // Sends a public punishment broadcast, if needed
     public static void doPublicPunBroadcast( Punishment pun ) {
         String type = pun.getType().toLowerCase();
-        boolean sendToStaff = ConfigUtils.checkListNotEmpty( type + ".staff-broadcast" );
-        if ( ConfigUtils.checkListNotEmpty( type + ".broadcast" ) ) {
-            String broadcast = ConfigUtils.getColoredStrFromList( type + ".broadcast" );
-            broadcast = ConfigUtils.replaceAllVariables( broadcast, pun );
+        String staffMessageList[] = YMLUtils.getConfig().getColoredStrList( type + ".staff-broadcast" );
+        boolean sendToStaff = staffMessageList != null && staffMessageList.length > 0;
+
+        String publicBroadcastList[] = YMLUtils.getConfig().getColoredStrList( type + ".broadcast" );
+        if ( publicBroadcastList != null && publicBroadcastList.length > 0 ) {
+            String broadcast = getCombinedString( publicBroadcastList );
+            broadcast = replaceAllVariables( broadcast, pun );
 
             for ( Player p : Bukkit.getOnlinePlayers() ) {
-                if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) == false || sendToStaff == false ) {
+                if ( VaultUtils.hasPerms( p, YMLUtils.getConfig().getStr( "general.staff-perm" ) ) == false || sendToStaff == false ) {
                     if ( p.getUniqueId().toString().equals( pun.getPlayerUUID() ) == false ) {
                         sendAnyMsg( p, broadcast );
                     }
 
                     else if ( type.equals( "kick" ) == false && type.equals( "ban" ) == false ) {
-                        if ( ConfigUtils.checkListNotEmpty( type + ".message" ) == false ) {
+                        String msgList[] = YMLUtils.getConfig().getColoredStrList( type + ".message" );
+                        if ( msgList != null && msgList.length > 0 ) {
                             sendAnyMsg( p, broadcast );
                         }
                     }
@@ -145,12 +154,14 @@ public class Utils {
     // Sends a staff punishment broadcast, if needed
     public static void doStaffPunBroadcast( Punishment pun ) {
         String type = pun.getType().toLowerCase();
-        if ( ConfigUtils.checkListNotEmpty( type + ".staff-broadcast" ) ) {
-            String broadcast = ConfigUtils.getColoredStrFromList( type + ".staff-broadcast" );
-            broadcast = ConfigUtils.replaceAllVariables( broadcast, pun );
+
+        String staffMessageList[] = YMLUtils.getConfig().getColoredStrList( type + ".staff-broadcast" );
+        if ( staffMessageList != null && staffMessageList.length > 0 ) {
+            String broadcast = getCombinedString( staffMessageList );
+            broadcast = replaceAllVariables( broadcast, pun );
 
             for ( Player p : Bukkit.getOnlinePlayers() ) {
-                if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
+                if ( VaultUtils.hasPerms( p, YMLUtils.getConfig().getStr( "general.staff-perm" ) ) ) {
                     sendAnyMsg( p, broadcast );
                 }
             }
@@ -278,4 +289,51 @@ public class Utils {
         }
         return 18;
     }
+
+    // Combines a string list into a singular string
+    public static String getCombinedString( String list[] ) {
+        if ( list == null ) { return null; }
+        if ( list.length == 0 ) { return ""; }
+        return String.join( "\n", list );
+    }
+
+    // Replaced all the config variables with the actual values
+    public static String replaceAllVariables( String str, String staff, String target, String length, String reason ) {
+        str = str.replace( "[STAFF]", staff ).replace( "[TARGET]", target );
+        if ( length.length() > 0 ) {
+            str = str.replace( "[LENGTH]", Time.getFormattedLength( length ) );
+        }
+        str = str.replace( "[REASON]", reason );
+
+        return str;
+    }
+
+    public static String replaceAllVariables( String str, Punishment pun ) {
+        String targetName = Bukkit.getOfflinePlayer( UUID.fromString( pun.getPlayerUUID() ) ).getName();
+        String staffName = "CONSOLE";
+        if ( pun.getStaffUUID().equalsIgnoreCase( "CONSOLE" ) == false ) {
+            staffName = Bukkit.getOfflinePlayer( UUID.fromString( pun.getStaffUUID() ) ).getName();
+        }
+
+        str = str.replace( "[STAFF]", staffName ).replace( "[TARGET]", targetName );
+
+        if ( punsWithNoLength.contains( pun.getType().toLowerCase() ) == false ) {
+            str = str.replace( "[LENGTH]", Time.getLengthFromTimestamp( pun.getLength() ) );
+            str = str.replace( "[REMAIN]", Time.getLengthRemaining( pun ) );
+        }
+
+        str = str.replace( "[REASON]", pun.getReason() );
+
+        return str;
+    }
+
+    public static String replaceStaffVariable( String str, CommandSender sender ) {
+        if ( sender instanceof OfflinePlayer ) {
+            OfflinePlayer staff = ( OfflinePlayer ) sender;
+            return str.replace( "[STAFF]", staff.getName() );
+        }
+
+        return str.replace( "[STAFF]", "CONSOLE" );
+    }
+
 }
