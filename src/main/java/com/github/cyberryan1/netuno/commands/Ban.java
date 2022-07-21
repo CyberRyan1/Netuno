@@ -2,8 +2,12 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.classes.PrePunishment;
-import com.github.cyberryan1.netuno.utils.*;
+import com.github.cyberryan1.netuno.utils.CommandErrors;
+import com.github.cyberryan1.netuno.utils.Time;
+import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -19,7 +23,7 @@ public class Ban extends BaseCommand {
     private final Database DATA = Utils.getDatabase();
 
     public Ban() {
-        super( "ban", ConfigUtils.getStr( "ban.perm" ), ConfigUtils.getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&uban &y(player) (length/forever) (reason) [-s]" ) );
+        super( "ban", YMLUtils.getConfig().getStr( "ban.perm" ), YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&uban &y(player) (length/forever) (reason) [-s]" ) );
     }
 
     @Override
@@ -45,7 +49,7 @@ public class Ban extends BaseCommand {
     // /ban (player) (length/forever) (reason)
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
-        if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "ban.perm" ) ) == false ) {
+        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "ban.perm" ) ) == false ) {
             CommandErrors.sendInvalidPerms( sender );
             return true;
         }
@@ -61,11 +65,11 @@ public class Ban extends BaseCommand {
                 OfflinePlayer target = Bukkit.getServer().getOfflinePlayer( args[0] );
                 if ( target != null ) {
 
-                    if ( ConfigUtils.getBool( "ban.max-time-enable" ) ) {
-                        long maxBanLength = Time.getTimestampFromLength( ConfigUtils.getStr( "ban.max-time-length" ) );
+                    if ( YMLUtils.getConfig().getBool( "ban.max-time-enable" ) ) {
+                        long maxBanLength = Time.getTimestampFromLength( YMLUtils.getConfig().getStr( "ban.max-time-length" ) );
                         long banLength = Time.getTimestampFromLength( args[1] );
                         if ( maxBanLength < banLength ) {
-                            if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "ban.max-time-bypass" ) ) == false ) {
+                            if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "ban.max-time-bypass" ) ) == false ) {
                                 CommandErrors.sendBanLengthTooLarge( sender );
                                 return true;
                             }
