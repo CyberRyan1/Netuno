@@ -5,12 +5,15 @@ import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.guis.events.GUIEventType;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
-import com.github.cyberryan1.netuno.utils.*;
+import com.github.cyberryan1.netuno.utils.CommandErrors;
+import com.github.cyberryan1.netuno.utils.Time;
+import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -107,7 +110,7 @@ public class HistoryEditGUI implements Listener {
             && itemName.equals( Utils.getColored( "&hGo back" ) ) == false ) { return; }
 
         if ( itemClicked.equals( GUIUtils.setItemName( GUIUtils.getItemForVersion( "CLOCK", "WATCH" ), "&hEdit length" ) ) ) {
-            if ( VaultUtils.hasPerms( staff, ConfigUtils.getStr( "history.time.perm" ) ) == false ) {
+            if ( VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "history.time.perm" ) ) == false ) {
                 CommandErrors.sendInvalidPerms( staff );
             }
 
@@ -120,7 +123,7 @@ public class HistoryEditGUI implements Listener {
         }
 
         else if ( itemClicked.equals( GUIUtils.createItem( Material.PAPER, "&hEdit reason" ) ) ) {
-            if ( VaultUtils.hasPerms( staff, ConfigUtils.getStr( "history.reason.perm" ) ) == false ) {
+            if ( VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "history.reason.perm" ) ) == false ) {
                 CommandErrors.sendInvalidPerms( staff );
             }
 
@@ -133,7 +136,7 @@ public class HistoryEditGUI implements Listener {
         }
 
         else if ( itemClicked.equals( GUIUtils.createItem( Material.BARRIER, "&hDelete punishment" ) ) ) {
-            if ( VaultUtils.hasPerms( staff, ConfigUtils.getStr( "history.delete.perm" ) ) == false ) {
+            if ( VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "history.delete.perm" ) ) == false ) {
                 CommandErrors.sendInvalidPerms( staff );
             }
 
