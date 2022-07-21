@@ -2,19 +2,19 @@ package com.github.cyberryan1.netuno;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
+import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.netuno.commands.*;
+import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.listeners.*;
 import com.github.cyberryan1.netuno.managers.ChatslowManager;
-import com.github.cyberryan1.netuno.managers.ConfigManager;
-import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.skriptelements.conditions.RegisterConditions;
 import com.github.cyberryan1.netuno.skriptelements.expressions.RegisterExpressions;
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import com.github.cyberryan1.netuno.utils.database.sql.SQL;
 import com.github.cyberryan1.netuno.utils.database.sqlite.SQLite;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -35,11 +35,9 @@ import java.io.IOException;
 // ? TODO add a way to convert vanilla bans to netuno bans
 public final class Netuno extends JavaPlugin {
 
-    private ConfigManager config;
     private ChatslowManager chatslowManager;
 
     private Utils util;
-    private ConfigUtils configUtils;
     private VaultUtils vaultUtils;
 
     // Skript
@@ -48,12 +46,14 @@ public final class Netuno extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        config = new ConfigManager( this );
-
-        util = new Utils(this, config );
-
-        configUtils = new ConfigUtils( config );
+        // Initialize things
+        CyberCore.setPlugin( this );
+        util = new Utils(this );
         vaultUtils = new VaultUtils();
+
+        // Update/reload config files
+        YMLUtils.getConfig().getYMLManager().reloadConfig();
+        YMLUtils.getConfig().getYMLManager().updateConfig();
 
         setupDatabase();
         chatslowManager = new ChatslowManager();
@@ -61,8 +61,6 @@ public final class Netuno extends JavaPlugin {
         registerSkript();
         registerCommands();
         registerEvents();
-
-        ConfigUtils.getConfigManager().updateConfig();
     }
 
     @Override
