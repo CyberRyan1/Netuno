@@ -5,12 +5,15 @@ import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.guis.events.GUIEventType;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netuno.managers.StaffPlayerPunishManager;
-import com.github.cyberryan1.netuno.utils.*;
+import com.github.cyberryan1.netuno.utils.CommandErrors;
+import com.github.cyberryan1.netuno.utils.Time;
+import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -40,13 +43,13 @@ public class BanPunishGUI {
         setReasons();
         setGuiSize();
 
-        this.guiName = ConfigUtils.getColoredStr( "ban-gui.inventory_name" ).replace( "[TARGET]", target.getName() );
+        this.guiName = YMLUtils.getConfig().getColoredStr( "ban-gui.inventory_name" ).replace( "[TARGET]", target.getName() );
         this.gui = Bukkit.createInventory( null, this.guiSize, this.guiName );
         insertItems();
     }
 
     private void setReasons() {
-        this.reasons = ConfigUtils.getKeys( "ban-gui." );
+        this.reasons = YMLUtils.getConfig().getKeys( "ban-gui." );
         for ( int index = reasons.size() - 1; index >= 0; index-- ) {
             if ( reasons.get( index ).equals( "ban-gui.inventory_name" ) || reasons.get( index ).equals( "ban-gui.permission" ) ) {
                 reasons.remove( index );
@@ -76,25 +79,25 @@ public class BanPunishGUI {
                 if ( punIndex >= reasons.size() ) { break; }
 
                 String path = "ban-gui." + reasons.get( punIndex );
-                Material material = Material.matchMaterial( ConfigUtils.getStr( path + ".material" ) );
+                Material material = Material.matchMaterial( YMLUtils.getConfig().getStr( path + ".material" ) );
                 if ( material != Material.AIR ) {
                     int punCount = DATA.getGUIPunCount( target, "ban", reasons.get( punIndex ) );
 
-                    String name = ConfigUtils.getColoredStr( path + ".item-name" );
-                    name = ConfigUtils.replacePunGUIVariables( name, target, punCount );
+                    String name = YMLUtils.getConfig().getColoredStr( path + ".item-name" );
+                    name = Utils.replacePunGUIVariables( name, target, punCount );
 
                     ItemStack toAdd;
-                    String materialName = ConfigUtils.getStr( path + ".material" );
+                    String materialName = YMLUtils.getConfig().getStr( path + ".material" );
                     if ( GUIUtils.isColorable( materialName ) ) {
                         toAdd = GUIUtils.getColoredItemForVersion( materialName );
                         toAdd = GUIUtils.setItemName( toAdd, name );
                     }
                     else { toAdd = GUIUtils.createItem( material, name ); }
 
-                    String lore = ConfigUtils.getColoredStr( path + ".item-lore" );
+                    String lore = YMLUtils.getConfig().getColoredStr( path + ".item-lore" );
                     if ( lore.equals( "" ) ) { items[guiIndex] = toAdd; }
                     else {
-                        String split[] = ConfigUtils.replacePunGUIVariables( lore, target, punCount ).split( "\n" );
+                        String split[] = Utils.replacePunGUIVariables( lore, target, punCount ).split( "\n" );
                         items[guiIndex] = GUIUtils.setItemLore( toAdd, split );
                     }
                 }
@@ -110,8 +113,8 @@ public class BanPunishGUI {
     }
 
     public void openInventory() {
-        if ( ConfigUtils.getStr( "ban-gui.permission" ).equals( "" ) == false &&
-                VaultUtils.hasPerms( staff, ConfigUtils.getStr( "ban-gui.permission" ) ) == false ) {
+        if ( YMLUtils.getConfig().getStr( "ban-gui.permission" ).equals( "" ) == false &&
+                VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "ban-gui.permission" ) ) == false ) {
             CommandErrors.sendInvalidPerms( staff );
             return;
         }
@@ -151,16 +154,16 @@ public class BanPunishGUI {
 
         String punishmentReason = Utils.removeColorCodes( item.getItemMeta().getDisplayName() );
         String punishmentOffense = " (" + Utils.formatIntIntoAmountString( currentPuns + 1 ) + " Offense)";
-        String punishmentLength = ConfigUtils.getStr( "ban-gui." + punClickedReason + ".starting-time" );
-        if ( ConfigUtils.getBool( "ban-gui." + punClickedReason + ".autoscale" ) ) {
-            punishmentLength = Time.getScaledTime( ConfigUtils.getStr( "ban-gui." + punClickedReason + ".starting-time" ), currentPuns + 1 );
+        String punishmentLength = YMLUtils.getConfig().getStr( "ban-gui." + punClickedReason + ".starting-time" );
+        if ( YMLUtils.getConfig().getBool( "ban-gui." + punClickedReason + ".autoscale" ) ) {
+            punishmentLength = Time.getScaledTime( YMLUtils.getConfig().getStr( "ban-gui." + punClickedReason + ".starting-time" ), currentPuns + 1 );
         }
 
-        if ( ConfigUtils.getBool( "ban.max-time-enable" ) ) {
-            long maxBanLength = Time.getTimestampFromLength( ConfigUtils.getStr( "ban.max-time-length" ) );
+        if ( YMLUtils.getConfig().getBool( "ban.max-time-enable" ) ) {
+            long maxBanLength = Time.getTimestampFromLength( YMLUtils.getConfig().getStr( "ban.max-time-length" ) );
             long banLength = Time.getTimestampFromLength( punishmentLength );
             if ( maxBanLength < banLength ) {
-                if ( VaultUtils.hasPerms( staff, ConfigUtils.getStr( "ban.max-time-bypass" ) ) == false ) {
+                if ( VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "ban.max-time-bypass" ) ) == false ) {
                     CommandErrors.sendBanLengthTooLarge( staff );
                     staff.closeInventory();
                     return;
