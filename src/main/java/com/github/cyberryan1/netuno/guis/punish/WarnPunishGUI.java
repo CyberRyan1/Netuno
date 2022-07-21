@@ -5,12 +5,15 @@ import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.guis.events.GUIEventType;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netuno.managers.StaffPlayerPunishManager;
-import com.github.cyberryan1.netuno.utils.*;
+import com.github.cyberryan1.netuno.utils.CommandErrors;
+import com.github.cyberryan1.netuno.utils.Time;
+import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -40,13 +43,13 @@ public class WarnPunishGUI {
         setReasons();
         setGuiSize();
 
-        this.guiName = ConfigUtils.getColoredStr( "warn-gui.inventory_name" ).replace( "[TARGET]", target.getName() );
+        this.guiName = YMLUtils.getConfig().getColoredStr( "warn-gui.inventory_name" ).replace( "[TARGET]", target.getName() );
         this.gui = Bukkit.createInventory( null, this.guiSize, this.guiName );
         insertItems();
     }
 
     private void setReasons() {
-        this.reasons = ConfigUtils.getKeys( "warn-gui." );
+        this.reasons = YMLUtils.getConfig().getKeys( "warn-gui." );
         for ( int index = reasons.size() - 1; index >= 0; index-- ) {
             if ( reasons.get( index ).equals( "warn-gui.inventory_name" ) || reasons.get( index ).equals( "warn-gui.permission" ) ) {
                 reasons.remove( index );
@@ -75,24 +78,24 @@ public class WarnPunishGUI {
             for ( int col = 0; col < 6; col++ ) {
                 if ( punIndex >= reasons.size() ) { break; }
                 String path = "warn-gui." + reasons.get( punIndex );
-                Material material = Material.matchMaterial( ConfigUtils.getStr( path + ".material" ) );
+                Material material = Material.matchMaterial( YMLUtils.getConfig().getStr( path + ".material" ) );
                 if ( material != Material.AIR ) {
                     int punCount = DATA.getGUIPunCount( target, "warn", reasons.get( punIndex ) );
-                    String name = ConfigUtils.getColoredStr( path + ".item-name" );
-                    name = ConfigUtils.replacePunGUIVariables( name, target, punCount );
+                    String name = YMLUtils.getConfig().getColoredStr( path + ".item-name" );
+                    name = Utils.replacePunGUIVariables( name, target, punCount );
 
                     ItemStack toAdd;
-                    String materialName = ConfigUtils.getStr( path + ".material" );
+                    String materialName = YMLUtils.getConfig().getStr( path + ".material" );
                     if ( GUIUtils.isColorable( materialName ) ) {
                         toAdd = GUIUtils.getColoredItemForVersion( materialName );
                         toAdd = GUIUtils.setItemName( toAdd, name );
                     }
                     else { toAdd = GUIUtils.createItem( material, name ); }
 
-                    String lore = ConfigUtils.getColoredStr( path + ".item-lore" );
+                    String lore = YMLUtils.getConfig().getColoredStr( path + ".item-lore" );
                     if ( lore.equals( "" ) ) { items[guiIndex] = toAdd; }
                     else {
-                        lore = ConfigUtils.replacePunGUIVariables( lore, target, punCount );
+                        lore = Utils.replacePunGUIVariables( lore, target, punCount );
                         String split[] = lore.split( "\n" );
                         items[guiIndex] = GUIUtils.setItemLore( toAdd, split );
                     }
@@ -109,8 +112,8 @@ public class WarnPunishGUI {
     }
 
     public void openInventory() {
-        if ( ConfigUtils.getStr( "warn-gui.permission" ).equals( "" ) == false &&
-                VaultUtils.hasPerms( staff, ConfigUtils.getStr( "warn-gui.permission" ) ) == false ) {
+        if ( YMLUtils.getConfig().getStr( "warn-gui.permission" ).equals( "" ) == false &&
+                VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "warn-gui.permission" ) ) == false ) {
             CommandErrors.sendInvalidPerms( staff );
             return;
         }
@@ -145,7 +148,7 @@ public class WarnPunishGUI {
 
         int punClickedIndex = indexToSlot.indexOf( eventSlot );
         String punClickedReason = reasons.get( punClickedIndex );
-        int maxWarnsBeforePunish = ConfigUtils.getInt( "warn-gui." + punClickedReason + ".punish-after" );
+        int maxWarnsBeforePunish = YMLUtils.getConfig().getInt( "warn-gui." + punClickedReason + ".punish-after" );
         int currentWarns = DATA.getGUIPunCount( target, "warn", punClickedReason );
 
         String punishmentReason = Utils.removeColorCodes( item.getItemMeta().getDisplayName() );
@@ -153,10 +156,10 @@ public class WarnPunishGUI {
         int punID = -1;
 
         if ( currentWarns >= maxWarnsBeforePunish ) {
-            String punishmentType = ConfigUtils.getStr( "warn-gui." + punClickedReason + ".punishment" );
-            String punishmentLength = ConfigUtils.getStr( "warn-gui." + punClickedReason + ".starting-time" );
-            if ( ConfigUtils.getBool( "warn-gui." + punClickedReason + ".autoscale" ) ) {
-                punishmentLength = Time.getScaledTime( ConfigUtils.getStr( "warn-gui." + punClickedReason + ".starting-time" ),
+            String punishmentType = YMLUtils.getConfig().getStr( "warn-gui." + punClickedReason + ".punishment" );
+            String punishmentLength = YMLUtils.getConfig().getStr( "warn-gui." + punClickedReason + ".starting-time" );
+            if ( YMLUtils.getConfig().getBool( "warn-gui." + punClickedReason + ".autoscale" ) ) {
+                punishmentLength = Time.getScaledTime( YMLUtils.getConfig().getStr( "warn-gui." + punClickedReason + ".starting-time" ),
                         ( 1 + currentWarns - maxWarnsBeforePunish ) );
             }
             if ( punishmentType.equalsIgnoreCase( "kick" ) ||

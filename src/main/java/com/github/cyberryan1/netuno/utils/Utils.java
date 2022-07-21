@@ -336,4 +336,7 @@ public class Utils {
         return str.replace( "[STAFF]", "CONSOLE" );
     }
 
+    public static String replacePunGUIVariables( String str, OfflinePlayer target, int previous ) {
+        return str.replace( "[TARGET]", target.getName() ).replace( "[PREVIOUS]", previous + "" );
+    }
 }

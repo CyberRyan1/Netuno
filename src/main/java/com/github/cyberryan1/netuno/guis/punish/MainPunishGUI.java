@@ -6,7 +6,7 @@ import com.github.cyberryan1.netuno.guis.events.GUIEventType;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netuno.managers.StaffPlayerPunishManager;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -29,7 +29,7 @@ public class MainPunishGUI {
         this.staff = staff;
         this.target = target;
 
-        this.guiName = ConfigUtils.getColoredStr( "main-gui.inventory-name" ).replace( "[TARGET]", target.getName() );
+        this.guiName = YMLUtils.getConfig().getColoredStr( "main-gui.inventory-name" ).replace( "[TARGET]", target.getName() );
         gui = Bukkit.createInventory( null, 45, guiName );
         insertItems();
     }
@@ -41,20 +41,20 @@ public class MainPunishGUI {
         ItemStack items[] = new ItemStack[45];
         for ( int index = 0; index < items.length; index++ ) { items[index] = GUIUtils.getBackgroundGlass(); }
 
-        if ( ConfigUtils.getInt( "main-gui.skull.index" ) != -1 ) {
-            int index = ConfigUtils.getInt( "main-gui.skull.index" );
+        if ( YMLUtils.getConfig().getInt( "main-gui.skull.index" ) != -1 ) {
+            int index = YMLUtils.getConfig().getInt( "main-gui.skull.index" );
             ItemStack skull = GUIUtils.getPlayerSkull( target );
-            String name = ConfigUtils.getColoredStr( "main-gui.skull.name" );
+            String name = YMLUtils.getConfig().getColoredStr( "main-gui.skull.name" );
             items[index] = GUIUtils.setItemName( skull, name.replace( "[TARGET]", target.getName() ) );
         }
 
         String buttons[] = { "history", "alts", "warn", "mute", "ban", "ipmute", "ipban" };
         for ( String bu : buttons ) {
-            int index = ConfigUtils.getInt( "main-gui." + bu + ".index" );
+            int index = YMLUtils.getConfig().getInt( "main-gui." + bu + ".index" );
             if ( index >= 0 && index < items.length ) {
-                String name = ConfigUtils.getColoredStr( "main-gui." + bu + ".name" );
+                String name = YMLUtils.getConfig().getColoredStr( "main-gui." + bu + ".name" );
                 ItemStack item;
-                String materialName = ConfigUtils.getStr( "main-gui." + bu +".item" );
+                String materialName = YMLUtils.getConfig().getStr( "main-gui." + bu +".item" );
                 if ( GUIUtils.isColorable( materialName ) ) { item = GUIUtils.getColoredItemForVersion( materialName );}
                 else { item = new ItemStack( Material.matchMaterial( materialName ) ); }
                 items[index] = GUIUtils.setItemName( item, name.replace( "[TARGET]", target.getName() ) );
@@ -89,35 +89,35 @@ public class MainPunishGUI {
         if ( item == null || item.getType() == Material.AIR ) { return; }
         int eventSlot = event.getSlot();
 
-        if ( eventSlot == ConfigUtils.getInt( "main-gui.history.index" ) ) {
+        if ( eventSlot == YMLUtils.getConfig().getInt( "main-gui.history.index" ) ) {
             staff.chat( "/history list " + target.getName() );
         }
 
-        else if ( eventSlot == ConfigUtils.getInt( "main-gui.alts.index" ) ) {
+        else if ( eventSlot == YMLUtils.getConfig().getInt( "main-gui.alts.index" ) ) {
             staff.chat( "/ipinfo " + target.getName() );
         }
 
-        else if ( eventSlot == ConfigUtils.getInt( "main-gui.warn.index" ) ) {
+        else if ( eventSlot == YMLUtils.getConfig().getInt( "main-gui.warn.index" ) ) {
             WarnPunishGUI gui = new WarnPunishGUI( staff, target );
             gui.openInventory();
         }
 
-        else if ( eventSlot == ConfigUtils.getInt( "main-gui.mute.index" ) ) {
+        else if ( eventSlot == YMLUtils.getConfig().getInt( "main-gui.mute.index" ) ) {
             MutePunishGUI gui = new MutePunishGUI( staff, target );
             gui.openInventory();
         }
 
-        else if ( eventSlot == ConfigUtils.getInt( "main-gui.ban.index" ) ) {
+        else if ( eventSlot == YMLUtils.getConfig().getInt( "main-gui.ban.index" ) ) {
             BanPunishGUI gui = new BanPunishGUI( staff, target );
             gui.openInventory();
         }
 
-        else if ( eventSlot == ConfigUtils.getInt( "main-gui.ipmute.index" ) ) {
+        else if ( eventSlot == YMLUtils.getConfig().getInt( "main-gui.ipmute.index" ) ) {
             IPMutePunishGUI gui = new IPMutePunishGUI( staff, target );
             gui.openInventory();
         }
 
-        else if ( eventSlot == ConfigUtils.getInt( "main-gui.ipban.index" ) ) {
+        else if ( eventSlot == YMLUtils.getConfig().getInt( "main-gui.ipban.index" ) ) {
             IPBanPunishGUI gui = new IPBanPunishGUI( staff, target );
             gui.openInventory();
         }
