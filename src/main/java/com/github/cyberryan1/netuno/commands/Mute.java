@@ -2,8 +2,12 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.classes.PrePunishment;
-import com.github.cyberryan1.netuno.utils.*;
+import com.github.cyberryan1.netuno.utils.CommandErrors;
+import com.github.cyberryan1.netuno.utils.Time;
+import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -19,7 +23,7 @@ public class Mute extends BaseCommand {
     private final Database DATA = Utils.getDatabase();
 
     public Mute() {
-        super( "mute", ConfigUtils.getStr( "mute.perm" ), ConfigUtils.getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&umute &y(player) (length/forever) (reason) [-s]" ) );
+        super( "mute", YMLUtils.getConfig().getStr( "mute.perm" ), YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&umute &y(player) (length/forever) (reason) [-s]" ) );
     }
 
     @Override
@@ -45,7 +49,7 @@ public class Mute extends BaseCommand {
     // /mute (player) (length/forever) (reason)
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
-        if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "mute.perm" ) ) == false ) {
+        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "mute.perm" ) ) == false ) {
             CommandErrors.sendInvalidPerms( sender );
             return true;
         }

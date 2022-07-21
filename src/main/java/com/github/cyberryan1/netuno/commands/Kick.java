@@ -2,8 +2,11 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.classes.PrePunishment;
-import com.github.cyberryan1.netuno.utils.*;
+import com.github.cyberryan1.netuno.utils.CommandErrors;
+import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -17,7 +20,7 @@ public class Kick extends BaseCommand {
     private final Database DATA = Utils.getDatabase();
 
     public Kick() {
-        super( "kick", ConfigUtils.getStr( "kick.perm" ), ConfigUtils.getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&ukick &y(player) (reason) [-s]" ) );
+        super( "kick", YMLUtils.getConfig().getStr( "kick.perm" ), YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&ukick &y(player) (reason) [-s]" ) );
     }
 
     @Override
@@ -36,7 +39,7 @@ public class Kick extends BaseCommand {
     @Override
     // /kick (player) (reason)
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
-        if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "kick.perm" ) ) ) {
+        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "kick.perm" ) ) ) {
             if ( Utils.isOutOfBounds( args, 1 ) == false ) {
 
                 if ( Utils.isValidUsername( args[0] ) == false ) {

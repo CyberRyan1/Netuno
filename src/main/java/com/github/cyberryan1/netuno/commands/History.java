@@ -5,12 +5,14 @@ import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.guis.history.HistoryEditGUI;
 import com.github.cyberryan1.netuno.guis.history.HistoryListGUI;
-import com.github.cyberryan1.netuno.utils.*;
+import com.github.cyberryan1.netuno.utils.CommandErrors;
+import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -24,7 +26,7 @@ public class History extends BaseCommand {
     private final Database DATA = Utils.getDatabase();
 
     public History() {
-        super( "history", ConfigUtils.getStr( "history.perm" ), ConfigUtils.getColoredStr( "general.perm-denied-msg" ), null );
+        super( "history", YMLUtils.getConfig().getStr( "history.perm" ), YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" ), null );
     }
 
 
@@ -77,7 +79,7 @@ public class History extends BaseCommand {
     // /history reset (player)
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
-        if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "history.perm" ) ) == false ) {
+        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "history.perm" ) ) == false ) {
             CommandErrors.sendInvalidPerms( sender );
             return true;
         }
@@ -159,7 +161,7 @@ public class History extends BaseCommand {
 
 
             else if ( args[0].equalsIgnoreCase( "reset" ) ) {
-                if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "history.reset.perm" ) ) == false ) {
+                if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "history.reset.perm" ) ) == false ) {
                     CommandErrors.sendInvalidPerms( sender );
                     return true;
                 }

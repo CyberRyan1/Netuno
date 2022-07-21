@@ -2,8 +2,12 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.classes.PrePunishment;
-import com.github.cyberryan1.netuno.utils.*;
+import com.github.cyberryan1.netuno.utils.CommandErrors;
+import com.github.cyberryan1.netuno.utils.Time;
+import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -19,7 +23,7 @@ public class IPBan extends BaseCommand {
     private final Database DATA = Utils.getDatabase();
 
     public IPBan() {
-        super( "ipban", ConfigUtils.getStr( "ipban.perm" ), ConfigUtils.getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&uipban &y(player) (length/forever) (reason) [-s]" ) );
+        super( "ipban", YMLUtils.getConfig().getStr( "ipban.perm" ), YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&uipban &y(player) (length/forever) (reason) [-s]" ) );
     }
 
     @Override
@@ -45,7 +49,7 @@ public class IPBan extends BaseCommand {
     // /ipban (player) (length/forever) (reason)
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
-        if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "ipban.perm" ) ) == false ) {
+        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "ipban.perm" ) ) == false ) {
             CommandErrors.sendInvalidPerms( sender );
             return true;
         }

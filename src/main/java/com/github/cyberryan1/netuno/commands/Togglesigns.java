@@ -2,12 +2,11 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -19,7 +18,7 @@ public class Togglesigns extends BaseCommand {
     private final Database DATA = Utils.getDatabase();
 
     public Togglesigns() {
-        super( "reports", ConfigUtils.getStr( "signs.notifs-perm" ), getColorizedStr( "&8/&ureports &y[player]" ) );
+        super( "reports", YMLUtils.getConfig().getStr( "signs.notifs-perm" ), getColorizedStr( "&8/&ureports &y[player]" ) );
     }
 
 
@@ -45,7 +44,7 @@ public class Togglesigns extends BaseCommand {
     // /togglesigns [enable/disable]
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
-        if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "signs.notifs-perm" ) ) == false ) {
+        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "signs.notifs-perm" ) ) == false ) {
             CommandErrors.sendInvalidPerms( sender );
             return true;
         }

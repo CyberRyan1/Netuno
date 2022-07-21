@@ -3,13 +3,12 @@ package com.github.cyberryan1.netuno.commands;
 import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.managers.ChatslowManager;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class Chatslow extends BaseCommand {
     private final Database DATA = Utils.getDatabase();
 
     public Chatslow() {
-        super( "chatslow", ConfigUtils.getStr( "chatslow.perm" ), ConfigUtils.getColoredStr( "general.perm-denied-msg" ), null );
+        super( "chatslow", YMLUtils.getConfig().getStr( "chatslow.perm" ), YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" ), null );
     }
 
     @Override
@@ -56,7 +55,7 @@ public class Chatslow extends BaseCommand {
     // /chatslow set (amount)
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
-        if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "chatslow.perm" ) ) == false ) {
+        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "chatslow.perm" ) ) == false ) {
             CommandErrors.sendInvalidPerms( sender );
             return true;
         }
@@ -87,8 +86,8 @@ public class Chatslow extends BaseCommand {
                     ChatslowManager.setSlow( newSlow );
                     sender.sendMessage( Utils.getColored( "&hThe chatslow has been set to &g" + ChatslowManager.getSlow() + " seconds" ) );
 
-                    if ( ConfigUtils.getStr( "chatslow.broadcast" ).equals( "" ) == false ) {
-                        Bukkit.broadcastMessage( ConfigUtils.getColoredStr( "chatslow.broadcast" ).replace( "[AMOUNT]", newSlow + "" ) );
+                    if ( YMLUtils.getConfig().getStr( "chatslow.broadcast" ).equals( "" ) == false ) {
+                        Bukkit.broadcastMessage( YMLUtils.getConfig().getColoredStr( "chatslow.broadcast" ).replace( "[AMOUNT]", newSlow + "" ) );
                     }
                 }
 

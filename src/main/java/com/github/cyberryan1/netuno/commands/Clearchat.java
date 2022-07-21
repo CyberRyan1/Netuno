@@ -2,9 +2,9 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
+import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
-
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -16,7 +16,7 @@ import java.util.List;
 public class Clearchat extends BaseCommand {
 
     public Clearchat() {
-        super( "clearchat", ConfigUtils.getStr( "clearchat.perm" ),  ConfigUtils.getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&uclearchat" ) );
+        super( "clearchat", YMLUtils.getConfig().getStr( "clearchat.perm" ),  YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&uclearchat" ) );
     }
 
     @Override
@@ -27,17 +27,17 @@ public class Clearchat extends BaseCommand {
     @Override
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
-        if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "clearchat.perm" ) ) == false ) {
+        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "clearchat.perm" ) ) == false ) {
             CommandErrors.sendInvalidPerms( sender );
             return true;
         }
 
-        String broadcast = ConfigUtils.getColoredStr( "clearchat.broadcast" );
-        broadcast = ConfigUtils.replaceStaffVariable( broadcast, sender );
+        String broadcast = YMLUtils.getConfig().getColoredStr( "clearchat.broadcast" );
+        broadcast = Utils.replaceStaffVariable( broadcast, sender );
 
-        boolean sendStaffBroadcast = ConfigUtils.getStr( "clearchat.staff-broadcast" ).equals( "" ) == false;
-        String staffBroadcast = ConfigUtils.getColoredStr( "clearchat.staff-broadcast" );
-        staffBroadcast = ConfigUtils.replaceStaffVariable( staffBroadcast, sender );
+        boolean sendStaffBroadcast = YMLUtils.getConfig().getStr( "clearchat.staff-broadcast" ).equals( "" ) == false;
+        String staffBroadcast = YMLUtils.getConfig().getColoredStr( "clearchat.staff-broadcast" );
+        staffBroadcast = Utils.replaceStaffVariable( staffBroadcast, sender );
 
         // clears ~860 lines of chat
         String clear = "";
@@ -46,12 +46,12 @@ public class Clearchat extends BaseCommand {
         }
 
         for ( Player p : Bukkit.getOnlinePlayers() ) {
-            if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) == false ) {
+            if ( VaultUtils.hasPerms( p, YMLUtils.getConfig().getStr( "general.staff-perm" ) ) == false ) {
                 p.sendMessage( clear );
                 p.sendMessage( broadcast );
             }
             else {
-                if ( ConfigUtils.getBool( "clearchat.staff-bypass" ) == false ) {
+                if ( YMLUtils.getConfig().getBool( "clearchat.staff-bypass" ) == false ) {
                     p.sendMessage( clear );
                 }
 

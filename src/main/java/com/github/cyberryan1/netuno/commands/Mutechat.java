@@ -3,13 +3,11 @@ package com.github.cyberryan1.netuno.commands;
 import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.managers.MutechatManager;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
-
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -19,11 +17,11 @@ import java.util.List;
 
 public class Mutechat extends BaseCommand {
 
-    private final String CHAT_MUTE_ENABLE = ConfigUtils.getColoredStrFromList( "mutechat.enable-broadcast" );
-    private final String CHAT_MUTE_DISABLE = ConfigUtils.getColoredStrFromList( "mutechat.disable-broadcast" );
+    private final String CHAT_MUTE_ENABLE = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "mutechat.enable-broadcast" ) );
+    private final String CHAT_MUTE_DISABLE = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "mutechat.disable-broadcast" ) );
 
     public Mutechat() {
-        super( "mutechat", ConfigUtils.getStr( "mutechat.perm" ), ConfigUtils.getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&umutechat &y[toggle/enable/disable/status]" ) );
+        super( "mutechat", YMLUtils.getConfig().getStr( "mutechat.perm" ), YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&umutechat &y[toggle/enable/disable/status]" ) );
     }
 
     @Override
@@ -69,7 +67,7 @@ public class Mutechat extends BaseCommand {
     // /mutechat [toggle/enable/disable/status]
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
-        if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "mutechat.perm" ) ) == false ) {
+        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "mutechat.perm" ) ) == false ) {
             CommandErrors.sendInvalidPerms( sender );
             return true;
         }
@@ -82,8 +80,8 @@ public class Mutechat extends BaseCommand {
                 }
 
                 MutechatManager.setChatMuted( false );
-                if ( ConfigUtils.checkListNotEmpty( "mutechat.enable-broadcast" ) ) {
-                    String msg = ConfigUtils.replaceStaffVariable( CHAT_MUTE_ENABLE, sender );
+                if ( CHAT_MUTE_ENABLE != null && CHAT_MUTE_ENABLE.length() > 0 ) {
+                    String msg = Utils.replaceStaffVariable( CHAT_MUTE_ENABLE, sender );
                     for ( Player p : Bukkit.getServer().getOnlinePlayers() ) {
                         Utils.sendAnyMsg( p, msg );
                     }
@@ -102,8 +100,8 @@ public class Mutechat extends BaseCommand {
                 }
 
                 MutechatManager.setChatMuted( true );
-                if ( ConfigUtils.checkListNotEmpty( "mutechat.disable-broadcast" ) ) {
-                    String msg = ConfigUtils.replaceStaffVariable( CHAT_MUTE_DISABLE, sender );
+                if ( CHAT_MUTE_DISABLE != null && CHAT_MUTE_DISABLE.length() > 0 ) {
+                    String msg = Utils.replaceStaffVariable( CHAT_MUTE_DISABLE, sender );
                     for ( Player p : Bukkit.getServer().getOnlinePlayers() ) {
                         Utils.sendAnyMsg( p, msg );
                     }
@@ -118,8 +116,8 @@ public class Mutechat extends BaseCommand {
                 // mutechat enabled -> disabled
                 if ( MutechatManager.chatIsMuted() == false ) {
                     MutechatManager.setChatMuted( true );
-                    if ( ConfigUtils.checkListNotEmpty( "mutechat.disable-broadcast" ) ) {
-                        String msg = ConfigUtils.replaceStaffVariable( CHAT_MUTE_DISABLE, sender );
+                    if ( CHAT_MUTE_DISABLE != null && CHAT_MUTE_DISABLE.length() > 0 ) {
+                        String msg = Utils.replaceStaffVariable( CHAT_MUTE_DISABLE, sender );
                         for ( Player p : Bukkit.getServer().getOnlinePlayers() ) {
                             Utils.sendAnyMsg( p, msg );
                         }
@@ -134,8 +132,8 @@ public class Mutechat extends BaseCommand {
                 // mutechat disabled -> enabled
                 else {
                     MutechatManager.setChatMuted( false );
-                    if ( ConfigUtils.checkListNotEmpty( "mutechat.enable-broadcast" ) ) {
-                        String msg = ConfigUtils.replaceStaffVariable( CHAT_MUTE_ENABLE, sender );
+                    if ( CHAT_MUTE_ENABLE != null && CHAT_MUTE_ENABLE.length() > 0 ) {
+                        String msg = Utils.replaceStaffVariable( CHAT_MUTE_ENABLE, sender );
                         for ( Player p : Bukkit.getServer().getOnlinePlayers() ) {
                             Utils.sendAnyMsg( p, msg );
                         }

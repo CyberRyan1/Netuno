@@ -2,8 +2,11 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.guis.ipinfo.AltsListGUI;
-import com.github.cyberryan1.netuno.utils.*;
+import com.github.cyberryan1.netuno.utils.CommandErrors;
+import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -18,7 +21,7 @@ public class IPInfo extends BaseCommand {
     private final Database DATA = Utils.getDatabase();
 
     public IPInfo() {
-        super( "ipinfo", ConfigUtils.getStr( "ipinfo.perm" ), ConfigUtils.getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&uipinfo &y(player)" ) );
+        super( "ipinfo", YMLUtils.getConfig().getStr( "ipinfo.perm" ), YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&uipinfo &y(player)" ) );
     }
 
     @Override
@@ -38,7 +41,7 @@ public class IPInfo extends BaseCommand {
     // /ipinfo (player)
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
-        if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "ipinfo.perm" ) ) == false ) {
+        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "ipinfo.perm" ) ) == false ) {
             CommandErrors.sendInvalidPerms( sender );
             return true;
         }
@@ -59,8 +62,8 @@ public class IPInfo extends BaseCommand {
             OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
             // want the target to have joined before
             if ( target.hasPlayedBefore() || target.isOnline() ) {
-                if ( VaultUtils.hasPerms( target, ConfigUtils.getStr( "ipinfo.exempt-perm" ) )
-                        && VaultUtils.hasPerms( staff, ConfigUtils.getStr( "general.all-perms" ) ) == false ) {
+                if ( VaultUtils.hasPerms( target, YMLUtils.getConfig().getStr( "ipinfo.exempt-perm" ) )
+                        && VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "general.all-perms" ) ) == false ) {
                     CommandErrors.sendPlayerExempt( staff, target.getName() );
                     return true;
                 }
