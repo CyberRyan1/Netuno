@@ -1,7 +1,7 @@
 package com.github.cyberryan1.netuno.utils.database.sql;
 
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import java.sql.Connection;
@@ -15,15 +15,15 @@ public class SQL {
     protected static Connection connection;
 
     public SQL() {
-        isEnabled = !ConfigUtils.getBool( "database.use-sqlite" );
+        isEnabled = !YMLUtils.getConfig().getBool( "database.use-sqlite" );
 
         if ( isEnabled ) {
             source = new MysqlDataSource();
-            source.setServerName( ConfigUtils.getStr( "database.sql.host" ) );
-            source.setPortNumber( ConfigUtils.getInt( "database.sql.port" ) );
-            source.setDatabaseName( ConfigUtils.getStr( "database.sql.database" ) );
-            source.setUser( ConfigUtils.getStr( "database.sql.username" ) );
-            source.setPassword( ConfigUtils.getStr( "database.sql.password" ) );
+            source.setServerName( YMLUtils.getConfig().getStr( "database.sql.host" ) );
+            source.setPortNumber( YMLUtils.getConfig().getInt( "database.sql.port" ) );
+            source.setDatabaseName( YMLUtils.getConfig().getStr( "database.sql.database" ) );
+            source.setUser( YMLUtils.getConfig().getStr( "database.sql.username" ) );
+            source.setPassword( YMLUtils.getConfig().getStr( "database.sql.password" ) );
 
             try {
                 testSource();
