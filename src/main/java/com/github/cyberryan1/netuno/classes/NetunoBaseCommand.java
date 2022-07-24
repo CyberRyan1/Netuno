@@ -2,7 +2,7 @@ package com.github.cyberryan1.netuno.classes;
 
 import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
 import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public abstract class NetunoBaseCommand extends CyberCommand {
         super(
                 name,
                 permission,
-                YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" ),
+                Settings.PERM_DENIED_MSG.coloredString(),
                 Utils.getColored( usage )
         );
     }
@@ -35,7 +35,7 @@ public abstract class NetunoBaseCommand extends CyberCommand {
         super(
                 name,
                 null,
-                YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" ),
+                Settings.PERM_DENIED_MSG.coloredString(),
                 Utils.getColored( usage )
         );
     }
