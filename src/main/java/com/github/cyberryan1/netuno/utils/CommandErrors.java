@@ -126,7 +126,7 @@ public class CommandErrors {
     }
 
     public static void sendCanOnlyBeRanByPlayer( CommandSender sender ) {
-        sender.sendMessage( YMLUtils.getConfig().getColoredStr( "general.player-only-msg" ) );
+        sender.sendMessage( Utils.getColored( "&7This command can only be ran by a player" ) );
     }
 
     public static void sendUnexpectedError( CommandSender sender ) {
