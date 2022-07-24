@@ -17,6 +17,7 @@ public enum Settings {
     ALL_PERMISSIONS( "general.all-perms", "string" ),
     PRIMARY_COLOR( "general.primary-color", "string" ),
     SECONDARY_COLOR( "general.secondary-color", "string" ),
+    PERM_DENIED_MSG( "general.perm-denied-msg", "string" ),
     SILENT_PREFIX( "general.silent-prefix", "string" ),
     SILENT_PERMISSION( "general.silent-perm", "string" ),
     STAFF_PUNISHMENTS( "general.staff-punishments", "boolean" ),
