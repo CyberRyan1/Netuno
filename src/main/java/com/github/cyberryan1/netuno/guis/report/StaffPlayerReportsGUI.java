@@ -49,7 +49,7 @@ public class StaffPlayerReportsGUI implements Listener {
         compressReports();
         sort();
 
-        this.guiName = Utils.getColored( "&g" + target.getName() + "&h's Reports" );
+        this.guiName = Utils.getColored( "&p" + target.getName() + "&s's Reports" );
         gui = Bukkit.createInventory( null, 54, this.guiName );
         insertItems();
     }
@@ -154,31 +154,31 @@ public class StaffPlayerReportsGUI implements Listener {
 
         items[40] = getPaper();
 
-        if ( page >= 2 ) { items[47] = GUIUtils.createItem( Material.BOOK, "&gPrevious Page" ); }
-        if ( page < ( ( int ) Math.ceil( totalMultiReportCount / 21.0 ) ) ) { items[51] = GUIUtils.createItem( Material.BOOK, "&gNext Page" ); }
+        if ( page >= 2 ) { items[47] = GUIUtils.createItem( Material.BOOK, "&pPrevious Page" ); }
+        if ( page < ( ( int ) Math.ceil( totalMultiReportCount / 21.0 ) ) ) { items[51] = GUIUtils.createItem( Material.BOOK, "&pNext Page" ); }
 
         gui.setContents( items );
     }
 
     private ItemStack getPaper() {
-        ItemStack paper = GUIUtils.createItem( Material.PAPER, "&hPage &g#" + page );
+        ItemStack paper = GUIUtils.createItem( Material.PAPER, "&sPage &p#" + page );
         paper = GUIUtils.addItemLore( paper, "" );
 
         switch ( sort ) {
             case FIRST_DATE: {
-                paper = GUIUtils.addItemLore( paper, "&hSort: &gFirst Created -> Last Created", "&hNext Sort: &gLast Created -> First Created" );
+                paper = GUIUtils.addItemLore( paper, "&sSort: &pFirst Created -> Last Created", "&sNext Sort: &pLast Created -> First Created" );
                 break;
             }
 
             case LAST_DATE: {
-                paper = GUIUtils.addItemLore( paper, "&hSort: &gLast Created -> First Created", "&hNext Sort: &gFirst Created -> Last Created" );
+                paper = GUIUtils.addItemLore( paper, "&sSort: &pLast Created -> First Created", "&sNext Sort: &pFirst Created -> Last Created" );
                 break;
             }
 
             default: return null;
         }
 
-        return GUIUtils.addItemLore( paper, "&hClick to change sort method" );
+        return GUIUtils.addItemLore( paper, "&sClick to change sort method" );
     }
 
     public void openInventory( Player staff ) {

@@ -13,7 +13,6 @@ import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -51,7 +50,7 @@ public class StaffAllReportsGUI implements Listener {
         compressReports();
         sort();
 
-        String guiName = Utils.getColored( "&gReports" );
+        String guiName = Utils.getColored( "&pReports" );
         gui = Bukkit.createInventory( null, 54, guiName );
         insertItems();
     }
@@ -136,23 +135,23 @@ public class StaffAllReportsGUI implements Listener {
 
         items[40] = getPaper();
 
-        if ( page >= 2 ) { items[47] = GUIUtils.createItem( Material.BOOK, "&gPrevious Page" ); }
+        if ( page >= 2 ) { items[47] = GUIUtils.createItem( Material.BOOK, "&pPrevious Page" ); }
         int maxPage = ( int ) Math.ceil( totalCombinedReportCount / 21.0 );
-        if ( page < maxPage ) { items[51] = GUIUtils.createItem( Material.BOOK, "&gNext Page" ); }
+        if ( page < maxPage ) { items[51] = GUIUtils.createItem( Material.BOOK, "&pNext Page" ); }
 
         gui.setContents( items );
     }
 
     private ItemStack getPaper() {
-        ItemStack paper = GUIUtils.createItem( Material.PAPER, "&hPage &g#" + page );
-        if ( sort == SortBy.FIRST_DATE ) { return GUIUtils.setItemLore( paper, "", "&hSort: &gFirst Created -> Last Created",
-                    "&hNext Sort: &gLast Created -> First Created", "&hClick to change sort method" ); }
-        else if ( sort == SortBy.LAST_DATE ) { return GUIUtils.setItemLore( paper, "", "&hSort: &gLast Created -> First Created",
-                "&hNext Sort: &gOnline -> Offline", "&hClick to change sort method" ); }
-        else if ( sort == SortBy.ONLINE ) { return GUIUtils.setItemLore( paper, "", "&hSort: &gOnline -> Offline",
-                "&hNext Sort: &gOffline -> Online", "&hClick to change sort method" ); }
-        else if ( sort == SortBy.OFFLINE ) { return GUIUtils.setItemLore( paper, "", "&hSort: &gOffline -> Online",
-                "&hNext Sort: &gFirst Created -> Last Created", "&hClick to change sort method" ); }
+        ItemStack paper = GUIUtils.createItem( Material.PAPER, "&sPage &p#" + page );
+        if ( sort == SortBy.FIRST_DATE ) { return GUIUtils.setItemLore( paper, "", "&sSort: &pFirst Created -> Last Created",
+                    "&sNext Sort: &pLast Created -> First Created", "&sClick to change sort method" ); }
+        else if ( sort == SortBy.LAST_DATE ) { return GUIUtils.setItemLore( paper, "", "&sSort: &pLast Created -> First Created",
+                "&sNext Sort: &pOnline -> Offline", "&sClick to change sort method" ); }
+        else if ( sort == SortBy.ONLINE ) { return GUIUtils.setItemLore( paper, "", "&sSort: &pOnline -> Offline",
+                "&sNext Sort: &pOffline -> Online", "&sClick to change sort method" ); }
+        else if ( sort == SortBy.OFFLINE ) { return GUIUtils.setItemLore( paper, "", "&sSort: &pOffline -> Online",
+                "&sNext Sort: &pFirst Created -> Last Created", "&sClick to change sort method" ); }
 
         return null;
     }
@@ -165,7 +164,7 @@ public class StaffAllReportsGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLICK )
     public void onInventoryClick( InventoryClickEvent event ) {
         if ( staff.getName().equals( event.getWhoClicked().getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&gReports" ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( Utils.getColored( "&pReports" ) ) == false ) { return; }
 
         event.setCancelled( true );
         if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
@@ -173,13 +172,13 @@ public class StaffAllReportsGUI implements Listener {
         ItemStack clicked = event.getCurrentItem();
         if ( clicked == null || clicked.getType() == Material.AIR ) { return; }
 
-        if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&gPrevious Page" ) ) ) {
+        if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&pPrevious Page" ) ) ) {
             StaffAllReportsGUI newGUI = new StaffAllReportsGUI( staff, page - 1, sort );
             newGUI.openInventory( staff );
             staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
         }
 
-        else if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&gNext Page" ) ) ) {
+        else if ( clicked.equals( GUIUtils.createItem( Material.BOOK, "&pNext Page" ) ) ) {
             StaffAllReportsGUI newGUI = new StaffAllReportsGUI( staff, page + 1, sort );
             newGUI.openInventory( staff );
             staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
@@ -217,14 +216,14 @@ public class StaffAllReportsGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
     public void onInventoryDrag( InventoryDragEvent event ) {
         if ( staff.getName().equals( event.getWhoClicked().getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&gReports" ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( Utils.getColored( "&pReports" ) ) == false ) { return; }
         event.setCancelled( true );
     }
 
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLOSE )
     public void onInventoryClose( InventoryCloseEvent event ) {
         if ( staff.getName().equals( event.getPlayer().getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&gReports" ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( Utils.getColored( "&pReports" ) ) == false ) { return; }
 
         GUIEventManager.removeEvent( this );
     }

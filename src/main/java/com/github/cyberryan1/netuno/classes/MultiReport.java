@@ -2,10 +2,8 @@ package com.github.cyberryan1.netuno.classes;
 
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netuno.utils.Time;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 
@@ -52,11 +50,11 @@ public class MultiReport {
     public ItemStack getAsItem() {
         ItemStack skull = GUIUtils.getPlayerSkull( reporter );
 
-        skull = GUIUtils.setItemName( skull, "&gReporter: &h" + reporter.getName() );
+        skull = GUIUtils.setItemName( skull, "&pReporter: &s" + reporter.getName() );
 
-        skull = GUIUtils.addItemLore( skull, "&gDate: &h" + Time.getDateFromTimestamp( date ), "&gReason(s):" );
+        skull = GUIUtils.addItemLore( skull, "&pDate: &s" + Time.getDateFromTimestamp( date ), "&pReason(s):" );
         for ( String r : getReasons() ) {
-            skull = GUIUtils.addItemLore( skull, " &8- &h" + r );
+            skull = GUIUtils.addItemLore( skull, " &8- &s" + r );
         }
 
         return skull;

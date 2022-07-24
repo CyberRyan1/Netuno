@@ -46,7 +46,7 @@ public class HistoryEditGUI implements Listener {
         // else is an ip punishment
         else { punishment = DATA.getIPPunishment( punID ); }
 
-        String guiName = Utils.getColored( "&hEdit Punishment &g#" + punID );
+        String guiName = Utils.getColored( "&sEdit Punishment &p#" + punID );
         GUI = Bukkit.createInventory( null, 54, guiName );
         insertItems();
 
@@ -73,19 +73,19 @@ public class HistoryEditGUI implements Listener {
         items[13] = punishment.getPunishmentAsItem();
 
         if ( punishment.checkIsUnpunish() ) {
-            items[31] = GUIUtils.createItem( Material.BARRIER, "&hDelete punishment" );
+            items[31] = GUIUtils.createItem( Material.BARRIER, "&sDelete punishment" );
         }
         else if ( punishment.checkHasNoTime() || punishment.getActive() == false ) {
-            items[30] = GUIUtils.createItem( Material.PAPER, "&hEdit reason" );
-            items[32] = GUIUtils.createItem( Material.BARRIER, "&hDelete punishment" );
+            items[30] = GUIUtils.createItem( Material.PAPER, "&sEdit reason" );
+            items[32] = GUIUtils.createItem( Material.BARRIER, "&sDelete punishment" );
         }
         else {
-            items[29] = GUIUtils.setItemName( GUIUtils.getItemForVersion( "CLOCK", "WATCH" ), "&hEdit length" );
-            items[31] = GUIUtils.createItem( Material.PAPER, "&hEdit reason" );
-            items[33] = GUIUtils.createItem( Material.BARRIER, "&hDelete punishment" );
+            items[29] = GUIUtils.setItemName( GUIUtils.getItemForVersion( "CLOCK", "WATCH" ), "&sEdit length" );
+            items[31] = GUIUtils.createItem( Material.PAPER, "&sEdit reason" );
+            items[33] = GUIUtils.createItem( Material.BARRIER, "&sDelete punishment" );
         }
 
-        items[49] = GUIUtils.createItem( Material.ARROW, "&hGo back" );
+        items[49] = GUIUtils.createItem( Material.ARROW, "&sGo back" );
         GUI.setContents( items );
     }
 
@@ -96,7 +96,7 @@ public class HistoryEditGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLICK )
     public void onInventoryClick( InventoryClickEvent event ) {
         if ( event.getWhoClicked().getName().equals( staff.getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&hEdit Punishment &g#" + punishment.getID() ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( Utils.getColored( "&sEdit Punishment &p#" + punishment.getID() ) ) == false ) { return; }
 
         event.setCancelled( true );
         if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
@@ -104,38 +104,38 @@ public class HistoryEditGUI implements Listener {
         ItemStack itemClicked = event.getCurrentItem();
         if ( itemClicked == null || itemClicked.getType() == Material.AIR ) { return; }
         String itemName = itemClicked.getItemMeta().getDisplayName();
-        if ( itemName.equals( Utils.getColored( "&hEdit length" ) ) == false
-            && itemName.equals( Utils.getColored( "&hEdit reason" ) ) == false
-            && itemName.equals( Utils.getColored( "&hDelete punishment" ) ) == false
-            && itemName.equals( Utils.getColored( "&hGo back" ) ) == false ) { return; }
+        if ( itemName.equals( Utils.getColored( "&sEdit length" ) ) == false
+            && itemName.equals( Utils.getColored( "&sEdit reason" ) ) == false
+            && itemName.equals( Utils.getColored( "&sDelete punishment" ) ) == false
+            && itemName.equals( Utils.getColored( "&sGo back" ) ) == false ) { return; }
 
-        if ( itemClicked.equals( GUIUtils.setItemName( GUIUtils.getItemForVersion( "CLOCK", "WATCH" ), "&hEdit length" ) ) ) {
+        if ( itemClicked.equals( GUIUtils.setItemName( GUIUtils.getItemForVersion( "CLOCK", "WATCH" ), "&sEdit length" ) ) ) {
             if ( VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "history.time.perm" ) ) == false ) {
                 CommandErrors.sendInvalidPerms( staff );
             }
 
             else if ( editingLength == false ) {
                 event.getWhoClicked().closeInventory();
-                event.getWhoClicked().sendMessage( Utils.getColored( "&hPlease type the new length for punishment &g#" + punishment.getID() ) );
-                event.getWhoClicked().sendMessage( Utils.getColored( "&hTo cancel, type &g\"cancel\"" ) );
+                event.getWhoClicked().sendMessage( Utils.getColored( "&sPlease type the new length for punishment &p#" + punishment.getID() ) );
+                event.getWhoClicked().sendMessage( Utils.getColored( "&sTo cancel, type &p\"cancel\"" ) );
                 editingLength = true;
             }
         }
 
-        else if ( itemClicked.equals( GUIUtils.createItem( Material.PAPER, "&hEdit reason" ) ) ) {
+        else if ( itemClicked.equals( GUIUtils.createItem( Material.PAPER, "&sEdit reason" ) ) ) {
             if ( VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "history.reason.perm" ) ) == false ) {
                 CommandErrors.sendInvalidPerms( staff );
             }
 
             else if ( editingReason == false ) {
                 event.getWhoClicked().closeInventory();
-                event.getWhoClicked().sendMessage( Utils.getColored( "&hPlease type the new reason for punishment &g#" + punishment.getID() ) );
-                event.getWhoClicked().sendMessage( Utils.getColored( "&hTo cancel, type &g\"cancel\"" ) );
+                event.getWhoClicked().sendMessage( Utils.getColored( "&sPlease type the new reason for punishment &p#" + punishment.getID() ) );
+                event.getWhoClicked().sendMessage( Utils.getColored( "&sTo cancel, type &p\"cancel\"" ) );
                 editingReason = true;
             }
         }
 
-        else if ( itemClicked.equals( GUIUtils.createItem( Material.BARRIER, "&hDelete punishment" ) ) ) {
+        else if ( itemClicked.equals( GUIUtils.createItem( Material.BARRIER, "&sDelete punishment" ) ) ) {
             if ( VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "history.delete.perm" ) ) == false ) {
                 CommandErrors.sendInvalidPerms( staff );
             }
@@ -148,7 +148,7 @@ public class HistoryEditGUI implements Listener {
             }
         }
 
-        else if ( itemClicked.equals( GUIUtils.createItem( Material.ARROW, "&hGo back" ) ) ) {
+        else if ( itemClicked.equals( GUIUtils.createItem( Material.ARROW, "&sGo back" ) ) ) {
             event.getWhoClicked().closeInventory();
             HistoryListGUI gui = new HistoryListGUI( target, staff, 1 );
             gui.openInventory( staff );
@@ -162,7 +162,7 @@ public class HistoryEditGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
     public void onInventoryDrag( InventoryDragEvent event ) {
         if ( event.getWhoClicked().getName().equals( staff.getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&hEdit Punishment &g#" + punishment.getID() ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( Utils.getColored( "&sEdit Punishment &p#" + punishment.getID() ) ) == false ) { return; }
 
         event.setCancelled( true );
     }
@@ -170,7 +170,7 @@ public class HistoryEditGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLOSE )
     public void onInventoryClose( InventoryCloseEvent event ) {
         if ( event.getPlayer().getName().equals( staff.getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&hEdit Punishment &g#" + punishment.getID() ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( Utils.getColored( "&sEdit Punishment &p#" + punishment.getID() ) ) == false ) { return; }
 
         if ( editingLength == false || editingReason == false ) { return; }
 
@@ -201,7 +201,7 @@ public class HistoryEditGUI implements Listener {
 
             else {
                 CommandErrors.sendInvalidTimespan( event.getPlayer(), event.getMessage() );
-                event.getPlayer().sendMessage( Utils.getColored( "&hTry again, or say &g\"cancel\"&h to cancel" ) );
+                event.getPlayer().sendMessage( Utils.getColored( "&sTry again, or say &p\"cancel\"&s to cancel" ) );
             }
         }
 
@@ -226,7 +226,7 @@ public class HistoryEditGUI implements Listener {
         if ( editingLength || editingReason ) {
             editingLength = false;
             editingReason = false;
-            event.getPlayer().sendMessage( Utils.getColored( "&hThe punishment edit has been cancelled" ) );
+            event.getPlayer().sendMessage( Utils.getColored( "&sThe punishment edit has been cancelled" ) );
             GUIEventManager.removeEvent( this );
         }
     }

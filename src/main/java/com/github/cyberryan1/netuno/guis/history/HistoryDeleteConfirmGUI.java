@@ -10,7 +10,6 @@ import com.github.cyberryan1.netuno.utils.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -34,7 +33,7 @@ public class HistoryDeleteConfirmGUI implements Listener {
         this.staff = staff;
         this.punishment = pun;
 
-        String guiName = Utils.getColored( "&hConfirm Deletion" );
+        String guiName = Utils.getColored( "&sConfirm Deletion" );
         gui = Bukkit.createInventory( null, 45, guiName );
         insertItems();
     }
@@ -74,7 +73,7 @@ public class HistoryDeleteConfirmGUI implements Listener {
             if ( itemClicked.equals( GUIUtils.setItemName( GUIUtils.getColoredItemForVersion( "LIME_WOOL" ), "&aConfirm" ) ) ) {
                 staff.closeInventory();
                 DATA.deletePunishment( punishment.getID() );
-                staff.sendMessage( Utils.getColored( "&hSuccessfully deleted punishment &g#" + punishment.getID() ) );
+                staff.sendMessage( Utils.getColored( "&sSuccessfully deleted punishment &p#" + punishment.getID() ) );
                 staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
             }
 

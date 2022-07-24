@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.io.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -111,29 +111,29 @@ public class Punishment implements Serializable, Comparable<Punishment> {
 
         ItemStack sign = new ItemStack( itemMaterial );
         ItemMeta meta = sign.getItemMeta();
-        meta.setDisplayName( Utils.getColored( "&hPunishment &g#" + id ) );
+        meta.setDisplayName( Utils.getColored( "&sPunishment &p#" + id ) );
 
         ArrayList<String> lore = new ArrayList<>();
-        lore.add( Utils.getColored( "&gPlayer: &h" + Bukkit.getOfflinePlayer( UUID.fromString( playerUUID ) ).getName() ) );
-        lore.add( Utils.getColored( "&gDate: &h" + Time.getDateFromTimestamp( date ) ) );
-        lore.add( Utils.getColored( "&gType: &h" + type.toUpperCase() ) );
+        lore.add( Utils.getColored( "&pPlayer: &s" + Bukkit.getOfflinePlayer( UUID.fromString( playerUUID ) ).getName() ) );
+        lore.add( Utils.getColored( "&pDate: &s" + Time.getDateFromTimestamp( date ) ) );
+        lore.add( Utils.getColored( "&pType: &s" + type.toUpperCase() ) );
 
         if ( checkIsUnpunish() == false && checkHasNoTime() == false ) {
-            lore.add( Utils.getColored( "&gLength: &h" + Time.getLengthFromTimestamp( length ) ) );
+            lore.add( Utils.getColored( "&pLength: &s" + Time.getLengthFromTimestamp( length ) ) );
         }
 
-        if ( staffUUID.equals( "CONSOLE" ) ) { lore.add( Utils.getColored( "&gStaff: &hCONSOLE" ) ); }
+        if ( staffUUID.equals( "CONSOLE" ) ) { lore.add( Utils.getColored( "&pStaff: &sCONSOLE" ) ); }
         else {
             String staffName = Bukkit.getOfflinePlayer( UUID.fromString( staffUUID ) ).getName();
-            lore.add( Utils.getColored( "&gStaff: &h" + staffName ) );
+            lore.add( Utils.getColored( "&pStaff: &s" + staffName ) );
         }
 
         if ( checkIsIPPun() ) {
             String originalPlayerName = Bukkit.getOfflinePlayer( UUID.fromString( playerUUID ) ).getName();
-            lore.add( Utils.getColored( "&gOriginal Player: &h" + originalPlayerName ) );
+            lore.add( Utils.getColored( "&pOriginal Player: &s" + originalPlayerName ) );
         }
 
-        if ( checkIsUnpunish() == false ) { lore.add( Utils.getColored( "&gReason: &h" + reason ) ); }
+        if ( checkIsUnpunish() == false ) { lore.add( Utils.getColored( "&pReason: &s" + reason ) ); }
 
         meta.setLore( lore );
 

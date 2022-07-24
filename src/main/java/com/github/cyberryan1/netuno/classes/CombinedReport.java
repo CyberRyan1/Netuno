@@ -4,10 +4,8 @@ import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.database.Database;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +39,7 @@ public class CombinedReport {
     public ItemStack getAsItem() {
         ItemStack skull = GUIUtils.getPlayerSkull( target );
 
-        skull = GUIUtils.setItemName( skull, "&g" + target.getName() );
+        skull = GUIUtils.setItemName( skull, "&p" + target.getName() );
 
         //      Reason, Amount
         HashMap<String, Integer> reasonAmount = new HashMap<>();
@@ -58,12 +56,12 @@ public class CombinedReport {
         ArrayList<String> reasons = new ArrayList<>();
         for ( String rea : reasonAmount.keySet() ) {
             int amount = reasonAmount.get( rea );
-            reasons.add( Utils.getColored( " &8- &g" + amount + "x &h" + rea ) );
+            reasons.add( Utils.getColored( " &8- &p" + amount + "x &s" + rea ) );
         }
 
         ArrayList<String> lore = new ArrayList<>();
-        lore.add( Utils.getColored( "&gDate: &h" + Time.getDateFromTimestamp( mostRecentDate ) ) );
-        lore.add( Utils.getColored( "&gReason(s):" ) );
+        lore.add( Utils.getColored( "&pDate: &s" + Time.getDateFromTimestamp( mostRecentDate ) ) );
+        lore.add( Utils.getColored( "&pReason(s):" ) );
         lore.addAll( reasons );
 
         return GUIUtils.setItemLore( skull, lore );
