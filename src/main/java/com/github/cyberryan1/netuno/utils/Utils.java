@@ -1,12 +1,13 @@
 package com.github.cyberryan1.netuno.utils;
 
 import com.github.cyberryan1.cybercore.CyberCore;
+import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -48,9 +49,9 @@ public class Utils {
     }
 
     public static String getColored( String in ) {
-        in = in.replace( "&g", YMLUtils.getConfig().getStr( "general.primary-color" ) )
-                .replace( "&h", YMLUtils.getConfig().getStr( "general.secondary-color" ) );
-        return ChatColor.translateAlternateColorCodes( '&', in );
+        in = in.replace( "&p", Settings.PRIMARY_COLOR.string() )
+                .replace( "&s", Settings.SECONDARY_COLOR.string() );
+        return CoreUtils.getColored( in );
     }
 
     // Checks if an index in an array is out of bounds
