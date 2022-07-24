@@ -1,6 +1,7 @@
 package com.github.cyberryan1.netuno.utils;
 
-import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.cybercore.CyberCore;
+import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
@@ -9,7 +10,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,6 @@ import java.util.logging.Level;
 
 public class Utils {
 
-    private static Netuno plugin;
     private static Database db;
 
     private static final char SPECIAL_CHARS[] = { '!', '@', '#', '$', '%', '^', '&', '(', ')', '-', '=', '+', '`', '~', '[', ']',
@@ -26,34 +25,26 @@ public class Utils {
 
     private static final ArrayList<String> punsWithNoLength = new ArrayList<>( List.of( "kick", "warn", "unmute", "unban" ) );
 
-    public Utils( Netuno pl ) {
-        plugin = pl;
-    }
-
-    public static Netuno getPlugin() { return plugin; }
-
-    public static PluginManager getPluginManager() { return plugin.getServer().getPluginManager(); }
-
     public static Database getDatabase() { return db; }
 
     public static void setDatabase( Database database ) { db = database; }
 
     // Loggers
     public static void logInfo( String info ) {
-        plugin.getLogger().log( Level.INFO, info );
+        CyberCore.getPlugin().getLogger().log( Level.INFO, info );
     }
 
     public static void logWarn( String warn ) {
-        plugin.getLogger().log( Level.WARNING, warn );
+        CyberCore.getPlugin().getLogger().log( Level.WARNING, warn );
     }
 
     public static void logError( String error ) {
-        plugin.getLogger().log( Level.SEVERE, error );
+        CyberCore.getPlugin().getLogger().log( Level.SEVERE, error );
     }
 
     public static void logError( String error, Throwable thrown ) {
         if ( error == null || thrown == null ) { return; }
-        plugin.getLogger().log( Level.SEVERE, error, thrown );
+        CyberCore.getPlugin().getLogger().log( Level.SEVERE, error, thrown );
     }
 
     public static String getColored( String in ) {

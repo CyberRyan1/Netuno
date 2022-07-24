@@ -1,10 +1,11 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.cybercore.CyberCore;
+import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.guis.ipinfo.AltsListGUI;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
@@ -70,7 +71,7 @@ public class IPInfo extends BaseCommand {
 
                 AltsListGUI gui = new AltsListGUI( target, staff, 1 );
                 gui.openInventory( staff );
-                Utils.getPlugin().getServer().getPluginManager().registerEvents( gui, Utils.getPlugin() );
+                CyberCore.getPlugin().getServer().getPluginManager().registerEvents( gui, CyberCore.getPlugin() );
             }
 
             else {

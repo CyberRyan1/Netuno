@@ -1,5 +1,7 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.cybercore.CyberCore;
+import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
@@ -7,7 +9,6 @@ import com.github.cyberryan1.netuno.guis.history.HistoryEditGUI;
 import com.github.cyberryan1.netuno.guis.history.HistoryListGUI;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
@@ -145,7 +146,7 @@ public class History extends BaseCommand {
                         Player staff = ( Player ) sender;
                         HistoryEditGUI editGUI = new HistoryEditGUI( target, staff, id );
                         editGUI.openInventory( staff );
-                        Utils.getPlugin().getServer().getPluginManager().registerEvents( editGUI, Utils.getPlugin() );
+                        CyberCore.getPlugin().getServer().getPluginManager().registerEvents( editGUI, CyberCore.getPlugin() );
                     }
 
                     else {

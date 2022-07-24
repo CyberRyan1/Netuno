@@ -1,6 +1,6 @@
 package com.github.cyberryan1.netuno.listeners;
 
-import com.github.cyberryan1.netuno.utils.VaultUtils;
+import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

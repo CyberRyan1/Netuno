@@ -3,6 +3,7 @@ package com.github.cyberryan1.netuno;
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
 import com.github.cyberryan1.cybercore.CyberCore;
+import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.commands.*;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.listeners.*;
@@ -10,7 +11,6 @@ import com.github.cyberryan1.netuno.managers.ChatslowManager;
 import com.github.cyberryan1.netuno.skriptelements.conditions.RegisterConditions;
 import com.github.cyberryan1.netuno.skriptelements.expressions.RegisterExpressions;
 import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import com.github.cyberryan1.netuno.utils.database.sql.SQL;
 import com.github.cyberryan1.netuno.utils.database.sqlite.SQLite;
@@ -37,9 +37,6 @@ public final class Netuno extends JavaPlugin {
 
     private ChatslowManager chatslowManager;
 
-    private Utils util;
-    private VaultUtils vaultUtils;
-
     // Skript
     public SkriptAddon addon;
     public boolean enabled = true;
@@ -48,8 +45,7 @@ public final class Netuno extends JavaPlugin {
     public void onEnable() {
         // Initialize things
         CyberCore.setPlugin( this );
-        util = new Utils(this );
-        vaultUtils = new VaultUtils();
+        new VaultUtils();
 
         // Update/reload config files
         YMLUtils.getConfig().getYMLManager().initialize();

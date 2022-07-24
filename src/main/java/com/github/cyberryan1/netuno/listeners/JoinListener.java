@@ -1,10 +1,10 @@
 package com.github.cyberryan1.netuno.listeners;
 
 import com.github.cyberryan1.cybercore.CyberCore;
+import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -170,7 +170,7 @@ public class JoinListener implements Listener {
                             message.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, hoverText.create() ) );
                         }
 
-                        Bukkit.getScheduler().runTaskLater( Utils.getPlugin(), () -> {
+                        Bukkit.getScheduler().runTaskLater( CyberCore.getPlugin(), () -> {
                             for ( Player p : Bukkit.getOnlinePlayers() ) {
                                 if ( VaultUtils.hasPerms( p, IPINFO_PERM ) ) {
                                     p.spigot().sendMessage( message );
@@ -187,7 +187,7 @@ public class JoinListener implements Listener {
         // * IMPORTANT * Should be the last thing checked in this event
         // Checking if the player has been punished while they were offline
         // Gives them a notification about it if they were
-        Bukkit.getScheduler().runTaskLaterAsynchronously( Utils.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskLaterAsynchronously( CyberCore.getPlugin(), () -> {
             final Player player = Bukkit.getPlayer( event.getUniqueId() );
             if ( player == null ) { return; }
 
