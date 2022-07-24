@@ -112,7 +112,7 @@
         <dependency>
             <groupId>com.github.cyberryan1</groupId>
             <artifactId>CyberCore</artifactId>
-            <version>1.4.0</version>
+            <version>1.4.1</version>
         </dependency>
         <dependency>
             <groupId>com.github.SkriptLang</groupId>
