@@ -1,13 +1,14 @@
 package com.github.cyberryan1.netuno.listeners;
 
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CommandListener implements Listener {
 
@@ -17,13 +18,14 @@ public class CommandListener implements Listener {
     public void onPlayerCommand( PlayerCommandPreprocessEvent event ) {
         if ( DATA.getPunishment( event.getPlayer().getUniqueId().toString(), "mute", true ).size() >= 1
                 || DATA.getIPPunishment( event.getPlayer().getUniqueId().toString(), "ipmute", true ).size() >= 1 ) {
-            if ( ConfigUtils.checkListNotEmpty( "mute.blocked-cmds" ) ) {
-                ArrayList<String> blockedCmds = ConfigUtils.getColoredStrList( "mute.blocked-cmds" );
+            String blockedCmdsList[] = YMLUtils.getConfig().getStrList( "mute.blocked-cmds" );
+            if ( blockedCmdsList != null && blockedCmdsList.length > 0 ) {
+                ArrayList<String> blockedCmds = new ArrayList<>( List.of( blockedCmdsList ) );
                 String cmd = event.getMessage().split( " " )[0];
 
                 if ( blockedCmds.contains( cmd ) ) {
                     event.setCancelled( true );
-                    event.getPlayer().sendMessage( ConfigUtils.getColoredStr( "mute.blocked-cmd-msg" ) );
+                    event.getPlayer().sendMessage( YMLUtils.getConfig().getColoredStr( "mute.blocked-cmd-msg" ) );
                 }
             }
         }

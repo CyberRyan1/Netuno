@@ -1,8 +1,8 @@
 package com.github.cyberryan1.netuno.classes;
 
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,14 +16,14 @@ import java.util.List;
 
 public abstract class BaseCommand implements CommandExecutor, TabCompleter {
 
-    private static final String PRIMARY_COLOR = ConfigUtils.getColoredStr( "general.primary-color" );
-    private static final String SECONDARY_COLOR = ConfigUtils.getColoredStr( "general.secondary-color" );
+    private static final String PRIMARY_COLOR = YMLUtils.getConfig().getColoredStr( "general.primary-color" );
+    private static final String SECONDARY_COLOR = YMLUtils.getConfig().getColoredStr( "general.secondary-color" );
 
     // returns true if the sender is a player, false if not
     public static boolean demandPlayer( CommandSender sender ) {
         if ( sender instanceof Player ) { return true; }
 
-        sender.sendMessage( ConfigUtils.getColoredStr( "general.player-only-msg" ) );
+        sender.sendMessage( YMLUtils.getConfig().getColoredStr( "general.player-only-msg" ) );
         return false;
     }
 
@@ -78,14 +78,14 @@ public abstract class BaseCommand implements CommandExecutor, TabCompleter {
     public BaseCommand( String label, String permission ) {
         this.label = label;
         this.permission = permission;
-        this.permissionMsg = ConfigUtils.getColoredStr( "general.perm-denied-msg" );
+        this.permissionMsg = YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" );
         this.usage = null;
     }
 
     public BaseCommand( String label, String permission, String usage ) {
         this.label = label;
         this.permission = permission;
-        this.permissionMsg = ConfigUtils.getColoredStr( "general.perm-denied-msg" );
+        this.permissionMsg = YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" );
         this.usage = usage;
     }
 

@@ -6,12 +6,15 @@ import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.guis.events.GUIEventType;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netuno.managers.StaffPlayerPunishManager;
-import com.github.cyberryan1.netuno.utils.*;
+import com.github.cyberryan1.netuno.utils.CommandErrors;
+import com.github.cyberryan1.netuno.utils.Time;
+import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -41,13 +44,13 @@ public class IPBanPunishGUI {
         setReasons();
         setGuiSize();
 
-        this.guiName = ConfigUtils.getColoredStr( "ipban-gui.inventory_name" ).replace( "[TARGET]", target.getName() );
+        this.guiName = YMLUtils.getConfig().getColoredStr( "ipban-gui.inventory_name" ).replace( "[TARGET]", target.getName() );
         this.gui = Bukkit.createInventory( null, this.guiSize, this.guiName );
         insertItems();
     }
 
     private void setReasons() {
-        this.reasons = ConfigUtils.getKeys( "ipban-gui." );
+        this.reasons = YMLUtils.getConfig().getKeys( "ipban-gui." );
         for ( int index = reasons.size() - 1; index >= 0; index-- ) {
             if ( reasons.get( index ).equals( "ipban-gui.inventory_name" ) || reasons.get( index ).equals( "ipban-gui.permission" ) ) {
                 reasons.remove( index );
@@ -77,25 +80,25 @@ public class IPBanPunishGUI {
                 if ( punIndex >= reasons.size() ) { break; }
 
                 String path = "ipban-gui." + reasons.get( punIndex );
-                Material material = Material.matchMaterial( ConfigUtils.getStr( path + ".material" ) );
+                Material material = Material.matchMaterial( YMLUtils.getConfig().getStr( path + ".material" ) );
                 if ( material != Material.AIR ) {
                     int punCount = DATA.getGUIPunCount( target, "ipban", reasons.get( punIndex ) );
 
-                    String name = ConfigUtils.getColoredStr( path + ".item-name" );
-                    name = ConfigUtils.replacePunGUIVariables( name, target, punCount );
+                    String name = YMLUtils.getConfig().getColoredStr( path + ".item-name" );
+                    name = Utils.replacePunGUIVariables( name, target, punCount );
 
                     ItemStack toAdd;
-                    String materialName = ConfigUtils.getStr( path + ".material" );
+                    String materialName = YMLUtils.getConfig().getStr( path + ".material" );
                     if ( GUIUtils.isColorable( materialName ) ) {
                         toAdd = GUIUtils.getColoredItemForVersion( materialName );
                         toAdd = GUIUtils.setItemName( toAdd, name );
                     }
                     else { toAdd = GUIUtils.createItem( material, name ); }
 
-                    String lore = ConfigUtils.getColoredStr( path + ".item-lore" );
+                    String lore = YMLUtils.getConfig().getColoredStr( path + ".item-lore" );
                     if ( lore.equals( "" ) ) { items[guiIndex] = toAdd; }
                     else {
-                        String split[] = ConfigUtils.replacePunGUIVariables( lore, target, punCount ).split( "\n" );
+                        String split[] = Utils.replacePunGUIVariables( lore, target, punCount ).split( "\n" );
                         items[guiIndex] = GUIUtils.setItemLore( toAdd, split );
                     }
                 }
@@ -111,8 +114,8 @@ public class IPBanPunishGUI {
     }
 
     public void openInventory() {
-        if ( ConfigUtils.getStr( "ipban-gui.permission" ).equals( "" ) == false &&
-                VaultUtils.hasPerms( staff, ConfigUtils.getStr( "ipban-gui.permission" ) ) == false ) {
+        if ( YMLUtils.getConfig().getStr( "ipban-gui.permission" ).equals( "" ) == false &&
+                VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "ipban-gui.permission" ) ) == false ) {
             CommandErrors.sendInvalidPerms( staff );
             return;
         }
@@ -153,8 +156,8 @@ public class IPBanPunishGUI {
         String punishmentReason = Utils.removeColorCodes( item.getItemMeta().getDisplayName() );
         String punishmentOffense = " (" + Utils.formatIntIntoAmountString( currentPuns + 1 ) + " Offense)";
 
-        String punishmentLength = ConfigUtils.getStr( "ipban-gui." + punClickedReason + ".starting-time" );
-        if ( ( ConfigUtils.getBool( "ipban-gui." + punClickedReason + ".autoscale" ) )
+        String punishmentLength = YMLUtils.getConfig().getStr( "ipban-gui." + punClickedReason + ".starting-time" );
+        if ( ( YMLUtils.getConfig().getBool( "ipban-gui." + punClickedReason + ".autoscale" ) )
                 && ( punishmentLength.equals( "HIGHEST_MUTED_ALT" ) || punishmentLength.equals( "HIGHEST_BANNED_ALT" ) ) ) {
             String punType = "mute";
             if ( punishmentLength.equals( "HIGHEST_BANNED_ALT" ) ) { punType = "ban"; }
@@ -179,7 +182,7 @@ public class IPBanPunishGUI {
             punishmentLength = Time.getUnformattedLengthFromTimestamp( highest.getLength() );
         }
 
-        else if ( ( ConfigUtils.getBool( "ipban-gui." + punClickedReason + ".autoscale" ) ) ) {
+        else if ( ( YMLUtils.getConfig().getBool( "ipban-gui." + punClickedReason + ".autoscale" ) ) ) {
             punishmentLength = Time.getScaledTime( punishmentLength, currentPuns + 1 );
         }
 

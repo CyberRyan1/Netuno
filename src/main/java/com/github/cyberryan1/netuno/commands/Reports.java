@@ -4,13 +4,12 @@ import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.guis.report.StaffAllReportsGUI;
 import com.github.cyberryan1.netuno.guis.report.StaffPlayerReportsGUI;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -20,7 +19,7 @@ import java.util.List;
 public class Reports extends BaseCommand {
 
     public Reports() {
-        super( "reports", ConfigUtils.getStr( "reports.perm" ), getColorizedStr( "&8/&ureports &y[player]") );
+        super( "reports", YMLUtils.getConfig().getStr( "reports.perm" ), getColorizedStr( "&8/&ureports &y[player]") );
     }
 
     @Override
@@ -40,7 +39,7 @@ public class Reports extends BaseCommand {
     // /reports [player]
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
-        if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "reports.perm" ) ) == false ) {
+        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "reports.perm" ) ) == false ) {
             CommandErrors.sendInvalidPerms( sender );
             return true;
         }

@@ -2,8 +2,12 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.classes.PrePunishment;
-import com.github.cyberryan1.netuno.utils.*;
+import com.github.cyberryan1.netuno.utils.CommandErrors;
+import com.github.cyberryan1.netuno.utils.Time;
+import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -19,7 +23,7 @@ public class IPMute extends BaseCommand {
     private final Database DATA = Utils.getDatabase();
 
     public IPMute() {
-        super( "ipmute", ConfigUtils.getStr( "ipmute.perm" ), ConfigUtils.getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&uipmute &y(player) (length/forever) (reason) [-s]" ) );
+        super( "ipmute", YMLUtils.getConfig().getStr( "ipmute.perm" ), YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&uipmute &y(player) (length/forever) (reason) [-s]" ) );
     }
 
     @Override
@@ -45,7 +49,7 @@ public class IPMute extends BaseCommand {
     // /ipmute (player) (length/forever) (reason)
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
-        if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "ipmute.perm" ) ) == false ) {
+        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "ipmute.perm" ) ) == false ) {
             CommandErrors.sendInvalidPerms( sender );
             return true;
         }

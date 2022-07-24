@@ -2,8 +2,10 @@ package com.github.cyberryan1.netuno.listeners;
 
 import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
-import com.github.cyberryan1.netuno.utils.*;
+import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -25,22 +27,22 @@ public class SignChangeListener implements Listener {
         if ( lines[0].equals( "" ) == false || lines[1].equals( "" ) == false || lines[2].equals( "" ) == false || lines[3].equals( "" ) == false ) {
             Player player = event.getPlayer();
 
-            if ( ConfigUtils.getBool( "signs.allow-while-muted" ) == false ) {
+            if ( YMLUtils.getConfig().getBool( "signs.allow-while-muted" ) == false ) {
                 ArrayList<Punishment> puns = DATA.getPunishment( player.getUniqueId().toString(), "mute", true );
                 ArrayList<IPPunishment> ipPuns = DATA.getIPPunishment( player.getUniqueId().toString(), "ipmute", true );
                 if ( ipPuns.size() + puns.size() > 0 ) {
                     event.setCancelled( true );
-                    player.sendMessage( ConfigUtils.getColoredStr( "signs.sign-while-muted-attempt" ) );
+                    player.sendMessage( YMLUtils.getConfig().getColoredStr( "signs.sign-while-muted-attempt" ) );
                     return;
                 }
             }
 
-            if ( ConfigUtils.getBool( "signs.notifs" ) ) {
-                String msg = ConfigUtils.getColoredStrFromList( "signs.notifs-msg" );
+            if ( YMLUtils.getConfig().getBool( "signs.notifs" ) ) {
+                String msg = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "signs.notifs-msg" ) );
 
                 if ( msg.contains( "[LINE_1]" ) == false || msg.contains( "[LINE_2]" ) == false
                         || msg.contains( "[LINE_3]" ) == false || msg.contains( "[LINE_4]" ) == false ) {
-                    Utils.logError( "\"signs.notifs-msg\" in the config.yml does not contain "
+                    Utils.logError( "\"signs.notifs-msg\" in the config_default.yml does not contain "
                             + "\"[LINE_1]\", \"[LINE_2]\", \"[LINE_3]\", or \"[LINE_4]\", so it will not be sent" );
                     return;
                 }
@@ -56,8 +58,8 @@ public class SignChangeListener implements Listener {
                 }
 
                 for ( Player p : Bukkit.getOnlinePlayers() ) {
-                    if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "signs.notifs-perm" ) )
-                            && VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
+                    if ( VaultUtils.hasPerms( p, YMLUtils.getConfig().getStr( "signs.notifs-perm" ) )
+                            && VaultUtils.hasPerms( p, YMLUtils.getConfig().getStr( "general.staff-perm" ) ) ) {
                         if ( DATA.checkPlayerNoSignNotifs( p ) == false ) {
                             Utils.sendAnyMsg( p, msg );
                         }

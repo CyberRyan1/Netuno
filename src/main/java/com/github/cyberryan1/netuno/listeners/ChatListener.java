@@ -4,8 +4,11 @@ import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.managers.ChatslowManager;
 import com.github.cyberryan1.netuno.managers.MutechatManager;
-import com.github.cyberryan1.netuno.utils.*;
+import com.github.cyberryan1.netuno.utils.Time;
+import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -17,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ChatListener implements Listener {
 
@@ -74,15 +76,17 @@ public class ChatListener implements Listener {
 
         // ipmute notification handling
         if ( hadActiveIpMute ) {
-            if ( ConfigUtils.checkListNotEmpty( "ipmute.expire" ) ) {
-                Utils.sendAnyMsg( event.getPlayer(), ConfigUtils.getColoredStrFromList( "ipmute.expire" ) );
+            String ipmuteExpireList[] = YMLUtils.getConfig().getColoredStrList( "ipmute.expire-list" );
+            if ( ipmuteExpireList != null && ipmuteExpireList.length > 0 ) {
+                Utils.sendAnyMsg( event.getPlayer(), Utils.getCombinedString( ipmuteExpireList ) );
             }
 
-            if ( ConfigUtils.checkListNotEmpty( "ipmute.expire-staff" ) ) {
-                String msg = ConfigUtils.getColoredStrFromList( "ipmute.expire-staff" );
+            String ipmuteExpireStaffList[] = YMLUtils.getConfig().getColoredStrList( "ipmute.expire-staff" );
+            if ( ipmuteExpireStaffList != null && ipmuteExpireStaffList.length > 0 ) {
+                String msg = Utils.getCombinedString( ipmuteExpireStaffList ).replace( "[TARGET]", event.getPlayer().getName() );
                 for ( Player p : Bukkit.getOnlinePlayers() ) {
-                    if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
-                        Utils.sendAnyMsg( p, msg.replace( "[TARGET]", event.getPlayer().getName() ) );
+                    if ( VaultUtils.hasPerms( p, YMLUtils.getConfig().getStr( "general.staff-perm" ) ) ) {
+                        Utils.sendAnyMsg( p, msg );
                     }
                 }
             }
@@ -90,15 +94,17 @@ public class ChatListener implements Listener {
 
         // mute notification handling
         else if ( hadActiveMute ) {
-            if ( ConfigUtils.checkListNotEmpty( "mute.expire" ) ) {
-                Utils.sendAnyMsg( event.getPlayer(), ConfigUtils.getColoredStrFromList( "mute.expire" ) );
+            String muteExpireList[] = YMLUtils.getConfig().getColoredStrList( "mute.expire-list" );
+            if ( muteExpireList != null && muteExpireList.length > 0 ) {
+                Utils.sendAnyMsg( event.getPlayer(), Utils.getCombinedString( muteExpireList ) );
             }
 
-            if ( ConfigUtils.checkListNotEmpty( "mute.expire-staff" ) ) {
-                String msg = ConfigUtils.getColoredStrFromList( "mute.expire-staff" );
+            String muteExpireStaffList[] = YMLUtils.getConfig().getColoredStrList( "mute.expire-staff" );
+            if ( muteExpireStaffList != null && muteExpireStaffList.length > 0 ) {
+                String msg = Utils.getCombinedString( muteExpireStaffList ).replace( "[TARGET]", event.getPlayer().getName() );
                 for ( Player p : Bukkit.getOnlinePlayers() ) {
-                    if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
-                        Utils.sendAnyMsg( p, msg.replace( "[TARGET]", event.getPlayer().getName() ) );
+                    if ( VaultUtils.hasPerms( p, YMLUtils.getConfig().getStr( "general.staff-perm" ) ) ) {
+                        Utils.sendAnyMsg( p, msg );
                     }
                 }
             }
@@ -106,12 +112,13 @@ public class ChatListener implements Listener {
 
         // mutechat handling
         if ( MutechatManager.chatIsMuted() ) {
-            if ( VaultUtils.hasPerms( event.getPlayer(), ConfigUtils.getStr( "general.staff-perm" ) ) == false ) {
-                if ( VaultUtils.hasPerms( event.getPlayer(), ConfigUtils.getStr( "mutechat.bypass-perm" ) ) == false ) {
+            if ( VaultUtils.hasPerms( event.getPlayer(), YMLUtils.getConfig().getStr( "general.staff-perm" ) ) == false ) {
+                if ( VaultUtils.hasPerms( event.getPlayer(), YMLUtils.getConfig().getStr( "mutechat.bypass-perm" ) ) == false ) {
                     event.setCancelled( true );
 
-                    if ( ConfigUtils.checkListNotEmpty( "mutechat.attempt" ) ) {
-                        Utils.sendAnyMsg( event.getPlayer(), ConfigUtils.getColoredStrFromList( "mutechat.attempt" ) );
+                    String mutechatAttemptList[] = YMLUtils.getConfig().getColoredStrList( "mutechat.attempt" );
+                    if ( mutechatAttemptList != null && mutechatAttemptList.length > 0 ) {
+                        Utils.sendAnyMsg( event.getPlayer(), Utils.getCombinedString( mutechatAttemptList ) );
                     }
                     return;
                 }
@@ -119,15 +126,15 @@ public class ChatListener implements Listener {
         }
 
         if ( ChatslowManager.getSlow() != 0
-                && VaultUtils.hasPerms( event.getPlayer(), ConfigUtils.getStr( "general.staff-perm" ) ) == false
-                && VaultUtils.hasPerms( event.getPlayer(), ConfigUtils.getStr( "chatslow.bypass-perm" ) ) == false ) {
+                && VaultUtils.hasPerms( event.getPlayer(), YMLUtils.getConfig().getStr( "general.staff-perm" ) ) == false
+                && VaultUtils.hasPerms( event.getPlayer(), YMLUtils.getConfig().getStr( "chatslow.bypass-perm" ) ) == false ) {
             if ( CHAT_SLOW.containsKey( event.getPlayer() ) ) {
                 long timeSince = Time.getCurrentTimestamp() - CHAT_SLOW.get( event.getPlayer() );
                 if ( timeSince < ChatslowManager.getSlow() ) {
                     event.setCancelled( true );
 
-                    if ( ConfigUtils.getStr( "chatslow.msg" ).equals( "" ) == false ) {
-                        event.getPlayer().sendMessage( ConfigUtils.getColoredStr( "chatslow.msg" ).replace( "[AMOUNT]", ChatslowManager.getSlow() + "" ) );
+                    if ( YMLUtils.getConfig().getStr( "chatslow.msg" ).equals( "" ) == false ) {
+                        event.getPlayer().sendMessage( YMLUtils.getConfig().getColoredStr( "chatslow.msg" ).replace( "[AMOUNT]", ChatslowManager.getSlow() + "" ) );
                     }
                     return;
                 }

@@ -2,12 +2,15 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.classes.Punishment;
-import com.github.cyberryan1.netuno.utils.*;
+import com.github.cyberryan1.netuno.utils.CommandErrors;
+import com.github.cyberryan1.netuno.utils.Time;
+import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -20,7 +23,7 @@ public class Unban extends BaseCommand {
     private final Database DATA = Utils.getDatabase();
 
     public Unban() {
-        super( "unban", ConfigUtils.getStr( "unban.perm" ), getColorizedStr( "&8/&uunban &y(player)" ) );
+        super( "unban", YMLUtils.getConfig().getStr( "unban.perm" ), getColorizedStr( "&8/&uunban &y(player)" ) );
     }
 
     @Override
@@ -39,7 +42,7 @@ public class Unban extends BaseCommand {
     @Override
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
-        if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "unban.perm" ) ) == false ) {
+        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "unban.perm" ) ) == false ) {
             CommandErrors.sendInvalidPerms( sender );
             return true;
         }

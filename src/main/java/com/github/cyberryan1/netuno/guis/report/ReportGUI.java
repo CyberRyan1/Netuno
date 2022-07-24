@@ -1,20 +1,18 @@
 package com.github.cyberryan1.netuno.guis.report;
 
-import com.github.cyberryan1.netuno.classes.CombinedReport;
 import com.github.cyberryan1.netuno.classes.SingleReport;
 import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.guis.events.GUIEventType;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -26,7 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 public class ReportGUI implements Listener {
 
@@ -42,7 +40,7 @@ public class ReportGUI implements Listener {
     public ReportGUI( Player player, OfflinePlayer target ) {
         this.player = player;
         this.target = target;
-        this.reasons = ConfigUtils.getStrList( "report.reasons" );
+        this.reasons = new ArrayList<>( List.of( YMLUtils.getConfig().getStrList( "report.reasons" ) ) );
         //this.guiSize = 18 + ( ( int ) ( Math.ceil( reasons.size() / 6.0 ) ) * 9 );
 
         setGuiSize();
@@ -165,15 +163,15 @@ public class ReportGUI implements Listener {
                 reasonText[index] = reports.get( index ).getReason();
             }
 
-            String msg = ConfigUtils.getColoredStrFromList( "report.confirm-msg" );
+            String msg = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "report.confirm-msg" ) );
             msg = msg.replace( "[TARGET]", target.getName() ).replace( "[REASON]", Utils.formatListIntoAmountString( reasonText ) );
             if ( msg.equals( "" ) == false ) { Utils.sendAnyMsg( player, msg ); }
 
-            msg = ConfigUtils.getColoredStrFromList( "report.staff-msg" ).replace( "[PLAYER]", player.getName() );
+            msg = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "report.staff-msg" ) ).replace( "[PLAYER]", player.getName() );
             msg = msg.replace( "[TARGET]", target.getName() ).replace( "[REASON]", Utils.formatListIntoAmountString( reasonText ) );
             if ( msg.equals( "" ) == false ) {
                 for ( Player p : Bukkit.getOnlinePlayers() ) {
-                    if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
+                    if ( VaultUtils.hasPerms( p, YMLUtils.getConfig().getStr( "general.staff-perm" ) ) ) {
                         Utils.sendAnyMsg( p, msg );
                     }
                 }

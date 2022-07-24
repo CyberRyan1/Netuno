@@ -1,9 +1,11 @@
 package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.netuno.classes.BaseCommand;
-import com.github.cyberryan1.netuno.utils.*;
+import com.github.cyberryan1.netuno.utils.CommandErrors;
+import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.VaultUtils;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ public class NetunoCmd extends BaseCommand {
             "ipinfo", "ipmute", "unipmute", "ipban", "unipban", "report", "reports", "togglesigns", "reload" };
 
     public NetunoCmd() {
-        super( "netuno", ConfigUtils.getStr( "general.staff-perm" ) );
+        super( "netuno", YMLUtils.getConfig().getStr( "general.staff-perm" ) );
     }
 
     @Override
@@ -45,29 +47,18 @@ public class NetunoCmd extends BaseCommand {
     @Override
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
-        if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "general.staff-perm" ) ) == false ) {
+        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "general.staff-perm" ) ) == false ) {
             CommandErrors.sendInvalidPerms( sender );
             return true;
         }
 
         if ( Utils.isOutOfBounds( args, 0 ) == false ) {
             if ( args[0].equalsIgnoreCase( "reload" ) ) {
-                if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "general.reload-perm" ) ) ) {
+                if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "general.reload-perm" ) ) ) {
                     sender.sendMessage( Utils.getColored( "&7Attempting to reload &6Netuno&7..." ) );
                     Utils.logInfo( "Attempting to reload Netuno..." );
 
-                    if ( ConfigUtils.getConfigManager().getConfigFile().exists() == false || ConfigUtils.getConfigManager().getConfigFile() == null ) {
-                        Utils.logInfo( "Found no config file, recreating it..." );
-                        ConfigUtils.getConfigManager().saveDefaultConfig();
-                    }
-
-                    //if ( PunishGUIUtils.getPunishGUIManager().getConfigFile().exists() == false || PunishGUIUtils.getPunishGUIManager().getConfigFile() == null ) {
-                    //    Utils.logInfo( "Found no punishgui file, recreating it..." );
-                        //PunishGUIUtils.getPunishGUIManager().saveDefaultConfig();
-                   // }
-
-                    ConfigUtils.getConfigManager().reloadConfig();
-                    //PunishGUIUtils.getPunishGUIManager().reloadConfig();
+                    YMLUtils.getConfig().getYMLManager().initialize();
 
                     sender.sendMessage( Utils.getColored( "&7Successfully reloaded &6Netuno" ) );
                     Utils.logInfo( "Successfully reloaded Netuno and its files" );

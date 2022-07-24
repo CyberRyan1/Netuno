@@ -1,8 +1,8 @@
 package com.github.cyberryan1.netuno.managers;
 
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 
 public class ChatslowManager {
 
@@ -13,7 +13,7 @@ public class ChatslowManager {
 
     public ChatslowManager() {
         if ( DATA.otherCheckKeyExists( DATA_KEY ) == false ) {
-            slow = ConfigUtils.getInt( "chatslow.default-value" );
+            slow = YMLUtils.getConfig().getInt( "chatslow.default-value" );
             DATA.addOther( DATA_KEY, slow + "" );
         }
         else {

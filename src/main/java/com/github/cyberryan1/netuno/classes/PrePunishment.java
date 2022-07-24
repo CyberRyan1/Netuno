@@ -1,14 +1,15 @@
 package com.github.cyberryan1.netuno.classes;
 
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PrePunishment {
 
@@ -86,7 +87,7 @@ public class PrePunishment {
         pun.setReason( reasonMsg );
         boolean silent = false;
         if ( reasonMsg.contains( "-s" ) ) {
-            if ( consoleSender || VaultUtils.hasPerms( staff, ConfigUtils.getStr( "general.silent-perm" ) ) ) {
+            if ( consoleSender || VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "general.silent-perm" ) ) ) {
                 pun.setReason( reasonMsg.replaceAll( "-s", "" ) );
                 silent = true;
             }
@@ -115,26 +116,26 @@ public class PrePunishment {
         // kick the target from the server if they are online and the punishment does kick them from the server
         if ( target.isOnline() ) {
             if ( type.equalsIgnoreCase( "kick" ) ) {
-                target.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables(
-                        ConfigUtils.getColoredStrFromList( "kick.kicked-lines" ), pun
+                target.getPlayer().kickPlayer( Utils.replaceAllVariables(
+                        Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "kick.kicked-lines" ) ), pun
                 ) );
             }
 
             else if ( type.equalsIgnoreCase( "ban" ) ) {
-                target.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables(
-                        ConfigUtils.getColoredStrFromList( "ban.banned-lines" ), pun
+                target.getPlayer().kickPlayer( Utils.replaceAllVariables(
+                        Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ban.banned-lines" ) ), pun
                 ) );
             }
 
             else if ( type.equalsIgnoreCase( "ipban" ) ) {
-                target.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables(
-                        ConfigUtils.getColoredStrFromList( "ipban.banned-lines" ), pun
+                target.getPlayer().kickPlayer( Utils.replaceAllVariables(
+                        Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ipban.banned-lines" ) ), pun
                 ) );
 
                 for ( OfflinePlayer alt : Utils.getDatabase().getAllAlts( pun.getPlayerUUID() ) ) {
                     if ( alt.isOnline() ) {
-                        alt.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables(
-                                ConfigUtils.getColoredStrFromList( "ipban.banned-lines" ), pun
+                        alt.getPlayer().kickPlayer( Utils.replaceAllVariables(
+                                Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList(  "ipban.banned-lines" ) ), pun
                         ) );
                     }
                 }
@@ -150,17 +151,18 @@ public class PrePunishment {
         // send the punishment to the target, if the target is online and the punishment does not kick them from the server
         if ( target.isOnline() ) {
             if ( typeLowercase.equals( "warn" ) || typeLowercase.equals( "mute" ) || typeLowercase.equals( "ipmute" ) ) {
-                if ( ConfigUtils.checkListNotEmpty( typeLowercase + ".message" ) ) {
+                String msgList[] = YMLUtils.getConfig().getColoredStrList( typeLowercase + ".message" );
+                if ( msgList != null && msgList.length > 0 ) {
                     Player targetOnline = target.getPlayer();
-                    String msg = ConfigUtils.getColoredStrFromList( typeLowercase + ".message" );
-                    Utils.sendAnyMsg( targetOnline, ConfigUtils.replaceAllVariables( msg, pun ) );
+                    String msg = Utils.replaceAllVariables( Utils.getCombinedString( msgList ), pun );
+                    Utils.sendAnyMsg( targetOnline, msg );
 
                     if ( typeLowercase.equals( "ipmute" ) ) {
+                        String ipmuteMsg = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ipmute.message" ) );
+                        ipmuteMsg = Utils.replaceAllVariables( ipmuteMsg, pun );
                         for ( OfflinePlayer alt : Utils.getDatabase().getAllAlts( pun.getPlayerUUID() ) ) {
                             if ( alt.isOnline() && alt.getPlayer().equals( target.getPlayer() ) == false ) {
-                                Utils.sendAnyMsg( alt.getPlayer(), ConfigUtils.replaceAllVariables(
-                                        ConfigUtils.getColoredStrFromList( "ipmute.message" ), pun
-                                ) );
+                                Utils.sendAnyMsg( alt.getPlayer(), ipmuteMsg );
                             }
                         }
                     }
@@ -171,20 +173,22 @@ public class PrePunishment {
         // announce the punishment to everyone who are not staff, unless if the punishment is silent
         // will send to staff if the staff broadcast is empty
         // will not send to the target unless the punishment doesn't kick them and the target punishment msg is empty
-        boolean sendToStaff = ConfigUtils.checkListNotEmpty( typeLowercase + ".staff-broadcast" );
+        String staffBroadcastList[] = YMLUtils.getConfig().getColoredStrList( typeLowercase + ".staff-broadcast" );
+        boolean sendToStaff = staffBroadcastList != null && staffBroadcastList.length > 0;
         if ( silent == false ) {
-            if ( ConfigUtils.checkListNotEmpty( typeLowercase + ".broadcast" ) ) {
-                String broadcast = ConfigUtils.getColoredStrFromList( typeLowercase + ".broadcast" );
-                broadcast = ConfigUtils.replaceAllVariables( broadcast, pun );
+            String broadcastList[] = YMLUtils.getConfig().getColoredStrList( typeLowercase + ".broadcast" );
+            if ( broadcastList != null && broadcastList.length > 0 ) {
+                String broadcast = Utils.replaceAllVariables( Utils.getCombinedString( broadcastList ), pun );
 
                 for ( Player p : Bukkit.getOnlinePlayers() ) {
-                    if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) == false || sendToStaff == false ) {
+                    if ( VaultUtils.hasPerms( p, YMLUtils.getConfig().getStr( "general.staff-perm" ) ) == false || sendToStaff == false ) {
                         if ( p.equals( target.getPlayer() ) == false ) {
                             Utils.sendAnyMsg( p, broadcast );
                         }
 
                         else if ( typeLowercase.equals( "warn" ) || typeLowercase.equals( "mute" ) ) {
-                            if ( ConfigUtils.checkListNotEmpty( typeLowercase + ".message" ) == false ) {
+                            String msgList[] = YMLUtils.getConfig().getColoredStrList( typeLowercase + ".message" );
+                            if ( msgList == null || msgList.length == 0 ) {
                                 Utils.sendAnyMsg( p, broadcast );
                             }
                         }
@@ -197,8 +201,8 @@ public class PrePunishment {
             String broadcast = "";
 
             if ( silent ) {
-                String prefix = ConfigUtils.getColoredStr( "general.silent-prefix" );
-                ArrayList<String> list = ConfigUtils.getColoredStrList( typeLowercase + ".staff-broadcast" );
+                String prefix = YMLUtils.getConfig().getColoredStr( "general.silent-prefix" );
+                ArrayList<String> list = new ArrayList<>( List.of( YMLUtils.getConfig().getColoredStrList( typeLowercase + ".staff-broadcast" ) ) );
                 for ( int i = 0; i < list.size(); i++ ) {
                     if ( list.get( i ).equals( "" ) == false && list.get( i ).equals( "\n" ) == false ) {
                         broadcast += "\n" + prefix + list.get( i );
@@ -211,13 +215,13 @@ public class PrePunishment {
             }
 
             else {
-                broadcast = ConfigUtils.getColoredStrFromList( typeLowercase + ".staff-broadcast" );
+                broadcast = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( typeLowercase + ".staff-broadcast" ) );
             }
 
-            broadcast = ConfigUtils.replaceAllVariables( broadcast, pun );
+            broadcast = Utils.replaceAllVariables( broadcast, pun );
 
             for ( Player p : Bukkit.getOnlinePlayers() ) {
-                if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
+                if ( VaultUtils.hasPerms( p, YMLUtils.getConfig().getStr( "general.staff-perm" ) ) ) {
                     Utils.sendAnyMsg( p, broadcast );
                 }
             }

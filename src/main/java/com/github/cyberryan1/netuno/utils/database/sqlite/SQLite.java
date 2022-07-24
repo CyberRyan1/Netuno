@@ -1,8 +1,8 @@
 package com.github.cyberryan1.netuno.utils.database.sqlite;
 
 import com.github.cyberryan1.netuno.Netuno;
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 
 import java.io.File;
 import java.sql.Connection;
@@ -19,7 +19,7 @@ public class SQLite {
 
     public SQLite( Netuno plugin ) {
         this.plugin = plugin;
-        isEnabled = ConfigUtils.getBool( "database.use-sqlite" );
+        isEnabled = YMLUtils.getConfig().getBool( "database.use-sqlite" );
 
         if ( isEnabled ) {
             enableSQLite();

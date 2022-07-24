@@ -1,8 +1,7 @@
 package com.github.cyberryan1.netuno.listeners;
 
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
-import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -34,45 +33,45 @@ public class TabComplete implements TabCompleter {
     private void setupArgs( CommandSender sender, String args[] ) {
         switch ( COMMAND ) {
             case "warn": {
-                if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "warn.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); }
+                if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "warn.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); }
                 break;
             }
             case "clearchat": {
                 break;
             }
             case "kick": {
-                if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "kick.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); }
+                if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "kick.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); }
                 break;
             }
             case "mute": {
-                if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "mute.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); argTwo = getLengths(); }
+                if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "mute.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); argTwo = getLengths(); }
                 break;
             }
             case "unmute": {
-                if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "unmute.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); }
+                if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "unmute.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); }
                 break;
             }
             case "ban": {
-                if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "ban.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); argTwo = getLengths(); }
+                if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "ban.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); argTwo = getLengths(); }
                 break;
             }
             case "unban": {
                 break;
             }
             case "ipinfo": {
-                if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "ipinfo.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); }
+                if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "ipinfo.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); }
                 break;
             }
             case "ipmute": {
-                if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "ipmute.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); argTwo = getLengths(); }
+                if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "ipmute.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); argTwo = getLengths(); }
                 break;
             }
             case "unipmute": {
-                if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "unipmute.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); }
+                if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "unipmute.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); }
                 break;
             }
             case "ipban": {
-                if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "ipban.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); argTwo = getLengths(); }
+                if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "ipban.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); argTwo = getLengths(); }
                 break;
             }
             case "unipban": {
@@ -91,12 +90,12 @@ public class TabComplete implements TabCompleter {
                 break;
             }
             case "report": {
-                if ( ConfigUtils.getStr( "report.perm" ).equals( "" ) == false ||
-                        VaultUtils.hasPerms( sender, ConfigUtils.getStr( "report.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); }
+                if ( YMLUtils.getConfig().getStr( "report.perm" ).equals( "" ) == false ||
+                        VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "report.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); }
                 break;
             }
             case "reports": {
-                if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "reports.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); }
+                if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "reports.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); }
                 break;
             }
             case "netuno": {
@@ -104,11 +103,11 @@ public class TabComplete implements TabCompleter {
                 break;
             }
             case "punish": {
-                if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "punish.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); }
+                if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "punish.perm" ) ) ) { argOne = getAllOnlinePlayers( args[0] ); }
                 break;
             }
             case "chatslow": {
-                if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "chatslow.perm" ) ) ) { argOne.add( "get" ); argOne.add( "set" ); }
+                if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "chatslow.perm" ) ) ) { argOne.add( "get" ); argOne.add( "set" ); }
                 break;
             }
         }

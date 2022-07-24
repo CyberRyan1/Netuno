@@ -4,11 +4,11 @@ import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.classes.SingleReport;
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.database.sql.SQL;
 import com.github.cyberryan1.netuno.utils.database.sqlite.SQLite;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -1104,7 +1104,7 @@ public class Database {
         PreparedStatement ps = null;
         ResultSet rs = null;
         ArrayList<Integer> toDelete = new ArrayList<>();
-        final int DELETE_AFTER_INT = ConfigUtils.getInt( "reports.delete-after" );
+        final int DELETE_AFTER_INT = YMLUtils.getConfig().getInt( "reports.delete-after" );
         if ( DELETE_AFTER_INT == -1 ) { return; }
         long deleteBefore = Time.getCurrentTimestamp() - 60L * 60 * DELETE_AFTER_INT;
 

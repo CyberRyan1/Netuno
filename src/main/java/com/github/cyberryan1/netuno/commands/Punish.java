@@ -3,13 +3,12 @@ package com.github.cyberryan1.netuno.commands;
 import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.guis.punish.MainPunishGUI;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.ConfigUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.VaultUtils;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -19,7 +18,7 @@ import java.util.List;
 public class Punish extends BaseCommand {
 
     public Punish() {
-        super( "punish", ConfigUtils.getStr( "punish.perm" ), getColorizedStr( "&8/&upunish &y(player)") );
+        super( "punish", YMLUtils.getConfig().getStr( "punish.perm" ), getColorizedStr( "&8/&upunish &y(player)") );
     }
 
     @Override
@@ -39,7 +38,7 @@ public class Punish extends BaseCommand {
     // /punish (player)
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
 
-        if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "punish.perm" ) ) == false ) {
+        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "punish.perm" ) ) == false ) {
             CommandErrors.sendInvalidPerms( sender );
             return true;
         }
@@ -60,7 +59,7 @@ public class Punish extends BaseCommand {
             OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
             if ( target != null ) {
 
-                if ( ConfigUtils.getBool( "punish.staff-punish" ) == false ) {
+                if ( YMLUtils.getConfig().getBool( "punish.staff-punish" ) == false ) {
                     if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
                         CommandErrors.sendPlayerCannotBePunished( staff, target.getName() );
                         return true;

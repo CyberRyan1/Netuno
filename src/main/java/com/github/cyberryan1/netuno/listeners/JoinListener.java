@@ -1,41 +1,56 @@
 package com.github.cyberryan1.netuno.listeners;
 
+import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
-import com.github.cyberryan1.netuno.managers.DisableQuitMsg;
-import com.github.cyberryan1.netuno.utils.*;
+import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-
-import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class JoinListener implements Listener {
 
     private final Database DATA = Utils.getDatabase();
 
+    // Messages
+    private final String IPBAN_ATTEMPT = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ipban.attempt" ) );
+    private final String IPBAN_EXPIRE = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ipban.expire" ) );
+    private final String IPBAN_EXPIRE_STAFF = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ipban.expire-staff" ) );
+
+    private final String BAN_ATTEMPT = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ban.attempt" ) );
+    private final String BAN_EXPIRE = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ban.expire" ) );
+    private final String BAN_EXPIRE_STAFF = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ban.expire-staff" ) );
+
+    private final boolean IPINFO_NOTIFS_ENABLED = YMLUtils.getConfig().getBool( "ipinfo.notifs" );
+    private final String IPINFO_NOTIF_MSG = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ipinfo.notif-msg" ) );
+    private final String IPINFO_EXEMPT_PERM = YMLUtils.getConfig().getStr( "ipinfo.exempt-perm" );
+    private final String IPINFO_NOTIF_HOVER = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ipinfo.notif-hover" ) );
+    private final String IPINFO_PERM = YMLUtils.getConfig().getStr( "ipinfo.perm" );
+
     @EventHandler
-    public void onPlayerJoin( PlayerJoinEvent event ) {
+    public void onPlayerJoin( AsyncPlayerPreLoginEvent event ) {
         //
         // High priority things below here
         //
 
         // Log the player's IP address into the database
-        String ipAddress = event.getPlayer().getAddress().getAddress().getHostAddress();
-        if ( DATA.playerHasIP( event.getPlayer().getUniqueId().toString(), ipAddress ) == false ) {
-            DATA.addIP( event.getPlayer().getUniqueId().toString(), ipAddress );
+        String ipAddress = event.getAddress().getHostAddress();
+        if ( DATA.playerHasIP( event.getUniqueId().toString(), ipAddress ) == false ) {
+            DATA.addIP( event.getUniqueId().toString(), ipAddress );
         }
 
         //
@@ -43,7 +58,7 @@ public class JoinListener implements Listener {
         //
 
         // ipban handling
-        ArrayList<IPPunishment> allIPPunishments = DATA.getIPPunishment( event.getPlayer().getUniqueId().toString() );
+        ArrayList<IPPunishment> allIPPunishments = DATA.getIPPunishment( event.getUniqueId().toString() );
         boolean hadActiveIPBan = false;
         for ( IPPunishment pun : allIPPunishments ) {
             if ( pun.getActive() && pun.getType().equalsIgnoreCase( "ipban" ) ) {
@@ -52,7 +67,7 @@ public class JoinListener implements Listener {
             }
         }
 
-        ArrayList<OfflinePlayer> accountsIpbanned = DATA.getPunishedAltsByType( event.getPlayer().getUniqueId().toString(), "ipban" );
+        ArrayList<OfflinePlayer> accountsIpbanned = DATA.getPunishedAltsByType( event.getUniqueId().toString(), "ipban" );
         if ( accountsIpbanned.size() >= 1 ) {
 
             List<IPPunishment> ipbanPunishments = new ArrayList<>();
@@ -62,28 +77,33 @@ public class JoinListener implements Listener {
 
             Collections.sort( ipbanPunishments );
 
-            event.setJoinMessage( null ); // disable the join msg from sending
-            event.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables( ConfigUtils.getColoredStrFromList( "ipban.attempt" ), ipbanPunishments.get( 0 ) ) );
+            event.setLoginResult( AsyncPlayerPreLoginEvent.Result.KICK_OTHER );
+            event.setKickMessage( Utils.replaceAllVariables( IPBAN_ATTEMPT, ipbanPunishments.get( 0 ) ) );
             return;
         }
 
         else if ( hadActiveIPBan ) {
-            if ( ConfigUtils.checkListNotEmpty( "ipban.expire" ) ) {
-                Utils.sendAnyMsg( event.getPlayer(), ConfigUtils.getColoredStrFromList( "ipban.expire" ) );
-            }
+            Bukkit.getScheduler().runTaskLaterAsynchronously( CyberCore.getPlugin(), () -> {
+                final Player player = Bukkit.getPlayer( event.getUniqueId() );
+                if ( player == null ) { return; }
 
-            if ( ConfigUtils.checkListNotEmpty( "ipban.expire-staff" ) ) {
-                String msg = ConfigUtils.getColoredStrFromList( "ipban.expire-staff" );
-                for ( Player p : Bukkit.getOnlinePlayers() ) {
-                    if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
-                        Utils.sendAnyMsg( p, msg.replace( "[TARGET]", event.getPlayer().getName() ) );
+                if ( IPBAN_EXPIRE != null ) {
+                    Utils.sendAnyMsg( player, IPBAN_EXPIRE );
+                }
+
+                if ( IPBAN_EXPIRE_STAFF != null ) {
+                    String msg = IPBAN_EXPIRE_STAFF.replace( "[TARGET]", player.getName() );
+                    for ( Player p : Bukkit.getOnlinePlayers() ) {
+                        if ( VaultUtils.hasPerms( p, YMLUtils.getConfig().getStr( "general.staff-perm" ) ) ) {
+                            Utils.sendAnyMsg( p, IPBAN_EXPIRE_STAFF );
+                        }
                     }
                 }
-            }
+            }, 30L );
         }
 
         // ban handling
-        ArrayList<Punishment> allPunishments = DATA.getPunishment( event.getPlayer().getUniqueId().toString() );
+        ArrayList<Punishment> allPunishments = DATA.getPunishment( event.getUniqueId().toString() );
         boolean hadActiveBan = false;
         for ( Punishment pun : allPunishments ) {
             if ( pun.getActive() == true && pun.getType().equalsIgnoreCase( "ban" ) ) {
@@ -92,31 +112,34 @@ public class JoinListener implements Listener {
             }
         }
 
-        List<Punishment> banPunishments = DATA.getPunishment( event.getPlayer().getUniqueId().toString(), "ban", true );
+        List<Punishment> banPunishments = DATA.getPunishment( event.getUniqueId().toString(), "ban", true );
         if ( banPunishments.size() >= 1 ) {
-            event.setJoinMessage( null );
+            event.setLoginResult( AsyncPlayerPreLoginEvent.Result.KICK_OTHER );
 
             Collections.sort( banPunishments );
 
-            event.setJoinMessage( null ); // disable the join message from sending
-            DisableQuitMsg.addPlayer( event.getPlayer() );
-            event.getPlayer().kickPlayer( ConfigUtils.replaceAllVariables( ConfigUtils.getColoredStrFromList( "ban.attempt" ), banPunishments.get( 0 ) ) );
+            event.setKickMessage( Utils.replaceAllVariables( BAN_ATTEMPT, banPunishments.get( 0 ) ) );
             return;
         }
 
         else if ( hadActiveBan ) {
-            if ( ConfigUtils.checkListNotEmpty( "ban.expire" ) ) {
-                Utils.sendAnyMsg( event.getPlayer(), ConfigUtils.getColoredStrFromList( "ban.expire" ) );
-            }
+            Bukkit.getScheduler().runTaskLaterAsynchronously( CyberCore.getPlugin(), () -> {
+                final Player player = Bukkit.getPlayer( event.getUniqueId() );
+                if ( player == null ) { return; }
 
-            if ( ConfigUtils.checkListNotEmpty( "ban.expire-staff" ) ) {
-                String msg = ConfigUtils.getColoredStrFromList( "ban.expire-staff" );
-                for ( Player p : Bukkit.getOnlinePlayers() ) {
-                    if ( VaultUtils.hasPerms( p, ConfigUtils.getStr( "general.staff-perm" ) ) ) {
-                        Utils.sendAnyMsg( p, msg.replace( "[TARGET]", event.getPlayer().getName() ) );
+                if ( BAN_EXPIRE != null ) {
+                    Utils.sendAnyMsg( player, BAN_EXPIRE );
+                }
+
+                if ( BAN_EXPIRE_STAFF != null ) {
+                    String msg = BAN_EXPIRE_STAFF.replace( "[TARGET]", player.getName() );
+                    for ( Player p : Bukkit.getOnlinePlayers() ) {
+                        if ( VaultUtils.hasPerms( p, YMLUtils.getConfig().getStr( "general.staff-perm" ) ) ) {
+                            Utils.sendAnyMsg( p, msg );
+                        }
                     }
                 }
-            }
+            }, 30L );
         }
 
         //
@@ -124,53 +147,57 @@ public class JoinListener implements Listener {
         //
 
         // Checking if the player has any punished alts and alerting staff if they do
-        if ( DATA.getPunishedAltList( event.getPlayer().getUniqueId().toString() ).size() >= 1 ) {
-            if ( ConfigUtils.getBool( "ipinfo.notifs" )
-                    && VaultUtils.hasPerms( event.getPlayer(), ConfigUtils.getStr( "ipinfo.exempt-perm" ) ) == false ) {
-                if ( ConfigUtils.checkListNotEmpty( "ipinfo.notif-msg" ) ) {
-                    String coloredMsg = ConfigUtils.getColoredStrFromList( "ipinfo.notif-msg" );
-                    coloredMsg = coloredMsg.replace( "[TARGET]", event.getPlayer().getName() );
+        if ( DATA.getPunishedAltList( event.getUniqueId().toString() ).size() >= 1 ) {
+            Bukkit.getScheduler().runTaskLaterAsynchronously( CyberCore.getPlugin(), () -> {
+                final Player player = Bukkit.getPlayer( event.getUniqueId() );
+                if ( player == null ) { return; }
 
-                    //? For some reason can send two blank lines, this is a "fix"
-                    if ( coloredMsg.substring( coloredMsg.length() - 2 ).equals( "\n\n" ) ) {
-                        coloredMsg = coloredMsg.substring( 0, coloredMsg.length() - 2 ) + "\n";
-                    }
+                if ( IPINFO_NOTIFS_ENABLED && VaultUtils.hasPerms( player, IPINFO_EXEMPT_PERM ) == false ) {
+                    if ( IPINFO_NOTIF_MSG != null ) {
+                        String coloredMsg = IPINFO_NOTIF_MSG.replace( "[TARGET]", player.getName() );
 
-                    TextComponent message = new TextComponent( coloredMsg );
-                    message.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/ipinfo " + event.getPlayer().getName() ) );
-
-                    if ( ConfigUtils.getStr( "ipinfo.notif-hover" ).equals( "" ) == false ) {
-                        String hoverColoredMsg = ConfigUtils.getColoredStr( "ipinfo.notif-hover" ).replace( "[TARGET]", event.getPlayer().getName() );
-                        ComponentBuilder hoverText = new ComponentBuilder( hoverColoredMsg );
-                        message.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, hoverText.create() ) );
-                    }
-
-                    Bukkit.getScheduler().runTaskLater( Utils.getPlugin(), () -> {
-                        for ( Player player : Bukkit.getOnlinePlayers() ) {
-                            if ( VaultUtils.hasPerms( player, ConfigUtils.getStr( "ipinfo.perm" ) ) ) {
-                                player.spigot().sendMessage( message );
-                            }
+                        //? For some reason can send two blank lines, this is a "fix"
+                        if ( coloredMsg.substring( coloredMsg.length() - 2 ).equals( "\n\n" ) ) {
+                            coloredMsg = coloredMsg.substring( 0, coloredMsg.length() - 2 ) + "\n";
                         }
-                    }, 5L );
-                }
 
-                else {
-                    Utils.logWarn( "\"ipinfo.notifs\" in the config is enabled, yet you have no message set in \"ipinfo.notif-msg\"!" );
+                        TextComponent message = new TextComponent( coloredMsg );
+                        message.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/ipinfo " + player.getName() ) );
+
+                        if ( IPINFO_NOTIF_HOVER.equals( "" ) == false ) {
+                            String hoverColoredMsg = IPINFO_NOTIF_HOVER.replace( "[TARGET]", player.getName() );
+                            ComponentBuilder hoverText = new ComponentBuilder( hoverColoredMsg );
+                            message.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, hoverText.create() ) );
+                        }
+
+                        Bukkit.getScheduler().runTaskLater( Utils.getPlugin(), () -> {
+                            for ( Player p : Bukkit.getOnlinePlayers() ) {
+                                if ( VaultUtils.hasPerms( p, IPINFO_PERM ) ) {
+                                    p.spigot().sendMessage( message );
+                                }
+                            }
+                        }, 5L );
+                    } else {
+                        Utils.logWarn( "\"ipinfo.notifs\" in the config is enabled, yet you have no message set in \"ipinfo.notif-msg\"!" );
+                    }
                 }
-            }
+            }, 20L );
         }
 
         // * IMPORTANT * Should be the last thing checked in this event
         // Checking if the player has been punished while they were offline
         // Gives them a notification about it if they were
-        Bukkit.getScheduler().runTaskLater( Utils.getPlugin(), () -> {
-            if ( DATA.searchNotifByUUID( event.getPlayer().getUniqueId().toString() ).size() > 0 ) {
-                for ( int id : DATA.searchNotifByUUID( event.getPlayer().getUniqueId().toString() ) ) {
+        Bukkit.getScheduler().runTaskLaterAsynchronously( Utils.getPlugin(), () -> {
+            final Player player = Bukkit.getPlayer( event.getUniqueId() );
+            if ( player == null ) { return; }
+
+            if ( DATA.searchNotifByUUID( event.getUniqueId().toString() ).size() > 0 ) {
+                for ( int id : DATA.searchNotifByUUID( event.getUniqueId().toString() ) ) {
                     Punishment pun = DATA.getPunishment( id );
-                    Utils.sendPunishmentMsg( event.getPlayer(), pun );
+                    Utils.sendPunishmentMsg( player, pun );
                     DATA.removeNotif( id );
                 }
             }
-        }, 60L );
+        }, 90L );
     }
 }

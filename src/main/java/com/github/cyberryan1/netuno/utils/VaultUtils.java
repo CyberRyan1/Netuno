@@ -1,6 +1,7 @@
 package com.github.cyberryan1.netuno.utils;
 
 import com.github.cyberryan1.netuno.errors.LuckPermsVaultUnsafeNeededException;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -45,7 +46,7 @@ public class VaultUtils {
             ex.printStackTrace();
         }
 
-        if ( permissions.playerHas( null, player, ConfigUtils.getStr( "general.all-perms" ) ) ) { return true; }
+        if ( permissions.playerHas( null, player, YMLUtils.getConfig().getStr( "general.all-perms" ) ) ) { return true; }
         if ( permissions.playerHas( null, player, "*" ) ) { return true; }
         return permissions.playerHas( null, player, perm );
     }

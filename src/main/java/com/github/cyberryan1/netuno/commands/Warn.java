@@ -2,12 +2,14 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.classes.PrePunishment;
-import com.github.cyberryan1.netuno.utils.*;
+import com.github.cyberryan1.netuno.utils.CommandErrors;
+import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -19,7 +21,7 @@ public class Warn extends BaseCommand {
     private final Database DATA = Utils.getDatabase();
 
     public Warn() {
-        super( "warn", ConfigUtils.getStr( "warn.perm" ), getColorizedStr( "&8/&uwarn &y(player)" ) );
+        super( "warn", YMLUtils.getConfig().getStr( "warn.perm" ), getColorizedStr( "&8/&uwarn &y(player)" ) );
     }
 
     @Override
@@ -38,7 +40,7 @@ public class Warn extends BaseCommand {
     @Override
     // /warn (player) (reason)
     public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
-        if ( VaultUtils.hasPerms( sender, ConfigUtils.getStr( "warn.perm" ) ) ) {
+        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "warn.perm" ) ) ) {
             if ( Utils.isOutOfBounds( args, 1 ) == false ) {
 
                 if ( Utils.isValidUsername( args[0] ) == false ) {
