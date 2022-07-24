@@ -54,6 +54,10 @@ public class Utils {
         return CoreUtils.getColored( in );
     }
 
+    public static void sendColored( CommandSender sender, String in ) {
+        sender.sendMessage( getColored( in ) );
+    }
+
     // Checks if an index in an array is out of bounds
     // true = out of bounds, false = within range
     public static boolean isOutOfBounds( Object obj[], int index ) {
