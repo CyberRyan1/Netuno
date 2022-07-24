@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.guis.report;
 
+import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.classes.SingleReport;
 import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
@@ -44,7 +45,7 @@ public class ReportGUI implements Listener {
         //this.guiSize = 18 + ( ( int ) ( Math.ceil( reasons.size() / 6.0 ) ) * 9 );
 
         setGuiSize();
-        String guiName = Utils.getColored( "&pReporting " + target.getName() );
+        String guiName = CoreUtils.getColored( "&pReporting " + target.getName() );
         gui = Bukkit.createInventory( null, guiSize, guiName );
         insertItems();
     }
@@ -99,7 +100,7 @@ public class ReportGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLICK )
     public void onInventoryClick( InventoryClickEvent event ) {
         if ( player.getName().equals( event.getWhoClicked().getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&pReporting " + target.getName() ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( CoreUtils.getColored( "&pReporting " + target.getName() ) ) == false ) { return; }
 
         event.setCancelled( true );
         if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
@@ -111,7 +112,7 @@ public class ReportGUI implements Listener {
             ItemStack newItem = GUIUtils.getItemForVersion( "LIME_WOOL", "WOOL", 5 );
             ItemMeta newItemMeta = newItem.getItemMeta();
             String newName = event.getCurrentItem().getItemMeta().getDisplayName();
-            newName = newName.replaceAll( Utils.getColored( "&7" ), Utils.getColored( "&a" ) );
+            newName = newName.replaceAll( CoreUtils.getColored( "&7" ), CoreUtils.getColored( "&a" ) );
             newItemMeta.setDisplayName( newName );
             newItem.setItemMeta( newItemMeta );
 
@@ -124,7 +125,7 @@ public class ReportGUI implements Listener {
             ItemStack newItem = GUIUtils.getItemForVersion( "LIGHT_GRAY_WOOL", "WOOL", 8 );
             ItemMeta newItemMeta = newItem.getItemMeta();
             String newName = event.getCurrentItem().getItemMeta().getDisplayName();
-            newName = newName.replaceAll( Utils.getColored( "&a" ), Utils.getColored( "&7" ) );
+            newName = newName.replaceAll( CoreUtils.getColored( "&a" ), CoreUtils.getColored( "&7" ) );
             newItemMeta.setDisplayName( newName );
             newItem.setItemMeta( newItemMeta );
 
@@ -148,7 +149,7 @@ public class ReportGUI implements Listener {
                     SingleReport sr = new SingleReport();
                     sr.setReporter( player );
                     sr.setTarget( target );
-                    sr.setReason( i.getItemMeta().getDisplayName().replace( Utils.getColored( "&a" ), "") );
+                    sr.setReason( i.getItemMeta().getDisplayName().replace( CoreUtils.getColored( "&a" ), "") );
                     reports.add( sr );
                 }
             }
@@ -186,14 +187,14 @@ public class ReportGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
     public void onInventoryDrag( InventoryDragEvent event ) {
         if ( player.getName().equals( event.getWhoClicked().getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&pReporting " + target.getName() ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( CoreUtils.getColored( "&pReporting " + target.getName() ) ) == false ) { return; }
         event.setCancelled( true );
     }
 
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLOSE )
     public void onInventoryClose( InventoryCloseEvent event ) {
         if ( player.getName().equals( event.getPlayer().getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&pReporting " + target.getName() ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( CoreUtils.getColored( "&pReporting " + target.getName() ) ) == false ) { return; }
 
         GUIEventManager.removeEvent( this );
     }

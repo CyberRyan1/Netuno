@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.classes;
 
+import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.database.Database;
@@ -111,29 +112,29 @@ public class Punishment implements Serializable, Comparable<Punishment> {
 
         ItemStack sign = new ItemStack( itemMaterial );
         ItemMeta meta = sign.getItemMeta();
-        meta.setDisplayName( Utils.getColored( "&sPunishment &p#" + id ) );
+        meta.setDisplayName( CoreUtils.getColored( "&sPunishment &p#" + id ) );
 
         ArrayList<String> lore = new ArrayList<>();
-        lore.add( Utils.getColored( "&pPlayer: &s" + Bukkit.getOfflinePlayer( UUID.fromString( playerUUID ) ).getName() ) );
-        lore.add( Utils.getColored( "&pDate: &s" + Time.getDateFromTimestamp( date ) ) );
-        lore.add( Utils.getColored( "&pType: &s" + type.toUpperCase() ) );
+        lore.add( CoreUtils.getColored( "&pPlayer: &s" + Bukkit.getOfflinePlayer( UUID.fromString( playerUUID ) ).getName() ) );
+        lore.add( CoreUtils.getColored( "&pDate: &s" + Time.getDateFromTimestamp( date ) ) );
+        lore.add( CoreUtils.getColored( "&pType: &s" + type.toUpperCase() ) );
 
         if ( checkIsUnpunish() == false && checkHasNoTime() == false ) {
-            lore.add( Utils.getColored( "&pLength: &s" + Time.getLengthFromTimestamp( length ) ) );
+            lore.add( CoreUtils.getColored( "&pLength: &s" + Time.getLengthFromTimestamp( length ) ) );
         }
 
-        if ( staffUUID.equals( "CONSOLE" ) ) { lore.add( Utils.getColored( "&pStaff: &sCONSOLE" ) ); }
+        if ( staffUUID.equals( "CONSOLE" ) ) { lore.add( CoreUtils.getColored( "&pStaff: &sCONSOLE" ) ); }
         else {
             String staffName = Bukkit.getOfflinePlayer( UUID.fromString( staffUUID ) ).getName();
-            lore.add( Utils.getColored( "&pStaff: &s" + staffName ) );
+            lore.add( CoreUtils.getColored( "&pStaff: &s" + staffName ) );
         }
 
         if ( checkIsIPPun() ) {
             String originalPlayerName = Bukkit.getOfflinePlayer( UUID.fromString( playerUUID ) ).getName();
-            lore.add( Utils.getColored( "&pOriginal Player: &s" + originalPlayerName ) );
+            lore.add( CoreUtils.getColored( "&pOriginal Player: &s" + originalPlayerName ) );
         }
 
-        if ( checkIsUnpunish() == false ) { lore.add( Utils.getColored( "&pReason: &s" + reason ) ); }
+        if ( checkIsUnpunish() == false ) { lore.add( CoreUtils.getColored( "&pReason: &s" + reason ) ); }
 
         meta.setLore( lore );
 

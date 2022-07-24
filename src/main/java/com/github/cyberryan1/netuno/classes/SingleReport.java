@@ -1,8 +1,8 @@
 package com.github.cyberryan1.netuno.classes;
 
+import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netuno.utils.Time;
-import com.github.cyberryan1.netuno.utils.Utils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
@@ -50,9 +50,9 @@ public class SingleReport {
 
         skull = GUIUtils.setItemName( skull, "&p" + target.getName() );
         ArrayList<String> lore = new ArrayList<>();
-        lore.add( Utils.getColored( "&pDate: &s" + Time.getDateFromTimestamp( date ) ) );
-        lore.add( Utils.getColored( "&pReporter: &s" + reporter.getName() ) );
-        lore.add( Utils.getColored( "&pReason: &s" + reason ) );
+        lore.add( CoreUtils.getColored( "&pDate: &s" + Time.getDateFromTimestamp( date ) ) );
+        lore.add( CoreUtils.getColored( "&pReporter: &s" + reporter.getName() ) );
+        lore.add( CoreUtils.getColored( "&pReason: &s" + reason ) );
 
         return GUIUtils.setItemLore( skull, lore );
     }

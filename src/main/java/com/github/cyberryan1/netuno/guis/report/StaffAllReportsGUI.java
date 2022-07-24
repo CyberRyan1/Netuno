@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.guis.report;
 
+import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.classes.CombinedReport;
 import com.github.cyberryan1.netuno.classes.SingleReport;
 import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
@@ -50,7 +51,7 @@ public class StaffAllReportsGUI implements Listener {
         compressReports();
         sort();
 
-        String guiName = Utils.getColored( "&pReports" );
+        String guiName = CoreUtils.getColored( "&pReports" );
         gui = Bukkit.createInventory( null, 54, guiName );
         insertItems();
     }
@@ -164,7 +165,7 @@ public class StaffAllReportsGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLICK )
     public void onInventoryClick( InventoryClickEvent event ) {
         if ( staff.getName().equals( event.getWhoClicked().getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&pReports" ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( CoreUtils.getColored( "&pReports" ) ) == false ) { return; }
 
         event.setCancelled( true );
         if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
@@ -216,14 +217,14 @@ public class StaffAllReportsGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
     public void onInventoryDrag( InventoryDragEvent event ) {
         if ( staff.getName().equals( event.getWhoClicked().getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&pReports" ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( CoreUtils.getColored( "&pReports" ) ) == false ) { return; }
         event.setCancelled( true );
     }
 
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLOSE )
     public void onInventoryClose( InventoryCloseEvent event ) {
         if ( staff.getName().equals( event.getPlayer().getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&pReports" ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( CoreUtils.getColored( "&pReports" ) ) == false ) { return; }
 
         GUIEventManager.removeEvent( this );
     }

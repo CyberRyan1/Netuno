@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.guis.history;
 
+import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
@@ -46,7 +47,7 @@ public class HistoryListGUI implements Listener {
         history.addAll( DATA.getAllPunishments( target.getUniqueId().toString() ) );
         sort();
 
-        String guiName = Utils.getColored( "&p" + target.getName() + "&s's history" );
+        String guiName = CoreUtils.getColored( "&p" + target.getName() + "&s's history" );
         gui = Bukkit.createInventory( null, 54, guiName );
         insertItems();
     }
@@ -122,10 +123,10 @@ public class HistoryListGUI implements Listener {
     private ItemStack getCurrentPagePaper() {
         ItemStack paper = new ItemStack( Material.PAPER );
         ItemMeta meta = paper.getItemMeta();
-        meta.setDisplayName( Utils.getColored( "&sPage &p#" + page ) );
+        meta.setDisplayName( CoreUtils.getColored( "&sPage &p#" + page ) );
 
         ArrayList<String> lore = new ArrayList<>();
-        lore.add( Utils.getColored( "&s&oClick any sign to edit the punishment!" ) );
+        lore.add( CoreUtils.getColored( "&s&oClick any sign to edit the punishment!" ) );
         meta.setLore( lore );
 
         paper.setItemMeta( meta );
@@ -136,32 +137,32 @@ public class HistoryListGUI implements Listener {
         if ( sort == SortBy.FIRST_DATE ) {
             ItemStack hopper = GUIUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pOldest -> Newest" );
             ArrayList<String> lore = new ArrayList<>();
-            lore.add( Utils.getColored( "&sNext Sort: &pNewest -> Oldest" ) );
-            lore.add( Utils.getColored( "&sClick to change sort method" ) );
+            lore.add( CoreUtils.getColored( "&sNext Sort: &pNewest -> Oldest" ) );
+            lore.add( CoreUtils.getColored( "&sClick to change sort method" ) );
             return GUIUtils.setItemLore( hopper, lore );
         }
 
         else if ( sort == SortBy.LAST_DATE ) {
             ItemStack hopper = GUIUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pNewest -> Oldest" );
             ArrayList<String> lore = new ArrayList<>();
-            lore.add( Utils.getColored( "&sNext Sort: &pActive -> Not Active" ) );
-            lore.add( Utils.getColored( "&sClick to change sort method" ) );
+            lore.add( CoreUtils.getColored( "&sNext Sort: &pActive -> Not Active" ) );
+            lore.add( CoreUtils.getColored( "&sClick to change sort method" ) );
             return GUIUtils.setItemLore( hopper, lore );
         }
 
         else if ( sort == SortBy.FIRST_ACTIVE ) {
             ItemStack hopper = GUIUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pActive -> Not Active" );
             ArrayList<String> lore = new ArrayList<>();
-            lore.add( Utils.getColored( "&sNext Sort: &pNot Active -> Active" ) );
-            lore.add( Utils.getColored( "&sClick to change sort method" ) );
+            lore.add( CoreUtils.getColored( "&sNext Sort: &pNot Active -> Active" ) );
+            lore.add( CoreUtils.getColored( "&sClick to change sort method" ) );
             return GUIUtils.setItemLore( hopper, lore );
         }
 
         else if ( sort == SortBy.LAST_ACTIVE ) {
             ItemStack hopper = GUIUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pNot Active -> Active" );
             ArrayList<String> lore = new ArrayList<>();
-            lore.add( Utils.getColored( "&sNext Sort: &pNewest -> Oldest" ) );
-            lore.add( Utils.getColored( "&sClick to change sort method" ) );
+            lore.add( CoreUtils.getColored( "&sNext Sort: &pNewest -> Oldest" ) );
+            lore.add( CoreUtils.getColored( "&sClick to change sort method" ) );
             return GUIUtils.setItemLore( hopper, lore );
         }
 
@@ -182,7 +183,7 @@ public class HistoryListGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLICK )
     public void onInventoryClick( InventoryClickEvent event ) {
         if ( event.getWhoClicked().getName().equals( staff.getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&p" + target.getName() + "&s's history" ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( CoreUtils.getColored( "&p" + target.getName() + "&s's history" ) ) == false ) { return; }
 
         event.setCancelled( true );
         if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
@@ -203,7 +204,7 @@ public class HistoryListGUI implements Listener {
         }
 
         else if ( ( itemClicked.getType() == Material.EMERALD || itemClicked.getType() == Material.REDSTONE )
-                && itemClicked.getItemMeta().getDisplayName().contains( Utils.getColored( "&sPunishment &p#" ) ) ) {
+                && itemClicked.getItemMeta().getDisplayName().contains( CoreUtils.getColored( "&sPunishment &p#" ) ) ) {
             int punClicked = ( ( page - 1 ) * 21 ) + event.getSlot() - 10;
             if ( event.getSlot() >= 18 ) { punClicked -= 2; }
             if ( event.getSlot() >= 27 ) { punClicked -= 2; }
@@ -241,7 +242,7 @@ public class HistoryListGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
     public void onInventoryDrag( InventoryDragEvent event ) {
         if ( event.getWhoClicked().getName().equals( staff.getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&p" + target.getName() + "&s's history" ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( CoreUtils.getColored( "&p" + target.getName() + "&s's history" ) ) == false ) { return; }
 
         event.setCancelled( true );
     }
@@ -249,7 +250,7 @@ public class HistoryListGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLOSE )
     public void onInventoryClose( InventoryCloseEvent event ) {
         if ( event.getPlayer().equals( staff ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&p" + target.getName() + "&s's history" ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( CoreUtils.getColored( "&p" + target.getName() + "&s's history" ) ) == false ) { return; }
 
         GUIEventManager.removeEvent( this );
     }

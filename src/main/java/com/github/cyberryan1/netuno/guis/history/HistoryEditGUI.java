@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.guis.history;
 
+import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
@@ -10,6 +11,7 @@ import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -46,7 +48,7 @@ public class HistoryEditGUI implements Listener {
         // else is an ip punishment
         else { punishment = DATA.getIPPunishment( punID ); }
 
-        String guiName = Utils.getColored( "&sEdit Punishment &p#" + punID );
+        String guiName = CoreUtils.getColored( "&sEdit Punishment &p#" + punID );
         GUI = Bukkit.createInventory( null, 54, guiName );
         insertItems();
 
@@ -96,7 +98,7 @@ public class HistoryEditGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLICK )
     public void onInventoryClick( InventoryClickEvent event ) {
         if ( event.getWhoClicked().getName().equals( staff.getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&sEdit Punishment &p#" + punishment.getID() ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( CoreUtils.getColored( "&sEdit Punishment &p#" + punishment.getID() ) ) == false ) { return; }
 
         event.setCancelled( true );
         if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
@@ -104,40 +106,40 @@ public class HistoryEditGUI implements Listener {
         ItemStack itemClicked = event.getCurrentItem();
         if ( itemClicked == null || itemClicked.getType() == Material.AIR ) { return; }
         String itemName = itemClicked.getItemMeta().getDisplayName();
-        if ( itemName.equals( Utils.getColored( "&sEdit length" ) ) == false
-            && itemName.equals( Utils.getColored( "&sEdit reason" ) ) == false
-            && itemName.equals( Utils.getColored( "&sDelete punishment" ) ) == false
-            && itemName.equals( Utils.getColored( "&sGo back" ) ) == false ) { return; }
+        if ( itemName.equals( CoreUtils.getColored( "&sEdit length" ) ) == false
+            && itemName.equals( CoreUtils.getColored( "&sEdit reason" ) ) == false
+            && itemName.equals( CoreUtils.getColored( "&sDelete punishment" ) ) == false
+            && itemName.equals( CoreUtils.getColored( "&sGo back" ) ) == false ) { return; }
 
         if ( itemClicked.equals( GUIUtils.setItemName( GUIUtils.getItemForVersion( "CLOCK", "WATCH" ), "&sEdit length" ) ) ) {
             if ( VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "history.time.perm" ) ) == false ) {
-                CommandErrors.sendInvalidPerms( staff );
+                CoreUtils.sendMsg( staff, Settings.PERM_DENIED_MSG.coloredString() );
             }
 
             else if ( editingLength == false ) {
                 event.getWhoClicked().closeInventory();
-                event.getWhoClicked().sendMessage( Utils.getColored( "&sPlease type the new length for punishment &p#" + punishment.getID() ) );
-                event.getWhoClicked().sendMessage( Utils.getColored( "&sTo cancel, type &p\"cancel\"" ) );
+                event.getWhoClicked().sendMessage( CoreUtils.getColored( "&sPlease type the new length for punishment &p#" + punishment.getID() ) );
+                event.getWhoClicked().sendMessage( CoreUtils.getColored( "&sTo cancel, type &p\"cancel\"" ) );
                 editingLength = true;
             }
         }
 
         else if ( itemClicked.equals( GUIUtils.createItem( Material.PAPER, "&sEdit reason" ) ) ) {
             if ( VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "history.reason.perm" ) ) == false ) {
-                CommandErrors.sendInvalidPerms( staff );
+                CoreUtils.sendMsg( staff, Settings.PERM_DENIED_MSG.coloredString() );
             }
 
             else if ( editingReason == false ) {
                 event.getWhoClicked().closeInventory();
-                event.getWhoClicked().sendMessage( Utils.getColored( "&sPlease type the new reason for punishment &p#" + punishment.getID() ) );
-                event.getWhoClicked().sendMessage( Utils.getColored( "&sTo cancel, type &p\"cancel\"" ) );
+                event.getWhoClicked().sendMessage( CoreUtils.getColored( "&sPlease type the new reason for punishment &p#" + punishment.getID() ) );
+                event.getWhoClicked().sendMessage( CoreUtils.getColored( "&sTo cancel, type &p\"cancel\"" ) );
                 editingReason = true;
             }
         }
 
         else if ( itemClicked.equals( GUIUtils.createItem( Material.BARRIER, "&sDelete punishment" ) ) ) {
             if ( VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "history.delete.perm" ) ) == false ) {
-                CommandErrors.sendInvalidPerms( staff );
+                CoreUtils.sendMsg( staff, Settings.PERM_DENIED_MSG.coloredString() );
             }
 
             else {
@@ -162,7 +164,7 @@ public class HistoryEditGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
     public void onInventoryDrag( InventoryDragEvent event ) {
         if ( event.getWhoClicked().getName().equals( staff.getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&sEdit Punishment &p#" + punishment.getID() ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( CoreUtils.getColored( "&sEdit Punishment &p#" + punishment.getID() ) ) == false ) { return; }
 
         event.setCancelled( true );
     }
@@ -170,7 +172,7 @@ public class HistoryEditGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLOSE )
     public void onInventoryClose( InventoryCloseEvent event ) {
         if ( event.getPlayer().getName().equals( staff.getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&sEdit Punishment &p#" + punishment.getID() ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( CoreUtils.getColored( "&sEdit Punishment &p#" + punishment.getID() ) ) == false ) { return; }
 
         if ( editingLength == false || editingReason == false ) { return; }
 
@@ -201,7 +203,7 @@ public class HistoryEditGUI implements Listener {
 
             else {
                 CommandErrors.sendInvalidTimespan( event.getPlayer(), event.getMessage() );
-                event.getPlayer().sendMessage( Utils.getColored( "&sTry again, or say &p\"cancel\"&s to cancel" ) );
+                event.getPlayer().sendMessage( CoreUtils.getColored( "&sTry again, or say &p\"cancel\"&s to cancel" ) );
             }
         }
 
@@ -226,7 +228,7 @@ public class HistoryEditGUI implements Listener {
         if ( editingLength || editingReason ) {
             editingLength = false;
             editingReason = false;
-            event.getPlayer().sendMessage( Utils.getColored( "&sThe punishment edit has been cancelled" ) );
+            event.getPlayer().sendMessage( CoreUtils.getColored( "&sThe punishment edit has been cancelled" ) );
             GUIEventManager.removeEvent( this );
         }
     }

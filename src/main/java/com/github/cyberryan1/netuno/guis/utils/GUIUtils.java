@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.guis.utils;
 
+import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -24,22 +25,22 @@ public class GUIUtils {
 
     public static ItemStack setItemLore( ItemStack item, String ... lore ) {
         ArrayList<String> loreLines = new ArrayList<>();
-        for ( String str : lore ) { loreLines.add( Utils.getColored( str ) ); }
+        for ( String str : lore ) { loreLines.add( CoreUtils.getColored( str ) ); }
         return setItemLore( item, loreLines );
     }
 
     public static ItemStack addItemLore( ItemStack item, String ... lore ) {
         ArrayList<String> loreLines = new ArrayList<>();
         if ( item.getItemMeta().getLore() != null ) {
-            for ( String str : item.getItemMeta().getLore() ) { loreLines.add( Utils.getColored( str ) ); }
+            for ( String str : item.getItemMeta().getLore() ) { loreLines.add( CoreUtils.getColored( str ) ); }
         }
-        for ( String str : lore ) { loreLines.add( Utils.getColored( str ) ); }
+        for ( String str : lore ) { loreLines.add( CoreUtils.getColored( str ) ); }
         return setItemLore( item, loreLines );
     }
 
     public static ItemStack setItemName( ItemStack item, String name ) {
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName( Utils.getColored( name ) );
+        meta.setDisplayName( CoreUtils.getColored( name ) );
         item.setItemMeta( meta );
         return item;
     }

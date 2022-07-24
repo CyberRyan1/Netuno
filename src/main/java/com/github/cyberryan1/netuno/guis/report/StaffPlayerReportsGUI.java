@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.guis.report;
 
+import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.classes.MultiReport;
 import com.github.cyberryan1.netuno.classes.SingleReport;
 import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
@@ -49,7 +50,7 @@ public class StaffPlayerReportsGUI implements Listener {
         compressReports();
         sort();
 
-        this.guiName = Utils.getColored( "&p" + target.getName() + "&s's Reports" );
+        this.guiName = CoreUtils.getColored( "&p" + target.getName() + "&s's Reports" );
         gui = Bukkit.createInventory( null, 54, this.guiName );
         insertItems();
     }

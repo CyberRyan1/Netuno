@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.guis.ipinfo;
 
+import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
@@ -49,7 +50,7 @@ public class AltsListGUI implements Listener {
 
         sortAlts();
 
-        String guiName = Utils.getColored( "&p" + target.getName() + "&s's alts" );
+        String guiName = CoreUtils.getColored( "&p" + target.getName() + "&s's alts" );
         gui = Bukkit.createInventory( null, 54, guiName );
         insertItems();
 
@@ -136,9 +137,9 @@ public class AltsListGUI implements Listener {
         ItemStack toReturn = GUIUtils.createItem( Material.PAPER, "&sPage &p#" + page );
         ArrayList<String> lore = new ArrayList<>();
         lore.add( "" );
-        lore.add( Utils.getColored( "&sCurrent Sort: &pA -> Z" ) );
-        lore.add( Utils.getColored( "&sNext Sort: &pFirst Join -> Last Join" ) );
-        lore.add( Utils.getColored( "&sClick to change sort method" ) );
+        lore.add( CoreUtils.getColored( "&sCurrent Sort: &pA -> Z" ) );
+        lore.add( CoreUtils.getColored( "&sNext Sort: &pFirst Join -> Last Join" ) );
+        lore.add( CoreUtils.getColored( "&sClick to change sort method" ) );
         return GUIUtils.setItemLore( toReturn, lore );
     }
 
@@ -146,9 +147,9 @@ public class AltsListGUI implements Listener {
         ItemStack toReturn = GUIUtils.createItem( Material.PAPER, "&sPage &p#" + page );
         ArrayList<String> lore = new ArrayList<>();
         lore.add( "" );
-        lore.add( Utils.getColored( "&sSort: &pFirst Join -> Last Join" ) );
-        lore.add( Utils.getColored( "&sNext Sort: &pLast Join -> First Join" ) );
-        lore.add( Utils.getColored( "&sClick to change sort method" ) );
+        lore.add( CoreUtils.getColored( "&sSort: &pFirst Join -> Last Join" ) );
+        lore.add( CoreUtils.getColored( "&sNext Sort: &pLast Join -> First Join" ) );
+        lore.add( CoreUtils.getColored( "&sClick to change sort method" ) );
         return GUIUtils.setItemLore( toReturn, lore );
     }
 
@@ -156,9 +157,9 @@ public class AltsListGUI implements Listener {
         ItemStack toReturn = GUIUtils.createItem( Material.PAPER, "&sPage &p#" + page );
         ArrayList<String> lore = new ArrayList<>();
         lore.add( "" );
-        lore.add( Utils.getColored( "&sSort: &pLast Join -> First Join" ) );
-        lore.add( Utils.getColored( "&sNext Sort: &pPunished -> Not Punished" ) );
-        lore.add( Utils.getColored( "&sClick to change sort method" ) );
+        lore.add( CoreUtils.getColored( "&sSort: &pLast Join -> First Join" ) );
+        lore.add( CoreUtils.getColored( "&sNext Sort: &pPunished -> Not Punished" ) );
+        lore.add( CoreUtils.getColored( "&sClick to change sort method" ) );
         return GUIUtils.setItemLore( toReturn, lore );
     }
 
@@ -166,9 +167,9 @@ public class AltsListGUI implements Listener {
         ItemStack toReturn = GUIUtils.createItem( Material.PAPER, "&sPage &p#" + page );
         ArrayList<String> lore = new ArrayList<>();
         lore.add( "" );
-        lore.add( Utils.getColored( "&sSort: &pPunished -> Not Punished" ) );
-        lore.add( Utils.getColored( "&sNext Sort: &pNot Punished -> Punished" ) );
-        lore.add( Utils.getColored( "&sClick to change sort method" ) );
+        lore.add( CoreUtils.getColored( "&sSort: &pPunished -> Not Punished" ) );
+        lore.add( CoreUtils.getColored( "&sNext Sort: &pNot Punished -> Punished" ) );
+        lore.add( CoreUtils.getColored( "&sClick to change sort method" ) );
         return GUIUtils.setItemLore( toReturn, lore );
     }
 
@@ -176,9 +177,9 @@ public class AltsListGUI implements Listener {
         ItemStack toReturn = GUIUtils.createItem( Material.PAPER, "&sPage &p#" + page );
         ArrayList<String> lore = new ArrayList<>();
         lore.add( "" );
-        lore.add( Utils.getColored( "&sSort: &pNot Punished -> Punished" ) );
-        lore.add( Utils.getColored( "&sNext Sort: &pA -> Z" ) );
-        lore.add( Utils.getColored( "&sClick to change sort method" ) );
+        lore.add( CoreUtils.getColored( "&sSort: &pNot Punished -> Punished" ) );
+        lore.add( CoreUtils.getColored( "&sNext Sort: &pA -> Z" ) );
+        lore.add( CoreUtils.getColored( "&sClick to change sort method" ) );
         return GUIUtils.setItemLore( toReturn, lore );
     }
 
@@ -192,17 +193,17 @@ public class AltsListGUI implements Listener {
             ArrayList<Punishment> accountPuns = DATA.getAllActivePunishments( account.getUniqueId().toString() );
 
             for ( Punishment pun : accountPuns ) {
-                if ( pun.getType().equalsIgnoreCase( "mute" ) && lore.contains( Utils.getColored( "&8- &sMuted" ) ) == false ) {
-                    lore.add( Utils.getColored( "&8- &sMuted" ) );
+                if ( pun.getType().equalsIgnoreCase( "mute" ) && lore.contains( CoreUtils.getColored( "&8- &sMuted" ) ) == false ) {
+                    lore.add( CoreUtils.getColored( "&8- &sMuted" ) );
                 }
-                else if ( pun.getType().equalsIgnoreCase( "ban" ) && lore.contains( Utils.getColored( "&8- &sBanned" ) ) == false ) {
-                    lore.add( Utils.getColored( "&8- &sBanned" ) );
+                else if ( pun.getType().equalsIgnoreCase( "ban" ) && lore.contains( CoreUtils.getColored( "&8- &sBanned" ) ) == false ) {
+                    lore.add( CoreUtils.getColored( "&8- &sBanned" ) );
                 }
-                else if ( pun.getType().equalsIgnoreCase( "ipmute" ) && lore.contains( Utils.getColored( "&8- &sIP Muted" ) ) == false ) {
-                    lore.add( Utils.getColored( "&8- &sIP Muted" ) );
+                else if ( pun.getType().equalsIgnoreCase( "ipmute" ) && lore.contains( CoreUtils.getColored( "&8- &sIP Muted" ) ) == false ) {
+                    lore.add( CoreUtils.getColored( "&8- &sIP Muted" ) );
                 }
-                else if ( pun.getType().equalsIgnoreCase( "ipban" ) && lore.contains( Utils.getColored( "&8- &sIP Banned" ) ) == false ) {
-                    lore.add( Utils.getColored( "&8- &sIP Banned" ) );
+                else if ( pun.getType().equalsIgnoreCase( "ipban" ) && lore.contains( CoreUtils.getColored( "&8- &sIP Banned" ) ) == false ) {
+                    lore.add( CoreUtils.getColored( "&8- &sIP Banned" ) );
                 }
             }
             skull = GUIUtils.setItemLore( skull, lore );
@@ -223,7 +224,7 @@ public class AltsListGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLICK )
     public void onInventoryClick( InventoryClickEvent event ) {
         if ( staff.getName().equals( event.getWhoClicked().getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&p" + target.getName() + "&s's alts" ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( CoreUtils.getColored( "&p" + target.getName() + "&s's alts" ) ) == false ) { return; }
 
         event.setCancelled( true );
         if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
@@ -233,7 +234,7 @@ public class AltsListGUI implements Listener {
 
         if ( clicked.getItemMeta().getLore() != null && clicked.getItemMeta().getLore().size() > 0 && GUIUtils.getPlayerSkull( target ).getType() == clicked.getType() ) {
             staff.closeInventory();
-            String playerName = clicked.getItemMeta().getDisplayName().replace( Utils.getColored( "&c" ), "" );
+            String playerName = clicked.getItemMeta().getDisplayName().replace( CoreUtils.getColored( "&c" ), "" );
             OfflinePlayer target = Bukkit.getOfflinePlayer( playerName );
             if ( target != null ) {
                 HistoryListGUI gui = new HistoryListGUI( target, staff, 1 );
@@ -292,14 +293,14 @@ public class AltsListGUI implements Listener {
     @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
     public void onInventoryDrag( InventoryDragEvent event ) {
         if ( staff.getName().equals( event.getWhoClicked().getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&p" + target.getName() + "&s's alts" ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( CoreUtils.getColored( "&p" + target.getName() + "&s's alts" ) ) == false ) { return; }
         event.setCancelled( true );
     }
 
     @GUIEventInterface( type = GUIEventType.INVENTORY_CLOSE )
     public void onInventoryClose( InventoryCloseEvent event ) {
         if ( staff.getName().equals( event.getPlayer().getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&p" + target.getName() + "&s's alts" ) ) == false ) { return; }
+        if ( event.getView().getTitle().equals( CoreUtils.getColored( "&p" + target.getName() + "&s's alts" ) ) == false ) { return; }
 
         GUIEventManager.removeEvent( this );
     }

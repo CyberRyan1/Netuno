@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.guis.history;
 
+import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
@@ -33,7 +34,7 @@ public class HistoryDeleteConfirmGUI implements Listener {
         this.staff = staff;
         this.punishment = pun;
 
-        String guiName = Utils.getColored( "&sConfirm Deletion" );
+        String guiName = CoreUtils.getColored( "&sConfirm Deletion" );
         gui = Bukkit.createInventory( null, 45, guiName );
         insertItems();
     }
@@ -73,7 +74,7 @@ public class HistoryDeleteConfirmGUI implements Listener {
             if ( itemClicked.equals( GUIUtils.setItemName( GUIUtils.getColoredItemForVersion( "LIME_WOOL" ), "&aConfirm" ) ) ) {
                 staff.closeInventory();
                 DATA.deletePunishment( punishment.getID() );
-                staff.sendMessage( Utils.getColored( "&sSuccessfully deleted punishment &p#" + punishment.getID() ) );
+                staff.sendMessage( CoreUtils.getColored( "&sSuccessfully deleted punishment &p#" + punishment.getID() ) );
                 staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
             }
 
