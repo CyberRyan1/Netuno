@@ -42,7 +42,7 @@ public class SignChangeListener implements Listener {
 
                 if ( msg.contains( "[LINE_1]" ) == false || msg.contains( "[LINE_2]" ) == false
                         || msg.contains( "[LINE_3]" ) == false || msg.contains( "[LINE_4]" ) == false ) {
-                    Utils.logError( "\"signs.notifs-msg\" in the config.yml does not contain "
+                    Utils.logError( "\"signs.notifs-msg\" in the config_default.yml does not contain "
                             + "\"[LINE_1]\", \"[LINE_2]\", \"[LINE_3]\", or \"[LINE_4]\", so it will not be sent" );
                     return;
                 }

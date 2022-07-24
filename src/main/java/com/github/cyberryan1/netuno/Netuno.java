@@ -52,8 +52,7 @@ public final class Netuno extends JavaPlugin {
         vaultUtils = new VaultUtils();
 
         // Update/reload config files
-        YMLUtils.getConfig().getYMLManager().reloadConfig();
-        YMLUtils.getConfig().getYMLManager().updateConfig();
+        YMLUtils.getConfig().getYMLManager().initialize();
 
         setupDatabase();
         chatslowManager = new ChatslowManager();

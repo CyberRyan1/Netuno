@@ -58,8 +58,7 @@ public class NetunoCmd extends BaseCommand {
                     sender.sendMessage( Utils.getColored( "&7Attempting to reload &6Netuno&7..." ) );
                     Utils.logInfo( "Attempting to reload Netuno..." );
 
-                    YMLUtils.getConfig().getYMLManager().reloadConfig();
-                    YMLUtils.getConfig().getYMLManager().updateConfig();
+                    YMLUtils.getConfig().getYMLManager().initialize();
 
                     sender.sendMessage( Utils.getColored( "&7Successfully reloaded &6Netuno" ) );
                     Utils.logInfo( "Successfully reloaded Netuno and its files" );

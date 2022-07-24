@@ -6,7 +6,7 @@
 
     <groupId>com.github.cyberryan1</groupId>
     <artifactId>Netuno</artifactId>
-    <version>1.4.1-BETA</version>
+    <version>1.4.2-BETA</version>
     <!--
     <artifactId>1.8-Netuno</artifactId>
     <version>1.4.1-BETA</version>
@@ -112,7 +112,7 @@
         <dependency>
             <groupId>com.github.cyberryan1</groupId>
             <artifactId>CyberCore</artifactId>
-            <version>1.2.2</version>
+            <version>1.4.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.SkriptLang</groupId>
