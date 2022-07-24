@@ -5,7 +5,6 @@ import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.utils.database.Database;
-import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -46,16 +45,6 @@ public class Utils {
     public static void logError( String error, Throwable thrown ) {
         if ( error == null || thrown == null ) { return; }
         CyberCore.getPlugin().getLogger().log( Level.SEVERE, error, thrown );
-    }
-
-    public static String getColored( String in ) {
-        in = in.replace( "&p", Settings.PRIMARY_COLOR.string() )
-                .replace( "&s", Settings.SECONDARY_COLOR.string() );
-        return CoreUtils.getColored( in );
-    }
-
-    public static void sendColored( CommandSender sender, String in ) {
-        sender.sendMessage( getColored( in ) );
     }
 
     // Checks if an index in an array is out of bounds
@@ -243,7 +232,7 @@ public class Utils {
     public static String removeColorCodes( String input ) {
         String colorCodes[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "a", "b", "c", "d", "e", "f", "n", "m", "l", "o" };
         for ( String cc : colorCodes ) {
-            input = input.replace( Utils.getColored( "&" + cc ), "" );
+            input = input.replace( CoreUtils.getColored( "&" + cc ), "" );
         }
 
         return input;
