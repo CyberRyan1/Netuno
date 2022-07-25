@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.utils.database;
 
+import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.classes.IPPunishment;
 import com.github.cyberryan1.netuno.classes.Punishment;
@@ -184,7 +185,7 @@ public class Database {
             ps.setInt( 1, id );
             rs = ps.executeQuery();
 
-            rs.next();
+            if ( rs.next() == false ) { return null; }
             pun.setID( rs.getInt( "id" ) );
             pun.setPlayerUUID( rs.getString( "player" ) );
             pun.setStaffUUID( rs.getString( "staff" ) );
@@ -539,7 +540,7 @@ public class Database {
                 String after = "";
                 if ( suffixs.size() >= 1 ) {
                     String suffixsList[] = new String[ suffixs.size() - 1 ];
-                    after = Utils.getColored( "&c[" + Utils.formatListIntoString( suffixs.toArray( suffixsList ) ) + "]" );
+                    after = CoreUtils.getColored( "&c[" + Utils.formatListIntoString( suffixs.toArray( suffixsList ) ) + "]" );
                 }
 
                 toReturn.add( account.getName() + " " + after );
@@ -632,7 +633,7 @@ public class Database {
             ps.setInt( 1, id );
             rs = ps.executeQuery();
 
-            rs.next();
+            if ( rs.next() == false ) { return null; }
             toReturn = new IPPunishment();
             toReturn.setID( rs.getInt( "id" ) );
             toReturn.setPlayerUUID( rs.getString( "player" ) );
