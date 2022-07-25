@@ -1,119 +1,88 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.cybercore.helpers.command.ArgType;
+import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
-import com.github.cyberryan1.netuno.classes.BaseCommand;
 import com.github.cyberryan1.netuno.classes.PrePunishment;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.database.Database;
-import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class Ban extends BaseCommand {
-
-    private final Database DATA = Utils.getDatabase();
+public class Ban extends CyberCommand {
 
     public Ban() {
-        super( "ban", YMLUtils.getConfig().getStr( "ban.perm" ), YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&uban &y(player) (length/forever) (reason) [-s]" ) );
+        super(
+                "ban",
+                Settings.BAN_PERMISSION.string(),
+                Settings.PERM_DENIED_MSG.coloredString(),
+                "&8/&sban &p(player) (length/forever) (reason) [-s]"
+        );
+        register( true );
+
+        demandPermission( true );
+        setMinArgs( 3 );
+        setArgType( 0, ArgType.OFFLINE_PLAYER );
+        setAsync( true );
     }
 
     @Override
-    public List<String> onTabComplete( CommandSender sender, Command command, String label, String[] args ) {
+    public List<String> tabComplete( CommandSender sender, String[] args ) {
         if ( permissionsAllowed( sender ) ) {
-            if ( args.length == 0 ) {
-                return getAllOnlinePlayerNames();
-            }
-            else if ( args.length == 1 ) {
-                return matchOnlinePlayers( args[0] );
-            }
-            else if ( args.length == 2 ) {
-                List<String> toReturn = new ArrayList<>();
-                Collections.addAll( toReturn, "15m", "1h", "12h", "1d", "3d", "1w", "forever" );
-                return toReturn;
-            }
+            List<String> suggestionTimes = List.of( "15m", "1h", "12h", "1d", "3d", "1w", "forever" );
+            if ( args.length <= 1 ) { return List.of(); }
+            else if ( args[1].length() == 0 ) { return suggestionTimes; }
+            else if ( args.length == 2 ) { return matchArgs( suggestionTimes, args[1] ); }
         }
 
-        return Collections.emptyList();
+        return List.of();
     }
 
     @Override
     // /ban (player) (length/forever) (reason)
-    public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
-
-        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "ban.perm" ) ) == false ) {
-            CommandErrors.sendInvalidPerms( sender );
+    public boolean execute( CommandSender sender, String args[] ) {
+        if ( Time.isAllowableLength( args[1] ) == false ) {
+            CommandErrors.sendInvalidTimespan( sender, args[1] );
             return true;
         }
 
-        if ( Utils.isOutOfBounds( args, 2 ) == false ) {
+        final OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
 
-            if ( Utils.isValidUsername( args[0] ) == false ) {
-                CommandErrors.sendPlayerNotFound( sender, args[0] );
+        if ( Settings.BAN_MAX_TIME_ENABLED.bool() && VaultUtils.hasPerms( sender, Settings.BAN_MAX_TIME_BYPASS_PERMISSION.string() ) == false ) {
+            long maxBanLength = Time.getTimestampFromLength( Settings.BAN_MAX_TIME_LENGTH.string() );
+            long banLength = Time.getTimestampFromLength( args[1] );
+            if ( maxBanLength < banLength ) {
+                CommandErrors.sendBanLengthTooLarge( sender );
                 return true;
             }
-
-            if ( Time.isAllowableLength( args[1] ) ) {
-                OfflinePlayer target = Bukkit.getServer().getOfflinePlayer( args[0] );
-                if ( target != null ) {
-
-                    if ( YMLUtils.getConfig().getBool( "ban.max-time-enable" ) ) {
-                        long maxBanLength = Time.getTimestampFromLength( YMLUtils.getConfig().getStr( "ban.max-time-length" ) );
-                        long banLength = Time.getTimestampFromLength( args[1] );
-                        if ( maxBanLength < banLength ) {
-                            if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "ban.max-time-bypass" ) ) == false ) {
-                                CommandErrors.sendBanLengthTooLarge( sender );
-                                return true;
-                            }
-                        }
-                    }
-
-                    PrePunishment pun = new PrePunishment(
-                            target,
-                            "Ban",
-                            args[1],
-                            Utils.getRemainingArgs( args, 2 )
-                    );
-
-                    pun.setConsoleSender( true );
-                    if ( sender instanceof Player ) {
-                        Player staff = ( Player ) sender;
-                        pun.setStaff( staff );
-                        pun.setConsoleSender( false );
-
-                        if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
-                            CommandErrors.sendPlayerCannotBePunished( staff, target.getName() );
-                            return true;
-                        }
-                    }
-
-                    pun.executePunishment();
-                }
-
-                else {
-                    CommandErrors.sendPlayerNotFound( sender, args[0] );
-                }
-
-            }
-
-            else {
-                CommandErrors.sendInvalidTimespan( sender, args[1] );
-            }
-
         }
 
-        else {
-            CommandErrors.sendCommandUsage( sender, "ban" );
+        PrePunishment pun = new PrePunishment(
+                target,
+                "Ban",
+                args[1],
+                combineArgs( args, 2 )
+        );
+
+        pun.setConsoleSender( true );
+        if ( sender instanceof Player ) {
+            Player staff = ( Player ) sender;
+            pun.setStaff( staff );
+            pun.setConsoleSender( false );
+
+            if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
+                CommandErrors.sendPlayerCannotBePunished( staff, target.getName() );
+                return true;
+            }
         }
 
+        pun.executePunishment();
         return true;
     }
 }

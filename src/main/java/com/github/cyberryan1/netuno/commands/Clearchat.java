@@ -1,43 +1,44 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
-import com.github.cyberryan1.netuno.classes.BaseCommand;
-import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
 import java.util.List;
 
-public class Clearchat extends BaseCommand {
+public class Clearchat extends CyberCommand {
 
     public Clearchat() {
-        super( "clearchat", YMLUtils.getConfig().getStr( "clearchat.perm" ),  YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&uclearchat" ) );
+        super(
+                "clearchat",
+                Settings.CLEARCHAT_PERMISSION.string(),
+                Settings.PERM_DENIED_MSG.coloredString(),
+                "&8/&sclearchat"
+        );
+        register( false );
+
+        setDemandPermission( true );
     }
 
     @Override
-    public List<String> onTabComplete( CommandSender sender, Command command, String label, String[] args ) {
-        return Collections.emptyList();
+    public List<String> tabComplete( CommandSender sender, String[] args ) {
+        return List.of();
     }
 
     @Override
-    public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
+    public boolean execute( CommandSender sender, String args[] ) {
 
-        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "clearchat.perm" ) ) == false ) {
-            CommandErrors.sendInvalidPerms( sender );
-            return true;
-        }
-
-        String broadcast = YMLUtils.getConfig().getColoredStr( "clearchat.broadcast" );
+        String broadcast = Settings.CLEARCHAT_BROADCAST.coloredString();
         broadcast = Utils.replaceStaffVariable( broadcast, sender );
 
-        boolean sendStaffBroadcast = YMLUtils.getConfig().getStr( "clearchat.staff-broadcast" ).equals( "" ) == false;
-        String staffBroadcast = YMLUtils.getConfig().getColoredStr( "clearchat.staff-broadcast" );
+        String staffBroadcast = Settings.CLEARCHAT_STAFF_BROADCAST.string();
         staffBroadcast = Utils.replaceStaffVariable( staffBroadcast, sender );
+        boolean sendStaffBroadcast = staffBroadcast.isBlank() == false;
+        boolean staffBypass = Settings.CLEARCHAT_STAFF_BYPASS.bool();
 
         // clears ~860 lines of chat
         String clear = "";
@@ -46,12 +47,12 @@ public class Clearchat extends BaseCommand {
         }
 
         for ( Player p : Bukkit.getOnlinePlayers() ) {
-            if ( VaultUtils.hasPerms( p, YMLUtils.getConfig().getStr( "general.staff-perm" ) ) == false ) {
+            if ( VaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) == false ) {
                 p.sendMessage( clear );
                 p.sendMessage( broadcast );
             }
             else {
-                if ( YMLUtils.getConfig().getBool( "clearchat.staff-bypass" ) == false ) {
+                if ( staffBypass == false ) {
                     p.sendMessage( clear );
                 }
 
@@ -65,11 +66,5 @@ public class Clearchat extends BaseCommand {
         }
 
         return true;
-    }
-
-    private void clearchat( Player p ) {
-        for ( int x = 0; x < 750; x++ ) {
-            p.sendMessage( "\n" );
-        }
     }
 }

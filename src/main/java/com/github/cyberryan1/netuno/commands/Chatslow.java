@@ -1,110 +1,86 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.utils.VaultUtils;
-import com.github.cyberryan1.netuno.classes.BaseCommand;
+import com.github.cyberryan1.cybercore.helpers.command.ArgType;
+import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
+import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.managers.ChatslowManager;
-import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.database.Database;
-import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class Chatslow extends BaseCommand {
-
-    private final Database DATA = Utils.getDatabase();
+public class Chatslow extends CyberCommand {
 
     public Chatslow() {
-        super( "chatslow", YMLUtils.getConfig().getStr( "chatslow.perm" ), YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" ), null );
+        super(
+                "chatslow",
+                Settings.CHATSLOW_PERMISSION.string(),
+                Settings.PERM_DENIED_MSG.coloredString(),
+                null
+        );
+        register( true );
+
+        setDemandPermission( true );
+        setMinArgs( 1 );
+        setArgType( 1, ArgType.INTEGER );
+        setAsync( true );
     }
 
     @Override
-    public List<String> onTabComplete( CommandSender sender, Command command, String label, String[] args ) {
+    public List<String> tabComplete( CommandSender sender, String[] args ) {
         if ( permissionsAllowed( sender ) ) {
-            if ( args.length == 1 ) {
-                if ( args[0].length() == 0 ) {
-                    List<String> toReturn = new ArrayList<>();
-                    Collections.addAll( toReturn, "get", "set" );
-                    return toReturn;
-                }
-
-                if ( "GET".startsWith( args[0].toUpperCase() ) ) {
-                    List<String> toReturn = new ArrayList<>();
-                    toReturn.add( "get" );
-                    return toReturn;
-                }
-
-                else if ( "SET".startsWith( args[0].toUpperCase() ) ) {
-                    List<String> toReturn = new ArrayList<>();
-                    toReturn.add( "set" );
-                    return toReturn;
-                }
-            }
+            List<String> options = List.of( "get", "set" );
+            if ( args.length == 0 || args[0].length() == 0 ) { return options; }
+            else if ( args.length == 1 ) { return matchArgs( options, args[0] ); }
         }
 
-        return Collections.emptyList();
+        return List.of();
     }
 
     @Override
     // /chatslow get
     // /chatslow set (amount)
-    public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
+    public boolean execute( CommandSender sender, String args[] ) {
 
-        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "chatslow.perm" ) ) == false ) {
-            CommandErrors.sendInvalidPerms( sender );
-            return true;
+        // /chatslow get
+        if ( args[0].equalsIgnoreCase( "get" ) ) {
+            CoreUtils.sendMsg( sender, "&sThe chatslow is currently &p" + ChatslowManager.getSlow() + " seconds" );
         }
 
-        if ( Utils.isOutOfBounds( args, 0 ) == false ) {
+        // /chatslow set (amount)
+        else if ( args[0].equalsIgnoreCase( "set" ) ) {
+            if ( args.length >= 2 ) {
+                int newSlow = Integer.parseInt( args[1] );
 
-            // /chatslow get
-            if ( args[0].equalsIgnoreCase( "get" ) ) {
-                sender.sendMessage( Utils.getColored( "&hThe chatslow is currently &g" + ChatslowManager.getSlow() ) + " seconds" );
-            }
-
-            // /chatslow set (amount)
-            else if ( args[0].equalsIgnoreCase( "set" ) ) {
-                if ( Utils.isOutOfBounds( args, 1 ) == false ) {
-                    int newSlow;
-                    try {
-                        newSlow = Integer.parseInt( args[1] );
-                    } catch ( NumberFormatException e ) {
-                        CommandErrors.sendCommandUsage( sender, "chatslow-set" );
-                        return true;
-                    }
-
-                    if ( newSlow < 0 ) {
-                        sender.sendMessage( Utils.getColored( "&hThe chatslow must be a positive integer or zero" ) );
-                        return true;
-                    }
-
-                    ChatslowManager.setSlow( newSlow );
-                    sender.sendMessage( Utils.getColored( "&hThe chatslow has been set to &g" + ChatslowManager.getSlow() + " seconds" ) );
-
-                    if ( YMLUtils.getConfig().getStr( "chatslow.broadcast" ).equals( "" ) == false ) {
-                        Bukkit.broadcastMessage( YMLUtils.getConfig().getColoredStr( "chatslow.broadcast" ).replace( "[AMOUNT]", newSlow + "" ) );
-                    }
+                if ( newSlow < 0 ) {
+                    CoreUtils.sendMsg( sender, "&sThe chatslow must be greater than or equal to zero" );
+                    return true;
                 }
 
-                else {
-                    CommandErrors.sendCommandUsage( sender, "chatslow-set" );
+                ChatslowManager.setSlow( newSlow );
+                CoreUtils.sendMsg( sender, "&sThe chatslow has been set to &p" + ChatslowManager.getSlow() + " seconds" );
+
+                if ( Settings.CHATSLOW_BROADCAST.string().isBlank() == false ) {
+                    Bukkit.broadcastMessage( CoreUtils.getColored( Settings.CHATSLOW_BROADCAST.coloredString().replace( "[AMOUNT]", newSlow + "" ) ) );
                 }
             }
 
             else {
-                CommandErrors.sendCommandUsage( sender, "chatslow" );
+                sendUsage( sender );
             }
         }
 
-        else {
-            CommandErrors.sendCommandUsage( sender, "chatslow" );
-        }
-
         return true;
+    }
+
+    @Override
+    public void sendUsage( CommandSender sender ) {
+        CoreUtils.sendMsg( sender,
+                "&8",
+                "&8/&schatslow &pget",
+                "&8/&schatslow &pset (amount)",
+                "&8"
+        );
     }
 }
