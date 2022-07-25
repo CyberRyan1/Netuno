@@ -1,6 +1,7 @@
 package com.github.cyberryan1.netuno.classes;
 
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
+import com.github.cyberryan1.netuno.guis.utils.SortBy;
 import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.database.Database;
@@ -13,9 +14,38 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Punishment implements Serializable, Comparable<Punishment> {
+
+    //
+    // Static Methods
+    //
+
+    public static List<Punishment> sortPuns( List<Punishment> puns, SortBy sort ) {
+        if ( puns.size() <= 1 ) { return puns; }
+
+        switch ( sort ) {
+            case FIRST_DATE:
+                puns.sort( ( a, b ) -> ( int ) ( a.getDate() - b.getDate() ) );
+                break;
+            case LAST_DATE:
+                puns.sort( ( a, b ) -> ( int ) ( b.getDate() - a.getDate() ) );
+                break;
+            case FIRST_ACTIVE:
+                puns.sort( ( a, b ) -> a.getType().compareTo( b.getType() ) );
+                break;
+            case LAST_ACTIVE:
+                puns.sort( ( a, b ) -> a.getReason().compareTo( b.getReason() ) );
+                break;
+        }
+        return puns;
+    }
+
+    //
+    // Class Methods
+    //
 
     private final static Database DATA = Utils.getDatabase();
 
