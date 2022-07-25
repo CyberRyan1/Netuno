@@ -2,8 +2,6 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.cybercore.helpers.command.CyberSubcommand;
 import com.github.cyberryan1.cybercore.helpers.command.CyberSupercommand;
-import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.database.Database;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.command.CommandSender;
 
@@ -11,8 +9,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class History extends CyberSupercommand {
-
-    private final Database DATA = Utils.getDatabase();
 
     public History() {
         super( 
