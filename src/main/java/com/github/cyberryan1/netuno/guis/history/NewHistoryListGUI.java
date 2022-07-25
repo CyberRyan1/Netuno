@@ -71,7 +71,11 @@ public class NewHistoryListGUI {
                 }
 
                 gui.setItem( guiIndex, item );
+                guiIndex++;
+                punIndex++;
             }
+
+            guiIndex += 2;
         }
 
         // Current Page Item
