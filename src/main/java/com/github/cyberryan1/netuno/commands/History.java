@@ -17,6 +17,14 @@ public class History extends CyberSupercommand {
                 Settings.PERM_DENIED_MSG.coloredString(),
                 null 
         );
+        register( true );
+
+        addSubcommand( new HistoryListSubcommand() );
+        addSubcommand( new HistoryEditSubcommand() );
+        addSubcommand( new HistoryResetSubcommand() );
+
+        demandPermission( true );
+        setMinArgs( 2 );
     }
 
     @Override
