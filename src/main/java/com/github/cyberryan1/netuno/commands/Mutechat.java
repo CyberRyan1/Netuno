@@ -1,104 +1,52 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.utils.VaultUtils;
-import com.github.cyberryan1.netuno.classes.BaseCommand;
+import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
+import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.managers.MutechatManager;
-import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class Mutechat extends BaseCommand {
+public class Mutechat extends CyberCommand {
 
-    private final String CHAT_MUTE_ENABLE = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "mutechat.enable-broadcast" ) );
-    private final String CHAT_MUTE_DISABLE = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "mutechat.disable-broadcast" ) );
+    private final String CHAT_MUTE_ENABLE = Settings.MUTECHAT_CHAT_ENABLE_BROADCAST.coloredString();
+    private final String CHAT_MUTE_DISABLE = Settings.MUTECHAT_CHAT_DISABLE_BROADCAST.coloredString();
 
     public Mutechat() {
-        super( "mutechat", YMLUtils.getConfig().getStr( "mutechat.perm" ), YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&umutechat &y[toggle/enable/disable/status]" ) );
+        super(
+                "mutechat",
+                Settings.MUTECHAT_PERMISSION.string(),
+                Settings.PERM_DENIED_MSG.string(),
+                "&8/&smutechat &p[toggle/enable/disable/status]"
+        );
+        register( true );
+
+        demandPermission( true );
+        setAsync( true );
     }
 
     @Override
-    public List<String> onTabComplete( CommandSender sender, Command command, String label, String[] args ) {
+    public List<String> tabComplete( CommandSender sender, String[] args ) {
         if ( permissionsAllowed( sender ) ) {
-            if ( args.length <= 1 ) {
-                if ( args[0].length() == 0 ) {
-                    List<String> toReturn = new ArrayList<>();
-                    Collections.addAll( toReturn, "toggle", "enable", "disable", "status" );
-                    return toReturn;
-                }
-
-                else if ( "TOGGLE".startsWith( args[0].toUpperCase() ) ) {
-                    List<String> toReturn = new ArrayList<>();
-                    Collections.addAll( toReturn, "toggle" );
-                    return toReturn;
-                }
-
-                else if ( "ENABLE".startsWith( args[0].toUpperCase() ) ) {
-                    List<String> toReturn = new ArrayList<>();
-                    Collections.addAll( toReturn, "enable" );
-                    return toReturn;
-                }
-
-                else if ( "DISABLE".startsWith( args[0].toUpperCase() ) ) {
-                    List<String> toReturn = new ArrayList<>();
-                    Collections.addAll( toReturn, "disable" );
-                    return toReturn;
-                }
-
-                else if ( "STATUS".startsWith( args[0].toUpperCase() ) ) {
-                    List<String> toReturn = new ArrayList<>();
-                    Collections.addAll( toReturn, "status" );
-                    return toReturn;
-                }
-            }
+            List<String> suggestions = List.of( "toggle", "enable", "disable", "status" );
+            if ( args.length == 0 || args[0].length() == 0 ) { return suggestions; }
+            if ( args.length == 1 ) { return matchArgs( suggestions, args[0] ); }
         }
 
-        return Collections.emptyList();
+        return List.of();
     }
 
     @Override
     // /mutechat [toggle/enable/disable/status]
-    public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
+    public boolean execute( CommandSender sender, String args[] ) {
 
-        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "mutechat.perm" ) ) == false ) {
-            CommandErrors.sendInvalidPerms( sender );
-            return true;
-        }
-
-        if ( Utils.isOutOfBounds( args, 0 ) == false ) {
-            if ( args[0].equalsIgnoreCase( "enable" ) || args[0].equalsIgnoreCase( "e" ) ) {
-                if ( MutechatManager.chatIsMuted() ) {
-                    sender.sendMessage( Utils.getColored( "&hChat is already muted" ) );
-                    return true;
-                }
-
-                MutechatManager.setChatMuted( false );
-                if ( CHAT_MUTE_ENABLE != null && CHAT_MUTE_ENABLE.length() > 0 ) {
-                    String msg = Utils.replaceStaffVariable( CHAT_MUTE_ENABLE, sender );
-                    for ( Player p : Bukkit.getServer().getOnlinePlayers() ) {
-                        Utils.sendAnyMsg( p, msg );
-                    }
-                }
-
-                else {
-                    sender.sendMessage( Utils.getColored( "&hChatmute has been &aenabled&h!" ) );
-                }
-
-            }
-
-            else if ( args[0].equalsIgnoreCase( "disable" ) || args[0].equalsIgnoreCase( "d" ) ) {
-                if ( MutechatManager.chatIsMuted() == false ) {
-                    sender.sendMessage( Utils.getColored( "&hChat is already muted" ) );
-                    return true;
-                }
-
+        if ( args.length == 0 || args[0].equalsIgnoreCase( "toggle" ) || args[0].equalsIgnoreCase( "t" ) ) {
+            // mutechat enabled -> disabled
+            if ( MutechatManager.chatIsMuted() == false ) {
                 MutechatManager.setChatMuted( true );
                 if ( CHAT_MUTE_DISABLE != null && CHAT_MUTE_DISABLE.length() > 0 ) {
                     String msg = Utils.replaceStaffVariable( CHAT_MUTE_DISABLE, sender );
@@ -108,65 +56,80 @@ public class Mutechat extends BaseCommand {
                 }
 
                 else {
-                    sender.sendMessage( Utils.getColored( "&hChatmute has been &cdisabled&h!" ) );
+                    CoreUtils.sendMsg( sender, "&sChatmute has been &cdisabled" );
                 }
+
             }
 
-            else if ( args[0].equalsIgnoreCase( "toggle" ) || args[0].equalsIgnoreCase( "t" ) ) {
-                // mutechat enabled -> disabled
-                if ( MutechatManager.chatIsMuted() == false ) {
-                    MutechatManager.setChatMuted( true );
-                    if ( CHAT_MUTE_DISABLE != null && CHAT_MUTE_DISABLE.length() > 0 ) {
-                        String msg = Utils.replaceStaffVariable( CHAT_MUTE_DISABLE, sender );
-                        for ( Player p : Bukkit.getServer().getOnlinePlayers() ) {
-                            Utils.sendAnyMsg( p, msg );
-                        }
+            // mutechat disabled -> enabled
+            else {
+                MutechatManager.setChatMuted( false );
+                if ( CHAT_MUTE_ENABLE != null && CHAT_MUTE_ENABLE.length() > 0 ) {
+                    String msg = Utils.replaceStaffVariable( CHAT_MUTE_ENABLE, sender );
+                    for ( Player p : Bukkit.getServer().getOnlinePlayers() ) {
+                        Utils.sendAnyMsg( p, msg );
                     }
-
-                    else {
-                        sender.sendMessage( Utils.getColored( "&hChatmute has been &cdisabled&h!" ) );
-                    }
-
                 }
 
-                // mutechat disabled -> enabled
                 else {
-                    MutechatManager.setChatMuted( false );
-                    if ( CHAT_MUTE_ENABLE != null && CHAT_MUTE_ENABLE.length() > 0 ) {
-                        String msg = Utils.replaceStaffVariable( CHAT_MUTE_ENABLE, sender );
-                        for ( Player p : Bukkit.getServer().getOnlinePlayers() ) {
-                            Utils.sendAnyMsg( p, msg );
-                        }
-                    }
-
-                    else {
-                        sender.sendMessage( Utils.getColored( "&hChatmute has been &aenabled&h!" ) );
-                    }
+                    CoreUtils.sendMsg( sender, "&sChatmute has been &aenabled" );
                 }
             }
+        }
 
-            else if ( args[0].equalsIgnoreCase( "status" ) || args[0].equalsIgnoreCase( "s" ) ) {
-                // mutechat is enabled
-                if ( MutechatManager.chatIsMuted() ) {
-                    sender.sendMessage( Utils.getColored( "&hChatmute is currently &aenabled" ) );
-                }
+        else if ( args[0].equalsIgnoreCase( "enable" ) || args[0].equalsIgnoreCase( "e" ) ) {
+            if ( MutechatManager.chatIsMuted() ) {
+                CoreUtils.sendMsg( sender, "&sChatmute is already enabled" );
+                return true;
+            }
 
-                // mutechat is disabled
-                else {
-                    sender.sendMessage( Utils.getColored( "&hChatemute is currently &cdisabled" ) );
+            MutechatManager.setChatMuted( false );
+            if ( CHAT_MUTE_ENABLE != null && CHAT_MUTE_ENABLE.length() > 0 ) {
+                String msg = Utils.replaceStaffVariable( CHAT_MUTE_ENABLE, sender );
+                for ( Player p : Bukkit.getServer().getOnlinePlayers() ) {
+                    Utils.sendAnyMsg( p, msg );
                 }
             }
 
             else {
-                CommandErrors.sendCommandUsage( sender, "mutechat" );
+                CoreUtils.sendMsg( sender, "&sChatmute has been &aenabled" );
             }
 
         }
 
-        else { // run "/mutechat toggle" here
-            String newArgs[] = new String[1];
-            newArgs[0] = "toggle";
-            return onCommand( sender, command, label, newArgs );
+        else if ( args[0].equalsIgnoreCase( "disable" ) || args[0].equalsIgnoreCase( "d" ) ) {
+            if ( MutechatManager.chatIsMuted() == false ) {
+                CoreUtils.sendMsg( sender, "&sChatmute is already disabled" );
+                return true;
+            }
+
+            MutechatManager.setChatMuted( true );
+            if ( CHAT_MUTE_DISABLE != null && CHAT_MUTE_DISABLE.length() > 0 ) {
+                String msg = Utils.replaceStaffVariable( CHAT_MUTE_DISABLE, sender );
+                for ( Player p : Bukkit.getServer().getOnlinePlayers() ) {
+                    Utils.sendAnyMsg( p, msg );
+                }
+            }
+
+            else {
+                CoreUtils.sendMsg( sender,"&sChatemute has been &cdisabled" );
+            }
+        }
+
+        else if ( args[0].equalsIgnoreCase( "status" ) || args[0].equalsIgnoreCase( "s" ) ) {
+            // mutechat is enabled
+            if ( MutechatManager.chatIsMuted() ) {
+                CoreUtils.sendMsg( sender, "&sChatmute is currently &aenabled" );
+            }
+
+            // mutechat is disabled
+            else {
+                CoreUtils.sendMsg( sender,"&sChatemute is currently &cdisabled" );
+            }
+        }
+
+        else {
+            sendUsage( sender );
         }
 
         return true;
