@@ -18,10 +18,10 @@ public class NetunoCmd extends CyberCommand {
 
     public NetunoCmd() {
         super(
-                "netuno [reload/help] [page]",
+                "netuno",
                 Settings.STAFF_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                null
+                "netuno [reload/help] [page]"
         );
         register( true );
 

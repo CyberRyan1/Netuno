@@ -13,8 +13,8 @@ import java.util.List;
 
 public class Mutechat extends CyberCommand {
 
-    private final String CHAT_MUTE_ENABLE = Settings.MUTECHAT_CHAT_ENABLE_BROADCAST.coloredString();
-    private final String CHAT_MUTE_DISABLE = Settings.MUTECHAT_CHAT_DISABLE_BROADCAST.coloredString();
+    private final String CHAT_MUTE_ENABLE;
+    private final String CHAT_MUTE_DISABLE;
 
     public Mutechat() {
         super(
@@ -27,6 +27,8 @@ public class Mutechat extends CyberCommand {
 
         demandPermission( true );
         setAsync( true );
+        CHAT_MUTE_ENABLE = Utils.getCombinedString( Settings.MUTECHAT_CHAT_ENABLE_BROADCAST.coloredStringlist() );
+        CHAT_MUTE_DISABLE = Utils.getCombinedString( Settings.MUTECHAT_CHAT_DISABLE_BROADCAST.coloredStringlist() );
     }
 
     @Override
