@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.guis.history;
 
+import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.helpers.gui.GUI;
 import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
@@ -11,6 +12,7 @@ import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
@@ -77,7 +79,9 @@ public class NewHistoryEditGUI {
     }
 
     public void open() {
-        gui.openInventory( staff );
+        Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
+            gui.openInventory( staff );
+        } );
     }
 
     public void onReasonEditInput( String newReason ) {
