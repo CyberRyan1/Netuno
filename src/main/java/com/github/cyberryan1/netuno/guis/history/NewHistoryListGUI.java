@@ -118,7 +118,7 @@ public class NewHistoryListGUI {
 
     private ItemStack getCurrentPagePaper() {
         ItemStack paper = CoreGUIUtils.createItem( Material.PAPER, "&sPage &p#" + page );
-        return CoreGUIUtils.setItemLore( paper, "&s&Click any item to edit the punishment!" );
+        return CoreGUIUtils.setItemLore( paper, "&sClick any item to edit the punishment!" );
     }
 
     private ItemStack getSortHopper() {
