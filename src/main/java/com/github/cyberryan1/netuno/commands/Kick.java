@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.cybercore.helpers.command.ArgType;
 import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
 import com.github.cyberryan1.netuno.classes.PrePunishment;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
@@ -21,6 +22,12 @@ public class Kick extends CyberCommand {
                 Settings.PERM_DENIED_MSG.string(),
                 "&8/&skick &p(player) (reason) [-s]"
         );
+        register( true );
+
+        demandPermission( true );
+        setMinArgs( 2 );
+        setArgType( 0, ArgType.ONLINE_PLAYER );
+        setAsync( true );
     }
 
     @Override
