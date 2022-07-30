@@ -1,97 +1,70 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.utils.VaultUtils;
-import com.github.cyberryan1.netuno.classes.BaseCommand;
+import com.github.cyberryan1.cybercore.helpers.command.ArgType;
+import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
 import com.github.cyberryan1.netuno.classes.Punishment;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.database.Database;
-import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class Unban extends BaseCommand {
-
-    private final Database DATA = Utils.getDatabase();
+public class Unban extends CyberCommand {
 
     public Unban() {
-        super( "unban", YMLUtils.getConfig().getStr( "unban.perm" ), getColorizedStr( "&8/&uunban &y(player)" ) );
+        super(
+                "unban",
+                Settings.UNBAN_PERMISSION.string(),
+                Settings.PERM_DENIED_MSG.string(),
+                "&8/&sunban &p(player)"
+        );
+        register( true );
+
+        demandPermission( true );
+        setMinArgs( 1 );
+        setArgType( 0, ArgType.OFFLINE_PLAYER );
+        setAsync( true );
     }
 
     @Override
-    public List<String> onTabComplete( CommandSender sender, Command command, String label, String[] args ) {
-        if ( permissionsAllowed( sender ) ) {
-            if ( args.length == 0 || args[0].length() == 0 ) {
-                return getAllOnlinePlayerNames();
-            }
-            else if ( args.length == 1 ) {
-                return matchOnlinePlayers( args[0] );
-            }
-        }
-        return Collections.emptyList();
+    public List<String> tabComplete( CommandSender sender, String[] args ) {
+        return List.of();
     }
 
     @Override
-    public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
+    public boolean execute( CommandSender sender, String args[] ) {
+        final OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
 
-        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "unban.perm" ) ) == false ) {
-            CommandErrors.sendInvalidPerms( sender );
-            return true;
-        }
-
-        if ( Utils.isOutOfBounds( args, 0 ) == false ) {
-
-            if ( Utils.isValidUsername( args[0] ) == false ) {
-                CommandErrors.sendPlayerNotFound( sender, args[0] );
-                return true;
+        ArrayList<Punishment> punishments = Utils.getDatabase().getPunishment( target.getUniqueId().toString(), "ban", true );
+        if ( punishments.size() >= 1 ) {
+            for ( Punishment pun : punishments ) {
+                Utils.getDatabase().setPunishmentActive( pun.getID(), false );
             }
 
-            OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
-            if ( target != null ) {
-                ArrayList<Punishment> punishments = DATA.getPunishment( target.getUniqueId().toString(), "ban", true );
-                if ( punishments.size() >= 1 ) {
-                    for ( Punishment pun : punishments ) {
-                        DATA.setPunishmentActive( pun.getID(), false );
-                    }
+            Punishment unbanPun = new Punishment( "", "", "Unban", -1, -1, "", false );
+            unbanPun.setPlayerUUID( target.getUniqueId().toString() );
+            unbanPun.setDate( Time.getCurrentTimestamp() );
 
-                    Punishment unbanPun = new Punishment( "", "", "Unban", -1, -1, "", false );
-                    unbanPun.setPlayerUUID( target.getUniqueId().toString() );
-                    unbanPun.setDate( Time.getCurrentTimestamp() );
-
-                    unbanPun.setStaffUUID( "CONSOLE" );
-                    if ( sender instanceof Player ) {
-                        Player staff = ( Player ) sender;
-                        unbanPun.setStaffUUID( staff.getUniqueId().toString() );
-                    }
-
-                    DATA.addPunishment( unbanPun );
-
-                    Utils.doPublicPunBroadcast( unbanPun );
-                    Utils.doStaffPunBroadcast( unbanPun );
-                }
-
-                else {
-                    CommandErrors.sendNoPunishments( sender, target.getName(), "ban" );
-                }
-
+            unbanPun.setStaffUUID( "CONSOLE" );
+            if ( sender instanceof Player ) {
+                Player staff = ( Player ) sender;
+                unbanPun.setStaffUUID( staff.getUniqueId().toString() );
             }
 
-            else {
-                CommandErrors.sendPlayerNotFound( sender, args[0] );
-            }
+            Utils.getDatabase().addPunishment( unbanPun );
 
+            Utils.doPublicPunBroadcast( unbanPun );
+            Utils.doStaffPunBroadcast( unbanPun );
         }
 
         else {
-            CommandErrors.sendCommandUsage( sender, "unban" );
+            CommandErrors.sendNoPunishments( sender, target.getName(), "ban" );
         }
 
         return true;
