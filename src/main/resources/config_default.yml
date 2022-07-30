@@ -49,7 +49,7 @@ warn:
   # Message sent to all non-staff
   # Set to just one line with "" for nothing to be sent
   broadcast:
-  - ""
+    - ""
   # Message sent to all staff
   # Set to just one line with "" for nothing to be sent
   staff-broadcast:
