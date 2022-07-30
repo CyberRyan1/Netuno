@@ -47,8 +47,8 @@ public enum Settings {
     MUTE_ATTEMPT( "mute.attempt", "strlist" ),
     MUTE_EXPIRE( "mute.expire", "strlist" ),
     MUTE_EXPIRE_STAFF( "mute.expire-staff", "strlist" ),
-    MUTE_BLOCKED_COMMANDS( "mute.blocked-commands", "strlist" ),
-    MUTE_BLOCKED_COMMAND_MESSAGE( "mute.blocked-command-message", "str" ),
+    MUTE_BLOCKED_COMMANDS( "mute.blocked-cmds", "strlist" ),
+    MUTE_BLOCKED_COMMAND_MESSAGE( "mute.blocked-cmd-message", "str" ),
 
     // Unmute command
     UNMUTE_PERMISSION( "unmute.perm", "string" ),
@@ -59,9 +59,9 @@ public enum Settings {
     // Ban command
     BAN_PERMISSION( "ban.perm", "string" ),
     BAN_BROADCAST( "ban.broadcast", "strlist" ),
-    BAN_MAX_TIME_ENABLED( "ban.max-time-enabled", "boolean" ),
+    BAN_MAX_TIME_ENABLED( "ban.max-time-enable", "boolean" ),
     BAN_MAX_TIME_LENGTH( "ban.max-time-length", "string" ),
-    BAN_MAX_TIME_BYPASS_PERMISSION( "ban.max-time-bypass-perm", "string" ),
+    BAN_MAX_TIME_BYPASS_PERMISSION( "ban.max-time-bypass", "string" ),
     BAN_STAFF_BROADCAST( "ban.staff-broadcast", "strlist" ),
     BAN_MESSAGE( "ban.banned-lines", "strlist" ),
     BAN_ATTEMPT( "ban.attempt", "strlist" ),
@@ -115,7 +115,7 @@ public enum Settings {
     IPINFO_PERMISSION( "ipinfo.perm", "string" ),
     IPINFO_EXEMPT_PERMISSION( "ipinfo.exempt-perm", "string" ),
     IPINFO_NOTIFS( "ipinfo.notifs", "boolean" ),
-    IPINFO_NOTIFS_MESSAGE( "ipinfo.notifs-message", "strlist" ),
+    IPINFO_NOTIFS_MESSAGE( "ipinfo.notif-msg", "strlist" ),
     IPINFO_NOTIF_HOVER_MESSAGE( "ipinfo.notif-hover", "string" ),
 
     //
@@ -140,7 +140,7 @@ public enum Settings {
     CHATSLOW_BYPASS_PERMISSION( "chatslow.bypass-perm", "string" ),
     CHATSLOW_DEFAULT_VALUE( "chatslow.default-value", "int" ),
     CHATSLOW_BROADCAST( "chatslow.broadcast", "string" ),
-    CHATSLOW_MESSAGE( "chatslow.message", "string" ),
+    CHATSLOW_MESSAGE( "chatslow.msg", "string" ),
 
     //
     // History
@@ -155,10 +155,10 @@ public enum Settings {
     // Signs
     //
     ALLOW_SIGNS_WHILE_PUNISHED( "signs.allow-while-muted", "boolean" ),
-    SIGN_WHILE_PUNISHED_MESSAGE( "signs.while-muted-ATTEMPT", "string" ),
+    SIGN_WHILE_PUNISHED_MESSAGE( "signs.sign-while-muted-attempt", "string" ),
     SIGN_NOTIFS_ENABLED( "signs.notifs", "boolean" ),
     SIGN_NOTIFS_PERMISSION( "signs.notifs-perm", "string" ),
-    SIGN_NOTIFS_MESSAGE( "sign.notifs-msg", "strlist" ),
+    SIGN_NOTIFS_MESSAGE( "signs.notifs-msg", "strlist" ),
 
     //
     // Reports
@@ -179,10 +179,10 @@ public enum Settings {
     DATABASE_SQL_HOST( "database.sql.host", "string" ),
     DATABASE_SQL_PORT( "database.sql.port", "int" ),
     DATABASE_SQL_DATABASE( "database.sql.database", "string" ),
-    DATABASE_SQL_USERNAME( "database.sql.userNAME", "string" ),
+    DATABASE_SQL_USERNAME( "database.sql.username", "string" ),
     DATABASE_SQL_PASSWORD( "database.sql.password", "string" ),
 
-    CACHE_EDITS_BEFORE_SAVE( "database.cache.edits-before-save", "int" )
+    //CACHE_EDITS_BEFORE_SAVE( "database.cache.edits-before-save", "int" )
 
     ;
 
