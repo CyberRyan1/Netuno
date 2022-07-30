@@ -1,87 +1,61 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.CyberCore;
+import com.github.cyberryan1.cybercore.helpers.command.ArgType;
+import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
-import com.github.cyberryan1.netuno.classes.BaseCommand;
-import com.github.cyberryan1.netuno.guis.ipinfo.AltsListGUI;
+import com.github.cyberryan1.netuno.guis.ipinfo.NewAltsListGUI;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.database.Database;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
 import java.util.List;
 
-public class IPInfo extends BaseCommand {
-
-    private final Database DATA = Utils.getDatabase();
+public class IPInfo extends CyberCommand {
 
     public IPInfo() {
-        super( "ipinfo", YMLUtils.getConfig().getStr( "ipinfo.perm" ), YMLUtils.getConfig().getColoredStr( "general.perm-denied-msg" ), getColorizedStr( "&8/&uipinfo &y(player)" ) );
+        super(
+                "ipinfo",
+                Settings.IPINFO_PERMISSION.string(),
+                Settings.PERM_DENIED_MSG.string(),
+                "&8/&sipinfo &p(player)"
+        );
+
+        demandPlayer( true );
+        demandPermission( true );
+        setMinArgs( 1 );
+        setArgType( 0, ArgType.OFFLINE_PLAYER );
+        setAsync( true );
     }
 
     @Override
-    public List<String> onTabComplete( CommandSender sender, Command command, String label, String[] args ) {
-        if ( permissionsAllowed( sender ) ) {
-            if ( args.length == 0 || args[0].length() == 0 ) {
-                return getAllOnlinePlayerNames();
-            }
-            else if ( args.length == 1 ) {
-                return matchOnlinePlayers( args[0] );
-            }
-        }
-        return Collections.emptyList();
+    public List<String> tabComplete( CommandSender sender, String[] args ) {
+        return List.of();
     }
 
     @Override
     // /ipinfo (player)
-    public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
+    public boolean execute( CommandSender sender, String args[] ) {
+        final Player player = ( Player ) sender;
+        final OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
 
-        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "ipinfo.perm" ) ) == false ) {
-            CommandErrors.sendInvalidPerms( sender );
-            return true;
-        }
-
-        if ( sender instanceof Player == false ) {
-            CommandErrors.sendCanOnlyBeRanByPlayer( sender );
-            return true;
-        }
-        Player staff = ( Player ) sender;
-
-        if ( Utils.isOutOfBounds( args, 0 ) == false ) {
-
-            if ( Utils.isValidUsername( args[0] ) == false ) {
-                CommandErrors.sendPlayerNotFound( sender, args[0] );
+        // want the target to have joined before
+        if ( target.hasPlayedBefore() || target.isOnline() ) {
+            if ( VaultUtils.hasPerms( target, YMLUtils.getConfig().getStr( "ipinfo.exempt-perm" ) )
+                    && VaultUtils.hasPerms( player, YMLUtils.getConfig().getStr( "general.all-perms" ) ) == false ) {
+                CommandErrors.sendPlayerExempt( player, target.getName() );
                 return true;
             }
 
-            OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
-            // want the target to have joined before
-            if ( target.hasPlayedBefore() || target.isOnline() ) {
-                if ( VaultUtils.hasPerms( target, YMLUtils.getConfig().getStr( "ipinfo.exempt-perm" ) )
-                        && VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "general.all-perms" ) ) == false ) {
-                    CommandErrors.sendPlayerExempt( staff, target.getName() );
-                    return true;
-                }
-
-                AltsListGUI gui = new AltsListGUI( target, staff, 1 );
-                gui.openInventory( staff );
-                CyberCore.getPlugin().getServer().getPluginManager().registerEvents( gui, CyberCore.getPlugin() );
-            }
-
-            else {
-                CommandErrors.sendPlayerNeverJoined( sender, args[0] );
-            }
-
+            NewAltsListGUI altsGui = new NewAltsListGUI( player, target, 1 );
+            altsGui.open();
         }
 
         else {
-            CommandErrors.sendCommandUsage( sender, "ipinfo" );
+            CommandErrors.sendPlayerNeverJoined( sender, args[0] );
         }
 
         return true;
