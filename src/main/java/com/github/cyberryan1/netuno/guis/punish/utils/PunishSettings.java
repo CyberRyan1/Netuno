@@ -25,6 +25,34 @@ public enum PunishSettings {
     WARN_PERMISSION( "warn-gui.permission", "string" ),
     WARN_BUTTONS( "warn-gui", "multi" ),
 
+    //
+    // Mute Inventory
+    //
+    MUTE_INVENTORY_NAME( "mute-gui.inventory_name", "string" ),
+    MUTE_PERMISSION( "mute-gui.permission", "string" ),
+    MUTE_BUTTONS( "mute-gui", "multi" ),
+
+    //
+    // Mute Inventory
+    //
+    BAN_INVENTORY_NAME( "ban-gui.inventory_name", "string" ),
+    BAN_PERMISSION( "ban-gui.permission", "string" ),
+    BAN_BUTTONS( "ban-gui", "multi" ),
+
+    //
+    // IP Mute Inventory
+    //
+    IPMUTE_INVENTORY_NAME( "ipmute-gui.inventory_name", "string" ),
+    IPMUTE_PERMISSION( "ipmute-gui.permission", "string" ),
+    IPMUTE_BUTTONS( "ipmute-gui", "multi" ),
+
+    //
+    // IP Ban Inventory
+    //
+    IPBAN_INVENTORY_NAME( "ipban-gui.inventory_name", "string" ),
+    IPBAN_PERMISSION( "ipban-gui.permission", "string" ),
+    IPBAN_BUTTONS( "ipban-gui", "multi" ),
+
     ;
 
     private String path;

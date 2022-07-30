@@ -1,143 +1,105 @@
 package com.github.cyberryan1.netuno.guis.punish;
 
-import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
-import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
-import com.github.cyberryan1.netuno.guis.events.GUIEventType;
-import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
-import com.github.cyberryan1.netuno.managers.StaffPlayerPunishManager;
-import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import com.github.cyberryan1.cybercore.helpers.gui.GUI;
+import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
+import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
+import com.github.cyberryan1.netuno.guis.history.NewHistoryListGUI;
+import com.github.cyberryan1.netuno.guis.ipinfo.NewAltsListGUI;
+import com.github.cyberryan1.netuno.guis.punish.utils.MainButton;
+import com.github.cyberryan1.netuno.guis.punish.utils.PunishSettings;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 public class MainPunishGUI {
 
-    private final Inventory gui;
+    private final GUI gui;
     private final Player staff;
     private final OfflinePlayer target;
-    private final String guiName;
 
     public MainPunishGUI( Player staff, OfflinePlayer target ) {
         this.staff = staff;
         this.target = target;
 
-        this.guiName = YMLUtils.getConfig().getColoredStr( "main-gui.inventory-name" ).replace( "[TARGET]", target.getName() );
-        gui = Bukkit.createInventory( null, 45, guiName );
+        this.gui = new GUI( PunishSettings.MAIN_INVENTORY_NAME.coloredString().replace( "[TARGET]", target.getName() ),
+                5, CoreGUIUtils.getBackgroundGlass() );
         insertItems();
     }
 
     public void insertItems() {
-        // background glass: everywhere
-        // items: defined in punishgui.yml file
+        // items are defined in the config.yml file
 
-        ItemStack items[] = new ItemStack[45];
-        for ( int index = 0; index < items.length; index++ ) { items[index] = GUIUtils.getBackgroundGlass(); }
-
-        if ( YMLUtils.getConfig().getInt( "main-gui.skull.index" ) != -1 ) {
-            int index = YMLUtils.getConfig().getInt( "main-gui.skull.index" );
-            ItemStack skull = GUIUtils.getPlayerSkull( target );
-            String name = YMLUtils.getConfig().getColoredStr( "main-gui.skull.name" );
-            items[index] = GUIUtils.setItemName( skull, name.replace( "[TARGET]", target.getName() ) );
+        MainButton skull = PunishSettings.MAIN_SKULL_BUTTON.mainButton();
+        if ( skull.getIndex() != -1 ) {
+            gui.setItem( skull.getIndex(), new GUIItem( skull.getItem( this.target ), skull.getIndex() ) );
         }
 
-        String buttons[] = { "history", "alts", "warn", "mute", "ban", "ipmute", "ipban" };
-        for ( String bu : buttons ) {
-            int index = YMLUtils.getConfig().getInt( "main-gui." + bu + ".index" );
-            if ( index >= 0 && index < items.length ) {
-                String name = YMLUtils.getConfig().getColoredStr( "main-gui." + bu + ".name" );
-                ItemStack item;
-                String materialName = YMLUtils.getConfig().getStr( "main-gui." + bu +".item" );
-                if ( GUIUtils.isColorable( materialName ) ) { item = GUIUtils.getColoredItemForVersion( materialName );}
-                else { item = new ItemStack( Material.matchMaterial( materialName ) ); }
-                items[index] = GUIUtils.setItemName( item, name.replace( "[TARGET]", target.getName() ) );
-            }
+        MainButton history = PunishSettings.MAIN_HISTORY_BUTTON.mainButton();
+        if ( history.getIndex() != -1 ) {
+            gui.setItem( history.getIndex(), new GUIItem( history.getItem( this.target ), history.getIndex(), () -> {
+                staff.closeInventory();
+                NewHistoryListGUI historyList = new NewHistoryListGUI( this.target, this.staff, 1 );
+                historyList.open();
+            } ) );
         }
 
-        gui.setContents( items );
+        MainButton alts = PunishSettings.MAIN_ALTS_BUTTON.mainButton();
+        if ( alts.getIndex() != -1 ) {
+            gui.setItem( alts.getIndex(), new GUIItem( alts.getItem( this.target ), alts.getIndex(), () -> {
+                staff.closeInventory();
+                NewAltsListGUI altsList = new NewAltsListGUI( this.staff, this.target, 1 );
+                altsList.open();
+            } ) );
+        }
+
+        MainButton warn = PunishSettings.MAIN_WARN_BUTTON.mainButton();
+        if ( warn.getIndex() != -1 ) {
+            gui.setItem( warn.getIndex(), new GUIItem( warn.getItem( this.target ), warn.getIndex(), () -> {
+                staff.closeInventory();
+                WarnPunishGUI g = new WarnPunishGUI( this.staff, this.target );
+                g.open();
+            } ) );
+        }
+
+        MainButton mute = PunishSettings.MAIN_MUTE_BUTTON.mainButton();
+        if ( mute.getIndex() != -1 ) {
+            gui.setItem( mute.getIndex(), new GUIItem( mute.getItem( this.target ), mute.getIndex(), () -> {
+                staff.closeInventory();
+                MutePunishGUI g = new MutePunishGUI( this.staff, this.target );
+                g.open();
+            } ) );
+        }
+
+        MainButton ban = PunishSettings.MAIN_BAN_BUTTON.mainButton();
+        if ( ban.getIndex() != -1 ) {
+            gui.setItem( ban.getIndex(), new GUIItem( ban.getItem( this.target ), ban.getIndex(), () -> {
+                staff.closeInventory();
+                BanPunishGUI g = new BanPunishGUI( this.staff, this.target );
+                g.open();
+            } ) );
+        }
+
+        MainButton ipmute = PunishSettings.MAIN_IPMUTE_BUTTON.mainButton();
+        if ( ipmute.getIndex() != -1 ) {
+            gui.setItem( ipmute.getIndex(), new GUIItem( ipmute.getItem( this.target ), ipmute.getIndex(), () -> {
+                staff.closeInventory();
+                IPMutePunishGUI g = new IPMutePunishGUI( this.staff, this.target );
+                g.open();
+            } ) );
+        }
+
+        MainButton ipban = PunishSettings.MAIN_IPBAN_BUTTON.mainButton();
+        if ( ipban.getIndex() != -1 ) {
+            gui.setItem( ipban.getIndex(), new GUIItem( ipban.getItem( this.target ), ipban.getIndex(), () -> {
+                staff.closeInventory();
+                IPBanPunishGUI g = new IPBanPunishGUI( this.staff, this.target );
+                g.open();
+            } ) );
+        }
+
+        gui.createInventory();
     }
 
-    public void openInventory() {
-        if ( StaffPlayerPunishManager.getWhoPunishingTarget( target ) != null ) {
-            Player otherStaff = StaffPlayerPunishManager.getWhoPunishingTarget( target );
-            if ( otherStaff.equals( staff ) == false ) {
-                CommandErrors.sendTargetAlreadyBeingPunished( staff, target.getName(), otherStaff.getName() );
-            }
-        }
-
-        StaffPlayerPunishManager.addStaffTarget( staff, target );
-        staff.openInventory( gui );
-        GUIEventManager.addEvent( this );
-    }
-
-    @GUIEventInterface( type = GUIEventType.INVENTORY_CLICK )
-    public void onInventoryClick( InventoryClickEvent event ) {
-        if ( staff.getName().equals( event.getWhoClicked().getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( guiName ) == false ) { return; }
-
-        event.setCancelled( true );
-        if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
-
-        ItemStack item = event.getCurrentItem();
-        if ( item == null || item.getType() == Material.AIR ) { return; }
-        int eventSlot = event.getSlot();
-
-        if ( eventSlot == YMLUtils.getConfig().getInt( "main-gui.history.index" ) ) {
-            staff.chat( "/history list " + target.getName() );
-        }
-
-        else if ( eventSlot == YMLUtils.getConfig().getInt( "main-gui.alts.index" ) ) {
-            staff.chat( "/ipinfo " + target.getName() );
-        }
-
-        else if ( eventSlot == YMLUtils.getConfig().getInt( "main-gui.warn.index" ) ) {
-            WarnPunishGUI gui = new WarnPunishGUI( staff, target );
-            gui.openInventory();
-        }
-
-        else if ( eventSlot == YMLUtils.getConfig().getInt( "main-gui.mute.index" ) ) {
-            MutePunishGUI gui = new MutePunishGUI( staff, target );
-            gui.openInventory();
-        }
-
-        else if ( eventSlot == YMLUtils.getConfig().getInt( "main-gui.ban.index" ) ) {
-            BanPunishGUI gui = new BanPunishGUI( staff, target );
-            gui.openInventory();
-        }
-
-        else if ( eventSlot == YMLUtils.getConfig().getInt( "main-gui.ipmute.index" ) ) {
-            IPMutePunishGUI gui = new IPMutePunishGUI( staff, target );
-            gui.openInventory();
-        }
-
-        else if ( eventSlot == YMLUtils.getConfig().getInt( "main-gui.ipban.index" ) ) {
-            IPBanPunishGUI gui = new IPBanPunishGUI( staff, target );
-            gui.openInventory();
-        }
-
-        staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
-    }
-
-    @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
-    public void onInventoryDrag( InventoryDragEvent event ) {
-        if ( staff.getName().equals( event.getWhoClicked().getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( guiName ) == false ) { return; }
-        event.setCancelled( true );
-    }
-
-    @GUIEventInterface( type = GUIEventType.INVENTORY_CLOSE )
-    public void onInventoryClose( InventoryCloseEvent event ) {
-        if ( staff.getName().equals( event.getPlayer().getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( guiName ) == false ) { return; }
-
-        GUIEventManager.removeEvent( this );
-        StaffPlayerPunishManager.removeStaff( staff );
+    public void open() {
+        gui.openInventory( staff );
     }
 }
