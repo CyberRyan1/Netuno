@@ -3,9 +3,11 @@ package com.github.cyberryan1.netuno;
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
 import com.github.cyberryan1.cybercore.CyberCore;
+import com.github.cyberryan1.cybercore.helpers.command.helper.CommandHelper;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.commands.*;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
+import com.github.cyberryan1.netuno.guis.history.HistoryEditManager;
 import com.github.cyberryan1.netuno.listeners.*;
 import com.github.cyberryan1.netuno.managers.ChatslowManager;
 import com.github.cyberryan1.netuno.skriptelements.conditions.RegisterConditions;
@@ -14,10 +16,13 @@ import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.database.Database;
 import com.github.cyberryan1.netuno.utils.database.sql.SQL;
 import com.github.cyberryan1.netuno.utils.database.sqlite.SQLite;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /* notes in to do:
     - ! = bug needs to be fixed
@@ -35,6 +40,8 @@ import java.io.IOException;
 // ? TODO add a way to convert vanilla bans to netuno bans
 public final class Netuno extends JavaPlugin {
 
+    public static final List<CommandHelper> registeredCommands = new ArrayList<>();
+
     private ChatslowManager chatslowManager;
 
     // Skript
@@ -49,6 +56,10 @@ public final class Netuno extends JavaPlugin {
 
         // Update/reload config files
         YMLUtils.getConfig().getYMLManager().initialize();
+
+        // Set the primary & secondary colors from the config
+        CyberCore.setPrimaryColor( Settings.PRIMARY_COLOR.string() );
+        CyberCore.setSecondaryColor( Settings.SECONDARY_COLOR.string() );
 
         setupDatabase();
         chatslowManager = new ChatslowManager();
@@ -91,84 +102,26 @@ public final class Netuno extends JavaPlugin {
     }
 
     private void registerCommands() {
-        NetunoCmd netunoCmd = new NetunoCmd();
-        this.getCommand( "netuno" ).setExecutor( netunoCmd );
-        this.getCommand( "netuno" ).setTabCompleter( netunoCmd );
-
-        Kick kick = new Kick();
-        this.getCommand( "kick" ).setExecutor( kick );
-        this.getCommand( "kick" ).setTabCompleter( kick );
-
-        Warn warn = new Warn();
-        this.getCommand( "warn" ).setExecutor( warn );
-        this.getCommand( "warn" ).setTabCompleter( warn );
-
-        Mute mute = new Mute();
-        this.getCommand( "mute" ).setExecutor( mute );
-        this.getCommand( "mute" ).setTabCompleter( mute );
-
-        Unmute unmute = new Unmute();
-        this.getCommand( "unmute" ).setExecutor( unmute );
-        this.getCommand( "unmute" ).setTabCompleter( unmute );
-
-        Ban ban = new Ban();
-        this.getCommand( "ban" ).setExecutor( ban );
-        this.getCommand( "ban" ).setTabCompleter( ban );
-
-        Unban unban = new Unban();
-        this.getCommand( "unban" ).setExecutor( unban );
-        this.getCommand( "unban" ).setTabCompleter( unban );
-
-        IPInfo ipinfo = new IPInfo();
-        this.getCommand( "ipinfo" ).setExecutor( ipinfo );
-        this.getCommand( "ipinfo" ).setTabCompleter( ipinfo );
-
-        IPMute ipmute = new IPMute();
-        this.getCommand( "ipmute" ).setExecutor( ipmute );
-        this.getCommand( "ipmute" ).setTabCompleter( ipmute );
-
-        UnIPMute unipmute = new UnIPMute();
-        this.getCommand( "unipmute" ).setExecutor( unipmute );
-        this.getCommand( "unipmute" ).setTabCompleter( unipmute );
-
-        IPBan ipban = new IPBan();
-        this.getCommand( "ipban" ).setExecutor( ipban );
-        this.getCommand( "ipban" ).setTabCompleter( ipban );
-
-        UnIPBan unipban = new UnIPBan();
-        this.getCommand( "unipban" ).setExecutor( unipban );
-        this.getCommand( "unipban" ).setTabCompleter( unipban );
-
-        History history = new History();
-        this.getCommand( "history" ).setExecutor( history );
-        this.getCommand( "history" ).setTabCompleter( history );
-
-        Togglesigns togglesigns = new Togglesigns();
-        this.getCommand( "togglesigns" ).setExecutor( togglesigns );
-        this.getCommand( "togglesigns" ).setTabCompleter( togglesigns );
-
-        Mutechat mutechat = new Mutechat();
-        this.getCommand( "mutechat" ).setExecutor( mutechat );
-        this.getCommand( "mutechat" ).setTabCompleter( mutechat );
-
-        Clearchat clearchat = new Clearchat();
-        this.getCommand( "clearchat" ).setExecutor( clearchat );
-
-        Reports reports = new Reports();
-        this.getCommand( "reports" ).setExecutor( reports );
-        this.getCommand( "reports" ).setTabCompleter( reports );
-
-        Report report = new Report();
-        this.getCommand( "report" ).setExecutor( report );
-        this.getCommand( "report" ).setTabCompleter( report );
-
-        Punish punish = new Punish();
-        this.getCommand( "punish" ).setExecutor( punish );
-        this.getCommand( "punish" ).setTabCompleter( punish );
-
-        Chatslow chatslow = new Chatslow();
-        this.getCommand( "chatslow" ).setExecutor( chatslow );
-        this.getCommand( "chatslow" ).setTabCompleter( chatslow );
+        registeredCommands.add( new NetunoCmd() );
+        registeredCommands.add( new Ban() );
+        registeredCommands.add( new Chatslow() );
+        registeredCommands.add( new Clearchat() );
+        registeredCommands.add( new History() );
+        registeredCommands.add( new IPBan() );
+        registeredCommands.add( new IPInfo() );
+        registeredCommands.add( new IPMute() );
+        registeredCommands.add( new Kick() );
+        registeredCommands.add( new Mute() );
+        registeredCommands.add( new Mutechat() );
+        registeredCommands.add( new Punish() );
+        registeredCommands.add( new Report() );
+        registeredCommands.add( new Reports() );
+        registeredCommands.add( new Togglesigns() );
+        registeredCommands.add( new Unban() );
+        registeredCommands.add( new UnIPBan() );
+        registeredCommands.add( new UnIPMute() );
+        registeredCommands.add( new Unmute() );
+        registeredCommands.add( new Warn() );
     }
 
     private void registerEvents() {
@@ -178,5 +131,6 @@ public final class Netuno extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents( new SignChangeListener(), this );
         this.getServer().getPluginManager().registerEvents( new GUIEventManager(), this );
         this.getServer().getPluginManager().registerEvents( new CommandListener(), this );
+        this.getServer().getPluginManager().registerEvents( new HistoryEditManager(), this );
     }
 }
