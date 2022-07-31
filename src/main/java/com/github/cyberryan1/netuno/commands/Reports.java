@@ -1,81 +1,56 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.utils.VaultUtils;
-import com.github.cyberryan1.netuno.classes.BaseCommand;
+import com.github.cyberryan1.cybercore.helpers.command.ArgType;
+import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
 import com.github.cyberryan1.netuno.guis.report.StaffAllReportsGUI;
 import com.github.cyberryan1.netuno.guis.report.StaffPlayerReportsGUI;
-import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
 import java.util.List;
 
-public class Reports extends BaseCommand {
+public class Reports extends CyberCommand {
 
     public Reports() {
-        super( "reports", YMLUtils.getConfig().getStr( "reports.perm" ), getColorizedStr( "&8/&ureports &y[player]") );
+        super(
+                "reports",
+                Settings.REPORT_VIEW_PERMISSION.string(),
+                Settings.PERM_DENIED_MSG.string(),
+                "&8/&sreports &p[player]"
+        );
+        register( true );
+
+        setDemandPlayer( true );
+        setDemandPermission( true );
+        setMinArgs( 0 );
+        setArgType( 0, ArgType.OFFLINE_PLAYER );
+        setAsync( true );
     }
 
     @Override
-    public List<String> onTabComplete( CommandSender sender, Command command, String label, String[] args ) {
-        if ( permissionsAllowed( sender ) ) {
-            if ( args.length == 0 || args[0].length() == 0 ) {
-                return getAllOnlinePlayerNames();
-            }
-            else if ( args.length == 1 ) {
-                return matchOnlinePlayers( args[0] );
-            }
-        }
-        return Collections.emptyList();
+    public List<String> tabComplete( CommandSender sender, String[] args ) {
+        return List.of();
     }
 
     @Override
     // /reports [player]
-    public boolean onCommand( CommandSender sender, Command command, String label, String args[] ) {
-
-        if ( VaultUtils.hasPerms( sender, YMLUtils.getConfig().getStr( "reports.perm" ) ) == false ) {
-            CommandErrors.sendInvalidPerms( sender );
-            return true;
-        }
-
-        if ( sender instanceof Player == false ) {
-            CommandErrors.sendCanOnlyBeRanByPlayer( sender );
-            return true;
-        }
-
-        Player staff = ( Player ) sender;
+    public boolean execute( CommandSender sender, String args[] ) {
+        final Player staff = ( Player ) sender;
 
         // /reports
-        if ( Utils.isOutOfBounds( args, 0 ) ) {
+        if ( args.length == 0 ) {
             StaffAllReportsGUI gui = new StaffAllReportsGUI( staff, 1 );
-            gui.openInventory( staff );
+            gui.open();
         }
 
         // /reports [player]
         else {
-
-            if ( Utils.isValidUsername( args[0] ) == false ) {
-                CommandErrors.sendPlayerNotFound( sender, args[0] );
-                return true;
-            }
-
-            OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
-            if ( target != null ) {
-                StaffPlayerReportsGUI gui = new StaffPlayerReportsGUI( staff, target );
-                gui.openInventory( staff );
-            }
-
-            else {
-                CommandErrors.sendPlayerNotFound( sender, args[0] );
-                return true;
-            }
-
+            final OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
+            StaffPlayerReportsGUI gui = new StaffPlayerReportsGUI( staff, target );
+            gui.open();
         }
 
         return true;
