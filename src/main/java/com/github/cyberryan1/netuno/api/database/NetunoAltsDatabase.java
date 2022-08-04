@@ -225,6 +225,19 @@ public class NetunoAltsDatabase implements AltsDatabase {
     }
 
     /**
+     * Returns the {@link NAltGroup} that contains the given
+     * player UUID.
+     * @param playerUuid The player UUID to get the group of
+     * @return The group of the player
+     */
+    public NAltGroup getAltGroup( String playerUuid ) {
+        return cache.stream()
+                .filter( group -> group.containsAlt( playerUuid ) )
+                .findFirst()
+                .orElse( null );
+    }
+
+    /**
      * Saves all elements from the cache into the database. Note that
      * first this method deletes all entries from the database and then
      * it inserts all elements from the cache into the database.
@@ -309,7 +322,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
         for ( NAltGroup group : groupList ) {
             toReturn.getAltUuids().addAll( group.getAltUuids() );
             toReturn.getIpList().addAll( group.getIpList() );
-            toReturn.getActiveIppuns().addAll( group.getActiveIppuns() );
+            toReturn.getActivePuns().addAll( group.getActivePuns() );
 
             if ( group.getGroupId() < lowestId ) { lowestId = group.getGroupId(); }
         }
@@ -317,7 +330,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
         toReturn.setGroupId( lowestId );
         toReturn.setAltUuids( toReturn.getAltUuids().stream().distinct().collect( Collectors.toList() ) );
         toReturn.setIpList( toReturn.getIpList().stream().distinct().collect( Collectors.toList() ) );
-        toReturn.setActiveIppuns( toReturn.getActiveIppuns().stream().distinct().collect( Collectors.toList() ) );
+        toReturn.setActivePuns( toReturn.getActivePuns().stream().distinct().collect( Collectors.toList() ) );
 
         return toReturn;
     }
@@ -356,9 +369,9 @@ public class NetunoAltsDatabase implements AltsDatabase {
      * @param playerUuid The uuid of the alt to load the IP bans and IP mutes for
      */
     private void loadIppuns( NAltGroup group, String playerUuid ) {
-        group.getActiveIppuns().addAll( ApiNetuno.getData().getPun().getPunishments( playerUuid ).stream()
+        group.getActivePuns().addAll( ApiNetuno.getData().getPun().getPunishments( playerUuid ).stream()
                 .filter( pun -> pun.isActive() && pun.getPunishmentType().isIpPunishment()
-                        && pun.getReferencePunId() == -1 && group.getActiveIppuns().contains( pun ) == false )
+                        && pun.getReferencePunId() == -1 && group.getActivePuns().contains( pun ) == false )
                 .collect( Collectors.toList() ) );
     }
 }
