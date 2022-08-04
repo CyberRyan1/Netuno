@@ -1,10 +1,13 @@
 package com.github.cyberryan1.netuno.api;
 
+import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.netuno.api.database.ConnectionManager;
+import com.github.cyberryan1.netuno.api.database.NetunoAltsDatabase;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.NetunoApi;
 import com.github.cyberryan1.netunoapi.database.DatabaseConnection;
 import com.github.cyberryan1.netunoapi.database.NetunoDatabases;
+import org.bukkit.plugin.ServicePriority;
 
 public class ApiNetuno implements NetunoApi {
 
@@ -38,11 +41,23 @@ public class ApiNetuno implements NetunoApi {
             instance.getDatabases().getPun().getCache().setExpirationTime( Settings.CACHE_EXPIRATION.integer() );
             instance.getDatabases().getReports().getCache().setExpirationTime( Settings.CACHE_EXPIRATION.integer() );
         }
+
+        // Initialize the alts database cache
+        ( ( NetunoAltsDatabase ) instance.getDatabases().getAlts() ).initializeCache();
+
+        // Register the api to the services manager
+        CyberCore.getPlugin().getServer().getServicesManager().register( NetunoApi.class, instance, CyberCore.getPlugin(), ServicePriority.Normal );
     }
 
     public static void deleteInstance() {
+        // Save the alts cache
+        ( ( NetunoAltsDatabase ) instance.getDatabases().getAlts() ).saveAll();
+
+        // Close the database connection
         ( ( ConnectionManager ) instance.getConnectionManager() ).closeConnection();
 
+        // Unregister the api from the services manager
+        CyberCore.getPlugin().getServer().getServicesManager().unregister( NetunoApi.class, instance );
         instance = null;
     }
 
