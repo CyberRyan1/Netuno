@@ -1,9 +1,9 @@
 package com.github.cyberryan1.netuno.api.database;
 
+import com.github.cyberryan1.netuno.api.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netunoapi.database.PunishmentsDatabase;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishmentData;
-import com.github.cyberryan1.netunoapi.utils.ExpiringCache;
 import org.bukkit.OfflinePlayer;
 
 import java.io.ByteArrayInputStream;
@@ -15,21 +15,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
 
     private final String TABLE_NAME = "punishments";
     private final String TYPE_LIST = "(id, player, data, guipun, reference)";
     private final String UNKNOWN_LIST = "(?, ?, ?, ?, ?)";
-
-    private final ExpiringCache<NPunishment> cache = new ExpiringCache<>();
-
-    /**
-     * @return The cache of punishments.
-     */
-    public ExpiringCache<NPunishment> getCache() {
-        return cache;
-    }
 
     /**
      * Adds a punishment to the database, but not the cache
@@ -51,6 +43,8 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
         } catch ( SQLException e ) {
             throw new RuntimeException( e );
         }
+
+        NetunoPlayerCache.getOrLoad( punishment.getPlayerUuid() ).updatePunishments();
     }
 
     /**
@@ -60,7 +54,10 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      * @return The punishment with the ID, or null if not found.
      */
     public NPunishment getPunishment( int punId ) {
-        NPunishmentData data = cache.searchForOne( p -> p.getId() == punId );
+        NPunishmentData data = NetunoPlayerCache.getCachedPunishments().stream()
+                .filter( pun -> pun.getId() == punId )
+                .findFirst()
+                .orElse( null );
         if ( data != null ) { return ( NPunishment ) data; }
 
         try {
@@ -74,7 +71,8 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
                 ObjectInputStream ois = new ObjectInputStream( bais );
                 data = ( NPunishmentData ) ois.readObject();
                 data.setId( rs.getInt( "id" ) );
-                cache.add( ( NPunishment ) data );
+
+                NetunoPlayerCache.getOrLoad( data.getPlayerUuid() ).addPunishment( ( NPunishment ) data );
             }
 
             rs.close();
@@ -111,7 +109,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      * @return A {@link List< NPunishment >} of all punishments for the player.
      */
     public List<NPunishment> getPunishments( String playerUuid ) {
-        List<NPunishment> toReturn = cache.searchForMany( p -> p.getPlayerUuid().equals( playerUuid ) );
+        List<NPunishment> toReturn = NetunoPlayerCache.getOrLoad( playerUuid ).getPunishments();
         if ( toReturn.size() == 0 ) { toReturn = forceGetPunishments( playerUuid ); }
         return toReturn;
     }
@@ -122,7 +120,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      * <i>If you want to search the cache first then the database,
      * use the {@link #getPunishments( OfflinePlayer )} method</i>
      * @param player The {@link OfflinePlayer} to search for.
-     * @return A {@link List< NPunishment >} of all punishments for the player.
+     * @return A {@link List<NPunishment>} of all punishments for the player.
      */
     public List<NPunishment> forceGetPunishments( OfflinePlayer player ) {
         return forceGetPunishments( player.getUniqueId().toString() );
@@ -134,11 +132,10 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      * <i>If you want to search the cache first then the database,
      * use the {@link #getPunishments( String )} method</i>
      * @param playerUuid The player UUID to search for.
-     * @return A {@link List< NPunishment >} of all punishments for the player.
+     * @return A {@link List<NPunishment>} of all punishments for the player.
      */
     public List<NPunishment> forceGetPunishments( String playerUuid ) {
         List<NPunishment> toReturn = new ArrayList<>();
-        cache.removeAllWhere( p -> p.getPlayerUuid().equals( playerUuid ) );
 
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE player = ?;" );
@@ -151,7 +148,6 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
                 ObjectInputStream ois = new ObjectInputStream( bais );
                 NPunishmentData data = ( NPunishmentData ) ois.readObject();
                 data.setId( rs.getInt( "id" ) );
-                cache.add( ( NPunishment ) data );
                 toReturn.add( ( NPunishment ) data );
             }
 
@@ -175,7 +171,9 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      * @return A {@link List<NPunishment>} of all punishments for the reference ID.
      */
     public List<NPunishment> getPunishmentsFromReference( int referenceId ) {
-        List<NPunishment> toReturn = cache.searchForMany( pun -> pun.getReferencePunId() == referenceId );
+        List<NPunishment> toReturn = NetunoPlayerCache.getCachedPunishments().stream()
+                .filter( pun -> pun.getReferencePunId() == referenceId )
+                .collect( Collectors.toList() );
         if ( toReturn.size() == 0 ) { toReturn = forceGetPunishmentsFromReference( referenceId ); }
         return toReturn;
     }
@@ -186,11 +184,10 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      * <i>If you want to search the cache first then the database,
      * use the {@link #getPunishmentsFromReference( int )} method</i>
      * @param referenceId The reference ID to search for
-     * @return A {@link List< NPunishment >} of all punishments for the reference ID.
+     * @return A {@link List<NPunishment>} of all punishments for the reference ID.
      */
     public List<NPunishment> forceGetPunishmentsFromReference( int referenceId ) {
         List<NPunishment> toReturn = new ArrayList<>();
-        cache.removeAllWhere( pun -> pun.getReferencePunId() == referenceId );
 
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE reference = ?;" );
@@ -203,7 +200,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
                 ObjectInputStream ois = new ObjectInputStream( bais );
                 NPunishmentData data = ( NPunishmentData ) ois.readObject();
                 data.setId( rs.getInt( "id" ) );
-                cache.add( ( NPunishment ) data );
+
                 toReturn.add( ( NPunishment ) data );
             }
 
@@ -222,8 +219,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      */
     public void updatePunishment( NPunishment newData ) {
         newData.ensureValid( true );
-        cache.removeAllWhere( p -> p.getId() == newData.getId() );
-        cache.add( newData );
+        NetunoPlayerCache.getOrLoad( newData.getPlayerUuid() ).addPunishment( newData );
 
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "UPDATE " + TABLE_NAME +
@@ -247,7 +243,11 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      * @param punId The ID of the punishment to delete
      */
     public void removePunishment( int punId ) {
-        cache.removeAllWhere( p -> p.getId() == punId );
+        NPunishment storedPun = NetunoPlayerCache.getCachedPunishments().stream()
+                .filter( pun -> pun.getId() == punId )
+                .findFirst()
+                .orElse( null );
+        NetunoPlayerCache.getOrLoad( storedPun.getPlayerUuid() ).getPunishments().remove( storedPun );
 
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "DELETE FROM " + TABLE_NAME + " WHERE id = ?" );
@@ -275,7 +275,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      * @param playerUuid The player UUID to delete punishments for
      */
     public void removePunishments( String playerUuid ) {
-        cache.removeAllWhere( p -> p.getPlayerUuid().equals( playerUuid ) );
+        NetunoPlayerCache.getOrLoad( playerUuid ).getPunishments().clear();
 
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "DELETE FROM " + TABLE_NAME + " WHERE player = ?" );
@@ -293,7 +293,11 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      * @param referenceId The reference ID to delete punishments for
      */
     public void removePunishments( int referenceId ) {
-        cache.removeAllWhere( p -> p.getReferencePunId() == referenceId );
+        NetunoPlayerCache.getCachedPunishments().stream()
+                .filter( pun -> pun.getReferencePunId() == referenceId )
+                .forEach( pun -> {
+                    NetunoPlayerCache.getOrLoad( pun.getPlayerUuid() ).getPunishments().remove( pun );
+                } );
 
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "DELETE FROM " + TABLE_NAME + " WHERE reference = ?" );
