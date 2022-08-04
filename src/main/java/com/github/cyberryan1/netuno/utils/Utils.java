@@ -3,9 +3,10 @@ package com.github.cyberryan1.netuno.utils;
 import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
+import com.github.cyberryan1.netuno.api.models.players.NetunoPlayer;
+import com.github.cyberryan1.netuno.api.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
-import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -14,6 +15,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class Utils {
 
@@ -276,17 +278,6 @@ public class Utils {
         return String.join( "\n", list );
     }
 
-    // Replaced all the config variables with the actual values
-    public static String replaceAllVariables( String str, String staff, String target, String length, String reason ) {
-        str = str.replace( "[STAFF]", staff ).replace( "[TARGET]", target );
-        if ( length.length() > 0 ) {
-            str = str.replace( "[LENGTH]", TimeUtils.durationFromUnformatted( length ).asFormatted() );
-        }
-        str = str.replace( "[REASON]", reason );
-
-        return str;
-    }
-
     public static String replaceAllVariables( String str, NPunishment pun ) {
         String targetName = pun.getPlayer().getName();
         String staffName = "CONSOLE";
@@ -299,6 +290,20 @@ public class Utils {
         if ( pun.getPunishmentType().hasNoLength() == false ) {
             str = str.replace( "[LENGTH]", pun.getTimeLength().asFormatted() );
             str = str.replace( "[REMAIN]", pun.getLengthRemaining().asFormatted() );
+        }
+        if ( pun.getPunishmentType().isIpPunishment() ) {
+            final NetunoPlayer nPlayer = NetunoPlayerCache.getOrLoad( pun.getPlayerUuid() );
+            List<OfflinePlayer> allAltsList = nPlayer.getAltGroup().getAlts();
+            allAltsList.remove( nPlayer.getPlayer() );
+
+            List<String> priorityAltsList = new ArrayList<>();
+            priorityAltsList.add( nPlayer.getPlayer().getName() );
+            priorityAltsList.addAll( allAltsList.stream()
+                    .map( OfflinePlayer::getName )
+                    .collect( Collectors.toList() )
+            );
+
+            str = str.replace( "[ACCOUNTS]", formatListIntoAmountString( priorityAltsList.toArray( new String[0] ) ) );
         }
 
         str = str.replace( "[REASON]", pun.getReason() );

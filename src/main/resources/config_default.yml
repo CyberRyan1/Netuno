@@ -200,14 +200,21 @@ unban:
   message:
     - ""
 
+# Note for the ipmute, unipmute, ipban, and unipban sections:
+#   In the "broadcast" and "staff-broadcast" sections, you can use the [ACCOUNTS] variable,
+#     which will be replaced with the target and their alts
+#   For example, if "PlayerOne" has alt "PlayerTwo", then "[ACCOUNTS]" will be replaced with "PlayerOne and PlayerTwo"
+#   Another example: if "PlayerOne" has altS "PlayerTwo", "PlayerThree", and "PlayerFour",
+#     then "[ACCOUNTS]" will be replaced with "PlayerOne, PlayerTwo, and 2 more"
+
 ipmute:
   perm: "netuno.ipmute"
   broadcast:
-    - " &6[TARGET] &7has been &6ipmuted &8[&7[LENGTH]&8]"
+    - " &6[ACCOUNTS] &7has been &6ipmuted &8[&7[LENGTH]&8]"
     - " &6Reason: &7[REASON]"
   staff-broadcast:
     - ""
-    - " &6[TARGET] &7has been &6ipmuted &8[&7[LENGTH]&8]"
+    - " &6[ACCOUNTS] &7has been &6ipmuted &8[&7[LENGTH]&8]"
     - " &6Reason: &7[REASON]"
     - " &6Staff: &7[STAFF]"
     - ""
@@ -236,7 +243,7 @@ unipmute:
     - ""
   staff-broadcast:
     - ""
-    - " &6[TARGET] &7has been &6unipmuted"
+    - " &6[ACCOUNTS] &7has been &6unipmuted"
     - " &6Staff: &7[STAFF]"
     - ""
   message:
@@ -247,11 +254,11 @@ unipmute:
 ipban:
   perm: "netuno.ipban"
   broadcast:
-    - " &6[TARGET] &7has been &6ipbanned &8[&7[LENGTH]&8]"
+    - " &6[ACCOUNTS] &7has been &6ipbanned &8[&7[LENGTH]&8]"
     - " &6Reason: &7[REASON]"
   staff-broadcast:
     - ""
-    - " &6[TARGET] &7has been &6ipbanned &8[&7[LENGTH]&8]"
+    - " &6[ACCOUNTS] &7has been &6ipbanned &8[&7[LENGTH]&8]"
     - " &6Reason: &7[REASON]"
     - " &6Staff: &7[STAFF]"
     - ""
@@ -276,7 +283,7 @@ unipban:
     - ""
   staff-broadcast:
     - ""
-    - " &6[TARGET] &7has been &6unipbanned"
+    - " &6[ACCOUNTS] &7has been &6unipbanned"
     - " &6Staff: &7[STAFF]"
     - ""
   message:
