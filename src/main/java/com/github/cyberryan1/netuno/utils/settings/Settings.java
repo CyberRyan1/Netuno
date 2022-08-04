@@ -117,6 +117,7 @@ public enum Settings {
     IPINFO_NOTIFS( "ipinfo.notifs", "boolean" ),
     IPINFO_NOTIFS_MESSAGE( "ipinfo.notif-msg", "strlist" ),
     IPINFO_NOTIF_HOVER_MESSAGE( "ipinfo.notif-hover", "string" ),
+    IPINFO_STRICTNESS( "ipinfo.strictness", "string" ),
 
     //
     // Chat Management

@@ -312,6 +312,15 @@ ipinfo:
   # Supported variables: [TARGET]
   notif-hover: "&7Click to view &6[TARGET]&7's punished alts"
 
+  # How strict the alt check is
+  # LOW = Only searches the players current IP for alts
+  # MEDIUM = Searches the players current IP and their previously used IPs for alts (default)
+  # HIGH = Searches the players current IP, their previously used IPs, and their alt's IPs for alts
+  # IMPORTANT NOTE: if you change this after running Netuno on your server, you MUST delete the database
+  #     for changes to take effect. This is because the database stores alt accounts in groups, and the
+  #     groups are based on the alt check level.
+  strictness: "MEDIUM"
+
 ########################################
 #                 Chat                 #
 ########################################
