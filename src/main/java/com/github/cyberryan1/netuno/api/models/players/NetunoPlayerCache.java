@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class NetunoPlayerCache implements NPlayerLoader {
 
@@ -85,5 +87,28 @@ public class NetunoPlayerCache implements NPlayerLoader {
      */
     public static List<NetunoPlayer> getCache() {
         return cache;
+    }
+
+    /**
+     * Gets the first element in the cache that satisfies the given predicate.
+     * @param predicate The predicate to check with
+     * @return The first unexpired element that satisfies the predicate, null if none were found
+     */
+    public static NetunoPlayer searchForOne( Predicate<? super NetunoPlayer> predicate ) {
+        return cache.stream()
+                .filter( predicate )
+                .findFirst()
+                .orElse( null );
+    }
+
+    /**
+     * Gets all elements in the cache that satisfy the given predicate.
+     * @param predicate The predicate to check with
+     * @return A list of all unexpired elements that satisfy the predicate
+     */
+    public static List<NetunoPlayer> searchForMany( Predicate<? super NetunoPlayer> predicate ) {
+        return cache.stream()
+                .filter( predicate )
+                .collect( Collectors.toList() );
     }
 }
