@@ -48,7 +48,7 @@ public class NetunoPlayer implements NPlayer {
      * Updates the punishments list for this player.
      */
     public void updatePunishments() {
-        this.punishments = ApiNetuno.getData().getPun().getPunishments( this.player.getUniqueId().toString() );
+        this.punishments = ApiNetuno.getData().getPun().forceGetPunishments( this.player.getUniqueId().toString() );
     }
 
     /**
@@ -56,6 +56,7 @@ public class NetunoPlayer implements NPlayer {
      * @param punishment The punishment to add.
      */
     public void addPunishment( NPunishment punishment ) {
+        this.punishments.removeIf( pun -> pun.getId() == punishment.getId() );
         this.punishments.add( punishment );
     }
 
