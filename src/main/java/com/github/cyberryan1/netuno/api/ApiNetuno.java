@@ -39,16 +39,19 @@ public class ApiNetuno implements NetunoApi {
         }
         instance.setConnection( conn );
 
-        // Initialize the alts database cache
+        // Initialize the alts cache
         getData().getNetunoAlts().initializeCache();
 
-        // Initialize the alts database alt security level
+        // Initialize the alts security level
         AltSecurityLevel altSecurityLevel = switch ( Settings.IPINFO_STRICTNESS.string().toUpperCase() ) {
             case "LOW" -> AltSecurityLevel.LOW;
             case "HIGH" -> AltSecurityLevel.HIGH;
             default -> AltSecurityLevel.MEDIUM;
         };
         getData().getNetunoAlts().setSecurityLevel( altSecurityLevel );
+
+        // Initialize the reports cache
+        getData().getNetunoReports().initializeCache();
 
         // Initialize the player cache
         ( ( NetunoPlayerCache ) instance.getPlayerLoader() ).initialize();
@@ -60,6 +63,9 @@ public class ApiNetuno implements NetunoApi {
     public static void deleteInstance() {
         // Save the alts cache
         getData().getNetunoAlts().saveAll();
+
+        // Save the reports cache
+        getData().getNetunoReports().saveAll();
 
         // Close the database connection
         instance.getNetunoConnection().closeConnection();
