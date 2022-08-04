@@ -4,9 +4,9 @@ import com.github.cyberryan1.cybercore.managers.FileType;
 import com.github.cyberryan1.cybercore.managers.YmlManager;
 import com.github.cyberryan1.cybercore.utils.yml.YMLReadTemplate;
 
-public class NewConfigUtils extends YMLReadTemplate {
+public class ConfigUtils extends YMLReadTemplate {
 
-    public NewConfigUtils() {
+    public ConfigUtils() {
         setYMLManager( new YmlManager( FileType.CONFIG ) );
     }
 }
