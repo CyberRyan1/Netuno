@@ -3,6 +3,7 @@ package com.github.cyberryan1.netuno.api;
 import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.netuno.api.database.ConnectionManager;
 import com.github.cyberryan1.netuno.api.database.NetunoAltsDatabase;
+import com.github.cyberryan1.netuno.api.database.helpers.AltSecurityLevel;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.NetunoApi;
 import com.github.cyberryan1.netunoapi.database.DatabaseConnection;
@@ -44,6 +45,14 @@ public class ApiNetuno implements NetunoApi {
 
         // Initialize the alts database cache
         ( ( NetunoAltsDatabase ) instance.getDatabases().getAlts() ).initializeCache();
+
+        // Initialize the alts database alt security level
+        AltSecurityLevel altSecurityLevel = switch ( Settings.IPINFO_STRICTNESS.string().toUpperCase() ) {
+            case "LOW" -> AltSecurityLevel.LOW;
+            case "HIGH" -> AltSecurityLevel.HIGH;
+            default -> AltSecurityLevel.MEDIUM;
+        };
+        ( ( NetunoAltsDatabase ) instance.getDatabases().getAlts() ).setSecurityLevel( altSecurityLevel );
 
         // Register the api to the services manager
         CyberCore.getPlugin().getServer().getServicesManager().register( NetunoApi.class, instance, CyberCore.getPlugin(), ServicePriority.Normal );
