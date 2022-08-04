@@ -88,7 +88,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
 
         CoreUtils.logInfo( "Fetching all IP punishments for each cached item..." );
         for ( NAltGroup group : cache ) {
-            loadIppuns( group );
+            loadPunishments( group );
         }
         CoreUtils.logInfo( "Successfully fetched all IP punishments for each cached item" );
 
@@ -116,7 +116,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
 
             if ( groupList.isEmpty() == false ) {
                 groupList.get( 0 ).addAlt( playerUuid );
-                loadIppuns( groupList.get( 0 ), playerUuid );
+                loadPunishments( groupList.get( 0 ), playerUuid );
             }
 
             else {
@@ -124,7 +124,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
                 group.setGroupId( getNextAvailableId() );
                 group.addIp( playerIp );
                 group.addAlt( playerUuid );
-                loadIppuns( group );
+                loadPunishments( group );
                 cache.add( group );
             }
         }
@@ -147,7 +147,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
                 group.setGroupId( getNextAvailableId() );
                 group.addIp( playerIp );
                 group.addAlt( playerUuid );
-                loadIppuns( group );
+                loadPunishments( group );
             }
             cache.add( group );
         }
@@ -192,7 +192,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
                 group.setGroupId( getNextAvailableId() );
                 group.addIp( playerIp );
                 group.addAlt( playerUuid );
-                loadIppuns( group );
+                loadPunishments( group );
             }
             cache.add( group );
         }
@@ -356,9 +356,9 @@ public class NetunoAltsDatabase implements AltsDatabase {
      * in the group and adds them to the group.
      * @param group The group to load the IP bans and IP mutes for
      */
-    private void loadIppuns( NAltGroup group ) {
+    private void loadPunishments( NAltGroup group ) {
         for ( String uuid : group.getAltUuids() ) {
-            loadIppuns( group, uuid );
+            loadPunishments( group, uuid );
         }
     }
 
@@ -368,10 +368,9 @@ public class NetunoAltsDatabase implements AltsDatabase {
      * @param group The group to load the IP bans and IP mutes for
      * @param playerUuid The uuid of the alt to load the IP bans and IP mutes for
      */
-    private void loadIppuns( NAltGroup group, String playerUuid ) {
+    private void loadPunishments( NAltGroup group, String playerUuid ) {
         group.getActivePuns().addAll( ApiNetuno.getData().getPun().getPunishments( playerUuid ).stream()
-                .filter( pun -> pun.isActive() && pun.getPunishmentType().isIpPunishment()
-                        && pun.getReferencePunId() == -1 && group.getActivePuns().contains( pun ) == false )
+                .filter( pun -> pun.isActive() && group.getActivePuns().contains( pun ) == false )
                 .collect( Collectors.toList() ) );
     }
 }
