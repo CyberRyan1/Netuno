@@ -5,6 +5,7 @@ import ch.njol.skript.SkriptAddon;
 import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.helpers.command.helper.CommandHelper;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
+import com.github.cyberryan1.netuno.api.ApiNetuno;
 import com.github.cyberryan1.netuno.commands.*;
 import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.guis.history.HistoryEditManager;
@@ -13,9 +14,6 @@ import com.github.cyberryan1.netuno.managers.ChatslowManager;
 import com.github.cyberryan1.netuno.skriptelements.conditions.RegisterConditions;
 import com.github.cyberryan1.netuno.skriptelements.expressions.RegisterExpressions;
 import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.database.Database;
-import com.github.cyberryan1.netuno.utils.database.sql.SQL;
-import com.github.cyberryan1.netuno.utils.database.sqlite.SQLite;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -61,7 +59,7 @@ public final class Netuno extends JavaPlugin {
         CyberCore.setPrimaryColor( Settings.PRIMARY_COLOR.string() );
         CyberCore.setSecondaryColor( Settings.SECONDARY_COLOR.string() );
 
-        setupDatabase();
+        ApiNetuno.setupInstance();
         chatslowManager = new ChatslowManager();
 
         registerSkript();
@@ -71,16 +69,7 @@ public final class Netuno extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        Utils.getDatabase().close();
-    }
-
-    private void setupDatabase() {
-        new SQL();
-        if ( SQL.isEnabled() == false ) {
-            new SQLite( this );
-        }
-
-        Utils.setDatabase( new Database( this ) );
+        ApiNetuno.deleteInstance();
     }
 
     private void registerSkript() {
@@ -132,5 +121,13 @@ public final class Netuno extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents( new GUIEventManager(), this );
         this.getServer().getPluginManager().registerEvents( new CommandListener(), this );
         this.getServer().getPluginManager().registerEvents( new HistoryEditManager(), this );
+    }
+
+    private void registerApi() {
+
+    }
+
+    private void unregisterApi() {
+
     }
 }
