@@ -172,7 +172,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      * be searched. If you want to search just the database, then
      * use the {@link #forceGetPunishmentsFromReference( int )} method</i>
      * @param referenceId The reference ID to search for
-     * @return A {@link List< NPunishment >} of all punishments for the reference ID.
+     * @return A {@link List<NPunishment>} of all punishments for the reference ID.
      */
     public List<NPunishment> getPunishmentsFromReference( int referenceId ) {
         List<NPunishment> toReturn = cache.searchForMany( pun -> pun.getReferencePunId() == referenceId );
