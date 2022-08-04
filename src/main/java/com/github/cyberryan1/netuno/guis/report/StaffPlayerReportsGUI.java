@@ -4,10 +4,10 @@ import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.helpers.gui.GUI;
 import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
+import com.github.cyberryan1.netuno.api.ApiNetuno;
 import com.github.cyberryan1.netuno.classes.MultiReport;
-import com.github.cyberryan1.netuno.classes.SingleReport;
 import com.github.cyberryan1.netuno.guis.utils.SortBy;
-import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netunoapi.models.reports.NReport;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -28,7 +28,7 @@ public class StaffPlayerReportsGUI implements Listener {
     private final int page;
     private final SortBy sort;
 
-    private List<SingleReport> allSingularReports;
+    private List<NReport> allSingularReports;
     private List<MultiReport> multiReports = new ArrayList<>();
 
     public StaffPlayerReportsGUI( Player staff, OfflinePlayer target, int page, SortBy sort ) {
@@ -37,8 +37,7 @@ public class StaffPlayerReportsGUI implements Listener {
         this.page = page;
         this.sort = sort;
 
-        Utils.getDatabase().deleteAllExpiredReports();
-        allSingularReports = Utils.getDatabase().getReport( target.getUniqueId().toString() );
+        allSingularReports = ApiNetuno.getData().getNetunoReports().getReports( target );
         compressReports();
         sort();
 
@@ -123,22 +122,22 @@ public class StaffPlayerReportsGUI implements Listener {
     }
 
     private void compressReports() {
-        HashMap<Long, ArrayList<SingleReport>> datesToReport = new HashMap<>();
-        for ( SingleReport sr : allSingularReports ) {
-            if ( datesToReport.containsKey( sr.getDate() ) ) {
-                ArrayList<SingleReport> newSingleReports = datesToReport.get( sr.getDate() );
+        HashMap<Long, ArrayList<NReport>> datesToReport = new HashMap<>();
+        for ( NReport sr : allSingularReports ) {
+            if ( datesToReport.containsKey( sr.getTimestamp() ) ) {
+                ArrayList<NReport> newSingleReports = datesToReport.get( sr.getTimestamp() );
                 newSingleReports.add( sr );
-                datesToReport.replace( sr.getDate(), newSingleReports );
+                datesToReport.replace( sr.getTimestamp(), newSingleReports );
             }
 
             else {
-                ArrayList<SingleReport> singleReports = new ArrayList<>();
+                ArrayList<NReport> singleReports = new ArrayList<>();
                 singleReports.add( sr );
-                datesToReport.put( sr.getDate(), singleReports );
+                datesToReport.put( sr.getTimestamp(), singleReports );
             }
         }
 
-        for ( ArrayList<SingleReport> srList : datesToReport.values() ) {
+        for ( ArrayList<NReport> srList : datesToReport.values() ) {
             multiReports.add( new MultiReport( srList ) );
         }
 
