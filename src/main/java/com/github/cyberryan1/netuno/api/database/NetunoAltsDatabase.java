@@ -352,7 +352,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
     }
 
     /**
-     * Loads all the IP Bans or IP Mutes from all alts
+     * Loads all the active punishments from all alts
      * in the group and adds them to the group.
      * @param group The group to load the IP bans and IP mutes for
      */
@@ -363,7 +363,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
     }
 
     /**
-     * Loads all the IP Bans or IP Mutes from a given alt
+     * Loads all the active punishments from a given alt
      * and adds them to the group.
      * @param group The group to load the IP bans and IP mutes for
      * @param playerUuid The uuid of the alt to load the IP bans and IP mutes for
