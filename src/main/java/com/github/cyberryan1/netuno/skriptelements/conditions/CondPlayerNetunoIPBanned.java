@@ -3,14 +3,12 @@ package com.github.cyberryan1.netuno.skriptelements.conditions;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import com.github.cyberryan1.netuno.classes.IPPunishment;
+import com.github.cyberryan1.netuno.api.ApiNetuno;
 import com.github.cyberryan1.netuno.skriptelements.conditions.types.RegularCondition;
-import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Event;
 import org.eclipse.jdt.annotation.Nullable;
-
-import java.util.ArrayList;
 
 public class CondPlayerNetunoIPBanned extends RegularCondition {
 
@@ -28,9 +26,10 @@ public class CondPlayerNetunoIPBanned extends RegularCondition {
         OfflinePlayer p = player.getSingle( event );
         if ( p == null ) { return isNegated(); }
 
-        ArrayList<IPPunishment> punishments = Utils.getDatabase().getIPPunishment( p.getUniqueId().toString(), "ipmute", true );
-        if ( punishments.size() == 0 ) { return !isNegated(); }
-        return isNegated();
+        return ( ApiNetuno.getData().getPun()
+                .getPunishments( p ).stream()
+                .anyMatch( pun -> pun.getPunishmentType() == PunishmentType.IPBAN && pun.isActive() ) )
+                ? isNegated() : !isNegated();
     }
 
     @Override
