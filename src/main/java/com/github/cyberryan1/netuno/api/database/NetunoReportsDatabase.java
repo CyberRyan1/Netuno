@@ -1,10 +1,12 @@
 package com.github.cyberryan1.netuno.api.database;
 
+import com.github.cyberryan1.cybercore.utils.CoreUtils;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.database.ReportsDatabase;
 import com.github.cyberryan1.netunoapi.exceptions.ClassIncompleteException;
 import com.github.cyberryan1.netunoapi.models.reports.NReport;
 import com.github.cyberryan1.netunoapi.models.reports.NReportData;
-import com.github.cyberryan1.netunoapi.utils.ExpiringCache;
+import com.github.cyberryan1.netunoapi.models.time.NTimeLength;
 import org.bukkit.OfflinePlayer;
 
 import java.io.ByteArrayInputStream;
@@ -13,8 +15,10 @@ import java.io.ObjectInputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NetunoReportsDatabase implements ReportsDatabase {
 
@@ -22,13 +26,51 @@ public class NetunoReportsDatabase implements ReportsDatabase {
     private final String TYPE_LIST = "(id, player, data)";
     private final String UNKNOWN_LIST = "(?, ?, ?)";
 
-    private final ExpiringCache<NReport> cache = new ExpiringCache<>();
+    private long EXPIRATION_TIME_SECS = -1L;
+
+    private final List<NReport> cache = new ArrayList<>();
 
     /**
      * @return The cache of reports.
      */
-    public ExpiringCache<NReport> getCache() {
+    public List<NReport> getCache() {
         return cache;
+    }
+
+    /**
+     * Initializes the cache
+     */
+    public void initializeCache() {
+        CoreUtils.logInfo( "Initializing the reports cache..." );
+
+        CoreUtils.logInfo( "Getting all reports from the database..." );
+        try {
+            Statement stmt = ConnectionManager.CONN.createStatement();
+            stmt.execute( "SELECT * FROM " + TABLE_NAME );
+
+            ResultSet rs = stmt.getResultSet();
+            while ( rs.next() ) {
+                byte bytes[] = ( byte[] ) rs.getObject( "data" );
+                ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
+                ObjectInputStream ois = new ObjectInputStream( bais );
+                NReportData data = ( NReportData ) ois.readObject();
+
+                data.setId( rs.getInt( "id" ) );
+                cache.add( ( NReport ) data );
+            }
+
+            rs.close();
+            stmt.close();
+        } catch ( SQLException | IOException | ClassNotFoundException e ) {
+            throw new RuntimeException( e );
+        }
+        CoreUtils.logInfo( "Successfully retrieved all reports from the database" );
+
+        EXPIRATION_TIME_SECS = Settings.CACHE_EXPIRATION.integer() * 3600L; // converts hours to seconds
+        CoreUtils.logInfo( "Reports expiration time set to " + Settings.CACHE_EXPIRATION.integer()
+                + " hours (" + EXPIRATION_TIME_SECS + " seconds)" );
+
+        CoreUtils.logInfo( "Reports cache successfully initialized with a size of " + cache.size() );
     }
 
     /**
@@ -37,18 +79,8 @@ public class NetunoReportsDatabase implements ReportsDatabase {
      */
     public void addReport( NReport report ) {
         checkReport( report, false );
-
-        try {
-            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + "(player, data) VALUES(?, ?);" );
-            ps.setString( 1, report.getPlayerUuid() );
-            ps.setObject( 2, ( NReportData ) report );
-
-            ps.addBatch();
-            ps.executeBatch();
-            ps.close();
-        } catch ( SQLException e ) {
-            throw new RuntimeException( e );
-        }
+        report.setId( getNextAvailableId() );
+        cache.add( report );
     }
 
     /**
@@ -58,41 +90,18 @@ public class NetunoReportsDatabase implements ReportsDatabase {
      * @return The report if found, null otherwise
      */
     public NReport getReport( int id ) {
-        NReportData data = cache.searchForOne( r -> r.getId() == id );
-        if ( data != null ) { return ( NReport ) data; }
-
-        try {
-            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE id = ?;" );
-            ps.setInt( 1, id );
-
-            ResultSet rs = ps.executeQuery();
-            if ( rs.next() ) {
-                byte bytes[] = ( byte[] ) rs.getObject( "data" );
-                ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
-                ObjectInputStream ois = new ObjectInputStream( bais );
-                data = ( NReportData ) ois.readObject();
-                data.setId( rs.getInt( "id" ) );
-                cache.add( ( NReport ) data );
-            }
-
-            ps.close();
-            rs.close();
-        } catch ( SQLException | IOException | ClassNotFoundException e ) {
-            throw new RuntimeException( e );
-        }
-
-        return ( data == null ) ? ( null ) : ( ( NReport ) data );
+        deleteOldReports();
+        return cache.stream()
+                .filter( report -> report.getId() == id )
+                .findFirst()
+                .orElse( null );
     }
 
     /**
      * Searches for all reports in the database and in the cache
      * that have the given player has the player. <br>
-     * <i><b>Note:</b> This will search for all reports from the
-     * cache first, and if none are found, then the database will
-     * be searched. If you want to search just the database, then
-     * use the {@link #forceGetReports(OfflinePlayer)} method</i>
      * @param player The player to search for
-     * @return A {@link List < NReport >} of all reports for the player
+     * @return A {@link List <NReport>} of all reports for the player
      */
     public List<NReport> getReports( OfflinePlayer player ) {
         return getReports( player.getUniqueId().toString() );
@@ -101,65 +110,14 @@ public class NetunoReportsDatabase implements ReportsDatabase {
     /**
      * Searches for all reports in the database and in the cache
      * that have the given player UUID has the player. <br>
-     * <i><b>Note:</b> This will search for all reports from the
-     * cache first, and if none are found, then the database will
-     * be searched. If you want to search just the database, then
-     * use the {@link #forceGetReports( String )} method</i>
      * @param playerUuid The player UUID to search for
-     * @return A {@link List< NReport >} of all reports for the player
+     * @return A {@link List<NReport>} of all reports for the player
      */
     public List<NReport> getReports( String playerUuid ) {
-        List<NReport> toReturn = cache.searchForMany( r -> r.getPlayerUuid().equals( playerUuid ) );
-        if ( toReturn.size() == 0 ) { toReturn = forceGetReports( playerUuid ); }
-        return toReturn;
-    }
-
-    /**
-     * Searches for all reports in just the database, not in the
-     * cache, that have the given player as the player. <br>
-     * <i>If you want to search the cache first then the database,
-     * use the {@link #getReports( String )} method</i>
-     * @param player The {@link OfflinePlayer} to search for
-     * @return A {@link List< NReport >} of all reports for the player
-     */
-    public List<NReport> forceGetReports( OfflinePlayer player ) {
-        return forceGetReports( player.getUniqueId().toString() );
-    }
-
-    /**
-     * Searches for all reports in just the database, not in the
-     * cache, that have the given player UUID as the player's UUID. <br>
-     * <i>If you want to search the cache first then the database,
-     * use the {@link #getReports( String )} method</i>
-     * @param playerUuid The player UUID to search for
-     * @return A {@link List< NReport >} of all reports for the player
-     */
-    public List<NReport> forceGetReports( String playerUuid ) {
-        List<NReport> toReturn = new ArrayList<>();
-        cache.removeAllWhere( r -> r.getPlayerUuid().equals( playerUuid ) );
-
-        try {
-            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE player = ?;" );
-            ps.setString( 1, playerUuid );
-
-            ResultSet rs = ps.executeQuery();
-            while ( rs.next() ) {
-                byte bytes[] = ( byte[] ) rs.getObject( "data" );
-                ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
-                ObjectInputStream ois = new ObjectInputStream( bais );
-                NReportData data = ( NReportData ) ois.readObject();
-                data.setId( rs.getInt( "id" ) );
-                toReturn.add( ( NReport ) data );
-                cache.add( ( NReport ) data );
-            }
-
-            ps.close();
-            rs.close();
-        } catch ( SQLException | IOException | ClassNotFoundException e ) {
-            throw new RuntimeException( e );
-        }
-
-        return toReturn;
+        deleteOldReports();
+        return cache.stream()
+                .filter( report -> report.getPlayerUuid().equals( playerUuid ) )
+                .collect( Collectors.toList() );
     }
 
     /**
@@ -167,17 +125,7 @@ public class NetunoReportsDatabase implements ReportsDatabase {
      * @param id The id of the report to delete.
      */
     public void deleteReport( int id ) {
-        cache.removeAllWhere( r -> r.getId() == id );
-
-        try {
-            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "DELETE FROM " + TABLE_NAME + " WHERE id = ?;" );
-            ps.setInt( 1, id );
-
-            ps.executeUpdate();
-            ps.close();
-        } catch ( SQLException e ) {
-            throw new RuntimeException( e );
-        }
+        cache.removeIf( report -> report.getId() == id );
     }
 
     /**
@@ -193,17 +141,71 @@ public class NetunoReportsDatabase implements ReportsDatabase {
      * @param playerUuid The UUID of the player to delete reports for
      */
     public void deleteReports( String playerUuid ) {
-        cache.removeAllWhere( r -> r.getPlayerUuid().equals( playerUuid ) );
+        cache.removeIf( report -> report.getPlayerUuid().equals( playerUuid ) );
+    }
 
+    /**
+     * Deletes all reports that are older than the expiration time
+     */
+    public void deleteOldReports() {
+        cache.removeIf( report -> report.getTimestamp() < NTimeLength.getCurrentTimestamp() - EXPIRATION_TIME_SECS );
+    }
+
+    /**
+     * Deletes all reports from the database, but not the cache.
+     */
+    public void deleteAllReports() {
         try {
-            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "DELETE FROM " + TABLE_NAME + " WHERE player = ?;" );
-            ps.setString( 1, playerUuid );
-
-            ps.executeUpdate();
-            ps.close();
+            Statement stmt = ConnectionManager.CONN.createStatement();
+            stmt.execute( "DELETE FROM " + TABLE_NAME + ";" );
+            stmt.close();
         } catch ( SQLException e ) {
             throw new RuntimeException( e );
         }
+    }
+
+    /**
+     * Saves all elements from the cache into the database. Note that
+     * first this method deletes all entries from the database, and then
+     * it inserts all elements from the cache into the database.
+     */
+    public void saveAll() {
+        CoreUtils.logInfo( "Saving all reports in the cache to the database..." );
+        deleteAllReports();
+
+        for ( NReport report : cache ) {
+            try {
+                PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + " (id, player, data) VALUES (?, ?, ?);" );
+                ps.setInt( 1, report.getId() );
+                ps.setString( 2, report.getPlayerUuid() );
+                ps.setObject( 3, ( NReportData ) report );
+
+                ps.addBatch();
+                ps.executeBatch();
+                ps.close();
+            } catch ( SQLException e ) {
+                throw new RuntimeException( e );
+            }
+        }
+
+        CoreUtils.logInfo( "Successfully saved " + cache.size() + " reports to the database." );
+    }
+
+    /**
+     * @return The next available group id
+     */
+    private int getNextAvailableId() {
+        deleteOldReports();
+        int toReturn = cache.size() + 1;
+        boolean continueWhile = true;
+
+        while ( continueWhile ) {
+            final int x = toReturn;
+            if ( cache.stream().anyMatch( report -> report.getId() == x ) ) { toReturn++; }
+            else { continueWhile = false; }
+        }
+
+        return toReturn;
     }
 
     /**
