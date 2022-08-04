@@ -3,15 +3,16 @@ package com.github.cyberryan1.netuno.skriptelements.expressions;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.util.Kleenean;
-import com.github.cyberryan1.netuno.classes.Punishment;
+import com.github.cyberryan1.netuno.api.ApiNetuno;
 import com.github.cyberryan1.netuno.skriptelements.expressions.types.StringExpression;
-import com.github.cyberryan1.netuno.utils.Time;
-import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
+import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
+import com.github.cyberryan1.netunoapi.utils.PunishmentUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
+import java.util.List;
 
 public class ExprBanLength extends StringExpression {
 
@@ -44,20 +45,15 @@ public class ExprBanLength extends StringExpression {
     public String[] get( Event event ) {
         OfflinePlayer p = player.getSingle( event );
         if ( p != null ) {
-            ArrayList<Punishment> punishments = Utils.getDatabase().getPunishment( p.getUniqueId().toString(), "ban", true );
+            List<NPunishment> punishments = ApiNetuno.getData().getPun().getPunishments( p );
             if ( punishments.size() == 0 ) {
                  return null;
             }
 
             // returns the length of the punishment with the highest amount of time remaining
-            Punishment longestRemainingTime = punishments.get( 0 );
-            for ( Punishment pun : punishments ) {
-                if ( pun.getExpirationDate() > longestRemainingTime.getExpirationDate() ) {
-                    longestRemainingTime = pun;
-                }
-            }
-
-            return new String[] { Time.getLengthFromTimestamp( longestRemainingTime.getLength() ) + "" };
+            NPunishment longest = PunishmentUtils.getHighestActive( punishments, PunishmentType.BAN );
+            if ( longest == null ) { return null; }
+            return new String[] { longest.getLengthRemaining().asFullLength() };
         }
         return null;
     }
