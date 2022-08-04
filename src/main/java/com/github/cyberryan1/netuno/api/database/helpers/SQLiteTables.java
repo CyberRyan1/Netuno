@@ -17,7 +17,7 @@ public enum SQLiteTables {
     ),
 
     REPORTS_TABLE( "CREATE TABLE IF NOT EXISTS reports (" +
-            "`id` INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "`id` INTEGER PRIMARY KEY," +
             "`player` STRING NOT NULL," +
             "`data` BLOB NOT NULL );"
     ),
