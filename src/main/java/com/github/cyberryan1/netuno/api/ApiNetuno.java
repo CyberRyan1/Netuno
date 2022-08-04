@@ -42,7 +42,6 @@ public class ApiNetuno implements NetunoApi {
 
         // Initialize the punishment and report databases' cache times
         if ( Settings.CACHE_EXPIRATION.integer() > 0 ) {
-            instance.getDatabases().getPun().getCache().setExpirationTime( Settings.CACHE_EXPIRATION.integer() );
             instance.getDatabases().getReports().getCache().setExpirationTime( Settings.CACHE_EXPIRATION.integer() );
         }
 
