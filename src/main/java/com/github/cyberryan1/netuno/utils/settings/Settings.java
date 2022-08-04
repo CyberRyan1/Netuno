@@ -92,6 +92,7 @@ public enum Settings {
     // Ipban command
     IPBAN_PERMISSION( "ipban.perm", "string" ),
     IPBAN_BROADCAST( "ipban.broadcast", "strlist" ),
+    IPBAN_STAFF_BROADCAST( "ipban.staff-broadcast", "strlist" ),
     IPBAN_MESSAGE( "ipban.banned-lines", "strlist" ),
     IPBAN_ATTEMPT( "ipban.attempt", "strlist" ),
     IPBAN_EXPIRE( "ipban.expire", "strlist" ),
