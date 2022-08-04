@@ -30,7 +30,7 @@ public class NetunoPlayerCache implements NPlayerLoader {
      * @return The loaded user
      */
     public NPlayer load( OfflinePlayer player ) {
-        return load( player.getUniqueId().toString() );
+        return getOrLoad( player.getUniqueId().toString() );
     }
 
     /**
@@ -40,7 +40,7 @@ public class NetunoPlayerCache implements NPlayerLoader {
      * @return The loaded user
      */
     public NPlayer load( Player player ) {
-        return load( player.getUniqueId().toString() );
+        return getOrLoad( player.getUniqueId().toString() );
     }
 
     /**
@@ -50,7 +50,7 @@ public class NetunoPlayerCache implements NPlayerLoader {
      * @return The loaded user
      */
     public NPlayer load( UUID uuid ) {
-        return load( uuid.toString() );
+        return getOrLoad( uuid.toString() );
     }
 
     /**
@@ -60,11 +60,7 @@ public class NetunoPlayerCache implements NPlayerLoader {
      * @return The loaded user
      */
     public NPlayer load( String uuid ) {
-        NetunoPlayer toReturn = get( uuid );
-        if ( toReturn != null ) { return toReturn; }
-        toReturn = new NetunoPlayer( uuid );
-        cache.add( toReturn );
-        return toReturn;
+        return getOrLoad( uuid );
     }
 
     /**
@@ -73,10 +69,21 @@ public class NetunoPlayerCache implements NPlayerLoader {
      * @param uuid The uuid to get
      * @return The loaded user, or null if not found
      */
-    public static NetunoPlayer get( String uuid ) {
-        return cache.stream()
+    public static NetunoPlayer getOrLoad( String uuid ) {
+        NetunoPlayer toReturn = cache.stream()
                 .filter( player -> player.getPlayer().getUniqueId().toString().equals( uuid ) )
                 .findFirst()
                 .orElse( null );
+        if ( toReturn != null ) { return toReturn; }
+        toReturn = new NetunoPlayer( uuid );
+        cache.add( toReturn );
+        return toReturn;
+    }
+
+    /**
+     * @return The cache of loaded players.
+     */
+    public static List<NetunoPlayer> getCache() {
+        return cache;
     }
 }
