@@ -1,11 +1,14 @@
 package com.github.cyberryan1.netuno.classes;
 
+import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
-import com.github.cyberryan1.netuno.utils.Time;
+import com.github.cyberryan1.netunoapi.models.reports.NReport;
+import com.github.cyberryan1.netunoapi.models.time.NDate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MultiReport {
 
@@ -13,10 +16,10 @@ public class MultiReport {
     private final OfflinePlayer reporter;
     private final long date;
 
-    private ArrayList<SingleReport> reports;
+    private List<NReport> reports;
 
     // Represents multiple reports for the same target, from the same reporter, and have the EXACT same timestamp
-    public MultiReport( ArrayList<SingleReport> reports ) {
+    public MultiReport( List<NReport> reports ) {
         this.reports = reports;
 
         if ( reports.size() == 0 ) {
@@ -25,9 +28,9 @@ public class MultiReport {
             this.date = -1L;
         }
         else {
-            this.target = reports.get( 0 ).getTarget();
+            this.target = reports.get( 0 ).getPlayer();
             this.reporter = reports.get( 0 ).getReporter();
-            this.date = reports.get( 0 ).getDate();
+            this.date = reports.get( 0 ).getTimestamp();
         }
     }
 
@@ -37,12 +40,12 @@ public class MultiReport {
 
     public long getDate() { return date; }
 
-    public ArrayList<SingleReport> getReports() { return reports; }
+    public List<NReport> getReports() { return reports; }
 
-    public ArrayList<String> getReasons() {
-        ArrayList<String> toReturn = new ArrayList<>();
-        for( SingleReport sr : reports ) {
-            toReturn.add( sr.getReason() );
+    public List<String> getReasons() {
+        List<String> toReturn = new ArrayList<>();
+        for( NReport nr : reports ) {
+            toReturn.add( nr.getReason() );
         }
         return toReturn;
     }
@@ -50,11 +53,11 @@ public class MultiReport {
     public ItemStack getAsItem() {
         ItemStack skull = GUIUtils.getPlayerSkull( reporter );
 
-        skull = GUIUtils.setItemName( skull, "&pReporter: &s" + reporter.getName() );
+        skull = CoreGUIUtils.setItemName( skull, "&pReporter: &s" + reporter.getName() );
 
-        skull = GUIUtils.addItemLore( skull, "&pDate: &s" + Time.getDateFromTimestamp( date ), "&pReason(s):" );
+        skull = CoreGUIUtils.addItemLore( skull, "&pDate: &s" + new NDate( date ).getDateString(), "&pReason(s):" );
         for ( String r : getReasons() ) {
-            skull = GUIUtils.addItemLore( skull, " &8- &s" + r );
+            skull = CoreGUIUtils.addItemLore( skull, " &8- &s" + r );
         }
 
         return skull;
