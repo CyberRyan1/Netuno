@@ -4,10 +4,10 @@ import com.github.cyberryan1.netunoapi.database.*;
 
 public class DatabaseManager implements NetunoDatabases {
 
-    private static AltsDatabase altsDatabase = new NetunoAltsDatabase();
-    private static PunishmentsDatabase punDatabase = new NetunoPunishmentsDatabase();
-    private static RandomDatabase randomDatabase = new NetunoRandomDatabase();
-    private static ReportsDatabase reportsDatabase = new NetunoReportsDatabase();
+    private static NetunoAltsDatabase altsDatabase = new NetunoAltsDatabase();
+    private static NetunoPunishmentsDatabase punDatabase = new NetunoPunishmentsDatabase();
+    private static NetunoRandomDatabase randomDatabase = new NetunoRandomDatabase();
+    private static NetunoReportsDatabase reportsDatabase = new NetunoReportsDatabase();
 
     /**
      * @return The {@link AltsDatabase} instance
@@ -20,6 +20,13 @@ public class DatabaseManager implements NetunoDatabases {
      * @return The {@link AltsDatabase} instance
      */
     public AltsDatabase getAlts() {
+        return altsDatabase;
+    }
+
+    /**
+     * @return The {@link NetunoAltsDatabase} instance
+     */
+    public NetunoAltsDatabase getNetunoAlts() {
         return altsDatabase;
     }
 
@@ -38,6 +45,13 @@ public class DatabaseManager implements NetunoDatabases {
     }
 
     /**
+     * @return The {@link NetunoPunishmentsDatabase} instance
+     */
+    public NetunoPunishmentsDatabase getNetunoPuns() {
+        return punDatabase;
+    }
+
+    /**
      * @return The {@link RandomDatabase} instance
      */
     public RandomDatabase getRandomDatabase() {
@@ -48,6 +62,13 @@ public class DatabaseManager implements NetunoDatabases {
      * @return The {@link RandomDatabase} instance
      */
     public RandomDatabase getRandom() {
+        return randomDatabase;
+    }
+
+    /**
+     * @return The {@link NetunoRandomDatabase} instance
+     */
+    public NetunoRandomDatabase getNetunoRandom() {
         return randomDatabase;
     }
 
@@ -65,4 +86,10 @@ public class DatabaseManager implements NetunoDatabases {
         return reportsDatabase;
     }
 
+    /**
+     * @return The {@link NetunoReportsDatabase} instance
+     */
+    public NetunoReportsDatabase getNetunoReports() {
+        return reportsDatabase;
+    }
 }
