@@ -6,7 +6,7 @@ import com.github.cyberryan1.netunoapi.database.ReportsDatabase;
 import com.github.cyberryan1.netunoapi.exceptions.ClassIncompleteException;
 import com.github.cyberryan1.netunoapi.models.reports.NReport;
 import com.github.cyberryan1.netunoapi.models.reports.NReportData;
-import com.github.cyberryan1.netunoapi.models.time.NTimeLength;
+import com.github.cyberryan1.netunoapi.models.time.NDate;
 import org.bukkit.OfflinePlayer;
 
 import java.io.ByteArrayInputStream;
@@ -148,7 +148,7 @@ public class NetunoReportsDatabase implements ReportsDatabase {
      * Deletes all reports that are older than the expiration time
      */
     public void deleteOldReports() {
-        cache.removeIf( report -> report.getTimestamp() < NTimeLength.getCurrentTimestamp() - EXPIRATION_TIME_SECS );
+        cache.removeIf( report -> report.getTimestamp() < NDate.getCurrentTimestamp() - EXPIRATION_TIME_SECS );
     }
 
     /**

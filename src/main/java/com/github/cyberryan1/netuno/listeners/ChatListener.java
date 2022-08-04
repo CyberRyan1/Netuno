@@ -9,7 +9,7 @@ import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
-import com.github.cyberryan1.netunoapi.models.time.NTimeLength;
+import com.github.cyberryan1.netunoapi.models.time.NDuration;
 import com.github.cyberryan1.netunoapi.utils.PunishmentUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -99,7 +99,7 @@ public class ChatListener implements Listener {
                 && VaultUtils.hasPerms( event.getPlayer(), Settings.STAFF_PERMISSION.string() ) == false
                 && VaultUtils.hasPerms( event.getPlayer(), Settings.CHATSLOW_BYPASS_PERMISSION.string() ) == false ) {
             if ( CHAT_SLOW.containsKey( event.getPlayer() ) ) {
-                long timeSince = NTimeLength.getCurrentTimestamp() - CHAT_SLOW.get( event.getPlayer() );
+                long timeSince = NDuration.getCurrentTimestamp() - CHAT_SLOW.get( event.getPlayer() );
                 if ( timeSince < ChatslowManager.getSlow() ) {
                     event.setCancelled( true );
 
@@ -110,7 +110,7 @@ public class ChatListener implements Listener {
                 }
             }
 
-            CHAT_SLOW.put( event.getPlayer(), NTimeLength.getCurrentTimestamp() );
+            CHAT_SLOW.put( event.getPlayer(), NDuration.getCurrentTimestamp() );
         }
     }
 }
