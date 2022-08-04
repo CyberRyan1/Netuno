@@ -52,6 +52,14 @@ public class NetunoPlayer implements NPlayer {
     }
 
     /**
+     * Adds a punishment to the punishments list of this player.
+     * @param punishment The punishment to add.
+     */
+    public void addPunishment( NPunishment punishment ) {
+        this.punishments.add( punishment );
+    }
+
+    /**
      * @return The {@link NAltGroup} this player belongs to.
      * Will return null if the player hasn't joined the server
      * before or if their alt group cannot be found.
