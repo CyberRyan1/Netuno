@@ -3,7 +3,6 @@ package com.github.cyberryan1.netuno.api;
 import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.netuno.api.database.ConnectionManager;
 import com.github.cyberryan1.netuno.api.database.DatabaseManager;
-import com.github.cyberryan1.netuno.api.database.NetunoAltsDatabase;
 import com.github.cyberryan1.netuno.api.database.helpers.AltSecurityLevel;
 import com.github.cyberryan1.netuno.api.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
@@ -40,13 +39,8 @@ public class ApiNetuno implements NetunoApi {
         }
         instance.setConnection( conn );
 
-        // Initialize the punishment and report databases' cache times
-        if ( Settings.CACHE_EXPIRATION.integer() > 0 ) {
-            instance.getDatabases().getReports().getCache().setExpirationTime( Settings.CACHE_EXPIRATION.integer() );
-        }
-
         // Initialize the alts database cache
-        ( ( NetunoAltsDatabase ) instance.getDatabases().getAlts() ).initializeCache();
+        getData().getNetunoAlts().initializeCache();
 
         // Initialize the alts database alt security level
         AltSecurityLevel altSecurityLevel = switch ( Settings.IPINFO_STRICTNESS.string().toUpperCase() ) {
@@ -54,7 +48,7 @@ public class ApiNetuno implements NetunoApi {
             case "HIGH" -> AltSecurityLevel.HIGH;
             default -> AltSecurityLevel.MEDIUM;
         };
-        ( ( NetunoAltsDatabase ) instance.getDatabases().getAlts() ).setSecurityLevel( altSecurityLevel );
+        getData().getNetunoAlts().setSecurityLevel( altSecurityLevel );
 
         // Initialize the player cache
         ( ( NetunoPlayerCache ) instance.getPlayerLoader() ).initialize();
@@ -65,10 +59,10 @@ public class ApiNetuno implements NetunoApi {
 
     public static void deleteInstance() {
         // Save the alts cache
-        ( ( NetunoAltsDatabase ) instance.getDatabases().getAlts() ).saveAll();
+        getData().getNetunoAlts().saveAll();
 
         // Close the database connection
-        ( ( ConnectionManager ) instance.getConnectionManager() ).closeConnection();
+        instance.getNetunoConnection().closeConnection();
 
         // Unregister the api from the services manager
         CyberCore.getPlugin().getServer().getServicesManager().unregister( NetunoApi.class, instance );
@@ -79,8 +73,8 @@ public class ApiNetuno implements NetunoApi {
         return instance;
     }
 
-    public static NetunoDatabases getData() {
-        return instance.getDatabaseManager();
+    public static DatabaseManager getData() {
+        return instance.getNetunoDatabase();
     }
 
     //
@@ -91,13 +85,13 @@ public class ApiNetuno implements NetunoApi {
     private DatabaseManager databases = new DatabaseManager();
     private NetunoPlayerCache playerCache = new NetunoPlayerCache();
 
+    //
+    // Interface Methods
+    //
+
     @Override
     public DatabaseConnection getConnectionManager() {
         return connection;
-    }
-
-    public void setConnection( ConnectionManager connection ) {
-        this.connection = connection;
     }
 
     @Override
@@ -108,5 +102,21 @@ public class ApiNetuno implements NetunoApi {
     @Override
     public NPlayerLoader getPlayerLoader() {
         return playerCache;
+    }
+
+    //
+    // Class Methods
+    //
+
+    public ConnectionManager getNetunoConnection() {
+        return connection;
+    }
+
+    public void setConnection( ConnectionManager connection ) {
+        this.connection = connection;
+    }
+
+    public DatabaseManager getNetunoDatabase() {
+        return databases;
     }
 }
