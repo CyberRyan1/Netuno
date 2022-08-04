@@ -1,7 +1,6 @@
 package com.github.cyberryan1.netuno.api.database;
 
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
-import com.github.cyberryan1.netuno.api.ApiNetuno;
 import com.github.cyberryan1.netuno.api.database.helpers.AltSecurityLevel;
 import com.github.cyberryan1.netunoapi.database.AltsDatabase;
 import com.github.cyberryan1.netunoapi.models.alts.NAltGroup;
@@ -86,12 +85,6 @@ public class NetunoAltsDatabase implements AltsDatabase {
         }
         CoreUtils.logInfo( "Successfully retrieved all IPs and players from the database" );
 
-        CoreUtils.logInfo( "Fetching all IP punishments for each cached item..." );
-        for ( NAltGroup group : cache ) {
-            loadPunishments( group );
-        }
-        CoreUtils.logInfo( "Successfully fetched all IP punishments for each cached item" );
-
         CoreUtils.logInfo( "Alt cache successfully initialized with a current size of " + cache.size() );
     }
 
@@ -116,7 +109,6 @@ public class NetunoAltsDatabase implements AltsDatabase {
 
             if ( groupList.isEmpty() == false ) {
                 groupList.get( 0 ).addAlt( playerUuid );
-                loadPunishments( groupList.get( 0 ), playerUuid );
             }
 
             else {
@@ -124,7 +116,6 @@ public class NetunoAltsDatabase implements AltsDatabase {
                 group.setGroupId( getNextAvailableId() );
                 group.addIp( playerIp );
                 group.addAlt( playerUuid );
-                loadPunishments( group );
                 cache.add( group );
             }
         }
@@ -147,7 +138,6 @@ public class NetunoAltsDatabase implements AltsDatabase {
                 group.setGroupId( getNextAvailableId() );
                 group.addIp( playerIp );
                 group.addAlt( playerUuid );
-                loadPunishments( group );
             }
             cache.add( group );
         }
@@ -192,7 +182,6 @@ public class NetunoAltsDatabase implements AltsDatabase {
                 group.setGroupId( getNextAvailableId() );
                 group.addIp( playerIp );
                 group.addAlt( playerUuid );
-                loadPunishments( group );
             }
             cache.add( group );
         }
@@ -322,7 +311,6 @@ public class NetunoAltsDatabase implements AltsDatabase {
         for ( NAltGroup group : groupList ) {
             toReturn.getAltUuids().addAll( group.getAltUuids() );
             toReturn.getIpList().addAll( group.getIpList() );
-            toReturn.getActivePuns().addAll( group.getActivePuns() );
 
             if ( group.getGroupId() < lowestId ) { lowestId = group.getGroupId(); }
         }
@@ -330,7 +318,6 @@ public class NetunoAltsDatabase implements AltsDatabase {
         toReturn.setGroupId( lowestId );
         toReturn.setAltUuids( toReturn.getAltUuids().stream().distinct().collect( Collectors.toList() ) );
         toReturn.setIpList( toReturn.getIpList().stream().distinct().collect( Collectors.toList() ) );
-        toReturn.setActivePuns( toReturn.getActivePuns().stream().distinct().collect( Collectors.toList() ) );
 
         return toReturn;
     }
@@ -349,28 +336,5 @@ public class NetunoAltsDatabase implements AltsDatabase {
         }
 
         return toReturn;
-    }
-
-    /**
-     * Loads all the active punishments from all alts
-     * in the group and adds them to the group.
-     * @param group The group to load the IP bans and IP mutes for
-     */
-    private void loadPunishments( NAltGroup group ) {
-        for ( String uuid : group.getAltUuids() ) {
-            loadPunishments( group, uuid );
-        }
-    }
-
-    /**
-     * Loads all the active punishments from a given alt
-     * and adds them to the group.
-     * @param group The group to load the IP bans and IP mutes for
-     * @param playerUuid The uuid of the alt to load the IP bans and IP mutes for
-     */
-    private void loadPunishments( NAltGroup group, String playerUuid ) {
-        group.getActivePuns().addAll( ApiNetuno.getData().getPun().getPunishments( playerUuid ).stream()
-                .filter( pun -> pun.isActive() && group.getActivePuns().contains( pun ) == false )
-                .collect( Collectors.toList() ) );
     }
 }
