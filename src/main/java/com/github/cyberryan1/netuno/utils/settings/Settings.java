@@ -182,7 +182,7 @@ public enum Settings {
     DATABASE_SQL_USERNAME( "database.sql.username", "string" ),
     DATABASE_SQL_PASSWORD( "database.sql.password", "string" ),
 
-    //CACHE_EDITS_BEFORE_SAVE( "database.cache.edits-before-save", "int" )
+    CACHE_EXPIRATION( "database.cache.expiration", "int" ),
 
     ;
 
