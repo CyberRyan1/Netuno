@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class NetunoPlayerCache implements NPlayerLoader {
 
-    private List<NetunoPlayer> cache = new ArrayList<>();
+    private static List<NetunoPlayer> cache = new ArrayList<>();
 
     /**
      * Initializes all online players into the cache.
@@ -73,7 +73,7 @@ public class NetunoPlayerCache implements NPlayerLoader {
      * @param uuid The uuid to get
      * @return The loaded user, or null if not found
      */
-    public NetunoPlayer get( String uuid ) {
+    public static NetunoPlayer get( String uuid ) {
         return cache.stream()
                 .filter( player -> player.getPlayer().getUniqueId().toString().equals( uuid ) )
                 .findFirst()
