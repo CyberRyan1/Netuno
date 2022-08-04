@@ -5,7 +5,7 @@ import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
-import com.github.cyberryan1.netunoapi.models.time.NDuration;
+import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -280,7 +280,7 @@ public class Utils {
     public static String replaceAllVariables( String str, String staff, String target, String length, String reason ) {
         str = str.replace( "[STAFF]", staff ).replace( "[TARGET]", target );
         if ( length.length() > 0 ) {
-            str = str.replace( "[LENGTH]", NDuration.fromUnformatted( length ).asFormatted() );
+            str = str.replace( "[LENGTH]", TimeUtils.durationFromUnformatted( length ).asFormatted() );
         }
         str = str.replace( "[REASON]", reason );
 
