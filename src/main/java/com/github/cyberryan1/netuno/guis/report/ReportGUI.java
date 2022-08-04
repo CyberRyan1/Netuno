@@ -5,10 +5,11 @@ import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
-import com.github.cyberryan1.netuno.classes.SingleReport;
+import com.github.cyberryan1.netuno.api.ApiNetuno;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import com.github.cyberryan1.netunoapi.models.reports.NReport;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -82,7 +83,11 @@ public class ReportGUI implements Listener {
             }
 
             for ( String reason : reasonsList ) {
-                Utils.getDatabase().addReport( new SingleReport( this.target, this.player, reason ) );
+                NReport report = new NReport();
+                report.setPlayer( this.target );
+                report.setReporter( this.player );
+                report.setReason( reason );
+                ApiNetuno.getData().getNetunoReports().addReport( report );
             }
         } ) );
 
