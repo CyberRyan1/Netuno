@@ -35,7 +35,7 @@ public class Clearchat extends CyberCommand {
         String broadcast = Settings.CLEARCHAT_BROADCAST.coloredString();
         broadcast = Utils.replaceStaffVariable( broadcast, sender );
 
-        String staffBroadcast = Settings.CLEARCHAT_STAFF_BROADCAST.string();
+        String staffBroadcast = Settings.CLEARCHAT_STAFF_BROADCAST.coloredString();
         staffBroadcast = Utils.replaceStaffVariable( staffBroadcast, sender );
         boolean sendStaffBroadcast = staffBroadcast.isBlank() == false;
         boolean staffBypass = Settings.CLEARCHAT_STAFF_BYPASS.bool();
