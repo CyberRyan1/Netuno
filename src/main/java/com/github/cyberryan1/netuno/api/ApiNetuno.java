@@ -2,12 +2,15 @@ package com.github.cyberryan1.netuno.api;
 
 import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.netuno.api.database.ConnectionManager;
+import com.github.cyberryan1.netuno.api.database.DatabaseManager;
 import com.github.cyberryan1.netuno.api.database.NetunoAltsDatabase;
 import com.github.cyberryan1.netuno.api.database.helpers.AltSecurityLevel;
+import com.github.cyberryan1.netuno.api.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.NetunoApi;
 import com.github.cyberryan1.netunoapi.database.DatabaseConnection;
 import com.github.cyberryan1.netunoapi.database.NetunoDatabases;
+import com.github.cyberryan1.netunoapi.models.players.NPlayerLoader;
 import org.bukkit.plugin.ServicePriority;
 
 public class ApiNetuno implements NetunoApi {
@@ -54,6 +57,9 @@ public class ApiNetuno implements NetunoApi {
         };
         ( ( NetunoAltsDatabase ) instance.getDatabases().getAlts() ).setSecurityLevel( altSecurityLevel );
 
+        // Initialize the player cache
+        ( ( NetunoPlayerCache ) instance.getPlayerLoader() ).initialize();
+
         // Register the api to the services manager
         CyberCore.getPlugin().getServer().getServicesManager().register( NetunoApi.class, instance, CyberCore.getPlugin(), ServicePriority.Normal );
     }
@@ -82,8 +88,9 @@ public class ApiNetuno implements NetunoApi {
     // Class Variables & Methods
     //
 
-    private DatabaseConnection connection = null;
-    private NetunoDatabases databases = null;
+    private ConnectionManager connection = new ConnectionManager();
+    private DatabaseManager databases = new DatabaseManager();
+    private NetunoPlayerCache playerCache = new NetunoPlayerCache();
 
     @Override
     public DatabaseConnection getConnectionManager() {
@@ -97,5 +104,10 @@ public class ApiNetuno implements NetunoApi {
     @Override
     public NetunoDatabases getDatabaseManager() {
         return databases;
+    }
+
+    @Override
+    public NPlayerLoader getPlayerLoader() {
+        return playerCache;
     }
 }
