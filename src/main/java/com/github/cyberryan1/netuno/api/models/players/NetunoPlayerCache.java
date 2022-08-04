@@ -2,6 +2,7 @@ package com.github.cyberryan1.netuno.api.models.players;
 
 import com.github.cyberryan1.netunoapi.models.players.NPlayer;
 import com.github.cyberryan1.netunoapi.models.players.NPlayerLoader;
+import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -87,6 +88,15 @@ public class NetunoPlayerCache implements NPlayerLoader {
      */
     public static List<NetunoPlayer> getCache() {
         return cache;
+    }
+
+    /**
+     * @return All the punishments of all loaded players.
+     */
+    public static List<NPunishment> getCachedPunishments() {
+        return cache.stream()
+                .flatMap( player -> player.getPunishments().stream() )
+                .collect( Collectors.toList() );
     }
 
     /**
