@@ -73,7 +73,7 @@ public class NetunoPlayerCache implements NPlayerLoader {
      * @param uuid The uuid to get
      * @return The loaded user, or null if not found
      */
-    private NetunoPlayer get( String uuid ) {
+    public NetunoPlayer get( String uuid ) {
         return cache.stream()
                 .filter( player -> player.getPlayer().getUniqueId().toString().equals( uuid ) )
                 .findFirst()
