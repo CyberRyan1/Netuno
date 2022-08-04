@@ -4,10 +4,10 @@ import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.helpers.gui.GUI;
 import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
+import com.github.cyberryan1.netuno.api.ApiNetuno;
 import com.github.cyberryan1.netuno.classes.CombinedReport;
-import com.github.cyberryan1.netuno.classes.SingleReport;
 import com.github.cyberryan1.netuno.guis.utils.SortBy;
-import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netunoapi.models.reports.NReport;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -27,7 +27,7 @@ public class StaffAllReportsGUI implements Listener {
     private final int page;
     private final SortBy sort;
 
-    private List<SingleReport> allSingularReports;
+    private List<NReport> allSingularReports;
     private List<CombinedReport> combinedReports = new ArrayList<>();
 
     public StaffAllReportsGUI( Player staff, int page, SortBy sort ) {
@@ -35,8 +35,7 @@ public class StaffAllReportsGUI implements Listener {
         this.page = page;
         this.sort = sort;
 
-        Utils.getDatabase().deleteAllExpiredReports();
-        allSingularReports = Utils.getDatabase().getAllReports();
+        allSingularReports = ApiNetuno.getData().getNetunoReports().getCache();
 
         compressReports();
         sort();
@@ -138,7 +137,7 @@ public class StaffAllReportsGUI implements Listener {
 
         ArrayList<UUID> playersReported = new ArrayList<>();
         for ( int index = allSingularReports.size() - 1; index >= 0; index-- ) {
-            UUID uuid = allSingularReports.get( index ).getTarget().getUniqueId();
+            UUID uuid = allSingularReports.get( index ).getPlayer().getUniqueId();
             if ( playersReported.contains( uuid ) == false ) { playersReported.add( uuid ); }
         }
 
