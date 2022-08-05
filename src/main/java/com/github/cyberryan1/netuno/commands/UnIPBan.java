@@ -2,18 +2,21 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.cybercore.helpers.command.ArgType;
 import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
-import com.github.cyberryan1.netuno.classes.IPPunishment;
+import com.github.cyberryan1.netuno.api.ApiNetuno;
+import com.github.cyberryan1.netuno.api.models.players.NetunoPlayer;
+import com.github.cyberryan1.netuno.api.models.players.NetunoPlayerCache;
+import com.github.cyberryan1.netuno.models.NetunoPrePunishment;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.Time;
-import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
+import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
+import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UnIPBan extends CyberCommand {
 
@@ -39,42 +42,33 @@ public class UnIPBan extends CyberCommand {
 
     @Override
     public boolean execute( CommandSender sender, String args[] ) {
-        final OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
+        final NetunoPlayer target = NetunoPlayerCache.getOrLoad( Bukkit.getOfflinePlayer( args[0] ).getUniqueId().toString() );
 
-        List<OfflinePlayer> punishedAccounts = Utils.getDatabase().getPunishedAltsByType( target.getUniqueId().toString(), "ipban" );
-        List<IPPunishment> punishments = new ArrayList<>();
-        for ( OfflinePlayer account : punishedAccounts ) {
-            punishments.addAll( Utils.getDatabase().getIPPunishment( account.getUniqueId().toString(), "ipban", true ) );
-        }
+        final List<NPunishment> punishments = target.getPunishments().stream()
+                .filter( pun -> pun.getPunishmentType() == PunishmentType.IPBAN && pun.isActive() )
+                .collect( Collectors.toList() );
 
         if ( punishments.size() >= 1 ) {
-            for ( IPPunishment pun : punishments ) {
-                Utils.getDatabase().setIPPunishmentActive( pun.getID(), false );
+            for ( NPunishment pun : punishments ) {
+                pun.setActive( false );
+                ApiNetuno.getData().getNetunoPuns().updatePunishment( pun );
             }
 
-            IPPunishment pun = new IPPunishment();
-            pun.setPlayerUUID( target.getUniqueId().toString() );
+            NetunoPrePunishment pun = new NetunoPrePunishment();
+            pun.setPlayer( target.getPlayer() );
+            pun.setPunishmentType( PunishmentType.UNIPBAN );
+            pun.setTimestamp( TimeUtils.getCurrentTimestamp() );
             pun.setReason( "" );
-            pun.setLength( -1L );
-            pun.setDate( Time.getCurrentTimestamp() );
-            pun.setType( "UnIPBan" );
-            pun.setActive( false );
+            pun.setLength( 0 );
 
-            pun.setStaffUUID( "CONSOLE" );
-            if ( sender instanceof Player ) {
-                Player staff = ( Player ) sender;
-                pun.setStaffUUID( staff.getUniqueId().toString() );
-            }
+            pun.setStaffUuid( "CONSOLE" );
+            if ( sender instanceof Player ) { pun.setStaff( ( Player ) sender ); }
 
-            Utils.getDatabase().addPunishment( pun );
-
-            Utils.doPublicPunBroadcast( pun );
-            Utils.doStaffPunBroadcast( pun );
-
+            pun.executePunishment();
         }
 
         else {
-            CommandErrors.sendNoPunishments( sender, target.getName(), "ipban" );
+            CommandErrors.sendNoPunishments( sender, target.getPlayer().getName(), "ipban" );
         }
 
         return true;
