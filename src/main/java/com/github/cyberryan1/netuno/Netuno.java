@@ -7,7 +7,6 @@ import com.github.cyberryan1.cybercore.helpers.command.helper.CommandHelper;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.api.ApiNetuno;
 import com.github.cyberryan1.netuno.commands.*;
-import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
 import com.github.cyberryan1.netuno.guis.history.HistoryEditManager;
 import com.github.cyberryan1.netuno.listeners.*;
 import com.github.cyberryan1.netuno.managers.ChatslowManager;
@@ -118,7 +117,6 @@ public final class Netuno extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents( new ChatListener(), this );
         this.getServer().getPluginManager().registerEvents( new LeaveListener(), this );
         this.getServer().getPluginManager().registerEvents( new SignChangeListener(), this );
-        this.getServer().getPluginManager().registerEvents( new GUIEventManager(), this );
         this.getServer().getPluginManager().registerEvents( new CommandListener(), this );
         this.getServer().getPluginManager().registerEvents( new HistoryEditManager(), this );
     }
