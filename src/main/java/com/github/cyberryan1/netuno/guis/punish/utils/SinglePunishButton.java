@@ -101,7 +101,7 @@ public class SinglePunishButton {
             }
 
             else {
-                pun.setPunishmentType( PunishmentType.valueOf( this.punishTypeAfter ) );
+                pun.setPunishmentType( PunishmentType.fromString( this.punishTypeAfter ) );
                 pun.setActive( pun.getPunishmentType().hasNoLength() == false );
                 if ( pun.isActive() ) {
                     NDuration length = TimeUtils.durationFromUnformatted( this.startingTime );
@@ -119,7 +119,7 @@ public class SinglePunishButton {
         }
 
         else {
-            pun.setPunishmentType( PunishmentType.valueOf( this.guiType ) );
+            pun.setPunishmentType( PunishmentType.fromString( this.guiType ) );
 
             NDuration length = TimeUtils.durationFromUnformatted( this.startingTime );
             if ( this.autoscale ) {
