@@ -50,7 +50,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
             throw new RuntimeException( e );
         }
 
-        NetunoPlayerCache.getOrLoad( punishment.getPlayerUuid() ).updatePunishments();
+        NetunoPlayerCache.getOrLoad( punishment.getPlayerUuid() );
     }
 
     /**
