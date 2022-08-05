@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.guis.ipinfo;
 
+import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.helpers.gui.GUI;
 import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
@@ -13,6 +14,7 @@ import com.github.cyberryan1.netuno.guis.utils.SortBy;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
 import com.github.cyberryan1.netunoapi.utils.PunishmentUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
@@ -59,7 +61,9 @@ public class NewAltsListGUI {
     }
 
     public void open() {
-        gui.openInventory( staff );
+        Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
+            gui.openInventory( staff );
+        } );
     }
 
     private void insertItems() {
