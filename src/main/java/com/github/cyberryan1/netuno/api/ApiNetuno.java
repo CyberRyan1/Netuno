@@ -39,9 +39,6 @@ public class ApiNetuno implements NetunoApi {
         }
         instance.setConnection( conn );
 
-        // Initialize the alts cache
-        getData().getNetunoAlts().initializeCache();
-
         // Initialize the alts security level
         AltSecurityLevel altSecurityLevel = switch ( Settings.IPINFO_STRICTNESS.string().toUpperCase() ) {
             case "LOW" -> AltSecurityLevel.LOW;
@@ -49,6 +46,9 @@ public class ApiNetuno implements NetunoApi {
             default -> AltSecurityLevel.MEDIUM;
         };
         getData().getNetunoAlts().setSecurityLevel( altSecurityLevel );
+
+        // Initialize the alts cache (note that the cache must be initialized after the security level)
+        getData().getNetunoAlts().initializeCache();
 
         // Initialize the reports cache
         getData().getNetunoReports().initializeCache();
