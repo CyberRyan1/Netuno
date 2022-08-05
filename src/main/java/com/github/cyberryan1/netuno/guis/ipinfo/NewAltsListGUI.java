@@ -78,7 +78,7 @@ public class NewAltsListGUI {
         for ( int row = 0; row < 3; row++ ) {
             for ( int col = 0; col < 7; col++ ) {
                 if ( altIndex >= alts.size() ) {
-                    gui.setItem( guiIndex, new GUIItem( Material.WHITE_STAINED_GLASS, "&f", guiIndex ) );
+                    gui.setItem( guiIndex, new GUIItem( Material.WHITE_STAINED_GLASS_PANE, "&f", guiIndex ) );
                 }
                 else {
                     final int finalAltIndex = altIndex;
