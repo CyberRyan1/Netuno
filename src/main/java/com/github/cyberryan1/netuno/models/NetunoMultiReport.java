@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiReport {
+public class NetunoMultiReport {
 
     private final OfflinePlayer target;
     private final OfflinePlayer reporter;
@@ -19,7 +19,7 @@ public class MultiReport {
     private List<NReport> reports;
 
     // Represents multiple reports for the same target, from the same reporter, and have the EXACT same timestamp
-    public MultiReport( List<NReport> reports ) {
+    public NetunoMultiReport( List<NReport> reports ) {
         this.reports = reports;
 
         if ( reports.size() == 0 ) {

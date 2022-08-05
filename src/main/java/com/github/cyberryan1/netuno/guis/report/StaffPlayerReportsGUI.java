@@ -6,7 +6,7 @@ import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
 import com.github.cyberryan1.netuno.api.ApiNetuno;
 import com.github.cyberryan1.netuno.guis.utils.SortBy;
-import com.github.cyberryan1.netuno.models.MultiReport;
+import com.github.cyberryan1.netuno.models.NetunoMultiReport;
 import com.github.cyberryan1.netunoapi.models.reports.NReport;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -29,7 +29,7 @@ public class StaffPlayerReportsGUI implements Listener {
     private final SortBy sort;
 
     private List<NReport> allSingularReports;
-    private List<MultiReport> multiReports = new ArrayList<>();
+    private List<NetunoMultiReport> multiReports = new ArrayList<>();
 
     public StaffPlayerReportsGUI( Player staff, OfflinePlayer target, int page, SortBy sort ) {
         this.staff = staff;
@@ -138,10 +138,10 @@ public class StaffPlayerReportsGUI implements Listener {
         }
 
         for ( ArrayList<NReport> srList : datesToReport.values() ) {
-            multiReports.add( new MultiReport( srList ) );
+            multiReports.add( new NetunoMultiReport( srList ) );
         }
 
-        ArrayList<MultiReport> tempReports = new ArrayList<>();
+        ArrayList<NetunoMultiReport> tempReports = new ArrayList<>();
         final int START = 21 * ( page - 1 );
         final int END = 21 * page;
         for ( int index = START; index <= END; index++ ) {
@@ -154,11 +154,11 @@ public class StaffPlayerReportsGUI implements Listener {
     private void sort() {
         if ( allSingularReports.size() == 0 ) { return; }
 
-        ArrayList<MultiReport> newReports = new ArrayList<>();
+        ArrayList<NetunoMultiReport> newReports = new ArrayList<>();
         newReports.add( multiReports.remove( 0 ) );
         switch ( sort ) {
             case FIRST_DATE: {
-                for ( MultiReport mr : multiReports ) {
+                for ( NetunoMultiReport mr : multiReports ) {
                     for ( int index = 0; index < newReports.size(); index++ ) {
                         if ( mr.getDate() < newReports.get( index ).getDate() ) {
                             newReports.add( mr );
@@ -173,7 +173,7 @@ public class StaffPlayerReportsGUI implements Listener {
             }
 
             case LAST_DATE: {
-                for ( MultiReport mr : multiReports ) {
+                for ( NetunoMultiReport mr : multiReports ) {
                     for ( int index = 0; index < newReports.size(); index++ ) {
                         if ( mr.getDate() > newReports.get( index ).getDate() ) {
                             newReports.add( mr );
