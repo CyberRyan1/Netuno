@@ -9,9 +9,7 @@ import com.github.cyberryan1.netunoapi.models.reports.NReportData;
 import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.OfflinePlayer;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -178,12 +176,19 @@ public class NetunoReportsDatabase implements ReportsDatabase {
                 PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + " (id, player, data) VALUES (?, ?, ?);" );
                 ps.setInt( 1, report.getId() );
                 ps.setString( 2, report.getPlayerUuid() );
-                ps.setObject( 3, ( NReportData ) report );
+
+                NReportData data = report;
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ObjectOutputStream oos = new ObjectOutputStream( baos );
+                oos.writeObject( data );
+                byte bytes[] = baos.toByteArray();
+                ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
+                ps.setBinaryStream( 3, bais, bytes.length );
 
                 ps.addBatch();
                 ps.executeBatch();
                 ps.close();
-            } catch ( SQLException e ) {
+            } catch ( SQLException | IOException e ) {
                 throw new RuntimeException( e );
             }
         }
