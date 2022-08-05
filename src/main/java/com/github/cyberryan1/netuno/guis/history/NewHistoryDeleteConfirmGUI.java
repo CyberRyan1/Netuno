@@ -5,8 +5,9 @@ import com.github.cyberryan1.cybercore.helpers.gui.GUI;
 import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
-import com.github.cyberryan1.netuno.classes.Punishment;
-import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.api.ApiNetuno;
+import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
+import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -18,9 +19,9 @@ public class NewHistoryDeleteConfirmGUI {
     private final GUI gui;
     private final OfflinePlayer target;
     private final Player staff;
-    private final Punishment punishment;
+    private final NPunishment punishment;
 
-    public NewHistoryDeleteConfirmGUI( OfflinePlayer target, Player staff, Punishment punishment ) {
+    public NewHistoryDeleteConfirmGUI( OfflinePlayer target, Player staff, NPunishment punishment ) {
         this.target = target;
         this.staff = staff;
         this.punishment = punishment;
@@ -40,20 +41,20 @@ public class NewHistoryDeleteConfirmGUI {
         // green wool confirm: 30
         // red wool cancel: 32
 
-        gui.setItem( 13, new GUIItem( punishment.getPunishmentAsItem(), 13 ) );
+        gui.setItem( 13, new GUIItem( GUIUtils.getPunishmentItem( punishment ), 13 ) );
 
         // Green Wool Confirm
         gui.setItem( 30, new GUIItem( Material.LIME_WOOL, "&aConfirm", 30, () -> {
             staff.closeInventory();
-            Utils.getDatabase().deletePunishment( punishment.getID() );
-            CoreUtils.sendMsg( staff, "&sSuccessfully deleted punishment &p#" + punishment.getID() );
+            ApiNetuno.getData().getNetunoPuns().removePunishment( punishment.getId() );
+            CoreUtils.sendMsg( staff, "&sSuccessfully deleted punishment &p#" + punishment.getId() );
             staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 1, 2 );
         } ) );
 
         // Red Wool Cancel
         gui.setItem( 32, new GUIItem( Material.RED_WOOL, "&cCancel", 32, () -> {
             staff.closeInventory();
-            CoreUtils.sendMsg( staff, "&sCancelled deletion of punishment &p#" + punishment.getID() );
+            CoreUtils.sendMsg( staff, "&sCancelled deletion of punishment &p#" + punishment.getId() );
             staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 1, 2 );
         } ) );
 
