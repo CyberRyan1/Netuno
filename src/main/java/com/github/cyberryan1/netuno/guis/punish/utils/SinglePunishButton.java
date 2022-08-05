@@ -4,7 +4,7 @@ import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.api.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.api.models.players.NetunoPlayerCache;
-import com.github.cyberryan1.netuno.classes.NetunoPrePunishment;
+import com.github.cyberryan1.netuno.models.NetunoPrePunishment;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;

@@ -1,4 +1,4 @@
-package com.github.cyberryan1.netuno.classes;
+package com.github.cyberryan1.netuno.models;
 
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
