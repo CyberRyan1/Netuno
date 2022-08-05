@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class NetunoAltsDatabase implements AltsDatabase {
 
     private final String TABLE_NAME = "alts";
-    private final String TYPE_LIST = "(group, item, type)";
+    private final String TYPE_LIST = "(id, item, type)";
     private final String UNKNOWN_LIST = "(?, ?, ?)";
 
     private final List<NAltGroup> cache = new ArrayList<>();
@@ -243,6 +243,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
 
         int count = 0;
         for ( NAltGroup group : cache ) {
+            Bukkit.broadcastMessage( "Saving group " + group.getGroupId() + " || ips: " + group.getIpList().toString() + " || alts: " + group.getAltUuids().toString() ); // ! debug
             for ( String ip : group.getIpList() ) { saveIp( group.getGroupId(), ip ); count++; }
             for ( String uuid : group.getAltUuids() ) { saveUuid( group.getGroupId(), uuid ); count++; }
         }
@@ -258,7 +259,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
      */
     public void saveIp( int groupId, String ipAddress ) {
         try {
-            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + "(group, item, type) VALUES(?, ?, ?);" );
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + "(id,item,type) VALUES (?,?,?);" );
             ps.setInt( 1, groupId );
             ps.setString( 2, ipAddress );
             ps.setString( 3, "ip" );
@@ -277,7 +278,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
      */
     public void saveUuid( int groupId, String uuid ) {
         try {
-            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + "(group, item, type) VALUES(?, ?, ?);" );
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + "(id,item,type) VALUES(?,?,?);" );
             ps.setInt( 1, groupId );
             ps.setString( 2, uuid );
             ps.setString( 3, "uuid" );

@@ -11,7 +11,7 @@ public enum SQLiteTables {
     ),
 
     ALTS_TABLE( "CREATE TABLE IF NOT EXISTS alts ("  +
-            "`group` INTEGER," +
+            "`id` INTEGER NOT NULL," +
             "`item` STRING NOT NULL," +
             "`type` STRING NOT NULL );"
     ),
