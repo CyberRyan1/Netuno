@@ -6,9 +6,7 @@ import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishmentData;
 import org.bukkit.OfflinePlayer;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,18 +27,26 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      */
     public void addPunishment( NPunishment punishment ) {
         punishment.ensureValid( false );
+        NPunishmentData data = ( NPunishmentData ) punishment;
 
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + "(player, data, guipun, reference) VALUES(?, ?, ?, ?);" );
-            ps.setString( 1, punishment.getPlayerUuid() );
-            ps.setObject( 2, ( NPunishmentData ) punishment );
-            ps.setString( 3, punishment.isGuiPun() + "" );
-            ps.setInt( 4, punishment.getReferencePunId() );
+            ps.setString( 1, data.getPlayerUuid() );
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream( baos );
+            oos.writeObject( data );
+            byte bytes[] = baos.toByteArray();
+            ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
+            ps.setBinaryStream( 2, bais, bytes.length );
+
+            ps.setString( 3, data.isGuiPun() + "" );
+            ps.setInt( 4, data.getReferencePunId() );
 
             ps.addBatch();
             ps.executeBatch();
             ps.close();
-        } catch ( SQLException e ) {
+        } catch ( SQLException | IOException e ) {
             throw new RuntimeException( e );
         }
 
