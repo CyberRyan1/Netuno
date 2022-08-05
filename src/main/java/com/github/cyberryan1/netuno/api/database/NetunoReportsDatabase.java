@@ -66,8 +66,8 @@ public class NetunoReportsDatabase implements ReportsDatabase {
         }
         CoreUtils.logInfo( "Successfully retrieved all reports from the database" );
 
-        EXPIRATION_TIME_SECS = Settings.CACHE_EXPIRATION.integer() * 3600L; // converts hours to seconds
-        CoreUtils.logInfo( "Reports expiration time set to " + Settings.CACHE_EXPIRATION.integer()
+        EXPIRATION_TIME_SECS = Settings.REPORT_EXPIRE_TIME.integer() * 3600L; // converts hours to seconds
+        CoreUtils.logInfo( "Reports expiration time set to " + Settings.REPORT_EXPIRE_TIME.integer()
                 + " hours (" + EXPIRATION_TIME_SECS + " seconds)" );
 
         CoreUtils.logInfo( "Reports cache successfully initialized with a size of " + cache.size() );
