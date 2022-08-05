@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.guis.punish;
 
+import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.helpers.gui.GUI;
 import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
@@ -7,6 +8,7 @@ import com.github.cyberryan1.netuno.guis.history.NewHistoryListGUI;
 import com.github.cyberryan1.netuno.guis.ipinfo.NewAltsListGUI;
 import com.github.cyberryan1.netuno.guis.punish.utils.MainButton;
 import com.github.cyberryan1.netuno.guis.punish.utils.PunishSettings;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -100,6 +102,8 @@ public class MainPunishGUI {
     }
 
     public void open() {
-        gui.openInventory( staff );
+        Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
+            gui.openInventory( this.staff );
+        } );
     }
 }
