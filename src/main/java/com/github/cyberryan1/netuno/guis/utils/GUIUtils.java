@@ -1,11 +1,18 @@
 package com.github.cyberryan1.netuno.guis.utils;
 
+import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
+import com.github.cyberryan1.netuno.api.ApiNetuno;
 import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
+import com.github.cyberryan1.netunoapi.models.time.NDate;
+import com.github.cyberryan1.netunoapi.models.time.NDuration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -150,5 +157,51 @@ public class GUIUtils {
         if ( material.equalsIgnoreCase( "RED" + baseTypeStr ) ) { return new ItemStack( Material.matchMaterial( baseType ), 1, ( short ) 14 ); }
         if ( material.equalsIgnoreCase( "BLACK" + baseTypeStr ) ) { return new ItemStack( Material.matchMaterial( baseType ), 1, ( short ) 15 ); }
         return null;
+    }
+
+    public static ItemStack getPunishmentItem( NPunishment pun ) {
+        Material itemMaterial = Material.REDSTONE;
+        if ( pun.isActive() ) { itemMaterial = Material.EMERALD; }
+        if ( pun.getPunishmentType().hasNoReason() ) { itemMaterial = Material.GUNPOWDER; }
+
+        ItemStack sign = CoreGUIUtils.createItem( itemMaterial, "&sPunishment &p#" + pun.getId() );
+
+        CoreGUIUtils.addItemLore( sign, "&pPlayer: &s" + pun.getPlayer().getName() );
+        CoreGUIUtils.addItemLore( sign, "&pDate: &s" + new NDate( pun.getTimestamp() ).getDateString() );
+        CoreGUIUtils.addItemLore( sign, "&pType: &s" + pun.getPunishmentType().name().toUpperCase() );
+
+        if ( pun.getPunishmentType().hasNoLength() == false ) {
+            CoreGUIUtils.addItemLore( sign, "&pLength: &s" + new NDuration( pun.getLength() ) );
+        }
+
+        if ( pun.getStaffUuid().equalsIgnoreCase( "console" ) ) { CoreGUIUtils.addItemLore( sign, "&pStaff: &sCONSOLE" ); }
+        else { CoreGUIUtils.addItemLore( sign, "&pStaff: &s" + pun.getStaff().getName() ); }
+
+        if ( pun.getPunishmentType().isIpPunishment() ) {
+            String originalPlayerName = pun.getPlayer().getName();
+            int originalPunishmentId = pun.getId();
+
+            if ( pun.getReferencePunId() != -1 ) {
+                NPunishment originalPunishment = ApiNetuno.getData().getNetunoPuns().getPunishment( pun.getReferencePunId() );
+                originalPlayerName = originalPunishment.getPlayer().getName();
+                originalPunishmentId = originalPunishment.getId();
+            }
+
+            CoreGUIUtils.addItemLore( sign, "&pOriginal Player: &s" + originalPlayerName
+                    + " &p(Pun ID: &s" + originalPunishmentId + "&p)" );
+        }
+
+        if ( pun.getPunishmentType().hasNoReason() == false ) {
+            CoreGUIUtils.addItemLore( sign, "&pReason: &s" + pun.getReason() );
+        }
+
+        if ( pun.isActive() ) {
+            ItemMeta meta = sign.getItemMeta();
+            meta.addItemFlags( ItemFlag.HIDE_ENCHANTS );
+            meta.addEnchant( Enchantment.DURABILITY, 1, true );
+            sign.setItemMeta( meta );
+        }
+
+        return sign;
     }
 }
