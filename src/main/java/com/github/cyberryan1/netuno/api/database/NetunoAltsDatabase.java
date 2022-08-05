@@ -37,6 +37,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
      * @param level The alt security level to set to
      */
     public void setSecurityLevel( AltSecurityLevel level ) {
+        CoreUtils.logInfo( "[ALTS CACHE] Alt Strictness Level: " + level.name() );
         this.securityLevel = level;
     }
 
@@ -159,13 +160,14 @@ public class NetunoAltsDatabase implements AltsDatabase {
             ipsToSearch.add( playerIp );
 
             while ( altsToSearch.size() > 0 || ipsToSearch.size() > 0 ) {
-                String altUuid = altsToSearch.remove( 0 );
-                String altIp = ipsToSearch.remove( 0 );
-                altsSearched.add( altUuid );
-                ipsSearched.add( altIp );
+                String altUuid = altsToSearch.size() == 0 ? null : altsToSearch.remove( 0 );
+                String altIp = ipsToSearch.size() == 0 ? null : ipsToSearch.remove( 0 );
+                if ( altUuid != null ) { altsSearched.add( altUuid ); }
+                if ( altIp != null ) { ipsSearched.add( altIp ); }
 
                 cache.stream()
-                        .filter( g -> g.getAltUuids().contains( altUuid ) || g.getIpList().contains( altIp ) )
+                        .filter( g -> ( altUuid != null && g.getAltUuids().contains( altUuid ) )
+                                || ( altIp != null && g.getIpList().contains( altIp ) ) )
                         .distinct()
                         .forEach( group -> {
                             if ( groupsSearched.contains( group ) == false ) { groupsSearched.add( group ); }
@@ -180,15 +182,11 @@ public class NetunoAltsDatabase implements AltsDatabase {
             }
 
             NAltGroup group = new NAltGroup();
-            if ( groupsSearched.isEmpty() == false ) {
-                group = merge( groupsSearched );
-            }
+            group.setGroupId( getNextAvailableId() );
+            group.getAltUuids().addAll( altsSearched );
+            group.getIpList().addAll( ipsSearched );
 
-            else {
-                group.setGroupId( getNextAvailableId() );
-                group.addIp( playerIp );
-                group.addAlt( playerUuid );
-            }
+            cache.removeIf( groupsSearched::contains );
             cache.add( group );
         }
     }
@@ -243,7 +241,6 @@ public class NetunoAltsDatabase implements AltsDatabase {
 
         int count = 0;
         for ( NAltGroup group : cache ) {
-            Bukkit.broadcastMessage( "Saving group " + group.getGroupId() + " || ips: " + group.getIpList().toString() + " || alts: " + group.getAltUuids().toString() ); // ! debug
             for ( String ip : group.getIpList() ) { saveIp( group.getGroupId(), ip ); count++; }
             for ( String uuid : group.getAltUuids() ) { saveUuid( group.getGroupId(), uuid ); count++; }
         }
@@ -316,16 +313,21 @@ public class NetunoAltsDatabase implements AltsDatabase {
         int lowestId = Integer.MAX_VALUE;
 
         for ( NAltGroup group : groupList ) {
-            toReturn.getAltUuids().addAll( group.getAltUuids() );
-            toReturn.getIpList().addAll( group.getIpList() );
+            group.getAltUuids().forEach( altUuid -> {
+                if ( toReturn.containsAlt( altUuid ) == false ) {
+                    toReturn.addAlt( altUuid );
+                }
+            } );
+            group.getIpList().forEach( ip -> {
+                if ( toReturn.containsIp( ip ) == false ) {
+                    toReturn.addIp( ip );
+                }
+            } );
 
             if ( group.getGroupId() < lowestId ) { lowestId = group.getGroupId(); }
         }
 
         toReturn.setGroupId( lowestId );
-        toReturn.setAltUuids( toReturn.getAltUuids().stream().distinct().collect( Collectors.toList() ) );
-        toReturn.setIpList( toReturn.getIpList().stream().distinct().collect( Collectors.toList() ) );
-
         return toReturn;
     }
 
