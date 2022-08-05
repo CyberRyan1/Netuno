@@ -2,7 +2,7 @@ package com.github.cyberryan1.netuno.utils;
 
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
-import com.github.cyberryan1.netunoapi.models.time.NDuration;
+import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.command.CommandSender;
 
 public class CommandErrors {
@@ -64,6 +64,6 @@ public class CommandErrors {
 
     public static void sendBanLengthTooLarge( CommandSender sender ) {
         sender.sendMessage( CoreUtils.getColored( "&sYou can only ban for a maximum of " +
-                NDuration.fromUnformatted( YMLUtils.getConfig().getStr( "ban.max-time-length" ) ).asFormatted() ) );
+                TimeUtils.durationFromUnformatted( YMLUtils.getConfig().getStr( "ban.max-time-length" ) ).asFormatted() ) );
     }
 }
