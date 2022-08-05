@@ -6,12 +6,12 @@ import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
-import com.github.cyberryan1.netuno.classes.Punishment;
+import com.github.cyberryan1.netuno.api.ApiNetuno;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.Time;
-import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
+import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -23,7 +23,7 @@ public class NewHistoryEditGUI {
     private final GUI gui;
     private final OfflinePlayer target;
     private final Player staff;
-    private final Punishment punishment;
+    private final NPunishment punishment;
 
     private boolean editingLength = false;
     private boolean editingReason = false;
@@ -31,12 +31,18 @@ public class NewHistoryEditGUI {
     public NewHistoryEditGUI( OfflinePlayer target, Player staff, int punId ) {
         this.target = target;
         this.staff = staff;
-
-        Punishment pun = Utils.getDatabase().getPunishment( punId );
-        if ( pun == null ) { pun = Utils.getDatabase().getIPPunishment( punId ); }
-        this.punishment = pun;
+        this.punishment = ApiNetuno.getData().getNetunoPuns().getPunishment( punId );
 
         this.gui = new GUI( "&sEdit Punishment &p#" + punId, 6, CoreGUIUtils.getBackgroundGlass() );
+        insertItems();
+    }
+
+    public NewHistoryEditGUI( OfflinePlayer target, Player staff, NPunishment punishment ) {
+        this.target = target;
+        this.staff = staff;
+        this.punishment = punishment;
+
+        this.gui = new GUI( "&sEdit Punishment &p#" + punishment.getId(), 6, CoreGUIUtils.getBackgroundGlass() );
         insertItems();
     }
 
@@ -52,14 +58,14 @@ public class NewHistoryEditGUI {
         //      delete punishment barrier: 33
 
         // Punishment Info
-        gui.setItem( 13, new GUIItem( punishment.getPunishmentAsItem(), 13 ) );
+        gui.setItem( 13, new GUIItem( GUIUtils.getPunishmentItem( punishment ), 13 ) );
 
-        if ( punishment.checkIsUnpunish() ) {
+        if ( punishment.getPunishmentType().hasNoReason() ) {
             // Delete Punishment
             gui.setItem( 31, getDeleteBarrier( 31 ) );
         }
 
-        else if ( punishment.checkHasNoTime() || punishment.getActive() == false ) {
+        else if ( punishment.getPunishmentType().hasNoLength() || punishment.isActive() == false ) {
             // Edit Reason
             gui.setItem( 30, getEditReasonPaper( 30 ) );
             // Delete Punishment
@@ -89,10 +95,10 @@ public class NewHistoryEditGUI {
         editingReason = false;
         if ( newReason.equalsIgnoreCase( "cancel" ) == false ) {
             punishment.setReason( newReason );
-            Utils.getDatabase().setPunishmentReason( punishment.getID(), newReason );
+            ApiNetuno.getData().getNetunoPuns().updatePunishment( punishment );
         }
 
-        NewHistoryEditGUI newGui = new NewHistoryEditGUI( target, staff, punishment.getID() );
+        NewHistoryEditGUI newGui = new NewHistoryEditGUI( target, staff, punishment );
         newGui.open();
     }
 
@@ -100,9 +106,9 @@ public class NewHistoryEditGUI {
         HistoryEditManager.removeEditing( staff );
         editingLength = false;
         if ( newLength.equalsIgnoreCase( "cancel" ) == false ) {
-            if ( Time.isAllowableLength( newLength ) ) {
-                punishment.setLength( Time.getTimestampFromLength( newLength ) );
-                Utils.getDatabase().setPunishmentLength( punishment.getID(), punishment.getLength() );
+            if ( TimeUtils.isAllowableLength( newLength ) ) {
+                punishment.setLength( TimeUtils.durationFromUnformatted( newLength ).timestamp() );
+                ApiNetuno.getData().getNetunoPuns().updatePunishment( punishment );
             }
             else {
                 CommandErrors.sendInvalidTimespan( staff, newLength );
@@ -113,7 +119,7 @@ public class NewHistoryEditGUI {
             }
         }
 
-        NewHistoryEditGUI newGui = new NewHistoryEditGUI( target, staff, punishment.getID() );
+        NewHistoryEditGUI newGui = new NewHistoryEditGUI( target, staff, punishment );
         newGui.open();
     }
 
@@ -138,7 +144,7 @@ public class NewHistoryEditGUI {
             HistoryEditManager.addEditing( staff, this );
             staff.closeInventory();
             editingReason = true;
-            CoreUtils.sendMsg( staff, "&sPlease enter the new reason for punishment &p#" + punishment.getID() );
+            CoreUtils.sendMsg( staff, "&sPlease enter the new reason for punishment &p#" + punishment.getId() );
             CoreUtils.sendMsg( staff, "&sTo cancel, type &p\"cancel\"" );
             staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
         } );
@@ -149,7 +155,7 @@ public class NewHistoryEditGUI {
             HistoryEditManager.addEditing( staff, this );
             staff.closeInventory();
             editingLength = true;
-            CoreUtils.sendMsg( staff, "&sPlease enter the new length for punishment &p#" + punishment.getID() );
+            CoreUtils.sendMsg( staff, "&sPlease enter the new length for punishment &p#" + punishment.getId() );
             CoreUtils.sendMsg( staff, "&sTo cancel, type &p\"cancel\"" );
             staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
         } );
