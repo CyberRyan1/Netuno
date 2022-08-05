@@ -4,11 +4,15 @@ import com.github.cyberryan1.cybercore.helpers.gui.GUI;
 import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
-import com.github.cyberryan1.netuno.classes.Punishment;
+import com.github.cyberryan1.netuno.api.ApiNetuno;
+import com.github.cyberryan1.netuno.api.models.players.NetunoPlayer;
+import com.github.cyberryan1.netuno.api.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.guis.history.NewHistoryListGUI;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netuno.guis.utils.SortBy;
-import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
+import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
+import com.github.cyberryan1.netunoapi.utils.PunishmentUtils;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
@@ -19,7 +23,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,19 +30,23 @@ public class NewAltsListGUI {
 
     private final GUI gui;
     private final Player staff;
-    private final OfflinePlayer target;
+    private final NetunoPlayer target;
     private final int page;
     private final SortBy sort;
-    private List<OfflinePlayer> alts;
-    private final List<OfflinePlayer> punishedAlts;
+    private List<NetunoPlayer> alts;
+    private final List<NetunoPlayer> punishedAlts;
 
     public NewAltsListGUI( Player staff, OfflinePlayer target, int page, SortBy sort ) {
         this.staff = staff;
-        this.target = target;
+        this.target = NetunoPlayerCache.getOrLoad( target.getUniqueId().toString() );
         this.page = page;
         this.sort = sort;
-        this.alts = Utils.getDatabase().getAllAlts( target.getUniqueId().toString() );
-        this.punishedAlts = Utils.getDatabase().getPunishedAltList( target.getUniqueId().toString() );
+        this.alts = ApiNetuno.getData().getNetunoAlts().getAlts( target ).stream()
+                .map( a -> NetunoPlayerCache.getOrLoad( a.getUniqueId().toString() ) )
+                .collect( Collectors.toList() );
+        this.punishedAlts = this.alts.stream()
+                .filter( a -> PunishmentUtils.anyActive( a.getPunishments() ) )
+                .collect( Collectors.toList() );
 
         sort();
 
@@ -73,7 +80,7 @@ public class NewAltsListGUI {
                     final int finalAltIndex = altIndex;
                     gui.setItem( guiIndex, new GUIItem( getAltSkull( altIndex ), guiIndex, () -> {
                         if ( punishedAlts.contains( alts.get( finalAltIndex ) ) ) {
-                            NewHistoryListGUI listGui = new NewHistoryListGUI( alts.get( finalAltIndex ), staff, 1 );
+                            NewHistoryListGUI listGui = new NewHistoryListGUI( alts.get( finalAltIndex ).getPlayer(), staff, 1 );
                             listGui.open();
                             staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
                         }
@@ -90,7 +97,7 @@ public class NewAltsListGUI {
         // Sort Hopper
         gui.setItem( 40, new GUIItem( getSortHopper( this.sort ), 40, () -> {
             staff.closeInventory();
-            NewAltsListGUI newGui = new NewAltsListGUI( staff, target, page, getNextSort( this.sort ) );
+            NewAltsListGUI newGui = new NewAltsListGUI( staff, target.getPlayer(), page, getNextSort( this.sort ) );
             newGui.open();
         } ) );
 
@@ -101,7 +108,7 @@ public class NewAltsListGUI {
         if ( page >= 2 ) {
             gui.setItem( 49, new GUIItem( CoreGUIUtils.createItem( Material.BOOK, "&pPrevious Page" ), 49, () -> {
                 staff.closeInventory();
-                NewAltsListGUI newGui = new NewAltsListGUI( staff, target, page - 1, this.sort );
+                NewAltsListGUI newGui = new NewAltsListGUI( staff, target.getPlayer(), page - 1, this.sort );
                 newGui.open();
             } ) );
         }
@@ -111,42 +118,44 @@ public class NewAltsListGUI {
         if ( page < maxPage ) {
             gui.setItem( 51, new GUIItem( CoreGUIUtils.createItem( Material.BOOK, "&pNext Page" ), 51, () -> {
                 staff.closeInventory();
-                NewAltsListGUI newGui = new NewAltsListGUI( staff, target, page + 1, this.sort );
+                NewAltsListGUI newGui = new NewAltsListGUI( staff, target.getPlayer(), page + 1, this.sort );
                 newGui.open();
             } ) );
         }
     }
 
     private ItemStack getAltSkull( int index ) {
-        OfflinePlayer account = alts.get( index );
-        ItemStack skull = GUIUtils.getPlayerSkull( account );
+        NetunoPlayer account = alts.get( index );
+        ItemStack skull = GUIUtils.getPlayerSkull( account.getPlayer() );
 
         if ( punishedAlts.contains( account ) ) {
-            skull = CoreGUIUtils.setItemName( skull, "&c" + account.getName() );
+            skull = CoreGUIUtils.setItemName( skull, "&c" + account.getPlayer().getName() );
             ArrayList<String> lore = new ArrayList<>();
-            ArrayList<Punishment> accountPuns = Utils.getDatabase().getAllActivePunishments( account.getUniqueId().toString() );
+            //ArrayList<Punishment> accountPuns = Utils.getDatabase().getAllActivePunishments( account.getUniqueId().toString() );
+            List<NPunishment> accountPuns = PunishmentUtils.getActive( account.getPunishments() );
 
-            for ( Punishment pun : accountPuns ) {
-                if ( pun.getType().equalsIgnoreCase( "mute" ) && lore.contains( CoreUtils.getColored( "&8- &sMuted" ) ) == false ) {
+            for ( NPunishment pun : accountPuns ) {
+                if ( pun.getPunishmentType() == PunishmentType.MUTE && lore.contains( CoreUtils.getColored( "&8- &sMuted" ) ) == false ) {
                     lore.add( CoreUtils.getColored( "&8- &sMuted" ) );
                 }
-                else if ( pun.getType().equalsIgnoreCase( "ban" ) && lore.contains( CoreUtils.getColored( "&8- &sBanned" ) ) == false ) {
+                else if ( pun.getPunishmentType() == PunishmentType.BAN && lore.contains( CoreUtils.getColored( "&8- &sBanned" ) ) == false ) {
                     lore.add( CoreUtils.getColored( "&8- &sBanned" ) );
                 }
-                else if ( pun.getType().equalsIgnoreCase( "ipmute" ) && lore.contains( CoreUtils.getColored( "&8- &sIP Muted" ) ) == false ) {
+                else if ( pun.getPunishmentType() == PunishmentType.IPMUTE && lore.contains( CoreUtils.getColored( "&8- &sIP Muted" ) ) == false ) {
                     lore.add( CoreUtils.getColored( "&8- &sIP Muted" ) );
                 }
-                else if ( pun.getType().equalsIgnoreCase( "ipban" ) && lore.contains( CoreUtils.getColored( "&8- &sIP Banned" ) ) == false ) {
+                else if ( pun.getPunishmentType() == PunishmentType.IPBAN && lore.contains( CoreUtils.getColored( "&8- &sIP Banned" ) ) == false ) {
                     lore.add( CoreUtils.getColored( "&8- &sIP Banned" ) );
                 }
             }
+
             skull = CoreGUIUtils.setItemLore( skull, lore );
             skull.addUnsafeEnchantment( Enchantment.PROTECTION_ENVIRONMENTAL, 1 );
             SkullMeta meta = ( SkullMeta ) skull.getItemMeta();
             meta.addItemFlags( ItemFlag.HIDE_ENCHANTS );
             skull.setItemMeta( meta );
         }
-        else { skull = CoreGUIUtils.setItemName( skull, "&s" + account.getName() ); }
+        else { skull = CoreGUIUtils.setItemName( skull, "&s" + account.getPlayer().getName() ); }
 
         return skull;
     }
@@ -198,24 +207,24 @@ public class NewAltsListGUI {
     private void sort() {
         if ( sort == SortBy.ALPHABETICAL ) {
             alts = alts.stream()
-                    .filter( ( alt ) -> ( alt.getName() != null ) )
-                    .sorted( Comparator.comparing( OfflinePlayer::getName ) )
+                    .filter(  alt -> alt.getPlayer().getName() != null )
+                    .sorted( ( a1, a2 ) -> a1.getPlayer().getName().compareToIgnoreCase( a2.getPlayer().getName() ) )
                     .collect( Collectors.toList() );
         }
 
         else if ( sort == SortBy.FIRST_DATE || sort == SortBy.LAST_DATE ) {
             alts = alts.stream()
-                    .filter( ( alt ) -> ( alt.getName() != null ) )
+                    .filter( ( alt ) -> ( alt.getPlayer().getName() != null ) )
                     .sorted( ( a1, a2 ) -> ( int ) (
-                            sort == SortBy.FIRST_DATE ? ( a1.getFirstPlayed() - a2.getFirstPlayed() )
-                                    : ( a2.getFirstPlayed() - a1.getFirstPlayed() )
+                            sort == SortBy.FIRST_DATE ? ( a1.getPlayer().getFirstPlayed() - a2.getPlayer().getFirstPlayed() )
+                                    : ( a2.getPlayer().getFirstPlayed() - a1.getPlayer().getFirstPlayed() )
                     ) )
                     .collect( Collectors.toList() );
         }
 
         else if ( sort == SortBy.FIRST_PUNISHED || sort == SortBy.LAST_PUNISHED ) {
             alts = alts.stream()
-                    .filter( ( alt ) -> ( alt.getName() != null ) )
+                    .filter( ( alt ) -> ( alt.getPlayer().getName() != null ) )
                     .sorted( ( a1, a2 ) -> (
                             sort == SortBy.FIRST_PUNISHED ?
                                     ( punishedAlts.contains( a1 ) == punishedAlts.contains( a2 ) ? 0 :
