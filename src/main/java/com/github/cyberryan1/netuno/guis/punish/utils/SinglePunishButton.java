@@ -102,18 +102,19 @@ public class SinglePunishButton {
 
             else {
                 pun.setPunishmentType( PunishmentType.fromString( this.punishTypeAfter ) );
-                pun.setActive( pun.getPunishmentType().hasNoLength() == false );
-                if ( pun.isActive() ) {
+                pun.setActive( false );
+                if ( pun.getPunishmentType().hasNoLength() == false ) {
                     NDuration length = TimeUtils.durationFromUnformatted( this.startingTime );
                     if ( this.autoscale ) {
                         length = TimeUtils.getScaledDuration(
                                 length,
                                 2,
-                                this.previousPunCount + 1 - this.punishAfter
+                                this.previousPunCount - this.punishAfter + 1
                         );
                     }
 
                     pun.setLength( length.timestamp() );
+                    pun.setActive( true );
                 }
             }
         }
@@ -126,10 +127,11 @@ public class SinglePunishButton {
                 length = TimeUtils.getScaledDuration(
                         length,
                         2,
-                        this.previousPunCount + 1 - this.punishAfter
+                        this.previousPunCount - this.punishAfter + 1
                 );
             }
             pun.setLength( length.timestamp() );
+            pun.setActive( true );
         }
 
         staff.playSound( staff.getLocation(), Sound.ENTITY_ENDER_EYE_DEATH, 10, 1 );
