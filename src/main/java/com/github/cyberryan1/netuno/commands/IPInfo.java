@@ -23,6 +23,7 @@ public class IPInfo extends CyberCommand {
                 Settings.PERM_DENIED_MSG.string(),
                 "&8/&sipinfo &p(player)"
         );
+        register( true );
 
         demandPlayer( true );
         demandPermission( true );
