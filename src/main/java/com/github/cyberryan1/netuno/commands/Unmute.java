@@ -2,18 +2,21 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.cybercore.helpers.command.ArgType;
 import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
-import com.github.cyberryan1.netuno.classes.Punishment;
+import com.github.cyberryan1.netuno.api.ApiNetuno;
+import com.github.cyberryan1.netuno.api.models.players.NetunoPlayer;
+import com.github.cyberryan1.netuno.api.models.players.NetunoPlayerCache;
+import com.github.cyberryan1.netuno.models.NetunoPrePunishment;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.Time;
-import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
+import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
+import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Unmute extends CyberCommand {
 
@@ -40,40 +43,33 @@ public class Unmute extends CyberCommand {
     @Override
     // /unmute (player)
     public boolean execute( CommandSender sender, String args[] ) {
-        final OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
+        final NetunoPlayer target = NetunoPlayerCache.getOrLoad( Bukkit.getOfflinePlayer( args[0] ).getUniqueId().toString() );
 
-        ArrayList<Punishment> punishments = Utils.getDatabase().getPunishment( target.getUniqueId().toString(), "mute", true );
+        final List<NPunishment> punishments = target.getPunishments().stream()
+                .filter( pun -> pun.getPunishmentType() == PunishmentType.MUTE && pun.isActive() )
+                .collect( Collectors.toList() );
+
         if ( punishments.size() >= 1 ) {
-            for ( Punishment pun : punishments ) {
-                Utils.getDatabase().setPunishmentActive( pun.getID(), false );
+            for ( NPunishment pun : punishments ) {
+                pun.setActive( false );
+                ApiNetuno.getData().getNetunoPuns().updatePunishment( pun );
             }
 
-            Punishment unmutePun = new Punishment();
-            unmutePun.setPlayerUUID( target.getUniqueId().toString() );
-            unmutePun.setReason( "" );
-            unmutePun.setLength( -1L );
-            unmutePun.setDate( Time.getCurrentTimestamp() );
-            unmutePun.setType( "Unmute" );
-            unmutePun.setActive( false );
+            NetunoPrePunishment pun = new NetunoPrePunishment();
+            pun.setPlayer( target.getPlayer() );
+            pun.setPunishmentType( PunishmentType.UNMUTE );
+            pun.setTimestamp( TimeUtils.getCurrentTimestamp() );
+            pun.setReason( "" );
+            pun.setLength( 0 );
 
-            unmutePun.setStaffUUID( "CONSOLE" );
-            if ( sender instanceof Player ) {
-                Player staff = ( Player ) sender;
-                unmutePun.setStaffUUID( staff.getUniqueId().toString() );
-            }
+            pun.setStaffUuid( "CONSOLE" );
+            if ( sender instanceof Player ) { pun.setStaff( ( Player ) sender ); }
 
-            Utils.getDatabase().addPunishment( unmutePun );
-            if ( target.isOnline() ) {
-                Player targetOnline = target.getPlayer();
-                Utils.sendPunishmentMsg( targetOnline, unmutePun );
-            }
-
-            Utils.doPublicPunBroadcast( unmutePun );
-            Utils.doStaffPunBroadcast( unmutePun );
+            pun.executePunishment();
         }
 
         else {
-            CommandErrors.sendNoPunishments( sender, target.getName(), "mute" );
+            CommandErrors.sendNoPunishments( sender, target.getPlayer().getName(), "mute" );
         }
 
         return true;
