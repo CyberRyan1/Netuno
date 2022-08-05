@@ -56,7 +56,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
         CoreUtils.logInfo( "Getting all IPs and players from the database..." );
         try {
             Statement stmt = ConnectionManager.CONN.createStatement();
-            stmt.execute( "SELECT * FROM " + TABLE_NAME );
+            stmt.execute( "SELECT * FROM " + TABLE_NAME + ";" );
 
             ResultSet rs = stmt.getResultSet();
             while ( rs.next() ) {
@@ -84,6 +84,12 @@ public class NetunoAltsDatabase implements AltsDatabase {
             throw new RuntimeException( e );
         }
         CoreUtils.logInfo( "Successfully retrieved all IPs and players from the database" );
+
+        CoreUtils.logInfo( "Loading the alts of all online players..." );
+        for ( Player player : Bukkit.getOnlinePlayers() ) {
+            loadPlayer( player );
+        }
+        CoreUtils.logInfo( "Successfully loaded the alts of " + Bukkit.getOnlinePlayers().size() + " online players" );
 
         CoreUtils.logInfo( "Alt cache successfully initialized with a current size of " + cache.size() );
     }
@@ -252,7 +258,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
      */
     public void saveIp( int groupId, String ipAddress ) {
         try {
-            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + " (group, item, type) VALUES (?, ?, ?)" );
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + "(group, item, type) VALUES(?, ?, ?);" );
             ps.setInt( 1, groupId );
             ps.setString( 2, ipAddress );
             ps.setString( 3, "ip" );
@@ -271,7 +277,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
      */
     public void saveUuid( int groupId, String uuid ) {
         try {
-            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + " (group, item, type) VALUES (?, ?, ?)" );
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + "(group, item, type) VALUES(?, ?, ?);" );
             ps.setInt( 1, groupId );
             ps.setString( 2, uuid );
             ps.setString( 3, "uuid" );
