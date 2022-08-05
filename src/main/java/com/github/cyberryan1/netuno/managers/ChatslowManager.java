@@ -20,23 +20,12 @@ public class ChatslowManager {
         Bukkit.getScheduler().runTaskAsynchronously( CyberCore.getPlugin(), () -> {
             try {
                 PreparedStatement ps = ApiNetuno.getInstance().getConnectionManager()
-                        .getConn().prepareStatement( "INSERT INTO random(key, value) VALUES(?, ?) ON DUPLICATE KEY UPDATE key = ?;" );
-                ps.setString( 1, DATA_KEY );
-                ps.setString( 2, Settings.CHATSLOW_DEFAULT_VALUE.integer() + "" );
-                ps.setString( 3, DATA_KEY );
-
-                ps.addBatch();
-                ps.executeBatch();
-                ps.close();
-
-                ps = ApiNetuno.getInstance().getConnectionManager()
                         .getConn().prepareStatement( "SELECT * FROM random WHERE key = ?;" );
                 ps.setString( 1, DATA_KEY );
 
                 ResultSet rs = ps.executeQuery();
-                if ( rs.next() ) {
-                    slow = Integer.parseInt( rs.getString( "value" ) );
-                }
+                if ( rs.next() ) { slow = Integer.parseInt( rs.getString( "value" ) ); }
+                else { setSlow( Settings.CHATSLOW_DEFAULT_VALUE.integer() ); }
 
                 ps.close();
                 rs.close();
