@@ -92,7 +92,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      * be searched. If you want to search just the database, then
      * use the {@link #forceGetPunishments(OfflinePlayer)} method</i>
      * @param player The {@link OfflinePlayer} to search for.
-     * @return A {@link List < NPunishment >} of all punishments for the player.
+     * @return A {@link List <NPunishment>} of all punishments for the player.
      */
     public List<NPunishment> getPunishments( OfflinePlayer player ) {
         return getPunishments( player.getUniqueId().toString() );
@@ -106,7 +106,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      * be searched. If you want to search just the database, then
      * use the {@link #forceGetPunishments( String )} method</i>
      * @param playerUuid The player UUID to search for.
-     * @return A {@link List< NPunishment >} of all punishments for the player.
+     * @return A {@link List<NPunishment>} of all punishments for the player.
      */
     public List<NPunishment> getPunishments( String playerUuid ) {
         List<NPunishment> toReturn = NetunoPlayerCache.getOrLoad( playerUuid ).getPunishments();
