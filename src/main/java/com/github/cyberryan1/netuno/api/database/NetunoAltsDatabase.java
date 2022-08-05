@@ -60,7 +60,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
 
             ResultSet rs = stmt.getResultSet();
             while ( rs.next() ) {
-                final int groupId = rs.getInt( "group" );
+                final int groupId = rs.getInt( "id" );
                 final String item = rs.getString( "item" );
                 final String type = rs.getString( "type" );
 
