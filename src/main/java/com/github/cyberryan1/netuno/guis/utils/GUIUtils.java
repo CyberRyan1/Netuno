@@ -171,7 +171,7 @@ public class GUIUtils {
         CoreGUIUtils.addItemLore( sign, "&pType: &s" + pun.getPunishmentType().name().toUpperCase() );
 
         if ( pun.getPunishmentType().hasNoLength() == false ) {
-            CoreGUIUtils.addItemLore( sign, "&pLength: &s" + new NDuration( pun.getLength() ) );
+            CoreGUIUtils.addItemLore( sign, "&pLength: &s" + new NDuration( pun.getLength() ).formatted() );
         }
 
         if ( pun.getStaffUuid().equalsIgnoreCase( "console" ) ) { CoreGUIUtils.addItemLore( sign, "&pStaff: &sCONSOLE" ); }
