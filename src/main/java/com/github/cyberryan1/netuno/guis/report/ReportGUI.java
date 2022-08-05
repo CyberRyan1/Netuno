@@ -11,6 +11,7 @@ import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.models.reports.NReport;
+import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -88,6 +89,7 @@ public class ReportGUI implements Listener {
                 report.setPlayer( this.target );
                 report.setReporter( this.player );
                 report.setReason( reason );
+                report.setTimestamp( TimeUtils.getCurrentTimestamp() );
                 ApiNetuno.getData().getNetunoReports().addReport( report );
             }
         } ) );
