@@ -2,12 +2,12 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.cybercore.helpers.command.ArgType;
 import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
-import com.github.cyberryan1.cybercore.utils.VaultUtils;
-import com.github.cyberryan1.netuno.classes.PrePunishment;
+import com.github.cyberryan1.netuno.models.NetunoPrePunishment;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.Time;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
+import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -47,34 +47,25 @@ public class Ban extends CyberCommand {
     @Override
     // /ban (player) (length/forever) (reason)
     public boolean execute( CommandSender sender, String args[] ) {
-        if ( Time.isAllowableLength( args[1] ) == false ) {
+        if ( TimeUtils.isAllowableLength( args[1] ) == false ) {
             CommandErrors.sendInvalidTimespan( sender, args[1] );
             return true;
         }
 
         final OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
 
-        if ( Settings.BAN_MAX_TIME_ENABLED.bool() && VaultUtils.hasPerms( sender, Settings.BAN_MAX_TIME_BYPASS_PERMISSION.string() ) == false ) {
-            long maxBanLength = Time.getTimestampFromLength( Settings.BAN_MAX_TIME_LENGTH.string() );
-            long banLength = Time.getTimestampFromLength( args[1] );
-            if ( maxBanLength < banLength ) {
-                CommandErrors.sendBanLengthTooLarge( sender );
-                return true;
-            }
-        }
+        NetunoPrePunishment pun = new NetunoPrePunishment();
+        pun.setPlayer( target );
+        pun.setPunishmentType( PunishmentType.BAN );
+        pun.setTimestamp( TimeUtils.getCurrentTimestamp() );
+        pun.setReason( Utils.getRemainingArgs( args, 2 ) );
+        pun.setLength( TimeUtils.durationFromUnformatted( args[1] ).timestamp() );
+        pun.setActive( true );
 
-        PrePunishment pun = new PrePunishment(
-                target,
-                "Ban",
-                args[1],
-                combineArgs( args, 2 )
-        );
-
-        pun.setConsoleSender( true );
+        pun.setStaffUuid( "CONSOLE" );
         if ( sender instanceof Player ) {
             Player staff = ( Player ) sender;
             pun.setStaff( staff );
-            pun.setConsoleSender( false );
 
             if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
                 CommandErrors.sendPlayerCannotBePunished( staff, target.getName() );
