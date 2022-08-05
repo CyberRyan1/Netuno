@@ -2,10 +2,12 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.cybercore.helpers.command.ArgType;
 import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
-import com.github.cyberryan1.netuno.classes.PrePunishment;
+import com.github.cyberryan1.netuno.models.NetunoPrePunishment;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
+import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -40,17 +42,17 @@ public class Warn extends CyberCommand {
     public boolean execute( CommandSender sender, String args[] ) {
         final OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
 
-        PrePunishment pun = new PrePunishment(
-                target,
-                "Warn",
-                Utils.getRemainingArgs( args, 1 )
-        );
+        NetunoPrePunishment pun = new NetunoPrePunishment();
+        pun.setPlayer( target );
+        pun.setPunishmentType( PunishmentType.WARN );
+        pun.setTimestamp( TimeUtils.getCurrentTimestamp() );
+        pun.setReason( Utils.getRemainingArgs( args, 1 ) );
+        pun.setLength( 0 );
 
-        pun.setConsoleSender( true );
+        pun.setStaffUuid( "CONSOLE" );
         if ( sender instanceof Player ) {
             Player staff = ( Player ) sender;
             pun.setStaff( staff );
-            pun.setConsoleSender( false );
 
             if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
                 CommandErrors.sendPlayerCannotBePunished( staff, target.getName() );
