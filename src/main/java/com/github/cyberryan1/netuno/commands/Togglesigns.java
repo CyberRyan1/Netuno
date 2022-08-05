@@ -2,7 +2,7 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
-import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.api.database.SignNotifs;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -42,18 +42,18 @@ public class Togglesigns extends CyberCommand {
     // /togglesigns [enable/disable]
     public boolean execute( CommandSender sender, String args[] ) {
         final Player player = ( Player ) sender;
-        final boolean noSignNotifs = Utils.getDatabase().checkPlayerNoSignNotifs( player ); // true = no sign notifs is enabled
+        final boolean noSignNotifs = SignNotifs.playerHasNoSignNotifs( player.getUniqueId().toString() ); // true = no sign notifs is enabled
 
         if ( args.length == 0 ) {
             // currently has sign notifs enabled
             if ( noSignNotifs == false ) {
-                Utils.getDatabase().addPlayerNoSignNotifs( player );
+                SignNotifs.addPlayerNoSignNotifs( player.getUniqueId().toString() );
                 CoreUtils.sendMsg( player, "&cDisabled &ssign notifications" );
             }
 
             // currently has sign notifs disabled
             else {
-                Utils.getDatabase().removePlayerNoSignNotifs( player );
+                SignNotifs.removePlayerNoSignNotifs( player.getUniqueId().toString() );
                 CoreUtils.sendMsg( player, "&aEnabled &ssign notifications" );
             }
         }
@@ -64,7 +64,7 @@ public class Togglesigns extends CyberCommand {
             }
 
             else {
-                Utils.getDatabase().removePlayerNoSignNotifs( player );
+                SignNotifs.removePlayerNoSignNotifs( player.getUniqueId().toString() );
                 CoreUtils.sendMsg( player, "&aEnabled &ssign notifications" );
             }
         }
@@ -75,7 +75,7 @@ public class Togglesigns extends CyberCommand {
             }
 
             else {
-                Utils.getDatabase().addPlayerNoSignNotifs( player );
+                SignNotifs.addPlayerNoSignNotifs( player.getUniqueId().toString() );
                 CoreUtils.sendMsg( player, "&cDisabled &ssign notifications" );
             }
         }
