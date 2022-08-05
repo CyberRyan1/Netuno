@@ -184,8 +184,6 @@ public enum Settings {
     DATABASE_SQL_USERNAME( "database.sql.username", "string" ),
     DATABASE_SQL_PASSWORD( "database.sql.password", "string" ),
 
-    CACHE_EXPIRATION( "database.cache.expiration", "int" ),
-
     ;
 
     private String path;

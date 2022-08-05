@@ -938,14 +938,3 @@ database:
     username: root
     # Password to your database
     password: password
-
-  cache:
-    # Cache is always enabled and cannot be turned off.
-    # The cache is used to store data in memory for a certain period of time.
-    # The only data that is permanently stored in the cache is the data for alts.
-    # The data that is not permanently stored in the cache is the data for reports.
-
-    # The amount of time, in seconds, for the cache to store data before said data expires.
-    # The default value is 300 seconds (5 minutes).
-    # Note that setting this to a lower value will lead to the database being queried more often, which can lead to lag.
-    expiration: 300
