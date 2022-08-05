@@ -95,7 +95,6 @@ public class ConnectionManager implements DatabaseConnection {
         try {
             Statement stmt = CONN.createStatement();
             for ( SQLiteTables table : SQLiteTables.values() ) {
-                CoreUtils.logInfo( "Creating table: " + table.getSql() );
                 stmt.execute( table.getSql() );
             }
             stmt.close();
