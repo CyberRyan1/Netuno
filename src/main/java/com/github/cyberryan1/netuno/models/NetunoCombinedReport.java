@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class CombinedReport {
+public class NetunoCombinedReport {
 
     private OfflinePlayer target;
     private List<NReport> reports;
     private long mostRecentDate;
 
-    public CombinedReport( OfflinePlayer target ) {
+    public NetunoCombinedReport( OfflinePlayer target ) {
         this.target = target;
 
         reports = ApiNetuno.getData().getNetunoReports().getReports( target );

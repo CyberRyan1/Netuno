@@ -6,7 +6,7 @@ import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
 import com.github.cyberryan1.netuno.api.ApiNetuno;
 import com.github.cyberryan1.netuno.guis.utils.SortBy;
-import com.github.cyberryan1.netuno.models.CombinedReport;
+import com.github.cyberryan1.netuno.models.NetunoCombinedReport;
 import com.github.cyberryan1.netunoapi.models.reports.NReport;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -28,7 +28,7 @@ public class StaffAllReportsGUI implements Listener {
     private final SortBy sort;
 
     private List<NReport> allSingularReports;
-    private List<CombinedReport> combinedReports = new ArrayList<>();
+    private List<NetunoCombinedReport> combinedReports = new ArrayList<>();
 
     public StaffAllReportsGUI( Player staff, int page, SortBy sort ) {
         this.staff = staff;
@@ -142,10 +142,10 @@ public class StaffAllReportsGUI implements Listener {
         }
 
         for ( UUID uuid : playersReported ) {
-            combinedReports.add( new CombinedReport( Bukkit.getOfflinePlayer( uuid ) ) );
+            combinedReports.add( new NetunoCombinedReport( Bukkit.getOfflinePlayer( uuid ) ) );
         }
 
-        ArrayList<CombinedReport> tempReports = new ArrayList<>();
+        ArrayList<NetunoCombinedReport> tempReports = new ArrayList<>();
         final int START = 21 * ( page - 1 );
         final int END = 21 * page;
         for ( int index = START; index <= END; index++ ) {
