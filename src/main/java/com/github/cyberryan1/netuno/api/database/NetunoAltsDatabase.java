@@ -51,9 +51,9 @@ public class NetunoAltsDatabase implements AltsDatabase {
      * Initializes the cache
      */
     public void initializeCache() {
-        CoreUtils.logInfo( "Initializing the alts cache..." );
+        CoreUtils.logInfo( "[ALTS CACHE] Initializing the cache..." );
 
-        CoreUtils.logInfo( "Getting all IPs and players from the database..." );
+        CoreUtils.logInfo( "[ALTS CACHE] Getting all IPs and players from the database..." );
         try {
             Statement stmt = ConnectionManager.CONN.createStatement();
             stmt.execute( "SELECT * FROM " + TABLE_NAME + ";" );
@@ -83,15 +83,15 @@ public class NetunoAltsDatabase implements AltsDatabase {
         } catch ( SQLException e ) {
             throw new RuntimeException( e );
         }
-        CoreUtils.logInfo( "Successfully retrieved all IPs and players from the database" );
+        CoreUtils.logInfo( "[ALTS CACHE] Successfully retrieved all IPs and players from the database" );
 
-        CoreUtils.logInfo( "Loading the alts of all online players..." );
+        CoreUtils.logInfo( "[ALTS CACHE] Loading the alts of all online players..." );
         for ( Player player : Bukkit.getOnlinePlayers() ) {
             loadPlayer( player );
         }
-        CoreUtils.logInfo( "Successfully loaded the alts of " + Bukkit.getOnlinePlayers().size() + " online players" );
+        CoreUtils.logInfo( "[ALTS CACHE] Successfully loaded the alts of " + Bukkit.getOnlinePlayers().size() + " online players" );
 
-        CoreUtils.logInfo( "Alt cache successfully initialized with a current size of " + cache.size() );
+        CoreUtils.logInfo( "[ALTS CACHE] Alt cache successfully initialized with a current size of " + cache.size() );
     }
 
     /**
@@ -238,7 +238,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
      * it inserts all elements from the cache into the database.
      */
     public void saveAll() {
-        CoreUtils.logInfo( "Saving all elements in the alt cache to the database..." );
+        CoreUtils.logInfo( "[ALTS CACHE] Saving all elements in the alt cache to the database..." );
         deleteAll();
 
         int count = 0;
@@ -248,7 +248,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
             for ( String uuid : group.getAltUuids() ) { saveUuid( group.getGroupId(), uuid ); count++; }
         }
 
-        CoreUtils.logInfo( "Successfully saved " + cache.size()
+        CoreUtils.logInfo( "[ALTS CACHE] Successfully saved " + cache.size()
                 + " different alt groups containing " + count + " IPs and UUIDs to the database" );
     }
 

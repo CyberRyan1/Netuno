@@ -41,9 +41,9 @@ public class NetunoReportsDatabase implements ReportsDatabase {
      * Initializes the cache
      */
     public void initializeCache() {
-        CoreUtils.logInfo( "Initializing the reports cache..." );
+        CoreUtils.logInfo( "[REPORTS CACHE] Initializing the reports cache..." );
 
-        CoreUtils.logInfo( "Getting all reports from the database..." );
+        CoreUtils.logInfo( "[REPORTS CACHE] Getting all reports from the database..." );
         try {
             Statement stmt = ConnectionManager.CONN.createStatement();
             stmt.execute( "SELECT * FROM " + TABLE_NAME );
@@ -64,13 +64,13 @@ public class NetunoReportsDatabase implements ReportsDatabase {
         } catch ( SQLException | IOException | ClassNotFoundException e ) {
             throw new RuntimeException( e );
         }
-        CoreUtils.logInfo( "Successfully retrieved all reports from the database" );
+        CoreUtils.logInfo( "[REPORTS CACHE] Successfully retrieved all reports from the database" );
 
         EXPIRATION_TIME_SECS = Settings.REPORT_EXPIRE_TIME.integer() * 3600L; // converts hours to seconds
-        CoreUtils.logInfo( "Reports expiration time set to " + Settings.REPORT_EXPIRE_TIME.integer()
+        CoreUtils.logInfo( "[REPORTS CACHE] Reports expiration time set to " + Settings.REPORT_EXPIRE_TIME.integer()
                 + " hours (" + EXPIRATION_TIME_SECS + " seconds)" );
 
-        CoreUtils.logInfo( "Reports cache successfully initialized with a size of " + cache.size() );
+        CoreUtils.logInfo( "[REPORTS CACHE] Reports cache successfully initialized with a size of " + cache.size() );
     }
 
     /**
@@ -170,7 +170,7 @@ public class NetunoReportsDatabase implements ReportsDatabase {
      * it inserts all elements from the cache into the database.
      */
     public void saveAll() {
-        CoreUtils.logInfo( "Saving all reports in the cache to the database..." );
+        CoreUtils.logInfo( "[REPORTS CACHE] Saving all reports in the cache to the database..." );
         deleteAllReports();
 
         for ( NReport report : cache ) {
@@ -188,7 +188,7 @@ public class NetunoReportsDatabase implements ReportsDatabase {
             }
         }
 
-        CoreUtils.logInfo( "Successfully saved " + cache.size() + " reports to the database." );
+        CoreUtils.logInfo( "[REPORTS CACHE] Successfully saved " + cache.size() + " reports to the database." );
     }
 
     /**

@@ -29,9 +29,9 @@ public class ConnectionManager implements DatabaseConnection {
      */
     public void initializeSql( String host, int port, String database, String username, String password ) {
         IS_SQL = true;
-        CoreUtils.logInfo( "Initializing SQL..." );
+        CoreUtils.logInfo( "[SQL Init] Initializing SQL..." );
 
-        CoreUtils.logInfo( "Establishing the connection for SQL..." );
+        CoreUtils.logInfo( "[SQL Init] Establishing the connection for SQL..." );
         try {
             MysqlDataSource source = new MysqlDataSource();
             source.setServerName( host );
@@ -45,12 +45,12 @@ public class ConnectionManager implements DatabaseConnection {
                 throw new SQLException( "Could not establish a connection: connection is invalid" );
             }
         } catch ( SQLException e ) {
-            CoreUtils.logError( "SQL exception when establishing the connection. See error below for details" );
+            CoreUtils.logError( "[SQL Init] SQL exception when establishing the connection. See error below for details" );
             throw new RuntimeException( e );
         }
-        CoreUtils.logInfo( "Connection for SQL successfully established" );
+        CoreUtils.logInfo( "[SQL Init] Connection for SQL successfully established" );
 
-        CoreUtils.logInfo( "Creating tables for SQL..." );
+        CoreUtils.logInfo( "[SQL Init] Creating tables for SQL..." );
         try {
             Statement stmt = CONN.createStatement();
             for ( SQLTables table : SQLTables.values() ) {
@@ -58,12 +58,12 @@ public class ConnectionManager implements DatabaseConnection {
             }
             stmt.close();
         } catch ( SQLException e ) {
-            CoreUtils.logError( "SQL exception when creating tables. See error below for details" );
+            CoreUtils.logError( "[SQL Init] SQL exception when creating tables. See error below for details" );
             throw new RuntimeException( e );
         }
-        CoreUtils.logInfo( "Successfully created all tables for SQLite" );
+        CoreUtils.logInfo( "[SQL Init] Successfully created all tables for SQLite" );
 
-        CoreUtils.logInfo( "SQL initialization complete" );
+        CoreUtils.logInfo( "[SQL Init] SQL initialization complete" );
     }
 
     /**
@@ -72,26 +72,26 @@ public class ConnectionManager implements DatabaseConnection {
     public void initializeSqlite() {
         IS_SQLITE = true;
 
-        CoreUtils.logInfo( "Initializing SQLite..." );
+        CoreUtils.logInfo( "[SQLite Init] Initializing SQLite..." );
         String databaseName = CyberCore.getPlugin().getConfig().getString( "SQLite.Filename", "database" );
 
-        CoreUtils.logInfo( "Establishing the connection for SQLite..." );
+        CoreUtils.logInfo( "[SQLite Init] Establishing the connection for SQLite..." );
         try {
             File dataFolder = new File( CyberCore.getPlugin().getDataFolder(), databaseName + ".db" );
             Class.forName( "org.sqlite.JDBC" );
             CONN = DriverManager.getConnection( "jdbc:sqlite:" + dataFolder );
         } catch ( SQLException e ) {
-            CoreUtils.logError( "SQLite exception when establishing the connection. See error below for details" );
+            CoreUtils.logError( "[SQLite Init] SQLite exception when establishing the connection. See error below for details" );
             throw new RuntimeException( e );
         } catch ( ClassNotFoundException e ) {
-            CoreUtils.logError( "SQLite exception when establishing the connection" );
-            CoreUtils.logError( "A potential reason why this happened is because you don't have the SQLite JDBC library" );
-            CoreUtils.logError( "See error below for details" );
+            CoreUtils.logError( "[SQLite Init] SQLite exception when establishing the connection" );
+            CoreUtils.logError( "[SQLite Init] A potential reason why this happened is because you don't have the SQLite JDBC library" );
+            CoreUtils.logError( "[SQLite Init] See error below for details" );
             throw new RuntimeException( e );
         }
-        CoreUtils.logInfo( "Connection for SQLite successfully established" );
+        CoreUtils.logInfo( "[SQLite Init] Connection for SQLite successfully established" );
 
-        CoreUtils.logInfo( "Creating tables for SQLite..." );
+        CoreUtils.logInfo( "[SQLite Init] Creating tables for SQLite..." );
         try {
             Statement stmt = CONN.createStatement();
             for ( SQLiteTables table : SQLiteTables.values() ) {
@@ -100,12 +100,12 @@ public class ConnectionManager implements DatabaseConnection {
             }
             stmt.close();
         } catch ( SQLException e ) {
-            CoreUtils.logError( "SQLite exception when creating tables. See error below for details" );
+            CoreUtils.logError( "[SQLite Init] SQLite exception when creating tables. See error below for details" );
             throw new RuntimeException( e );
         }
-        CoreUtils.logInfo( "Successfully created all tables for SQLite" );
+        CoreUtils.logInfo( "[SQLite Init] Successfully created all tables for SQLite" );
 
-        CoreUtils.logInfo( "SQLite initialization complete" );
+        CoreUtils.logInfo( "[SQLite Init] SQLite initialization complete" );
     }
 
     /**
@@ -126,14 +126,14 @@ public class ConnectionManager implements DatabaseConnection {
      * Closes the connection to the database
      */
     public void closeConnection() {
-        CoreUtils.logInfo( "Closing the connection to the database..." );
+        CoreUtils.logInfo( "[Connection Close] Closing the connection to the database..." );
         try {
             CONN.close();
         } catch ( SQLException e ) {
-            CoreUtils.logError( "An error occurred when closing the database connection. See error below for details" );
+            CoreUtils.logError( "[Connection Close] An error occurred when closing the database connection. See error below for details" );
             throw new RuntimeException( e );
         }
-        CoreUtils.logInfo( "Successfully closed the database connection" );
+        CoreUtils.logInfo( "[Connection Close] Successfully closed the database connection" );
     }
 
     /**
