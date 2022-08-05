@@ -4,9 +4,12 @@ import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.helpers.gui.GUI;
 import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
-import com.github.cyberryan1.netuno.classes.Punishment;
+import com.github.cyberryan1.netuno.api.models.players.NetunoPlayer;
+import com.github.cyberryan1.netuno.api.models.players.NetunoPlayerCache;
+import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netuno.guis.utils.SortBy;
-import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netuno.guis.utils.Sorter;
+import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -14,28 +17,27 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NewHistoryListGUI {
 
     private final GUI gui;
-    private final OfflinePlayer target;
+    private final NetunoPlayer target;
     private final Player staff;
     private final int page;
     private final SortBy sort;
-    private final List<Punishment> history = new ArrayList<>();
+    private final List<NPunishment> history;
 
     public NewHistoryListGUI( OfflinePlayer target, Player staff, int page, SortBy sort ) {
-        this.target = target;
+        this.target = NetunoPlayerCache.getOrLoad( target.getUniqueId().toString() );
         this.staff = staff;
         this.page = page;
         this.sort = sort;
 
-        history.addAll( Utils.getDatabase().getAllPunishments( target.getUniqueId().toString() ) );
-        Punishment.sortPuns( history, sort );
+        this.history = this.target.getPunishments();
+        Sorter.sortPuns( this.history, sort );
 
-        gui = new GUI( "&p" + target.getName() + "&s's History", 6, CoreGUIUtils.getBackgroundGlass() );
+        this.gui = new GUI( "&p" + target.getName() + "&s's History", 6, CoreGUIUtils.getBackgroundGlass() );
         insertItems();
     }
 
@@ -66,9 +68,9 @@ public class NewHistoryListGUI {
 
                 else {
                     final int finalPunIndex = punIndex;
-                    item = new GUIItem( history.get( punIndex ).getPunishmentAsItem(), guiIndex, () -> {
-                        int punId = history.get( finalPunIndex ).getID();
-                        NewHistoryEditGUI editGui = new NewHistoryEditGUI( target, staff, punId );
+                    item = new GUIItem( GUIUtils.getPunishmentItem( history.get( punIndex ) ), guiIndex, () -> {
+                        int punId = history.get( finalPunIndex ).getId();
+                        NewHistoryEditGUI editGui = new NewHistoryEditGUI( target.getPlayer(), staff, punId );
                         editGui.open();
                         staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
                     } );
@@ -93,7 +95,7 @@ public class NewHistoryListGUI {
             else if ( sort == SortBy.FIRST_ACTIVE ) { next = SortBy.LAST_ACTIVE; }
             else if ( sort == SortBy.LAST_ACTIVE ) { next = SortBy.FIRST_DATE; }
 
-            NewHistoryListGUI listGui = new NewHistoryListGUI( target, staff, page, next );
+            NewHistoryListGUI listGui = new NewHistoryListGUI( target.getPlayer(), staff, page, next );
             listGui.open();
             staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
         } ) );
@@ -101,7 +103,7 @@ public class NewHistoryListGUI {
         // Previous Page Item
         if ( page >= 2 ) {
             gui.setItem( 47, new GUIItem( Material.BOOK, "&pPrevious Page", 47, () -> {
-                NewHistoryListGUI listGui = new NewHistoryListGUI( target, staff, page - 1, sort );
+                NewHistoryListGUI listGui = new NewHistoryListGUI( target.getPlayer(), staff, page - 1, sort );
                 listGui.open();
                 staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
             } ) );
@@ -111,7 +113,7 @@ public class NewHistoryListGUI {
         int maxPages = ( int ) Math.ceil( history.size() / 21.0 );
         if ( page < maxPages ) {
             gui.setItem( 51, new GUIItem( Material.BOOK, "&pNext Page", 51, () -> {
-                NewHistoryListGUI listGui = new NewHistoryListGUI( target, staff, page + 1, sort );
+                NewHistoryListGUI listGui = new NewHistoryListGUI( target.getPlayer(), staff, page + 1, sort );
                 listGui.open();
                 staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
             } ) );
