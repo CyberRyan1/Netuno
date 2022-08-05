@@ -2,10 +2,14 @@ package com.github.cyberryan1.netuno.guis.punish.utils;
 
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
-import com.github.cyberryan1.netuno.classes.PrePunishment;
-import com.github.cyberryan1.netuno.utils.Time;
+import com.github.cyberryan1.netuno.api.models.players.NetunoPlayer;
+import com.github.cyberryan1.netuno.api.models.players.NetunoPlayerCache;
+import com.github.cyberryan1.netuno.classes.NetunoPrePunishment;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
+import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
+import com.github.cyberryan1.netunoapi.models.time.NDuration;
+import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
@@ -23,6 +27,7 @@ public class SinglePunishButton {
     private Material itemMaterial;
     private String startingTime;
     private boolean autoscale;
+    private int previousPunCount;
 
     // Below variables only apply to warns
     //      Will be -1 or null if not applicable
@@ -68,66 +73,67 @@ public class SinglePunishButton {
     public String getPunishTypeAfter() { return this.punishTypeAfter; }
 
     public ItemStack getItem( OfflinePlayer target ) {
-        final int punCount = Utils.getDatabase().getGUIPunCount( target, this.guiType, this.buttonType );
-        ItemStack toReturn = CoreGUIUtils.createItem( this.itemMaterial, replaceVariables( this.itemName, target, punCount ) );
-        return CoreGUIUtils.setItemLore( toReturn, replaceVariables( this.itemLore, target, punCount ) );
+        NetunoPlayer nPlayer = NetunoPlayerCache.getOrLoad( target.getUniqueId().toString() );
+        this.previousPunCount = ( int ) nPlayer.getPunishments().stream()
+                .filter( pun -> pun.isGuiPun() && pun.getReason().contains( CoreUtils.removeColor( CoreUtils.getColored( this.itemName ) ) ) )
+                .count();
+
+        ItemStack toReturn = CoreGUIUtils.createItem( this.itemMaterial, replaceVariables( this.itemName, target, this.previousPunCount ) );
+        return CoreGUIUtils.setItemLore( toReturn, replaceVariables( this.itemLore, target, this.previousPunCount ) );
     }
 
-    public void executePunish( Player staff, OfflinePlayer target ) {
-        final int punCount = Utils.getDatabase().getGUIPunCount( target, this.guiType, this.buttonType );
+    public void executePunish( Player staff, OfflinePlayer player ) {
+        final NetunoPrePunishment pun = new NetunoPrePunishment();
+        pun.setPlayer( player );
+        pun.setStaff( staff );
+        pun.setTimestamp( TimeUtils.getCurrentTimestamp() );
+        pun.setGuiPun( true );
+
+        String reason = CoreUtils.removeColor( CoreUtils.getColored( this.itemName ) );
+        String offense = " (" + Utils.formatIntIntoAmountString( this.previousPunCount + 1 ) + " Offense)";
+        pun.setReason( reason + offense );
 
         if ( this.guiType.equalsIgnoreCase( "warn" ) ) {
-            String reason = CoreUtils.removeColor( CoreUtils.getColored( this.itemName ) );
-            String offense = " (" + Utils.formatIntIntoAmountString( punCount + 1 ) + " Offense)";
-
-            if ( punCount < this.punishAfter ) {
-                PrePunishment pun = new PrePunishment(
-                        target,
-                        "warn",
-                        reason + offense
-                );
-                pun.setStaff( staff );
-                pun.executePunishment();
+            if ( this.previousPunCount < this.punishAfter ) {
+                pun.setActive( false );
+                pun.setPunishmentType( PunishmentType.WARN );
+                pun.setLength( 0 );
             }
 
             else {
-                PrePunishment pun = new PrePunishment(
-                        target,
-                        this.punishTypeAfter,
-                        reason + offense
-                );
-                pun.setStaff( staff );
+                pun.setPunishmentType( PunishmentType.valueOf( this.punishTypeAfter ) );
+                pun.setActive( pun.getPunishmentType().hasNoLength() == false );
+                if ( pun.isActive() ) {
+                    NDuration length = TimeUtils.durationFromUnformatted( this.startingTime );
+                    if ( this.autoscale ) {
+                        length = TimeUtils.getScaledDuration(
+                                length,
+                                2,
+                                this.previousPunCount + 1 - this.punishAfter
+                        );
+                    }
 
-                if ( this.punishTypeAfter.equalsIgnoreCase( "kick" ) == false ) {
-                    String length = this.startingTime;
-                    if ( this.autoscale ) { length = Time.getScaledTime( this.startingTime, punCount + 1 - this.punishAfter ); }
-                    pun.setLength( length );
+                    pun.setLength( length.timestamp() );
                 }
-
-                pun.executePunishment();
             }
         }
 
         else {
-            String reason = CoreUtils.removeColor( CoreUtils.getColored( this.itemName ) );
-            String offense = " (" + Utils.formatIntIntoAmountString( punCount + 1 ) + " Offense)";
+            pun.setPunishmentType( PunishmentType.valueOf( this.guiType ) );
 
-            PrePunishment pun = new PrePunishment(
-                    target,
-                    this.guiType,
-                    reason + offense
-            );
-            pun.setStaff( staff );
-
-            String length = this.startingTime;
-            if ( this.autoscale ) { length = Time.getScaledTime( this.startingTime, punCount + 1 ); }
-            pun.setLength( length );
-
-            pun.executePunishment();
+            NDuration length = TimeUtils.durationFromUnformatted( this.startingTime );
+            if ( this.autoscale ) {
+                length = TimeUtils.getScaledDuration(
+                        length,
+                        2,
+                        this.previousPunCount + 1 - this.punishAfter
+                );
+            }
+            pun.setLength( length.timestamp() );
         }
 
         staff.playSound( staff.getLocation(), Sound.ENTITY_ENDER_EYE_DEATH, 10, 1 );
-        Utils.getDatabase().addGUIPun( target, this.guiType, this.buttonType, Utils.getDatabase().getMostRecentPunishmentID() );
+        pun.executePunishment();
     }
 
     private String replaceVariables( String str, OfflinePlayer target, int punCount ) {
