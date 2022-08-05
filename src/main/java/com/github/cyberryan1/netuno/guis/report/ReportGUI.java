@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.guis.report;
 
+import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.helpers.gui.GUI;
 import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
@@ -122,7 +123,9 @@ public class ReportGUI implements Listener {
             Utils.logError( "CONFIG ERROR >> The list \"report.reasons\" is greater than the limit, 18. Reports will not work until this is fixed." );
         }
         else {
-            gui.openInventory( player );
+            Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
+                gui.openInventory( this.player );
+            } );
         }
     }
 }
