@@ -193,6 +193,10 @@ public enum Settings {
         this.value = new SettingsEntry( path, valueType );
     }
 
+    public void reload() {
+        this.value = new SettingsEntry( this.path, this.value.getValueType() );
+    }
+
     public String getPath() { return this.path; }
 
     public SettingsEntry getValue() { return this.value; }
