@@ -33,17 +33,14 @@ public class GUIUtils {
         else { CoreItemUtils.addItemLore( sign, "&pStaff: &s" + pun.getStaff().getName() ); }
 
         if ( pun.getPunishmentType().isIpPunishment() ) {
-            String originalPlayerName = pun.getPlayer().getName();
             int originalPunishmentId = pun.getId();
 
             if ( pun.getReferencePunId() != -1 ) {
                 NPunishment originalPunishment = ApiNetuno.getData().getNetunoPuns().getPunishment( pun.getReferencePunId() );
-                originalPlayerName = originalPunishment.getPlayer().getName();
                 originalPunishmentId = originalPunishment.getId();
             }
 
-            CoreItemUtils.addItemLore( sign, "&pOriginal Player: &s" + originalPlayerName
-                    + " &p(Pun ID: &s" + originalPunishmentId + "&p)" );
+            CoreItemUtils.addItemLore( sign, "&pOriginal Punishment ID: &s" + originalPunishmentId );
         }
 
         if ( pun.getPunishmentType().hasNoReason() == false ) {
