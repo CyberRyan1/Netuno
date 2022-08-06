@@ -112,7 +112,7 @@
         <dependency>
             <groupId>com.github.cyberryan1</groupId>
             <artifactId>CyberCore</artifactId>
-            <version>1.4.9</version>
+            <version>1.4.11</version>
         </dependency>
         <dependency>
             <groupId>com.github.SkriptLang</groupId>
@@ -128,7 +128,7 @@
         <dependency>
             <groupId>com.github.cyberryan1</groupId>
             <artifactId>NetunoAPI</artifactId>
-            <version>0.0.8.37</version>
+            <version>0.0.8.38</version>
         </dependency>
     </dependencies>
 </project>
