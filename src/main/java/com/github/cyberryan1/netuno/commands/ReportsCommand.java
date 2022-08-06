@@ -12,9 +12,9 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class Reports extends CyberCommand {
+public class ReportsCommand extends CyberCommand {
 
-    public Reports() {
+    public ReportsCommand() {
         super(
                 "reports",
                 Settings.REPORT_VIEW_PERMISSION.string(),

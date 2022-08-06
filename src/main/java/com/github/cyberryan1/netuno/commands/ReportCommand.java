@@ -11,9 +11,9 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class Report extends CyberCommand {
+public class ReportCommand extends CyberCommand {
 
-    public Report() {
+    public ReportCommand() {
         super(
                 "report",
                 Settings.REPORT_PERMISSION.string(),

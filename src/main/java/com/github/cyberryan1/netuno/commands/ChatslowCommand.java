@@ -10,9 +10,9 @@ import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
-public class Chatslow extends CyberCommand {
+public class ChatslowCommand extends CyberCommand {
 
-    public Chatslow() {
+    public ChatslowCommand() {
         super(
                 "chatslow",
                 Settings.CHATSLOW_PERMISSION.string(),

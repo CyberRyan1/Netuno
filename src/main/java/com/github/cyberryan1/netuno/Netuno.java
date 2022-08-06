@@ -90,26 +90,26 @@ public final class Netuno extends JavaPlugin {
     }
 
     private void registerCommands() {
-        registeredCommands.add( new NetunoCmd() );
-        registeredCommands.add( new Ban() );
-        registeredCommands.add( new Chatslow() );
-        registeredCommands.add( new Clearchat() );
-        registeredCommands.add( new History() );
-        registeredCommands.add( new IPBan() );
-        registeredCommands.add( new IPInfo() );
-        registeredCommands.add( new IPMute() );
-        registeredCommands.add( new Kick() );
-        registeredCommands.add( new Mute() );
-        registeredCommands.add( new Mutechat() );
-        registeredCommands.add( new Punish() );
-        registeredCommands.add( new Report() );
-        registeredCommands.add( new Reports() );
-        registeredCommands.add( new Togglesigns() );
-        registeredCommands.add( new Unban() );
-        registeredCommands.add( new UnIPBan() );
-        registeredCommands.add( new UnIPMute() );
-        registeredCommands.add( new Unmute() );
-        registeredCommands.add( new Warn() );
+        registeredCommands.add( new NetunoCommand() );
+        registeredCommands.add( new BanCommand() );
+        registeredCommands.add( new ChatslowCommand() );
+        registeredCommands.add( new ClearchatCommand() );
+        registeredCommands.add( new HistorySupercommand() );
+        registeredCommands.add( new IpBanCommand() );
+        registeredCommands.add( new IpInfoCommand() );
+        registeredCommands.add( new IpMuteCommand() );
+        registeredCommands.add( new KickCommand() );
+        registeredCommands.add( new MuteCommand() );
+        registeredCommands.add( new MutechatCommand() );
+        registeredCommands.add( new PunishCommand() );
+        registeredCommands.add( new ReportCommand() );
+        registeredCommands.add( new ReportsCommand() );
+        registeredCommands.add( new TogglesignsCommand() );
+        registeredCommands.add( new UnbanCommand() );
+        registeredCommands.add( new UnIpbanCommand() );
+        registeredCommands.add( new UnIpmuteCommand() );
+        registeredCommands.add( new UnmuteCommand() );
+        registeredCommands.add( new WarnCommand() );
     }
 
     private void registerEvents() {

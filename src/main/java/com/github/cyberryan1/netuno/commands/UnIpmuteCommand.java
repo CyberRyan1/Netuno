@@ -18,14 +18,14 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Unmute extends CyberCommand {
+public class UnIpmuteCommand extends CyberCommand {
 
-    public Unmute() {
+    public UnIpmuteCommand() {
         super(
-                "unmute",
-                Settings.UNMUTE_PERMISSION.string(),
+                "unipmute",
+                Settings.UNIPMUTE_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&sunmute &p(player)"
+                "&8/&sunipmute &p(player)"
         );
         register( true );
 
@@ -41,12 +41,11 @@ public class Unmute extends CyberCommand {
     }
 
     @Override
-    // /unmute (player)
     public boolean execute( CommandSender sender, String args[] ) {
         final NetunoPlayer target = NetunoPlayerCache.getOrLoad( Bukkit.getOfflinePlayer( args[0] ).getUniqueId().toString() );
 
         final List<NPunishment> punishments = target.getPunishments().stream()
-                .filter( pun -> pun.getPunishmentType() == PunishmentType.MUTE && pun.isActive() )
+                .filter( pun -> pun.getPunishmentType() == PunishmentType.IPMUTE && pun.isActive() )
                 .collect( Collectors.toList() );
 
         if ( punishments.size() >= 1 ) {
@@ -57,7 +56,7 @@ public class Unmute extends CyberCommand {
 
             NetunoPrePunishment pun = new NetunoPrePunishment();
             pun.setPlayer( target.getPlayer() );
-            pun.setPunishmentType( PunishmentType.UNMUTE );
+            pun.setPunishmentType( PunishmentType.UNIPMUTE );
             pun.setTimestamp( TimeUtils.getCurrentTimestamp() );
             pun.setReason( "" );
             pun.setLength( 0 );
@@ -69,7 +68,7 @@ public class Unmute extends CyberCommand {
         }
 
         else {
-            CommandErrors.sendNoPunishments( sender, target.getPlayer().getName(), "mute" );
+            CommandErrors.sendNoPunishments( sender, target.getPlayer().getName(), "ipmute" );
         }
 
         return true;

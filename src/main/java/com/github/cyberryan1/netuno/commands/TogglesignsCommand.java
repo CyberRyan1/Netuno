@@ -9,9 +9,9 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class Togglesigns extends CyberCommand {
+public class TogglesignsCommand extends CyberCommand {
 
-    public Togglesigns() {
+    public TogglesignsCommand() {
         super(
                 "togglesigns",
                 Settings.SIGN_NOTIFS_PERMISSION.string(),

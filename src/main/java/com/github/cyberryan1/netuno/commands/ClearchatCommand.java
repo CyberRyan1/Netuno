@@ -10,9 +10,9 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class Clearchat extends CyberCommand {
+public class ClearchatCommand extends CyberCommand {
 
-    public Clearchat() {
+    public ClearchatCommand() {
         super(
                 "clearchat",
                 Settings.CLEARCHAT_PERMISSION.string(),

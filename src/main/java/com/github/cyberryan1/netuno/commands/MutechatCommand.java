@@ -11,12 +11,12 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class Mutechat extends CyberCommand {
+public class MutechatCommand extends CyberCommand {
 
     private final String CHAT_MUTE_ENABLE;
     private final String CHAT_MUTE_DISABLE;
 
-    public Mutechat() {
+    public MutechatCommand() {
         super(
                 "mutechat",
                 Settings.MUTECHAT_PERMISSION.string(),

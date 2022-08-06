@@ -18,9 +18,9 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class UnIPBan extends CyberCommand {
+public class UnIpbanCommand extends CyberCommand {
 
-    public UnIPBan() {
+    public UnIpbanCommand() {
         super(
                 "unipban",
                 Settings.UNIPBAN_PERMISSION.string(),

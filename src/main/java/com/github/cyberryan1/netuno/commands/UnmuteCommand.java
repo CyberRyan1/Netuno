@@ -18,14 +18,14 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Unban extends CyberCommand {
+public class UnmuteCommand extends CyberCommand {
 
-    public Unban() {
+    public UnmuteCommand() {
         super(
-                "unban",
-                Settings.UNBAN_PERMISSION.string(),
+                "unmute",
+                Settings.UNMUTE_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&sunban &p(player)"
+                "&8/&sunmute &p(player)"
         );
         register( true );
 
@@ -41,11 +41,12 @@ public class Unban extends CyberCommand {
     }
 
     @Override
+    // /unmute (player)
     public boolean execute( CommandSender sender, String args[] ) {
         final NetunoPlayer target = NetunoPlayerCache.getOrLoad( Bukkit.getOfflinePlayer( args[0] ).getUniqueId().toString() );
 
         final List<NPunishment> punishments = target.getPunishments().stream()
-                .filter( pun -> pun.getPunishmentType() == PunishmentType.BAN && pun.isActive() )
+                .filter( pun -> pun.getPunishmentType() == PunishmentType.MUTE && pun.isActive() )
                 .collect( Collectors.toList() );
 
         if ( punishments.size() >= 1 ) {
@@ -56,7 +57,7 @@ public class Unban extends CyberCommand {
 
             NetunoPrePunishment pun = new NetunoPrePunishment();
             pun.setPlayer( target.getPlayer() );
-            pun.setPunishmentType( PunishmentType.UNBAN );
+            pun.setPunishmentType( PunishmentType.UNMUTE );
             pun.setTimestamp( TimeUtils.getCurrentTimestamp() );
             pun.setReason( "" );
             pun.setLength( 0 );
@@ -68,7 +69,7 @@ public class Unban extends CyberCommand {
         }
 
         else {
-            CommandErrors.sendNoPunishments( sender, target.getPlayer().getName(), "ban" );
+            CommandErrors.sendNoPunishments( sender, target.getPlayer().getName(), "mute" );
         }
 
         return true;

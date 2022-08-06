@@ -15,52 +15,39 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class Mute extends CyberCommand {
+public class KickCommand extends CyberCommand {
 
-    public Mute() {
+    public KickCommand() {
         super(
-                "mute",
-                Settings.MUTE_PERMISSION.string(),
+                "kick",
+                Settings.KICK_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&smute &p(player) (length/forever) (reason) [-s]"
+                "&8/&skick &p(player) (reason) [-s]"
         );
         register( true );
 
         demandPermission( true );
-        setMinArgs( 3 );
-        setArgType( 0, ArgType.OFFLINE_PLAYER );
+        setMinArgs( 2 );
+        setArgType( 0, ArgType.ONLINE_PLAYER );
         setAsync( true );
     }
 
     @Override
     public List<String> tabComplete( CommandSender sender, String[] args ) {
-        if ( permissionsAllowed( sender ) ) {
-            List<String> suggestionTimes = List.of( "15m", "1h", "12h", "1d", "3d", "1w", "forever" );
-            if ( args.length <= 1 ) { return List.of(); }
-            else if ( args[1].length() == 0 ) { return suggestionTimes; }
-            else if ( args.length == 2 ) { return matchArgs( suggestionTimes, args[1] ); }
-        }
-
         return List.of();
     }
 
     @Override
-    // /mute (player) (length/forever) (reason)
+    // /kick (player) (reason)
     public boolean execute( CommandSender sender, String args[] ) {
-        if ( TimeUtils.isAllowableLength( args[1] ) == false ) {
-            CommandErrors.sendInvalidTimespan( sender, args[1] );
-            return true;
-        }
-
         final OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
 
         NetunoPrePunishment pun = new NetunoPrePunishment();
         pun.setPlayer( target );
-        pun.setPunishmentType( PunishmentType.MUTE );
+        pun.setPunishmentType( PunishmentType.KICK );
         pun.setTimestamp( TimeUtils.getCurrentTimestamp() );
-        pun.setReason( Utils.getRemainingArgs( args, 2 ) );
-        pun.setLength( TimeUtils.durationFromUnformatted( args[1] ).timestamp() );
-        pun.setActive( true );
+        pun.setReason( Utils.getRemainingArgs( args, 1 ) );
+        pun.setLength( 0 );
 
         pun.setStaffUuid( "CONSOLE" );
         if ( sender instanceof Player ) {

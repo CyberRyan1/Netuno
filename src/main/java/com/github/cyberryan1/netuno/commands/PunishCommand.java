@@ -13,9 +13,9 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class Punish extends CyberCommand {
+public class PunishCommand extends CyberCommand {
 
-    public Punish() {
+    public PunishCommand() {
         super(
                 "punish",
                 Settings.PUNISH_PERMISSION.string(),

@@ -11,12 +11,12 @@ import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
-public class NetunoCmd extends CyberCommand {
+public class NetunoCommand extends CyberCommand {
 
     private final String COMMAND_ORDER[] = { "help", "punish", "warn", "clearchat", "kick", "mute", "unmute", "history", "ban", "unban",
             "ipinfo", "ipmute", "unipmute", "ipban", "unipban", "report", "reports", "togglesigns", "reload" };
 
-    public NetunoCmd() {
+    public NetunoCommand() {
         super(
                 "netuno",
                 Settings.STAFF_PERMISSION.string(),

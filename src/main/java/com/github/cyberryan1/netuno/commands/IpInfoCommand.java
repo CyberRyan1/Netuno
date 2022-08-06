@@ -14,9 +14,9 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class IPInfo extends CyberCommand {
+public class IpInfoCommand extends CyberCommand {
 
-    public IPInfo() {
+    public IpInfoCommand() {
         super(
                 "ipinfo",
                 Settings.IPINFO_PERMISSION.string(),

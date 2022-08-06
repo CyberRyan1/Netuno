@@ -15,20 +15,20 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class Kick extends CyberCommand {
+public class WarnCommand extends CyberCommand {
 
-    public Kick() {
+    public WarnCommand() {
         super(
-                "kick",
-                Settings.KICK_PERMISSION.string(),
+                "warn",
+                Settings.WARN_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&skick &p(player) (reason) [-s]"
+                "&8/&swarn &p(player) (reason) [-s]"
         );
         register( true );
 
         demandPermission( true );
         setMinArgs( 2 );
-        setArgType( 0, ArgType.ONLINE_PLAYER );
+        setArgType( 0, ArgType.OFFLINE_PLAYER );
         setAsync( true );
     }
 
@@ -38,13 +38,13 @@ public class Kick extends CyberCommand {
     }
 
     @Override
-    // /kick (player) (reason)
+    // /warn (player) (reason)
     public boolean execute( CommandSender sender, String args[] ) {
         final OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
 
         NetunoPrePunishment pun = new NetunoPrePunishment();
         pun.setPlayer( target );
-        pun.setPunishmentType( PunishmentType.KICK );
+        pun.setPunishmentType( PunishmentType.WARN );
         pun.setTimestamp( TimeUtils.getCurrentTimestamp() );
         pun.setReason( Utils.getRemainingArgs( args, 1 ) );
         pun.setLength( 0 );

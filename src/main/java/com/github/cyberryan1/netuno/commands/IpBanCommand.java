@@ -15,14 +15,14 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class IPMute extends CyberCommand {
+public class IpBanCommand extends CyberCommand {
 
-    public IPMute() {
+    public IpBanCommand() {
         super(
-                "ipmute",
-                Settings.IPMUTE_PERMISSION.string(),
+                "ipban",
+                Settings.IPBAN_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&sipmute &p(player) (length/forever) (reason) [-s]"
+                "&8/&sipban &p(player) (length/forever) (reason) [-s]"
         );
         register( true );
 
@@ -45,7 +45,7 @@ public class IPMute extends CyberCommand {
     }
 
     @Override
-    // /ipmute (player) (length/forever) (reason)
+    // /ipban (player) (length/forever) (reason)
     public boolean execute( CommandSender sender, String args[] ) {
         if ( TimeUtils.isAllowableLength( args[1] ) == false ) {
             CommandErrors.sendInvalidTimespan( sender, args[1] );
@@ -56,7 +56,7 @@ public class IPMute extends CyberCommand {
 
         NetunoPrePunishment pun = new NetunoPrePunishment();
         pun.setPlayer( target );
-        pun.setPunishmentType( PunishmentType.IPMUTE );
+        pun.setPunishmentType( PunishmentType.IPBAN );
         pun.setTimestamp( TimeUtils.getCurrentTimestamp() );
         pun.setReason( Utils.getRemainingArgs( args, 2 ) );
         pun.setLength( TimeUtils.durationFromUnformatted( args[1] ).timestamp() );

@@ -8,9 +8,9 @@ import org.bukkit.command.CommandSender;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class History extends CyberSupercommand {
+public class HistorySupercommand extends CyberSupercommand {
 
-    public History() {
+    public HistorySupercommand() {
         super( 
                 "history",
                 Settings.HISTORY_PERMISSION.string(),
