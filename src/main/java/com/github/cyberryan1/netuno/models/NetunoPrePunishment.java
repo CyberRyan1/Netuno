@@ -226,7 +226,7 @@ public class NetunoPrePunishment extends NPunishment {
             }
 
             String permission = Settings.STAFF_PERMISSION.string();
-            if ( silent ) { permission = Settings.SILENT_PREFIX.string(); }
+            if ( silent ) { permission = Settings.SILENT_PERMISSION.string(); }
             for ( Player player : Bukkit.getOnlinePlayers() ) {
                 if ( VaultUtils.hasPerms( player, permission ) ) {
                     Utils.sendAnyMsg( player, staffBroadcast );
