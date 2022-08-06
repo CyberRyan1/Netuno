@@ -94,6 +94,29 @@ public class NetunoPlayerCache implements NPlayerLoader {
     }
 
     /**
+     * Forcefully loads a player into the cache and returns
+     * them.
+     * @param uuid The uuid to get
+     * @return The loaded user, or null if not found
+     */
+    public static NetunoPlayer forceLoad( String uuid ) {
+        cache.removeIf( player -> player.getPlayer().getUniqueId().toString().equals( uuid ) );
+        NetunoPlayer toReturn = new NetunoPlayer( uuid );
+        cache.add( toReturn );
+        return toReturn;
+    }
+
+    /**
+     * Forcefully loads a player into the cache and returns
+     * them.
+     * @param player The player to get
+     * @return The loaded user, or null if not found
+     */
+    public static NetunoPlayer forceLoad( OfflinePlayer player ) {
+        return forceLoad( player.getUniqueId().toString() );
+    }
+
+    /**
      * @return The cache of loaded players.
      */
     public static List<NetunoPlayer> getCache() {
