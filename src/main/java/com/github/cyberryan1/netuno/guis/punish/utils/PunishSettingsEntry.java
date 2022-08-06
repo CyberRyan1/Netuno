@@ -6,6 +6,7 @@ import org.bukkit.Material;
 public class PunishSettingsEntry {
 
     private String path;
+    private String valueType;
     private int i;
     private String str;
     private float f;
@@ -18,6 +19,7 @@ public class PunishSettingsEntry {
 
     public PunishSettingsEntry( String path, String valueType ) {
         this.path = path;
+        this.valueType = valueType;
 
         switch ( valueType.toLowerCase() ) {
             case "int" -> this.i = YMLUtils.getConfig().getInt( path );
@@ -33,6 +35,8 @@ public class PunishSettingsEntry {
     }
 
     public String getPath() { return this.path; }
+
+    public String getValueType() { return this.valueType; }
 
     public int integer() { return this.i; }
 
