@@ -5,9 +5,15 @@ public enum SQLTables {
     PUNS_TABLE( "CREATE TABLE IF NOT EXISTS punishments (" +
             "id INTEGER PRIMARY KEY AUTO_INCREMENT," +
             "player VARCHAR(42) NOT NULL," +
-            "data BLOB NOT NULL," +
-            "guipun VARCHAR(8) NOT NULL," +
-            "reference INTEGER NOT NULL );"
+            "staff VARCHAR(42) NOT NULL," +
+            "type INTEGER NOT NULL," +
+            "length INTEGER NOT NULL," +
+            "timestamp INTEGER NOT NULL," +
+            "reason TEXT NOT NULL," +
+            "active INTEGER NOT NULL," +
+            "guipun INTEGER NOT NULL," +
+            "reference INTEGER NOT NULL," +
+            "notif INTEGER NOT NULL );"
     ),
 
     ALTS_TABLE( "CREATE TABLE IF NOT EXISTS alts (" +
@@ -17,9 +23,11 @@ public enum SQLTables {
     ),
 
     REPORTS_TABLE( "CREATE TABLE IF NOT EXISTS reports (" +
-            "id INTEGER PRIMARY KEY," +
-            "player VARCHAR(42) STRING NOT NULL," +
-            "data BLOB NOT NULL );"
+            "id INTEGER PRIMARY KEY" +
+            "player VARCHAR(42) NOT NULL," +
+            "reporter VARCHAR(42) NOT NULL," +
+            "timestamp INTEGER NOT NULL," +
+            "reason TEXT NOT NULL );"
     ),
 
     RANDOM_TABLE( "CREATE TABLE IF NOT EXISTS random (" +
