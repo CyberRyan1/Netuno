@@ -34,6 +34,20 @@ public class NetunoPrePunishment extends NPunishment {
         super.setReason( reason );
     }
 
+    public NetunoPrePunishment( NPunishment pun ) {
+        this.id = pun.getId();
+        this.punishmentType = pun.getPunishmentType();
+        this.playerUuid = pun.getPlayerUuid();
+        this.staffUuid = pun.getStaffUuid();
+        this.length = pun.getLength();
+        this.timestamp = pun.getTimestamp();
+        this.reason = pun.getReason();
+        this.referencePunId = pun.getReferencePunId();
+        this.guiPun = pun.isGuiPun();
+        this.active = pun.isActive();
+        this.needsNotifSent = pun.needsNotifSent();
+    }
+
     public NetunoPrePunishment() {}
 
     public void executePunishment() {
@@ -66,7 +80,7 @@ public class NetunoPrePunishment extends NPunishment {
 
             for ( OfflinePlayer alt : ApiNetuno.getData().getNetunoAlts().getAlts( super.getPlayer() ) ) {
                 if ( alt.getUniqueId().equals( super.getPlayer().getUniqueId() ) == false ) {
-                    NetunoPrePunishment altPun = ( NetunoPrePunishment ) this.copy();
+                    NetunoPrePunishment altPun = new NetunoPrePunishment( this );
                     altPun.setId( -1 );
                     altPun.setPlayer( alt );
                     altPun.setReferencePunId( recentlyAddedId );
