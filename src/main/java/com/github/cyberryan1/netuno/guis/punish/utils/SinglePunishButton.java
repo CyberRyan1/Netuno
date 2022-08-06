@@ -2,12 +2,15 @@ package com.github.cyberryan1.netuno.guis.punish.utils;
 
 import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
+import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.managers.StaffPlayerPunishManager;
 import com.github.cyberryan1.netuno.models.NetunoPrePunishment;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
+import com.github.cyberryan1.netunoapi.models.players.NPlayer;
+import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
 import com.github.cyberryan1.netunoapi.models.time.NDuration;
 import com.github.cyberryan1.netunoapi.utils.TimeUtils;
@@ -124,15 +127,60 @@ public class SinglePunishButton {
         else {
             pun.setPunishmentType( PunishmentType.fromString( this.guiType ) );
 
-            NDuration length = TimeUtils.durationFromUnformatted( this.startingTime );
-            if ( this.autoscale ) {
-                length = TimeUtils.getScaledDuration(
-                        length,
-                        2,
-                        this.previousPunCount - this.punishAfter + 1
-                );
+            if ( pun.getPunishmentType() == PunishmentType.IPMUTE && this.startingTime.equalsIgnoreCase( "HIGHEST_MUTED_ALT" ) ) {
+                NPunishment highest = null;
+                for ( OfflinePlayer alt : ApiNetuno.getData().getNetunoAlts().getAlts( pun.getPlayer() ) ) {
+                    NPlayer nAlt = NetunoPlayerCache.getOrLoad( alt );
+                    for ( NPunishment altPun : nAlt.getPunishments() ) {
+                        if ( altPun.isActive() && altPun.getPunishmentType() == PunishmentType.MUTE ) {
+                            if ( highest == null || altPun.getLength() > highest.getLength() ) {
+                                highest = altPun;
+                            }
+                        }
+                    }
+                }
+
+                if ( highest == null ) {
+                    CoreUtils.sendMsg( staff, "&p" + pun.getPlayer().getName() + "&7 has no alts with active mutes" );
+                    return;
+                }
+
+                pun.setLength( highest.getLength() );
             }
-            pun.setLength( length.timestamp() );
+
+            else if ( pun.getPunishmentType() == PunishmentType.IPBAN && this.startingTime.equalsIgnoreCase( "HIGHEST_BANNED_ALT" )  ) {
+                NPunishment highest = null;
+                for ( OfflinePlayer alt : ApiNetuno.getData().getNetunoAlts().getAlts( pun.getPlayer() ) ) {
+                    NPlayer nAlt = NetunoPlayerCache.getOrLoad( alt );
+                    for ( NPunishment altPun : nAlt.getPunishments() ) {
+                        if ( altPun.isActive() && altPun.getPunishmentType() == PunishmentType.BAN ) {
+                            if ( highest == null || altPun.getLength() > highest.getLength() ) {
+                                highest = altPun;
+                            }
+                        }
+                    }
+                }
+
+                if ( highest == null ) {
+                    CoreUtils.sendMsg( staff, "&p" + pun.getPlayer().getName() + "&7 has no alts with active bans" );
+                    return;
+                }
+
+                pun.setLength( highest.getLength() );
+            }
+
+            else {
+                NDuration length = TimeUtils.durationFromUnformatted( this.startingTime );
+                if ( this.autoscale ) {
+                    length = TimeUtils.getScaledDuration(
+                            length,
+                            2,
+                            this.previousPunCount - this.punishAfter + 1
+                    );
+                }
+                pun.setLength( length.timestamp() );
+            }
+
             pun.setActive( true );
         }
 
