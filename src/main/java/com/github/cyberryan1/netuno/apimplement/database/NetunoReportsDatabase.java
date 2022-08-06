@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 public class NetunoReportsDatabase implements ReportsDatabase {
 
     private final String TABLE_NAME = "reports";
-    private final String TYPE_LIST = "(id, player, data)";
-    private final String UNKNOWN_LIST = "(?, ?, ?)";
+    private final String TYPE_LIST = "(id, player, reporter, timestamp, reason)";
+    private final String UNKNOWN_LIST = "(?, ?, ?, ?, ?)";
 
     private long EXPIRATION_TIME_SECS = -1L;
 
