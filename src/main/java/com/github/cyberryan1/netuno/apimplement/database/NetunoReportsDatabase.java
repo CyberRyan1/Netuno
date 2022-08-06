@@ -9,7 +9,6 @@ import com.github.cyberryan1.netunoapi.models.reports.NReportData;
 import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.OfflinePlayer;
 
-import java.io.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,18 +47,19 @@ public class NetunoReportsDatabase implements ReportsDatabase {
 
             ResultSet rs = stmt.getResultSet();
             while ( rs.next() ) {
-                byte bytes[] = ( byte[] ) rs.getObject( "data" );
-                ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
-                ObjectInputStream ois = new ObjectInputStream( bais );
-                NReportData data = ( NReportData ) ois.readObject();
-
-                data.setId( rs.getInt( "id" ) );
+                NReportData data = new NReportData(
+                        rs.getInt( "id" ),
+                        rs.getString( "player" ),
+                        rs.getString( "reporter" ),
+                        rs.getLong( "timestamp" ),
+                        rs.getString( "reason" )
+                );
                 cache.add( ( NReport ) data );
             }
 
             rs.close();
             stmt.close();
-        } catch ( SQLException | IOException | ClassNotFoundException e ) {
+        } catch ( SQLException e ) {
             throw new RuntimeException( e );
         }
         CoreUtils.logInfo( "[REPORTS CACHE] Successfully retrieved all reports from the database" );
@@ -173,22 +173,18 @@ public class NetunoReportsDatabase implements ReportsDatabase {
 
         for ( NReport report : cache ) {
             try {
-                PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + " (id, player, data) VALUES (?, ?, ?);" );
+                PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + " "
+                        + TYPE_LIST + " VALUES " + UNKNOWN_LIST + ";" );
                 ps.setInt( 1, report.getId() );
                 ps.setString( 2, report.getPlayerUuid() );
-
-                NReportData data = report;
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ObjectOutputStream oos = new ObjectOutputStream( baos );
-                oos.writeObject( data );
-                byte bytes[] = baos.toByteArray();
-                ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
-                ps.setBinaryStream( 3, bais, bytes.length );
+                ps.setString( 3, report.getReporterUuid() );
+                ps.setLong( 4, report.getTimestamp() );
+                ps.setString( 5, report.getReason() );
 
                 ps.addBatch();
                 ps.executeBatch();
                 ps.close();
-            } catch ( SQLException | IOException e ) {
+            } catch ( SQLException e ) {
                 throw new RuntimeException( e );
             }
         }
