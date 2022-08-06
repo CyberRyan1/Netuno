@@ -5,7 +5,6 @@ import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.database.ReportsDatabase;
 import com.github.cyberryan1.netunoapi.exceptions.ClassIncompleteException;
 import com.github.cyberryan1.netunoapi.models.reports.NReport;
-import com.github.cyberryan1.netunoapi.models.reports.NReportData;
 import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.OfflinePlayer;
 
@@ -47,7 +46,7 @@ public class NetunoReportsDatabase implements ReportsDatabase {
 
             ResultSet rs = stmt.getResultSet();
             while ( rs.next() ) {
-                NReportData data = new NReportData(
+                NReport data = new NReport(
                         rs.getInt( "id" ),
                         rs.getString( "player" ),
                         rs.getString( "reporter" ),
