@@ -183,8 +183,12 @@ public class NetunoAltsDatabase implements AltsDatabase {
 
             NAltGroup group = new NAltGroup();
             group.setGroupId( getNextAvailableId() );
-            group.getAltUuids().addAll( altsSearched );
-            group.getIpList().addAll( ipsSearched );
+            for ( String a : altsSearched ) {
+                if ( group.containsAlt( a ) == false ) { group.addAlt( a ); }
+            }
+            for ( String i : ipsSearched ) {
+                if ( group.containsIp( i ) == false ) { group.addIp( i ); }
+            }
 
             cache.removeIf( groupsSearched::contains );
             cache.add( group );
