@@ -3,7 +3,6 @@ package com.github.cyberryan1.netuno.apimplement.database;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netunoapi.database.PunishmentsDatabase;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
-import com.github.cyberryan1.netunoapi.models.punishments.NPunishmentData;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
 import org.bukkit.OfflinePlayer;
 
@@ -30,7 +29,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
 
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME +
-                    "player, staff, type, length, timestamp, reason, active, guipun, reference, notif) " +
+                    "(player, staff, type, length, timestamp, reason, active, guipun, reference, notif) " +
                     "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);" );
 
             ps.setString( 1, punishment.getPlayerUuid() ); // player
@@ -61,11 +60,11 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      * @return The punishment with the ID, or null if not found.
      */
     public NPunishment getPunishment( int punId ) {
-        NPunishmentData data = NetunoPlayerCache.getCachedPunishments().stream()
+        NPunishment data = NetunoPlayerCache.getCachedPunishments().stream()
                 .filter( pun -> pun.getId() == punId )
                 .findFirst()
                 .orElse( null );
-        if ( data != null ) { return ( NPunishment ) data; }
+        if ( data != null ) { return data; }
 
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE id = ?;" );
@@ -73,7 +72,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
 
             ResultSet rs = ps.executeQuery();
             if ( rs.next() ) {
-                data = new NPunishmentData(
+                data = new NPunishment(
                         rs.getInt( "id" ),
                         PunishmentType.fromIndex( rs.getInt( "type" ) ),
                         rs.getString( "player" ),
@@ -94,7 +93,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
             throw new RuntimeException( e );
         }
 
-        return ( data == null ) ? ( null ) : ( ( NPunishment ) data );
+        return data;
     }
 
     /**
@@ -156,7 +155,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
 
             ResultSet rs = ps.executeQuery();
             while ( rs.next() ) {
-                NPunishmentData data = new NPunishmentData(
+                NPunishment data = new NPunishment(
                         rs.getInt( "id" ),
                         PunishmentType.fromIndex( rs.getInt( "type" ) ),
                         rs.getString( "player" ),
@@ -169,7 +168,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
                         rs.getInt( "reference" ),
                         rs.getInt( "notif" ) == 1
                 );
-                toReturn.add( ( NPunishment ) data );
+                toReturn.add( data );
             }
 
             ps.close();
@@ -216,7 +215,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
 
             ResultSet rs = ps.executeQuery();
             while ( rs.next() ) {
-                NPunishmentData data = new NPunishmentData(
+                NPunishment data = new NPunishment(
                         rs.getInt( "id" ),
                         PunishmentType.fromIndex( rs.getInt( "type" ) ),
                         rs.getString( "player" ),
@@ -229,7 +228,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
                         rs.getInt( "reference" ),
                         rs.getInt( "notif" ) == 1
                 );
-                toReturn.add( ( NPunishment ) data );
+                toReturn.add( data );
             }
 
             ps.close();
