@@ -2,7 +2,6 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.cybercore.helpers.command.ArgType;
 import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
-import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.models.NetunoPrePunishment;
@@ -49,11 +48,6 @@ public class UnIpbanCommand extends CyberCommand {
                 .collect( Collectors.toList() );
 
         if ( punishments.size() >= 1 ) {
-            for ( NPunishment pun : punishments ) {
-                pun.setActive( false );
-                ApiNetuno.getData().getNetunoPuns().updatePunishment( pun );
-            }
-
             NetunoPrePunishment pun = new NetunoPrePunishment();
             pun.setPlayer( target.getPlayer() );
             pun.setPunishmentType( PunishmentType.UNIPBAN );

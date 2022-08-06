@@ -3,6 +3,8 @@ package com.github.cyberryan1.netuno.models;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
+import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
+import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
@@ -11,6 +13,9 @@ import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class NetunoPrePunishment extends NPunishment {
 
@@ -45,7 +50,7 @@ public class NetunoPrePunishment extends NPunishment {
         ApiNetuno.getData().getNetunoPuns().addPunishment( this );
 
         // Iterating through all the player's alts and adding reference punishments to them
-        //      Only if the punishment is an IP punishment
+        //      Only if the punishment is an IP punishment.
         if ( super.getPunishmentType().isIpPunishment() ) {
             final int recentlyAddedId = ApiNetuno.getData().getNetunoPuns().getRecentlyInsertedId();
             if ( recentlyAddedId == -1 ) {
@@ -61,6 +66,54 @@ public class NetunoPrePunishment extends NPunishment {
                     altPun.setPlayer( alt );
                     altPun.setReferencePunId( recentlyAddedId );
                     altPun.executeAsReferencePunishment();
+                }
+            }
+        }
+
+        // For unpunishments (unmutes, unbans, etc.), need to go through all their previous punishments of
+        //      the unpunishment type and set them as unactive.
+        if ( super.getPunishmentType().hasNoReason() ) {
+            final PunishmentType unpunType = switch ( super.getPunishmentType() ) {
+                case UNMUTE -> PunishmentType.MUTE;
+                case UNBAN -> PunishmentType.BAN;
+                case UNIPMUTE -> PunishmentType.IPMUTE;
+                case UNIPBAN -> PunishmentType.IPBAN;
+                default -> null;
+            };
+
+            if ( unpunType == null ) {
+                CoreUtils.logError( "An error occurred while trying to get the unpunishment type, "
+                        + "so the previous punishments could not be set as unactive." );
+                return;
+            }
+
+            // If the punishment type is an un IP punishment, need to go through all the player's alts
+            //      Otherwise just need to go through the player
+            if ( super.getPunishmentType().isIpPunishment() == false ) {
+                final NetunoPlayer nPlayer = NetunoPlayerCache.forceLoad( super.getPlayer() );
+                final List<NPunishment> puns = nPlayer.getPunishments().stream()
+                        .filter( playerPun -> playerPun.getPunishmentType() == unpunType && playerPun.isActive() )
+                        .collect( Collectors.toList() );
+                nPlayer.getPunishments().removeAll( puns );
+
+                puns.forEach( playerPun -> {
+                    playerPun.setActive( false );
+                    ApiNetuno.getData().getNetunoPuns().updatePunishment( playerPun );
+                } );
+            }
+
+            else {
+                for ( OfflinePlayer alt : ApiNetuno.getData().getNetunoAlts().getAlts( super.getPlayer() ) ) {
+                    final NetunoPlayer nAlt = NetunoPlayerCache.forceLoad( alt );
+                    final List<NPunishment> puns = nAlt.getPunishments().stream()
+                            .filter( playerPun -> playerPun.getPunishmentType() == unpunType && playerPun.isActive() )
+                            .collect( Collectors.toList() );
+                    nAlt.getPunishments().removeAll( puns );
+
+                    puns.forEach( playerPun -> {
+                        playerPun.setActive( false );
+                        ApiNetuno.getData().getNetunoPuns().updatePunishment( playerPun );
+                    } );
                 }
             }
         }
