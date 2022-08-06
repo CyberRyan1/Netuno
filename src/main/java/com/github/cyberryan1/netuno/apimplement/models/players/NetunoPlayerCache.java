@@ -68,7 +68,7 @@ public class NetunoPlayerCache implements NPlayerLoader {
 
     /**
      * Gets a loaded user from the cache if they are present,
-     * otherwise returns null.
+     * otherwise loads them into the cache and returns it.
      * @param uuid The uuid to get
      * @return The loaded user, or null if not found
      */
@@ -81,6 +81,16 @@ public class NetunoPlayerCache implements NPlayerLoader {
         toReturn = new NetunoPlayer( uuid );
         cache.add( toReturn );
         return toReturn;
+    }
+
+    /**
+     * Gets a loaded user from the cache if they are present,
+     * otherwise loads them into the cache and returns it.
+     * @param player The player to get
+     * @return The loaded user, or null if not found
+     */
+    public static NetunoPlayer getOrLoad( OfflinePlayer player ) {
+        return getOrLoad( player.getUniqueId().toString() );
     }
 
     /**
