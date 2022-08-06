@@ -7,6 +7,7 @@ import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
 import com.github.cyberryan1.netuno.guis.punish.utils.MultiPunishButton;
 import com.github.cyberryan1.netuno.guis.punish.utils.PunishSettings;
 import com.github.cyberryan1.netuno.guis.punish.utils.SinglePunishButton;
+import com.github.cyberryan1.netuno.managers.StaffPlayerPunishManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -45,8 +46,8 @@ public class BanPunishGUI {
                 final SinglePunishButton button = buttons.get( buttonIndex );
                 if ( button.getItemMaterial().isAir() == false ) {
                     GUIItem item = new GUIItem( button.getItem( this.target ), guiIndex, () -> {
-                        staff.closeInventory();
                         button.executePunish( this.staff, this.target );
+                        staff.closeInventory();
                     } );
 
                     this.gui.setItem( guiIndex, item );
@@ -66,6 +67,10 @@ public class BanPunishGUI {
     public void open() {
         Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
             gui.openInventory( this.staff );
+            gui.setCloseAction( () -> {
+                StaffPlayerPunishManager.removeStaff( this.staff );
+                StaffPlayerPunishManager.removeStaffSilent( this.staff );
+            } );
         } );
     }
 }

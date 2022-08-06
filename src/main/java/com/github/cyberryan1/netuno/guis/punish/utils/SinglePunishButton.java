@@ -4,6 +4,7 @@ import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
+import com.github.cyberryan1.netuno.managers.StaffPlayerPunishManager;
 import com.github.cyberryan1.netuno.models.NetunoPrePunishment;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
@@ -90,8 +91,9 @@ public class SinglePunishButton {
         pun.setGuiPun( true );
 
         String reason = CoreUtils.removeColor( CoreUtils.getColored( this.itemName ) );
-        String offense = " (" + Utils.formatIntIntoAmountString( this.previousPunCount + 1 ) + " Offense)";
-        pun.setReason( reason + offense );
+        reason += " (" + Utils.formatIntIntoAmountString( this.previousPunCount + 1 ) + " Offense)";
+        if ( StaffPlayerPunishManager.getStaffSilent( staff ) ) { reason += " -s"; }
+        pun.setReason( reason );
 
         if ( this.guiType.equalsIgnoreCase( "warn" ) ) {
             if ( this.previousPunCount < this.punishAfter ) {

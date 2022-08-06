@@ -520,6 +520,28 @@ main-gui:
     name: "&7&lALTS &7[TARGET]"
     item: LIGHT_GRAY_CONCRETE
 
+  # Silent button
+  # This makes the next punishment executed through the GUI silent
+  # Will only show up if the player has permission to execute silent punishments
+  # IMPORTANT NOTE: setting these all to the same item material will cause errors
+  silent:
+    index: 22
+
+    # The item that shows when the player has enabled the silent button
+    true:
+      name: "&7&lSILENT &aEnabled"
+      item: LIME_DYE
+
+    # The item that shows when the player has disabled the silent button
+    false:
+      name: "&7&lSILENT &cDisabled"
+      item: RED_DYE
+
+    # The item that shows when the player doesn't have permission to execute silent punishments
+    no-perms:
+      name: "&7"
+      item: GRAY_STAINED_GLASS_PANE
+
   # Warn button
   warn:
     index: 21

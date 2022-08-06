@@ -11,6 +11,7 @@ import java.util.HashMap;
 public class StaffPlayerPunishManager {
 
     private final static HashMap<Player, OfflinePlayer> punishing = new HashMap<>();
+    private final static HashMap<Player, Boolean> silentPunish = new HashMap<>();
 
     public static Player getWhoPunishingTarget( OfflinePlayer target ) {
         if ( punishing.containsValue( target ) == false ) { return null; }
@@ -33,5 +34,25 @@ public class StaffPlayerPunishManager {
 
     public static void removeStaff( Player staff ) {
         punishing.remove( staff );
+    }
+
+    public static boolean containsStaff( Player staff ) {
+        return punishing.containsKey( staff );
+    }
+
+    public static void setStaffSilent( Player staff, boolean silent ) {
+        silentPunish.put( staff, silent );
+    }
+
+    public static boolean getStaffSilent( Player staff ) {
+        return silentPunish.get( staff );
+    }
+
+    public static void removeStaffSilent( Player staff ) {
+        silentPunish.remove( staff );
+    }
+
+    public static boolean containsStaffSilent( Player staff ) {
+        return silentPunish.containsKey( staff );
     }
 }

@@ -16,7 +16,13 @@ public class MainButton {
     public MainButton( String buttonName ) {
         this.buttonName = buttonName;
 
-        this.index = YMLUtils.getConfig().getInt( "main-gui." + buttonName + ".index" );
+        if ( buttonName.toLowerCase().contains( "silent" ) ) {
+            this.index = YMLUtils.getConfig().getInt( "main-gui.silent.index" );
+        }
+        else {
+            this.index = YMLUtils.getConfig().getInt( "main-gui." + buttonName + ".index" );
+        }
+
         this.material = null;
         if ( buttonName.equalsIgnoreCase( "skull" ) == false ) {
             this.name = YMLUtils.getConfig().getStr( "main-gui." + buttonName + ".name" );
