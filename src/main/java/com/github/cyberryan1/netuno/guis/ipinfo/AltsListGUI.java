@@ -9,7 +9,7 @@ import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
-import com.github.cyberryan1.netuno.guis.history.NewHistoryListGUI;
+import com.github.cyberryan1.netuno.guis.history.HistoryListGUI;
 import com.github.cyberryan1.netuno.guis.utils.SortBy;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class NewAltsListGUI {
+public class AltsListGUI {
 
     private final GUI gui;
     private final Player staff;
@@ -38,7 +38,7 @@ public class NewAltsListGUI {
     private List<NetunoPlayer> alts;
     private final List<NetunoPlayer> punishedAlts;
 
-    public NewAltsListGUI( Player staff, OfflinePlayer target, int page, SortBy sort ) {
+    public AltsListGUI( Player staff, OfflinePlayer target, int page, SortBy sort ) {
         this.staff = staff;
         this.target = NetunoPlayerCache.getOrLoad( target.getUniqueId().toString() );
         this.page = page;
@@ -56,7 +56,7 @@ public class NewAltsListGUI {
         insertItems();
     }
 
-    public NewAltsListGUI( Player staff, OfflinePlayer target, int page ) {
+    public AltsListGUI( Player staff, OfflinePlayer target, int page ) {
         this( staff, target, page, SortBy.ALPHABETICAL );
     }
 
@@ -84,7 +84,7 @@ public class NewAltsListGUI {
                     final int finalAltIndex = altIndex;
                     gui.setItem( guiIndex, new GUIItem( getAltSkull( altIndex ), guiIndex, () -> {
                         if ( punishedAlts.contains( alts.get( finalAltIndex ) ) ) {
-                            NewHistoryListGUI listGui = new NewHistoryListGUI( alts.get( finalAltIndex ).getPlayer(), staff, 1 );
+                            HistoryListGUI listGui = new HistoryListGUI( alts.get( finalAltIndex ).getPlayer(), staff, 1 );
                             listGui.open();
                             staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
                         }
@@ -101,7 +101,7 @@ public class NewAltsListGUI {
         // Sort Hopper
         gui.setItem( 40, new GUIItem( getSortHopper( this.sort ), 40, () -> {
             staff.closeInventory();
-            NewAltsListGUI newGui = new NewAltsListGUI( staff, target.getPlayer(), page, getNextSort( this.sort ) );
+            AltsListGUI newGui = new AltsListGUI( staff, target.getPlayer(), page, getNextSort( this.sort ) );
             newGui.open();
         } ) );
 
@@ -112,7 +112,7 @@ public class NewAltsListGUI {
         if ( page >= 2 ) {
             gui.setItem( 49, new GUIItem( Material.BOOK, "&pPrevious Page", 49, () -> {
                 staff.closeInventory();
-                NewAltsListGUI newGui = new NewAltsListGUI( staff, target.getPlayer(), page - 1, this.sort );
+                AltsListGUI newGui = new AltsListGUI( staff, target.getPlayer(), page - 1, this.sort );
                 newGui.open();
             } ) );
         }
@@ -122,7 +122,7 @@ public class NewAltsListGUI {
         if ( page < maxPage ) {
             gui.setItem( 51, new GUIItem( Material.BOOK, "&pNext Page", 51, () -> {
                 staff.closeInventory();
-                NewAltsListGUI newGui = new NewAltsListGUI( staff, target.getPlayer(), page + 1, this.sort );
+                AltsListGUI newGui = new AltsListGUI( staff, target.getPlayer(), page + 1, this.sort );
                 newGui.open();
             } ) );
         }

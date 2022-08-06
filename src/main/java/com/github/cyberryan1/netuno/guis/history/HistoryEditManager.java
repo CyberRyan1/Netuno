@@ -13,9 +13,9 @@ import java.util.Map;
 
 public class HistoryEditManager implements Listener {
 
-    private static Map<String, NewHistoryEditGUI> editing = new HashMap<>();
+    private static Map<String, HistoryEditGUI> editing = new HashMap<>();
 
-    public static void addEditing( Player player, NewHistoryEditGUI gui ) {
+    public static void addEditing( Player player, HistoryEditGUI gui ) {
         editing.put( player.getUniqueId().toString(), gui );
     }
 
@@ -53,7 +53,7 @@ public class HistoryEditManager implements Listener {
     @EventHandler( priority = EventPriority.LOW )
     public void onPlayerCommand( PlayerCommandPreprocessEvent event ) {
         if ( isEditing( event.getPlayer() ) == false ) { return; }
-        NewHistoryEditGUI gui = editing.get( event.getPlayer().getUniqueId().toString() );
+        HistoryEditGUI gui = editing.get( event.getPlayer().getUniqueId().toString() );
         gui.setEditingLength( false );
         gui.setEditingReason( false );
         CoreUtils.sendMsg( event.getPlayer(), "&sThe punishment edit has been cacelled" );

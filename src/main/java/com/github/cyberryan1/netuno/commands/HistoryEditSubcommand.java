@@ -5,7 +5,7 @@ import com.github.cyberryan1.cybercore.helpers.command.CyberSubcommand;
 import com.github.cyberryan1.cybercore.helpers.command.SubcommandStatus;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
-import com.github.cyberryan1.netuno.guis.history.NewHistoryEditGUI;
+import com.github.cyberryan1.netuno.guis.history.HistoryEditGUI;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
@@ -43,7 +43,7 @@ public class HistoryEditSubcommand extends CyberSubcommand {
 
         NPunishment pun = ApiNetuno.getData().getNetunoPuns().getPunishment( punId );
         if ( pun != null ) {
-            NewHistoryEditGUI gui = new NewHistoryEditGUI( pun.getPlayer(), player, punId );
+            HistoryEditGUI gui = new HistoryEditGUI( pun.getPlayer(), player, punId );
             gui.open();
         }
 

@@ -3,7 +3,7 @@ package com.github.cyberryan1.netuno.commands;
 import com.github.cyberryan1.cybercore.helpers.command.ArgType;
 import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
-import com.github.cyberryan1.netuno.guis.ipinfo.NewAltsListGUI;
+import com.github.cyberryan1.netuno.guis.ipinfo.AltsListGUI;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
@@ -51,7 +51,7 @@ public class IpInfoCommand extends CyberCommand {
                 return true;
             }
 
-            NewAltsListGUI altsGui = new NewAltsListGUI( player, target, 1 );
+            AltsListGUI altsGui = new AltsListGUI( player, target, 1 );
             altsGui.open();
         }
 

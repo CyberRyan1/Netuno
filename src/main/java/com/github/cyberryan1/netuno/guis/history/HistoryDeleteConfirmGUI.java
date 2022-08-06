@@ -14,14 +14,14 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-public class NewHistoryDeleteConfirmGUI {
+public class HistoryDeleteConfirmGUI {
 
     private final GUI gui;
     private final OfflinePlayer target;
     private final Player staff;
     private final NPunishment punishment;
 
-    public NewHistoryDeleteConfirmGUI( OfflinePlayer target, Player staff, NPunishment punishment ) {
+    public HistoryDeleteConfirmGUI( OfflinePlayer target, Player staff, NPunishment punishment ) {
         this.target = target;
         this.staff = staff;
         this.punishment = punishment;

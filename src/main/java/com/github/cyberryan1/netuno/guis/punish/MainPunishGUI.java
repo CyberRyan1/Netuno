@@ -4,8 +4,8 @@ import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.helpers.gui.GUI;
 import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
-import com.github.cyberryan1.netuno.guis.history.NewHistoryListGUI;
-import com.github.cyberryan1.netuno.guis.ipinfo.NewAltsListGUI;
+import com.github.cyberryan1.netuno.guis.history.HistoryListGUI;
+import com.github.cyberryan1.netuno.guis.ipinfo.AltsListGUI;
 import com.github.cyberryan1.netuno.guis.punish.utils.MainButton;
 import com.github.cyberryan1.netuno.guis.punish.utils.PunishSettings;
 import org.bukkit.Bukkit;
@@ -39,7 +39,7 @@ public class MainPunishGUI {
         if ( history.getIndex() != -1 ) {
             gui.setItem( history.getIndex(), new GUIItem( history.getItem( this.target ), history.getIndex(), () -> {
                 staff.closeInventory();
-                NewHistoryListGUI historyList = new NewHistoryListGUI( this.target, this.staff, 1 );
+                HistoryListGUI historyList = new HistoryListGUI( this.target, this.staff, 1 );
                 historyList.open();
             } ) );
         }
@@ -48,7 +48,7 @@ public class MainPunishGUI {
         if ( alts.getIndex() != -1 ) {
             gui.setItem( alts.getIndex(), new GUIItem( alts.getItem( this.target ), alts.getIndex(), () -> {
                 staff.closeInventory();
-                NewAltsListGUI altsList = new NewAltsListGUI( this.staff, this.target, 1 );
+                AltsListGUI altsList = new AltsListGUI( this.staff, this.target, 1 );
                 altsList.open();
             } ) );
         }

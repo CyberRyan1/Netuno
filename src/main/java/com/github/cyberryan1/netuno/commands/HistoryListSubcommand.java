@@ -3,7 +3,7 @@ package com.github.cyberryan1.netuno.commands;
 import com.github.cyberryan1.cybercore.helpers.command.ArgType;
 import com.github.cyberryan1.cybercore.helpers.command.CyberSubcommand;
 import com.github.cyberryan1.cybercore.helpers.command.SubcommandStatus;
-import com.github.cyberryan1.netuno.guis.history.NewHistoryListGUI;
+import com.github.cyberryan1.netuno.guis.history.HistoryListGUI;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -39,7 +39,7 @@ public class HistoryListSubcommand extends CyberSubcommand {
         final Player player = ( Player ) sender;
         final OfflinePlayer target = Bukkit.getOfflinePlayer( args[1] );
 
-        NewHistoryListGUI gui = new NewHistoryListGUI( target, player, 1 );
+        HistoryListGUI gui = new HistoryListGUI( target, player, 1 );
         gui.open();
         return SubcommandStatus.NORMAL;
     }

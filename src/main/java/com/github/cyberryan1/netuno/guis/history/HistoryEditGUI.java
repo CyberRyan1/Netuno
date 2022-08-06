@@ -19,7 +19,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-public class NewHistoryEditGUI {
+public class HistoryEditGUI {
 
     private final GUI gui;
     private final OfflinePlayer target;
@@ -29,7 +29,7 @@ public class NewHistoryEditGUI {
     private boolean editingLength = false;
     private boolean editingReason = false;
 
-    public NewHistoryEditGUI( OfflinePlayer target, Player staff, int punId ) {
+    public HistoryEditGUI( OfflinePlayer target, Player staff, int punId ) {
         this.target = target;
         this.staff = staff;
         this.punishment = ApiNetuno.getData().getNetunoPuns().getPunishment( punId );
@@ -38,7 +38,7 @@ public class NewHistoryEditGUI {
         insertItems();
     }
 
-    public NewHistoryEditGUI( OfflinePlayer target, Player staff, NPunishment punishment ) {
+    public HistoryEditGUI( OfflinePlayer target, Player staff, NPunishment punishment ) {
         this.target = target;
         this.staff = staff;
         this.punishment = punishment;
@@ -99,7 +99,7 @@ public class NewHistoryEditGUI {
             ApiNetuno.getData().getNetunoPuns().updatePunishment( punishment );
         }
 
-        NewHistoryEditGUI newGui = new NewHistoryEditGUI( target, staff, punishment );
+        HistoryEditGUI newGui = new HistoryEditGUI( target, staff, punishment );
         newGui.open();
     }
 
@@ -120,7 +120,7 @@ public class NewHistoryEditGUI {
             }
         }
 
-        NewHistoryEditGUI newGui = new NewHistoryEditGUI( target, staff, punishment );
+        HistoryEditGUI newGui = new HistoryEditGUI( target, staff, punishment );
         newGui.open();
     }
 
@@ -129,7 +129,7 @@ public class NewHistoryEditGUI {
             staff.closeInventory();
 
             if ( VaultUtils.hasPerms( staff, Settings.HISTORY_DELETE_PERMISSION.string() ) ) {
-                NewHistoryDeleteConfirmGUI deleteGui = new NewHistoryDeleteConfirmGUI( target, staff, punishment );
+                HistoryDeleteConfirmGUI deleteGui = new HistoryDeleteConfirmGUI( target, staff, punishment );
                 deleteGui.open();
                 staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
             }

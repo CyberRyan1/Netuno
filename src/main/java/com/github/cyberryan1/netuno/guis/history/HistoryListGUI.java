@@ -20,7 +20,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class NewHistoryListGUI {
+public class HistoryListGUI {
 
     private final GUI gui;
     private final NetunoPlayer target;
@@ -29,7 +29,7 @@ public class NewHistoryListGUI {
     private final SortBy sort;
     private final List<NPunishment> history;
 
-    public NewHistoryListGUI( OfflinePlayer target, Player staff, int page, SortBy sort ) {
+    public HistoryListGUI( OfflinePlayer target, Player staff, int page, SortBy sort ) {
         this.target = NetunoPlayerCache.getOrLoad( target.getUniqueId().toString() );
         this.staff = staff;
         this.page = page;
@@ -42,7 +42,7 @@ public class NewHistoryListGUI {
         insertItems();
     }
 
-    public NewHistoryListGUI( OfflinePlayer target, Player staff, int page ) {
+    public HistoryListGUI( OfflinePlayer target, Player staff, int page ) {
         this( target, staff, page, SortBy.FIRST_DATE );
     }
 
@@ -71,7 +71,7 @@ public class NewHistoryListGUI {
                     final int finalPunIndex = punIndex;
                     item = new GUIItem( GUIUtils.getPunishmentItem( history.get( punIndex ) ), guiIndex, () -> {
                         int punId = history.get( finalPunIndex ).getId();
-                        NewHistoryEditGUI editGui = new NewHistoryEditGUI( target.getPlayer(), staff, punId );
+                        HistoryEditGUI editGui = new HistoryEditGUI( target.getPlayer(), staff, punId );
                         editGui.open();
                         staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
                     } );
@@ -96,7 +96,7 @@ public class NewHistoryListGUI {
             else if ( sort == SortBy.FIRST_ACTIVE ) { next = SortBy.LAST_ACTIVE; }
             else if ( sort == SortBy.LAST_ACTIVE ) { next = SortBy.FIRST_DATE; }
 
-            NewHistoryListGUI listGui = new NewHistoryListGUI( target.getPlayer(), staff, page, next );
+            HistoryListGUI listGui = new HistoryListGUI( target.getPlayer(), staff, page, next );
             listGui.open();
             staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
         } ) );
@@ -104,7 +104,7 @@ public class NewHistoryListGUI {
         // Previous Page Item
         if ( page >= 2 ) {
             gui.setItem( 47, new GUIItem( Material.BOOK, "&pPrevious Page", 47, () -> {
-                NewHistoryListGUI listGui = new NewHistoryListGUI( target.getPlayer(), staff, page - 1, sort );
+                HistoryListGUI listGui = new HistoryListGUI( target.getPlayer(), staff, page - 1, sort );
                 listGui.open();
                 staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
             } ) );
@@ -114,7 +114,7 @@ public class NewHistoryListGUI {
         int maxPages = ( int ) Math.ceil( history.size() / 21.0 );
         if ( page < maxPages ) {
             gui.setItem( 51, new GUIItem( Material.BOOK, "&pNext Page", 51, () -> {
-                NewHistoryListGUI listGui = new NewHistoryListGUI( target.getPlayer(), staff, page + 1, sort );
+                HistoryListGUI listGui = new HistoryListGUI( target.getPlayer(), staff, page + 1, sort );
                 listGui.open();
                 staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
             } ) );
