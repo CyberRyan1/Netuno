@@ -4,6 +4,7 @@ import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache
 import com.github.cyberryan1.netunoapi.database.PunishmentsDatabase;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.sql.PreparedStatement;
@@ -73,6 +74,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
             ResultSet rs = ps.executeQuery();
             if ( rs.next() ) {
                 final int referencePunId = rs.getInt( "reference" );
+                Bukkit.broadcastMessage( "punId == " + punId + " || referencePunId == " + referencePunId ); // ! debug
 
                 if ( referencePunId > 0 ) {
                     NPunishment originalPun = getPunishment( referencePunId );
@@ -83,9 +85,10 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
                 }
 
                 else {
+                    PunishmentType type = PunishmentType.fromIndex( rs.getInt( "type" ) );
                     data = new NPunishment(
                         rs.getInt( "id" ),
-                        PunishmentType.fromIndex( rs.getInt( "type" ) ),
+                            type,
                         rs.getString( "player" ),
                         rs.getString( "staff" ),
                         rs.getLong( "length" ),
@@ -268,12 +271,14 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
 
         if ( newData.getPunishmentType().isIpPunishment() ) {
             final List<NPunishment> allReferences = forceGetPunishmentsFromReference( newData.getReferencePunId() );
-            allReferences.add( getPunishment( newData.getReferencePunId() ) );
+            final NPunishment original = getPunishment( newData.getReferencePunId() );
+            allReferences.add( original );
 
             for ( NPunishment ref : allReferences ) {
                 NPunishment newPun = newData.copy();
                 newPun.setId( ref.getId() );
                 newPun.setPlayerUuid( ref.getPlayerUuid() );
+                if ( original.getId() == ref.getId() ) { newPun.setReferencePunId( -1 ); }
 
                 NetunoPlayerCache.getOrLoad( newPun.getPlayerUuid() ).addPunishment( newPun );
                 executePunishmentDatabaseUpdate( newPun );
