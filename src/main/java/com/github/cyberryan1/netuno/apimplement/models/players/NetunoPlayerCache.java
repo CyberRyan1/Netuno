@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.apimplement.models.players;
 
+import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netunoapi.models.players.NPlayer;
 import com.github.cyberryan1.netunoapi.models.players.NPlayerLoader;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
@@ -114,6 +115,23 @@ public class NetunoPlayerCache implements NPlayerLoader {
      */
     public static NetunoPlayer forceLoad( OfflinePlayer player ) {
         return forceLoad( player.getUniqueId().toString() );
+    }
+
+    /**
+     * Loads the most recent punishment that was added to the
+     * database, checks if the punishment is for the player
+     * provided, and adds the punishment to the player.
+     * @param uuid The uuid to add the most recent punishment to
+     */
+    public static void loadRecentlyAddedPunishment( String uuid ) {
+        NetunoPlayer player = searchForOne( netunoPlayer -> netunoPlayer.getPlayer().getUniqueId().toString().equals( uuid ) );
+        if ( player == null ) { forceLoad( uuid ); return; }
+
+        int recentlyInsertedId = ApiNetuno.getData().getNetunoPuns().getRecentlyInsertedId();
+        NPunishment recentlyInserted = ApiNetuno.getData().getNetunoPuns().getPunishment( recentlyInsertedId );
+        if ( recentlyInserted.getPlayerUuid().equals( player.getPlayer().getUniqueId().toString() ) ) {
+            player.addPunishment( recentlyInserted );
+        }
     }
 
     /**
