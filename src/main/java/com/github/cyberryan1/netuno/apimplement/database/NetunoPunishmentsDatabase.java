@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
 
     private final String TABLE_NAME = "punishments";
-    private final String TYPE_LIST = "(id, player, data, guipun, reference)";
-    private final String UNKNOWN_LIST = "(?, ?, ?, ?, ?)";
+    private final String TYPE_LIST = "(id, player, staff, type, length, timestamp, reason, active, guipun, reference, notif)";
+    private final String UNKNOWN_LIST = "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     /**
      * Adds a punishment to the database, but not the cache
