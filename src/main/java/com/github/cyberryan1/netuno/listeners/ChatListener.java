@@ -1,6 +1,7 @@
 package com.github.cyberryan1.netuno.listeners;
 
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
+import com.github.cyberryan1.netuno.api.ApiNetuno;
 import com.github.cyberryan1.netuno.api.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.managers.ChatslowManager;
 import com.github.cyberryan1.netuno.managers.MutechatManager;
@@ -76,6 +77,11 @@ public class ChatListener implements Listener {
                         Utils.sendAnyMsg( p, staffExpireMsg );
                     }
                 }
+            }
+
+            for ( NPunishment pun : allActiveInDatabase ) {
+                pun.setActive( false );
+                ApiNetuno.getData().getNetunoPuns().updatePunishment( pun );
             }
         }
 
