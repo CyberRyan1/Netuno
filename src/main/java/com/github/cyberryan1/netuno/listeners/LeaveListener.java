@@ -1,7 +1,7 @@
 package com.github.cyberryan1.netuno.listeners;
 
-import com.github.cyberryan1.netuno.api.models.players.NetunoPlayer;
-import com.github.cyberryan1.netuno.api.models.players.NetunoPlayerCache;
+import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
+import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.managers.DisableQuitMsg;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;

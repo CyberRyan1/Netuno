@@ -1,6 +1,6 @@
-package com.github.cyberryan1.netuno.api.database;
+package com.github.cyberryan1.netuno.apimplement.database;
 
-import com.github.cyberryan1.netuno.api.ApiNetuno;
+import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

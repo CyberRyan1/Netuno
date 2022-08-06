@@ -2,7 +2,7 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
-import com.github.cyberryan1.netuno.api.database.SignNotifs;
+import com.github.cyberryan1.netuno.apimplement.database.SignNotifs;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

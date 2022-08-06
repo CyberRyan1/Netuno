@@ -1,7 +1,7 @@
 package com.github.cyberryan1.netuno.managers;
 
 import com.github.cyberryan1.cybercore.CyberCore;
-import com.github.cyberryan1.netuno.api.ApiNetuno;
+import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
 

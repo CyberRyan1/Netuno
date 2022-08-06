@@ -1,10 +1,10 @@
-package com.github.cyberryan1.netuno.api;
+package com.github.cyberryan1.netuno.apimplement;
 
 import com.github.cyberryan1.cybercore.CyberCore;
-import com.github.cyberryan1.netuno.api.database.ConnectionManager;
-import com.github.cyberryan1.netuno.api.database.DatabaseManager;
-import com.github.cyberryan1.netuno.api.database.helpers.AltSecurityLevel;
-import com.github.cyberryan1.netuno.api.models.players.NetunoPlayerCache;
+import com.github.cyberryan1.netuno.apimplement.database.ConnectionManager;
+import com.github.cyberryan1.netuno.apimplement.database.DatabaseManager;
+import com.github.cyberryan1.netuno.apimplement.database.helpers.AltSecurityLevel;
+import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.NetunoApi;
 import com.github.cyberryan1.netunoapi.database.DatabaseConnection;

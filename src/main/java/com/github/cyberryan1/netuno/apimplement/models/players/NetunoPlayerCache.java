@@ -1,4 +1,4 @@
-package com.github.cyberryan1.netuno.api.models.players;
+package com.github.cyberryan1.netuno.apimplement.models.players;
 
 import com.github.cyberryan1.netunoapi.models.players.NPlayer;
 import com.github.cyberryan1.netunoapi.models.players.NPlayerLoader;

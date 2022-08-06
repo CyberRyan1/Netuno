@@ -1,6 +1,6 @@
-package com.github.cyberryan1.netuno.api.database;
+package com.github.cyberryan1.netuno.apimplement.database;
 
-import com.github.cyberryan1.netuno.api.models.players.NetunoPlayerCache;
+import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netunoapi.database.PunishmentsDatabase;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishmentData;

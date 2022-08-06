@@ -4,7 +4,7 @@ import com.github.cyberryan1.cybercore.helpers.command.ArgType;
 import com.github.cyberryan1.cybercore.helpers.command.CyberSubcommand;
 import com.github.cyberryan1.cybercore.helpers.command.SubcommandStatus;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
-import com.github.cyberryan1.netuno.api.ApiNetuno;
+import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.guis.history.NewHistoryEditGUI;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.settings.Settings;

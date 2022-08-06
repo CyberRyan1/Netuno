@@ -4,7 +4,7 @@ import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.helpers.gui.GUI;
 import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
-import com.github.cyberryan1.netuno.api.ApiNetuno;
+import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.guis.utils.SortBy;
 import com.github.cyberryan1.netuno.models.NetunoMultiReport;
 import com.github.cyberryan1.netunoapi.models.reports.NReport;

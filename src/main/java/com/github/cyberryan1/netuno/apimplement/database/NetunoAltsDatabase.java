@@ -1,7 +1,7 @@
-package com.github.cyberryan1.netuno.api.database;
+package com.github.cyberryan1.netuno.apimplement.database;
 
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
-import com.github.cyberryan1.netuno.api.database.helpers.AltSecurityLevel;
+import com.github.cyberryan1.netuno.apimplement.database.helpers.AltSecurityLevel;
 import com.github.cyberryan1.netunoapi.database.AltsDatabase;
 import com.github.cyberryan1.netunoapi.models.alts.NAltGroup;
 import org.bukkit.Bukkit;

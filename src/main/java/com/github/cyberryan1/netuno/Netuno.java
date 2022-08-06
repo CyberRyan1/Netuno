@@ -5,7 +5,7 @@ import ch.njol.skript.SkriptAddon;
 import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.helpers.command.helper.CommandHelper;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
-import com.github.cyberryan1.netuno.api.ApiNetuno;
+import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.commands.*;
 import com.github.cyberryan1.netuno.guis.history.HistoryEditManager;
 import com.github.cyberryan1.netuno.listeners.*;

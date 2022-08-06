@@ -2,7 +2,7 @@ package com.github.cyberryan1.netuno.models;
 
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
-import com.github.cyberryan1.netuno.api.ApiNetuno;
+import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netunoapi.models.reports.NReport;
 import com.github.cyberryan1.netunoapi.models.time.NDate;

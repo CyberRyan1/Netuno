@@ -2,7 +2,7 @@ package com.github.cyberryan1.netuno.guis.utils;
 
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
-import com.github.cyberryan1.netuno.api.ApiNetuno;
+import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.time.NDate;

@@ -1,8 +1,8 @@
 package com.github.cyberryan1.netuno.listeners;
 
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
-import com.github.cyberryan1.netuno.api.ApiNetuno;
-import com.github.cyberryan1.netuno.api.models.players.NetunoPlayerCache;
+import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
+import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.managers.ChatslowManager;
 import com.github.cyberryan1.netuno.managers.MutechatManager;
 import com.github.cyberryan1.netuno.utils.Utils;

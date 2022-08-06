@@ -1,4 +1,4 @@
-package com.github.cyberryan1.netuno.api.database.helpers;
+package com.github.cyberryan1.netuno.apimplement.database.helpers;
 
 public enum AltSecurityLevel {
 

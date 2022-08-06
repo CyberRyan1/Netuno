@@ -3,7 +3,7 @@ package com.github.cyberryan1.netuno.skriptelements.conditions;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import com.github.cyberryan1.netuno.api.ApiNetuno;
+import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.skriptelements.conditions.types.RegularCondition;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
 import org.bukkit.OfflinePlayer;

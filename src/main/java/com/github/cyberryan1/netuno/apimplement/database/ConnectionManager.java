@@ -1,9 +1,9 @@
-package com.github.cyberryan1.netuno.api.database;
+package com.github.cyberryan1.netuno.apimplement.database;
 
 import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
-import com.github.cyberryan1.netuno.api.database.helpers.SQLTables;
-import com.github.cyberryan1.netuno.api.database.helpers.SQLiteTables;
+import com.github.cyberryan1.netuno.apimplement.database.helpers.SQLTables;
+import com.github.cyberryan1.netuno.apimplement.database.helpers.SQLiteTables;
 import com.github.cyberryan1.netunoapi.database.DatabaseConnection;
 import com.mysql.cj.jdbc.MysqlDataSource;
 

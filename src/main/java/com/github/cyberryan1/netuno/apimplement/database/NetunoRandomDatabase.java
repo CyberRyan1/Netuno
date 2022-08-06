@@ -1,4 +1,4 @@
-package com.github.cyberryan1.netuno.api.database;
+package com.github.cyberryan1.netuno.apimplement.database;
 
 import com.github.cyberryan1.netunoapi.database.RandomDatabase;
 

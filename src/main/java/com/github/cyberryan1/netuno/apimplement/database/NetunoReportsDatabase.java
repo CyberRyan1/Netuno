@@ -1,4 +1,4 @@
-package com.github.cyberryan1.netuno.api.database;
+package com.github.cyberryan1.netuno.apimplement.database;
 
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;

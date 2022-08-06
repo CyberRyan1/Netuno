@@ -2,9 +2,9 @@ package com.github.cyberryan1.netuno.listeners;
 
 import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
-import com.github.cyberryan1.netuno.api.database.SignNotifs;
-import com.github.cyberryan1.netuno.api.models.players.NetunoPlayer;
-import com.github.cyberryan1.netuno.api.models.players.NetunoPlayerCache;
+import com.github.cyberryan1.netuno.apimplement.database.SignNotifs;
+import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
+import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;

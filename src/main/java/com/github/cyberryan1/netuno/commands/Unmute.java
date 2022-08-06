@@ -2,9 +2,9 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.cybercore.helpers.command.ArgType;
 import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
-import com.github.cyberryan1.netuno.api.ApiNetuno;
-import com.github.cyberryan1.netuno.api.models.players.NetunoPlayer;
-import com.github.cyberryan1.netuno.api.models.players.NetunoPlayerCache;
+import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
+import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
+import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.models.NetunoPrePunishment;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
