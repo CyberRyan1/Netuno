@@ -4,6 +4,7 @@ import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.helpers.gui.GUI;
 import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
+import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.guis.utils.SortBy;
 import com.github.cyberryan1.netuno.models.NetunoCombinedReport;
@@ -119,14 +120,14 @@ public class StaffAllReportsGUI implements Listener {
     }
 
     private ItemStack getSortHopper() {
-        ItemStack hopper = CoreGUIUtils.createItem( Material.HOPPER, "&sPage &p#" + page );
-        if ( sort == SortBy.FIRST_DATE ) { return CoreGUIUtils.setItemLore( hopper, "", "&sSort: &pFirst Created -> Last Created",
+        ItemStack hopper = CoreItemUtils.createItem( Material.HOPPER, "&sPage &p#" + page );
+        if ( sort == SortBy.FIRST_DATE ) { return CoreItemUtils.setItemLore( hopper, "", "&sSort: &pFirst Created -> Last Created",
                 "&sNext Sort: &pLast Created -> First Created", "&sClick to change sort method" ); }
-        else if ( sort == SortBy.LAST_DATE ) { return CoreGUIUtils.setItemLore( hopper, "", "&sSort: &pLast Created -> First Created",
+        else if ( sort == SortBy.LAST_DATE ) { return CoreItemUtils.setItemLore( hopper, "", "&sSort: &pLast Created -> First Created",
                 "&sNext Sort: &pOnline -> Offline", "&sClick to change sort method" ); }
-        else if ( sort == SortBy.ONLINE ) { return CoreGUIUtils.setItemLore( hopper, "", "&sSort: &pOnline -> Offline",
+        else if ( sort == SortBy.ONLINE ) { return CoreItemUtils.setItemLore( hopper, "", "&sSort: &pOnline -> Offline",
                 "&sNext Sort: &pOffline -> Online", "&sClick to change sort method" ); }
-        else if ( sort == SortBy.OFFLINE ) { return CoreGUIUtils.setItemLore( hopper, "", "&sSort: &pOffline -> Online",
+        else if ( sort == SortBy.OFFLINE ) { return CoreItemUtils.setItemLore( hopper, "", "&sSort: &pOffline -> Online",
                 "&sNext Sort: &pFirst Created -> Last Created", "&sClick to change sort method" ); }
 
         return null;

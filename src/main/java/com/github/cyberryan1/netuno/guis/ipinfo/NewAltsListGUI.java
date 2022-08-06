@@ -4,12 +4,12 @@ import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.helpers.gui.GUI;
 import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
+import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.guis.history.NewHistoryListGUI;
-import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netuno.guis.utils.SortBy;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
@@ -110,7 +110,7 @@ public class NewAltsListGUI {
 
         // Previous Book
         if ( page >= 2 ) {
-            gui.setItem( 49, new GUIItem( CoreGUIUtils.createItem( Material.BOOK, "&pPrevious Page" ), 49, () -> {
+            gui.setItem( 49, new GUIItem( Material.BOOK, "&pPrevious Page", 49, () -> {
                 staff.closeInventory();
                 NewAltsListGUI newGui = new NewAltsListGUI( staff, target.getPlayer(), page - 1, this.sort );
                 newGui.open();
@@ -120,7 +120,7 @@ public class NewAltsListGUI {
         // Next Book
         int maxPage = ( int ) Math.ceil( alts.size() / 21.0 );
         if ( page < maxPage ) {
-            gui.setItem( 51, new GUIItem( CoreGUIUtils.createItem( Material.BOOK, "&pNext Page" ), 51, () -> {
+            gui.setItem( 51, new GUIItem( Material.BOOK, "&pNext Page", 51, () -> {
                 staff.closeInventory();
                 NewAltsListGUI newGui = new NewAltsListGUI( staff, target.getPlayer(), page + 1, this.sort );
                 newGui.open();
@@ -132,10 +132,10 @@ public class NewAltsListGUI {
 
     private ItemStack getAltSkull( int index ) {
         NetunoPlayer account = alts.get( index );
-        ItemStack skull = GUIUtils.getPlayerSkull( account.getPlayer() );
+        ItemStack skull = CoreItemUtils.getPlayerSkull( account.getPlayer() );
 
         if ( punishedAlts.contains( account ) ) {
-            skull = CoreGUIUtils.setItemName( skull, "&c" + account.getPlayer().getName() );
+            skull = CoreItemUtils.setItemName( skull, "&c" + account.getPlayer().getName() );
             ArrayList<String> lore = new ArrayList<>();
             //ArrayList<Punishment> accountPuns = Utils.getDatabase().getAllActivePunishments( account.getUniqueId().toString() );
             List<NPunishment> accountPuns = PunishmentUtils.getActive( account.getPunishments() );
@@ -155,41 +155,41 @@ public class NewAltsListGUI {
                 }
             }
 
-            skull = CoreGUIUtils.setItemLore( skull, lore );
+            skull = CoreItemUtils.setItemLore( skull, lore );
             skull.addUnsafeEnchantment( Enchantment.PROTECTION_ENVIRONMENTAL, 1 );
             SkullMeta meta = ( SkullMeta ) skull.getItemMeta();
             meta.addItemFlags( ItemFlag.HIDE_ENCHANTS );
             skull.setItemMeta( meta );
         }
-        else { skull = CoreGUIUtils.setItemName( skull, "&s" + account.getPlayer().getName() ); }
+        else { skull = CoreItemUtils.setItemName( skull, "&s" + account.getPlayer().getName() ); }
 
         return skull;
     }
 
     private ItemStack getSortHopper( SortBy sort ) {
         if ( sort == SortBy.ALPHABETICAL ) {
-            ItemStack hopper = CoreGUIUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pA -> Z" );
-            return CoreGUIUtils.addItemLore( hopper, "&sNext Sort: &pFirst Join -> Last Join", "&sClick to change sort method" );
+            ItemStack hopper = CoreItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pA -> Z" );
+            return CoreItemUtils.addItemLore( hopper, "&sNext Sort: &pFirst Join -> Last Join", "&sClick to change sort method" );
         }
 
         else if ( sort == SortBy.FIRST_DATE ) {
-            ItemStack hopper = CoreGUIUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pFirst Join -> Last Join" );
-            return CoreGUIUtils.addItemLore( hopper, "&sNext Sort: &pLast Join -> First Join", "&sClick to change sort method" );
+            ItemStack hopper = CoreItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pFirst Join -> Last Join" );
+            return CoreItemUtils.addItemLore( hopper, "&sNext Sort: &pLast Join -> First Join", "&sClick to change sort method" );
         }
 
         else if ( sort == SortBy.LAST_DATE ) {
-            ItemStack hopper = CoreGUIUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pLast Join -> First Join" );
-            return CoreGUIUtils.addItemLore( hopper, "&sNext Sort: &pPunished -> Not Punished", "&sClick to change sort method" );
+            ItemStack hopper = CoreItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pLast Join -> First Join" );
+            return CoreItemUtils.addItemLore( hopper, "&sNext Sort: &pPunished -> Not Punished", "&sClick to change sort method" );
         }
 
         else if ( sort == SortBy.FIRST_PUNISHED ) {
-            ItemStack hopper = CoreGUIUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pPunished -> Not Punished" );
-            return CoreGUIUtils.addItemLore( hopper, "&sNext Sort: &pNot Punished -> Punished", "&sClick to change sort method" );
+            ItemStack hopper = CoreItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pPunished -> Not Punished" );
+            return CoreItemUtils.addItemLore( hopper, "&sNext Sort: &pNot Punished -> Punished", "&sClick to change sort method" );
         }
 
         else if ( sort == SortBy.LAST_PUNISHED ) {
-            ItemStack hopper = CoreGUIUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pNot Punished -> Punished" );
-            return CoreGUIUtils.addItemLore( hopper, "&sNext Sort: &pA -> Z", "&sClick to change sort method" );
+            ItemStack hopper = CoreItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pNot Punished -> Punished" );
+            return CoreItemUtils.addItemLore( hopper, "&sNext Sort: &pA -> Z", "&sClick to change sort method" );
         }
 
         return null;
@@ -197,7 +197,7 @@ public class NewAltsListGUI {
 
     private ItemStack getCurrentPagePaper() {
         int maxPage = ( int ) Math.ceil( alts.size() / 21.0 );
-        return CoreGUIUtils.createItem( Material.PAPER, "&sPage: &p" + page + "&s/&p" + maxPage );
+        return CoreItemUtils.createItem( Material.PAPER, "&sPage: &p" + page + "&s/&p" + maxPage );
     }
 
     private SortBy getNextSort( SortBy sort ) {

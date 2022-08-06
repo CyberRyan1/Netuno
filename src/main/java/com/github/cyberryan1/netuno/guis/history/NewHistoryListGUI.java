@@ -4,6 +4,7 @@ import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.helpers.gui.GUI;
 import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
+import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
@@ -63,7 +64,7 @@ public class NewHistoryListGUI {
             for ( int col = 0; col < 7; col++ ) {
                 GUIItem item;
                 if ( punIndex >= history.size() ) {
-                    item = new GUIItem( CoreGUIUtils.createItem( Material.WHITE_STAINED_GLASS_PANE, "&f" ), guiIndex );
+                    item = new GUIItem( CoreItemUtils.createItem( Material.WHITE_STAINED_GLASS_PANE, "&f" ), guiIndex );
                 }
 
                 else {
@@ -123,29 +124,29 @@ public class NewHistoryListGUI {
     }
 
     private ItemStack getCurrentPagePaper() {
-        ItemStack paper = CoreGUIUtils.createItem( Material.PAPER, "&sPage &p#" + page );
-        return CoreGUIUtils.setItemLore( paper, "&sClick any item to edit the punishment!" );
+        ItemStack paper = CoreItemUtils.createItem( Material.PAPER, "&sPage &p#" + page );
+        return CoreItemUtils.setItemLore( paper, "&sClick any item to edit the punishment!" );
     }
 
     private ItemStack getSortHopper() {
         if ( sort == SortBy.FIRST_DATE ) {
-            ItemStack hopper = CoreGUIUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pOldest -> Newest" );
-            return CoreGUIUtils.setItemLore( hopper, "&sNext Sort: &pNewest -> Oldest", "&sClick to change sort method" );
+            ItemStack hopper = CoreItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pOldest -> Newest" );
+            return CoreItemUtils.setItemLore( hopper, "&sNext Sort: &pNewest -> Oldest", "&sClick to change sort method" );
         }
 
         else if ( sort == SortBy.LAST_DATE ) {
-            ItemStack hopper = CoreGUIUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pNewest -> Oldest" );
-            return CoreGUIUtils.setItemLore( hopper, "&sNext Sort: &pActive -> Not Active", "&sClick to change sort method" );
+            ItemStack hopper = CoreItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pNewest -> Oldest" );
+            return CoreItemUtils.setItemLore( hopper, "&sNext Sort: &pActive -> Not Active", "&sClick to change sort method" );
         }
 
         else if ( sort == SortBy.FIRST_ACTIVE ) {
-            ItemStack hopper = CoreGUIUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pActive -> Not Active" );
-            return CoreGUIUtils.setItemLore( hopper, "&sNext Sort: &pNot Active -> Active", "&sClick to change sort method" );
+            ItemStack hopper = CoreItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pActive -> Not Active" );
+            return CoreItemUtils.setItemLore( hopper, "&sNext Sort: &pNot Active -> Active", "&sClick to change sort method" );
         }
 
         else if ( sort == SortBy.LAST_ACTIVE ) {
-            ItemStack hopper = CoreGUIUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pNot Active -> Active" );
-            return CoreGUIUtils.setItemLore( hopper, "&sNext Sort: &pOldest -> Newest", "&sClick to change sort method" );
+            ItemStack hopper = CoreItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pNot Active -> Active" );
+            return CoreItemUtils.setItemLore( hopper, "&sNext Sort: &pOldest -> Newest", "&sClick to change sort method" );
         }
 
         return null;

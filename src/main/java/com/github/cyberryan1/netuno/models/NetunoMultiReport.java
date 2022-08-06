@@ -1,7 +1,6 @@
 package com.github.cyberryan1.netuno.models;
 
-import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
-import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
+import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
 import com.github.cyberryan1.netunoapi.models.reports.NReport;
 import com.github.cyberryan1.netunoapi.models.time.NDate;
 import org.bukkit.OfflinePlayer;
@@ -51,13 +50,13 @@ public class NetunoMultiReport {
     }
 
     public ItemStack getAsItem() {
-        ItemStack skull = GUIUtils.getPlayerSkull( reporter );
+        ItemStack skull = CoreItemUtils.getPlayerSkull( reporter );
 
-        skull = CoreGUIUtils.setItemName( skull, "&pReporter: &s" + reporter.getName() );
+        skull = CoreItemUtils.setItemName( skull, "&pReporter: &s" + reporter.getName() );
 
-        skull = CoreGUIUtils.addItemLore( skull, "&pDate: &s" + new NDate( date ).getDateString(), "&pReason(s):" );
+        skull = CoreItemUtils.addItemLore( skull, "&pDate: &s" + new NDate( date ).getDateString(), "&pReason(s):" );
         for ( String r : getReasons() ) {
-            skull = CoreGUIUtils.addItemLore( skull, " &8- &s" + r );
+            skull = CoreItemUtils.addItemLore( skull, " &8- &s" + r );
         }
 
         return skull;

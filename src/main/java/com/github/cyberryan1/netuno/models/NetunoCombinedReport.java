@@ -1,9 +1,8 @@
 package com.github.cyberryan1.netuno.models;
 
-import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
+import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
-import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netunoapi.models.reports.NReport;
 import com.github.cyberryan1.netunoapi.models.time.NDate;
 import org.bukkit.OfflinePlayer;
@@ -38,9 +37,9 @@ public class NetunoCombinedReport {
     public long getMostRecentDate() { return mostRecentDate; }
 
     public ItemStack getAsItem() {
-        ItemStack skull = GUIUtils.getPlayerSkull( target );
+        ItemStack skull = CoreItemUtils.getPlayerSkull( target );
 
-        skull = CoreGUIUtils.setItemName( skull, "&p" + target.getName() );
+        skull = CoreItemUtils.setItemName( skull, "&p" + target.getName() );
 
         //      Reason, Amount
         HashMap<String, Integer> reasonAmount = new HashMap<>();
@@ -65,7 +64,7 @@ public class NetunoCombinedReport {
         lore.add( CoreUtils.getColored( "&pReason(s):" ) );
         lore.addAll( reasons );
 
-        return CoreGUIUtils.setItemLore( skull, lore );
+        return CoreItemUtils.setItemLore( skull, lore );
     }
 
 }

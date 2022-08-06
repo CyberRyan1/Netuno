@@ -4,6 +4,7 @@ import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.helpers.gui.GUI;
 import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
+import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
@@ -124,7 +125,7 @@ public class NewHistoryEditGUI {
     }
 
     private GUIItem getDeleteBarrier( int slot ) {
-        return new GUIItem( GUIUtils.createItem( Material.BARRIER, "&sDelete Punishment" ), slot, () -> {
+        return new GUIItem( CoreItemUtils.createItem( Material.BARRIER, "&sDelete Punishment" ), slot, () -> {
             staff.closeInventory();
 
             if ( VaultUtils.hasPerms( staff, Settings.HISTORY_DELETE_PERMISSION.string() ) ) {
@@ -140,7 +141,7 @@ public class NewHistoryEditGUI {
     }
 
     private GUIItem getEditReasonPaper( int slot ) {
-        return new GUIItem( GUIUtils.createItem( Material.PAPER, "&sEdit Reason" ), slot, () -> {
+        return new GUIItem( CoreItemUtils.createItem( Material.PAPER, "&sEdit Reason" ), slot, () -> {
             HistoryEditManager.addEditing( staff, this );
             staff.closeInventory();
             editingReason = true;
@@ -151,7 +152,7 @@ public class NewHistoryEditGUI {
     }
 
     private GUIItem getEditLengthClock( int slot ) {
-        return new GUIItem( GUIUtils.createItem( Material.CLOCK, "&sEdit Length" ), slot, () -> {
+        return new GUIItem( CoreItemUtils.createItem( Material.CLOCK, "&sEdit Length" ), slot, () -> {
             HistoryEditManager.addEditing( staff, this );
             staff.closeInventory();
             editingLength = true;

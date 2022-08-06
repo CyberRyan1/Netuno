@@ -1,6 +1,6 @@
 package com.github.cyberryan1.netuno.guis.punish.utils;
 
-import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
+import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
@@ -78,8 +78,8 @@ public class SinglePunishButton {
                 .filter( pun -> pun.isGuiPun() && pun.getReason().contains( CoreUtils.removeColor( CoreUtils.getColored( this.itemName ) ) ) )
                 .count();
 
-        ItemStack toReturn = CoreGUIUtils.createItem( this.itemMaterial, replaceVariables( this.itemName, target, this.previousPunCount ) );
-        return CoreGUIUtils.setItemLore( toReturn, replaceVariables( this.itemLore, target, this.previousPunCount ) );
+        ItemStack toReturn = CoreItemUtils.createItem( this.itemMaterial, replaceVariables( this.itemName, target, this.previousPunCount ) );
+        return CoreItemUtils.setItemLore( toReturn, replaceVariables( this.itemLore, target, this.previousPunCount ) );
     }
 
     public void executePunish( Player staff, OfflinePlayer player ) {
