@@ -4,6 +4,7 @@ import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.helpers.gui.GUI;
 import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
 import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
+import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
@@ -101,11 +102,22 @@ public class ReportGUI implements Listener {
                 if ( reasonsIndex >= reasons.size() ) { break; }
 
                 final int finalReasonIndex = reasonsIndex;
-                final int finalGuiIndex = guiIndex;
-                gui.setItem( guiIndex, new GUIItem( Material.LIGHT_GRAY_WOOL, "&7" + reasons.get( reasonsIndex ), guiIndex, () -> {
-                    selections.add( reasons.get( finalReasonIndex ) );
+                gui.setItem( guiIndex, new GUIItem( Material.LIGHT_GRAY_WOOL,
+                        "&7" + reasons.get( reasonsIndex ), guiIndex, ( item ) -> {
+
                     player.playSound( player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
-                    gui.updateItem( finalGuiIndex, new GUIItem( Material.LIME_WOOL, "&a" + reasons.get( finalReasonIndex ), finalGuiIndex ) );
+
+                    if ( item.getItem().getType() == Material.LIGHT_GRAY_WOOL ) {
+                        selections.add( reasons.get( finalReasonIndex ) );
+                        item.setItem( CoreItemUtils.createItem( Material.LIME_WOOL, "&a" + reasons.get( finalReasonIndex ) ) );
+                        gui.updateItem( item );
+                    }
+
+                    else if ( item.getItem().getType() == Material.LIME_WOOL ) {
+                        selections.remove( reasons.get( finalReasonIndex ) );
+                        item.setItem( CoreItemUtils.createItem( Material.LIGHT_GRAY_WOOL, "&7" + reasons.get( finalReasonIndex ) ) );
+                        gui.updateItem( item );
+                    }
                 } ) );
 
                 guiIndex++;
