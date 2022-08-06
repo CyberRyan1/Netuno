@@ -182,7 +182,7 @@ public class JoinListener implements Listener {
         //
 
         // Checking if the player has any punished alts and alerting staff if they do
-        if ( activeAltPunishments.size() >= 1 && IPINFO_NOTIFS_ENABLED ) {
+        if ( altGroup.getAltUuids().size() > 1 && activeAltPunishments.size() >= 1 && IPINFO_NOTIFS_ENABLED ) {
             Bukkit.getScheduler().runTaskLaterAsynchronously( CyberCore.getPlugin(), () -> {
                 final Player player = Bukkit.getPlayer( event.getUniqueId() );
                 if ( player == null ) { return; }
