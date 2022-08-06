@@ -169,32 +169,6 @@ public class NetunoPrePunishment extends NPunishment {
     }
 
     private void doBroadcasts( boolean silent ) {
-        // Send the punishment message to the target, if the target is online and the punishment does not kick them from the server
-        if ( super.getPlayer().isOnline() && ( super.getPunishmentType() == PunishmentType.WARN
-                || super.getPunishmentType() == PunishmentType.MUTE || super.getPunishmentType() == PunishmentType.IPMUTE ) ) {
-            String msgList[] = switch ( super.getPunishmentType() ) {
-                case WARN -> Settings.WARN_MESSAGE.coloredStringlist();
-                case MUTE -> Settings.MUTE_MESSAGE.coloredStringlist();
-                case IPMUTE -> Settings.IPMUTE_MESSAGE.coloredStringlist();
-                default -> null;
-            };
-
-            if ( msgList != null && msgList.length > 0 ) {
-                Player targetOnline = super.getPlayer().getPlayer();
-                String msg = Utils.replaceAllVariables( Utils.getCombinedString( msgList ), this );
-                Utils.sendAnyMsg( targetOnline, msg );
-
-                // sending the punishment message to the target's online alts
-                if ( super.getPunishmentType() == PunishmentType.IPMUTE || super.getPunishmentType() == PunishmentType.UNIPMUTE ) {
-                    for ( OfflinePlayer alt : ApiNetuno.getData().getNetunoAlts().getAlts( super.getPlayer() ) ) {
-                        if ( alt.isOnline() && alt.getPlayer().equals( super.getPlayer().getPlayer() ) == false ) {
-                            Utils.sendAnyMsg( alt.getPlayer(), msg );
-                        }
-                    }
-                }
-            }
-        }
-
         // Getting the public and staff announcement messages from the settings
         final String publicBroadcastLines[] = switch ( super.getPunishmentType() ) {
             case WARN -> Settings.WARN_BROADCAST.coloredStringlist();
@@ -230,7 +204,7 @@ public class NetunoPrePunishment extends NPunishment {
             final String publicBroadcast = Utils.replaceAllVariables( Utils.getCombinedString( publicBroadcastLines ), this );
 
             for ( Player player : Bukkit.getOnlinePlayers() ) {
-                if ( super.getPlayer().isOnline() && player.equals( super.getPlayer().getPlayer() ) == false ) {
+                if ( player.getUniqueId().toString().equals( super.getPlayerUuid() ) == false ) {
                     if ( staffBroadcastNoExist || VaultUtils.hasPerms( player, Settings.STAFF_PERMISSION.string() ) == false ) {
                         Utils.sendAnyMsg( player, publicBroadcast );
                     }
