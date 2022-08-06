@@ -65,6 +65,10 @@ public enum PunishSettings {
         this.value = new PunishSettingsEntry( path, valueType );
     }
 
+    public void reload() {
+        this.value = new PunishSettingsEntry( this.path, this.value.getValueType() );
+    }
+
     public String getPath() { return this.path; }
 
     public PunishSettingsEntry getValue() { return this.value; }
