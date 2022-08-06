@@ -4,7 +4,6 @@ import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache
 import com.github.cyberryan1.netunoapi.database.PunishmentsDatabase;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.sql.PreparedStatement;
@@ -74,7 +73,6 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
             ResultSet rs = ps.executeQuery();
             if ( rs.next() ) {
                 final int referencePunId = rs.getInt( "reference" );
-                Bukkit.broadcastMessage( "punId == " + punId + " || referencePunId == " + referencePunId ); // ! debug
 
                 if ( referencePunId > 0 ) {
                     NPunishment originalPun = getPunishment( referencePunId );
