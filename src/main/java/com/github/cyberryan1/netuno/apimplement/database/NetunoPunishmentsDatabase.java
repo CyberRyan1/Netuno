@@ -4,9 +4,9 @@ import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache
 import com.github.cyberryan1.netunoapi.database.PunishmentsDatabase;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishmentData;
+import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
 import org.bukkit.OfflinePlayer;
 
-import java.io.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,26 +27,27 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      */
     public void addPunishment( NPunishment punishment ) {
         punishment.ensureValid( false );
-        NPunishmentData data = ( NPunishmentData ) punishment;
 
         try {
-            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + "(player, data, guipun, reference) VALUES(?, ?, ?, ?);" );
-            ps.setString( 1, data.getPlayerUuid() );
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME +
+                    "player, staff, type, length, timestamp, reason, active, guipun, reference, notif) " +
+                    "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);" );
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream( baos );
-            oos.writeObject( data );
-            byte bytes[] = baos.toByteArray();
-            ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
-            ps.setBinaryStream( 2, bais, bytes.length );
-
-            ps.setString( 3, data.isGuiPun() + "" );
-            ps.setInt( 4, data.getReferencePunId() );
+            ps.setString( 1, punishment.getPlayerUuid() ); // player
+            ps.setString( 2, punishment.getStaffUuid() ); // staff
+            ps.setInt( 3, punishment.getPunishmentType().getIndex() ); // type
+            ps.setLong( 4, punishment.getLength() ); // length
+            ps.setLong( 5, punishment.getTimestamp() ); // timestamp
+            ps.setString( 6, punishment.getReason() ); // reason
+            ps.setInt( 7, punishment.isActive() ? 1 : 0 ); // active
+            ps.setInt( 8, punishment.isGuiPun() ? 1 : 0 ); // guipun
+            ps.setInt( 9, punishment.getReferencePunId() ); // reference
+            ps.setInt( 10, punishment.needsNotifSent() ? 1 : 0 ); // notif
 
             ps.addBatch();
             ps.executeBatch();
             ps.close();
-        } catch ( SQLException | IOException e ) {
+        } catch ( SQLException e ) {
             throw new RuntimeException( e );
         }
 
@@ -72,18 +73,24 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
 
             ResultSet rs = ps.executeQuery();
             if ( rs.next() ) {
-                byte bytes[] = ( byte[] ) rs.getObject( "data" );
-                ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
-                ObjectInputStream ois = new ObjectInputStream( bais );
-                data = ( NPunishmentData ) ois.readObject();
-                data.setId( rs.getInt( "id" ) );
-
-                NetunoPlayerCache.getOrLoad( data.getPlayerUuid() ).addPunishment( ( NPunishment ) data );
+                data = new NPunishmentData(
+                        rs.getInt( "id" ),
+                        PunishmentType.fromIndex( rs.getInt( "type" ) ),
+                        rs.getString( "player" ),
+                        rs.getString( "staff" ),
+                        rs.getLong( "length" ),
+                        rs.getLong( "timestamp" ),
+                        rs.getString( "reason" ),
+                        rs.getInt( "active" ) == 1,
+                        rs.getInt( "guipun" ) == 1,
+                        rs.getInt( "reference" ),
+                        rs.getInt( "notif" ) == 1
+                );
             }
 
             rs.close();
             ps.close();
-        } catch ( SQLException | IOException | ClassNotFoundException e ) {
+        } catch ( SQLException e ) {
             throw new RuntimeException( e );
         }
 
@@ -149,17 +156,25 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
 
             ResultSet rs = ps.executeQuery();
             while ( rs.next() ) {
-                byte bytes[] = ( byte[] ) rs.getObject( "data" );
-                ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
-                ObjectInputStream ois = new ObjectInputStream( bais );
-                NPunishmentData data = ( NPunishmentData ) ois.readObject();
-                data.setId( rs.getInt( "id" ) );
+                NPunishmentData data = new NPunishmentData(
+                        rs.getInt( "id" ),
+                        PunishmentType.fromIndex( rs.getInt( "type" ) ),
+                        rs.getString( "player" ),
+                        rs.getString( "staff" ),
+                        rs.getLong( "length" ),
+                        rs.getLong( "timestamp" ),
+                        rs.getString( "reason" ),
+                        rs.getInt( "active" ) == 1,
+                        rs.getInt( "guipun" ) == 1,
+                        rs.getInt( "reference" ),
+                        rs.getInt( "notif" ) == 1
+                );
                 toReturn.add( ( NPunishment ) data );
             }
 
             ps.close();
             rs.close();
-        } catch ( SQLException | IOException | ClassNotFoundException e ) {
+        } catch ( SQLException e ) {
             throw new RuntimeException( e );
         }
 
@@ -201,18 +216,25 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
 
             ResultSet rs = ps.executeQuery();
             while ( rs.next() ) {
-                byte bytes[] = ( byte[] ) rs.getObject( "data" );
-                ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
-                ObjectInputStream ois = new ObjectInputStream( bais );
-                NPunishmentData data = ( NPunishmentData ) ois.readObject();
-                data.setId( rs.getInt( "id" ) );
-
+                NPunishmentData data = new NPunishmentData(
+                        rs.getInt( "id" ),
+                        PunishmentType.fromIndex( rs.getInt( "type" ) ),
+                        rs.getString( "player" ),
+                        rs.getString( "staff" ),
+                        rs.getLong( "length" ),
+                        rs.getLong( "timestamp" ),
+                        rs.getString( "reason" ),
+                        rs.getInt( "active" ) == 1,
+                        rs.getInt( "guipun" ) == 1,
+                        rs.getInt( "reference" ),
+                        rs.getInt( "notif" ) == 1
+                );
                 toReturn.add( ( NPunishment ) data );
             }
 
             ps.close();
             rs.close();
-        } catch ( SQLException | IOException | ClassNotFoundException e ) {
+        } catch ( SQLException e ) {
             throw new RuntimeException( e );
         }
 
@@ -229,12 +251,19 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
 
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "UPDATE " + TABLE_NAME +
-                    " SET player = ?, data = ?, guipun = ?, reference = ? WHERE id = ?" );
+                    " SET player = ?, staff = ?, length = ?, timestamp = ?, reason = ?, active = ?, " +
+                    "guipun = ?, reference = ?, notif = ? WHERE id = ?;" );
             ps.setString( 1, newData.getPlayerUuid() );
-            ps.setObject( 2, ( NPunishmentData ) newData );
-            ps.setString( 3, newData.isGuiPun() + "" );
-            ps.setInt( 4, newData.getReferencePunId() );
-            ps.setInt( 5, newData.getId() );
+            ps.setString( 2, newData.getStaffUuid() );
+            ps.setLong( 3, newData.getLength() );
+            ps.setLong( 4, newData.getTimestamp() );
+            ps.setString( 5, newData.getReason() );
+            ps.setInt( 6, newData.isActive() ? 1 : 0 );
+            ps.setInt( 7, newData.isGuiPun() ? 1 : 0 );
+            ps.setInt( 8, newData.getReferencePunId() );
+            ps.setInt( 9, newData.needsNotifSent() ? 1 : 0 );
+
+            ps.setInt( 10, newData.getId() );
 
             ps.executeUpdate();
             ps.close();
