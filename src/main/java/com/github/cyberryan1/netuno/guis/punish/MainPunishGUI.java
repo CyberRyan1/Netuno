@@ -84,7 +84,7 @@ public class MainPunishGUI {
         if ( ipmute.getIndex() != -1 ) {
             gui.setItem( ipmute.getIndex(), new GUIItem( ipmute.getItem( this.target ), ipmute.getIndex(), () -> {
                 staff.closeInventory();
-                IPMutePunishGUI g = new IPMutePunishGUI( this.staff, this.target );
+                IpMutePunishGUI g = new IpMutePunishGUI( this.staff, this.target );
                 g.open();
             } ) );
         }
@@ -93,7 +93,7 @@ public class MainPunishGUI {
         if ( ipban.getIndex() != -1 ) {
             gui.setItem( ipban.getIndex(), new GUIItem( ipban.getItem( this.target ), ipban.getIndex(), () -> {
                 staff.closeInventory();
-                IPBanPunishGUI g = new IPBanPunishGUI( this.staff, this.target );
+                IpBanPunishGUI g = new IpBanPunishGUI( this.staff, this.target );
                 g.open();
             } ) );
         }

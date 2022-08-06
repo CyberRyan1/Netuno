@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class IPBanPunishGUI {
+public class IpBanPunishGUI {
 
     private final GUI gui;
     private final Player staff;
@@ -21,7 +21,7 @@ public class IPBanPunishGUI {
     private final MultiPunishButton punishButtons;
     private final int rowCount;
 
-    public IPBanPunishGUI( Player staff, OfflinePlayer target ) {
+    public IpBanPunishGUI( Player staff, OfflinePlayer target ) {
         this.staff = staff;
         this.target = target;
         this.punishButtons = PunishSettings.IPBAN_BUTTONS.multiButton();
