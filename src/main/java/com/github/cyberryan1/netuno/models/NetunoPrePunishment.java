@@ -46,6 +46,11 @@ public class NetunoPrePunishment extends NPunishment {
         // Notifications are only sent when an offline player is warned
         super.setNeedsNotifSent( super.getPunishmentType() == PunishmentType.WARN && super.getPlayer().isOnline() == false );
 
+        // Setting the reference ID if the punishment is an IP punishment
+        if ( super.getPunishmentType().isIpPunishment() ) {
+            super.setReferencePunId( -1 );
+        }
+
         // Executing the punishment in the database
         ApiNetuno.getData().getNetunoPuns().addPunishment( this );
 
