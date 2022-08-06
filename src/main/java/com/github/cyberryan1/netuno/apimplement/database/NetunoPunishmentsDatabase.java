@@ -72,7 +72,18 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
 
             ResultSet rs = ps.executeQuery();
             if ( rs.next() ) {
-                data = new NPunishment(
+                final int referencePunId = rs.getInt( "reference" );
+
+                if ( referencePunId > 0 ) {
+                    NPunishment originalPun = getPunishment( referencePunId );
+                    data = originalPun.copy();
+                    data.setId( rs.getInt( "id" ) );
+                    data.setReferencePunId( referencePunId );
+                    data.setPlayerUuid( rs.getString( "player" ) );
+                }
+
+                else {
+                    data = new NPunishment(
                         rs.getInt( "id" ),
                         PunishmentType.fromIndex( rs.getInt( "type" ) ),
                         rs.getString( "player" ),
@@ -82,9 +93,10 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
                         rs.getString( "reason" ),
                         rs.getInt( "active" ) == 1,
                         rs.getInt( "guipun" ) == 1,
-                        rs.getInt( "reference" ),
+                        referencePunId,
                         rs.getInt( "notif" ) == 1
-                );
+                    );
+                }
             }
 
             rs.close();
@@ -155,19 +167,33 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
 
             ResultSet rs = ps.executeQuery();
             while ( rs.next() ) {
-                NPunishment data = new NPunishment(
-                        rs.getInt( "id" ),
-                        PunishmentType.fromIndex( rs.getInt( "type" ) ),
-                        rs.getString( "player" ),
-                        rs.getString( "staff" ),
-                        rs.getLong( "length" ),
-                        rs.getLong( "timestamp" ),
-                        rs.getString( "reason" ),
-                        rs.getInt( "active" ) == 1,
-                        rs.getInt( "guipun" ) == 1,
-                        rs.getInt( "reference" ),
-                        rs.getInt( "notif" ) == 1
-                );
+                NPunishment data;
+                final int referencePunId = rs.getInt( "reference" );
+
+                if ( referencePunId > 0 ) {
+                    NPunishment originalPun = getPunishment( referencePunId );
+                    data = originalPun.copy();
+                    data.setId( rs.getInt( "id" ) );
+                    data.setReferencePunId( referencePunId );
+                    data.setPlayerUuid( rs.getString( "player" ) );
+                }
+
+                else {
+                    data = new NPunishment(
+                            rs.getInt( "id" ),
+                            PunishmentType.fromIndex( rs.getInt( "type" ) ),
+                            rs.getString( "player" ),
+                            rs.getString( "staff" ),
+                            rs.getLong( "length" ),
+                            rs.getLong( "timestamp" ),
+                            rs.getString( "reason" ),
+                            rs.getInt( "active" ) == 1,
+                            rs.getInt( "guipun" ) == 1,
+                            referencePunId,
+                            rs.getInt( "notif" ) == 1
+                    );
+                }
+
                 toReturn.add( data );
             }
 
@@ -208,6 +234,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      */
     public List<NPunishment> forceGetPunishmentsFromReference( int referenceId ) {
         List<NPunishment> toReturn = new ArrayList<>();
+        final NPunishment ORIGINAL_PUN = getPunishment( referenceId );
 
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE reference = ?;" );
@@ -215,19 +242,11 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
 
             ResultSet rs = ps.executeQuery();
             while ( rs.next() ) {
-                NPunishment data = new NPunishment(
-                        rs.getInt( "id" ),
-                        PunishmentType.fromIndex( rs.getInt( "type" ) ),
-                        rs.getString( "player" ),
-                        rs.getString( "staff" ),
-                        rs.getLong( "length" ),
-                        rs.getLong( "timestamp" ),
-                        rs.getString( "reason" ),
-                        rs.getInt( "active" ) == 1,
-                        rs.getInt( "guipun" ) == 1,
-                        rs.getInt( "reference" ),
-                        rs.getInt( "notif" ) == 1
-                );
+                NPunishment data = ORIGINAL_PUN.copy();
+                data.setId( rs.getInt( "id" ) );
+                data.setReferencePunId( referenceId );
+                data.setPlayerUuid( rs.getString( "player" ) );
+
                 toReturn.add( data );
             }
 
@@ -246,8 +265,28 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      */
     public void updatePunishment( NPunishment newData ) {
         newData.ensureValid( true );
-        NetunoPlayerCache.getOrLoad( newData.getPlayerUuid() ).addPunishment( newData );
 
+        if ( newData.getPunishmentType().isIpPunishment() ) {
+            final List<NPunishment> allReferences = forceGetPunishmentsFromReference( newData.getReferencePunId() );
+            allReferences.add( getPunishment( newData.getReferencePunId() ) );
+
+            for ( NPunishment ref : allReferences ) {
+                NPunishment newPun = newData.copy();
+                newPun.setId( ref.getId() );
+                newPun.setPlayerUuid( ref.getPlayerUuid() );
+
+                NetunoPlayerCache.getOrLoad( newPun.getPlayerUuid() ).addPunishment( newPun );
+                executePunishmentDatabaseUpdate( newPun );
+            }
+        }
+
+        else {
+            NetunoPlayerCache.getOrLoad( newData.getPlayerUuid() ).addPunishment( newData );
+            executePunishmentDatabaseUpdate( newData );
+        }
+    }
+
+    private void executePunishmentDatabaseUpdate( NPunishment newData ) {
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "UPDATE " + TABLE_NAME +
                     " SET player = ?, staff = ?, length = ?, timestamp = ?, reason = ?, active = ?, " +
