@@ -1,7 +1,6 @@
 package com.github.cyberryan1.netuno.guis.utils;
 
 import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
-import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.time.NDate;
 import com.github.cyberryan1.netunoapi.models.time.NDuration;
@@ -34,11 +33,7 @@ public class GUIUtils {
 
         if ( pun.getPunishmentType().isIpPunishment() ) {
             int originalPunishmentId = pun.getId();
-
-            if ( pun.getReferencePunId() != -1 ) {
-                NPunishment originalPunishment = ApiNetuno.getData().getNetunoPuns().getPunishment( pun.getReferencePunId() );
-                originalPunishmentId = originalPunishment.getId();
-            }
+            if ( pun.getReferencePunId() != -1 ) { originalPunishmentId = pun.getReferencePunId(); }
 
             CoreItemUtils.addItemLore( sign, "&pOriginal Punishment ID: &s" + originalPunishmentId );
         }
