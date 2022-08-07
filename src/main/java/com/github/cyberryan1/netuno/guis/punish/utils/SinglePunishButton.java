@@ -79,7 +79,12 @@ public class SinglePunishButton {
     public ItemStack getItem( OfflinePlayer target ) {
         NetunoPlayer nPlayer = NetunoPlayerCache.getOrLoad( target.getUniqueId().toString() );
         this.previousPunCount = ( int ) nPlayer.getPunishments().stream()
-                .filter( pun -> pun.isGuiPun() && pun.getReason().contains( CoreUtils.removeColor( CoreUtils.getColored( this.itemName ) ) ) )
+                .filter( pun -> {
+                    if ( pun.isGuiPun() == false || pun.getReason().contains( " (" ) == false ) { return false; }
+                    String reason = pun.getReason().substring( 0, pun.getReason().lastIndexOf( " (" ) );
+                    String thisReason = CoreUtils.removeColor( CoreUtils.getColored( this.itemName ) );
+                    return reason.equalsIgnoreCase( thisReason );
+                } )
                 .count();
 
         ItemStack toReturn = CoreItemUtils.createItem( this.itemMaterial, replaceVariables( this.itemName, target, this.previousPunCount ) );
