@@ -7,6 +7,8 @@ import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import com.github.cyberryan1.netunoapi.events.NetunoEventDispatcher;
+import com.github.cyberryan1.netunoapi.events.punish.NetunoPrePunishEvent;
 import com.github.cyberryan1.netunoapi.models.punishments.NPrePunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
@@ -41,6 +43,11 @@ public class NetunoPrePunishment implements NPrePunishment {
         if ( pun.getPunishmentType().isIpPunishment() ) {
             pun.setReferencePunId( -1 );
         }
+
+        // Dispatching the event and seeing if it was cancelled
+        NetunoPrePunishEvent event = new NetunoPrePunishEvent( pun, silent );
+        NetunoEventDispatcher.dispatch( event );
+        if ( event.isCancelled() ) { return; }
 
         // Executing the punishment in the database
         ApiNetuno.getData().getNetunoPuns().addPunishment( pun );

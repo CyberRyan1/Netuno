@@ -11,6 +11,8 @@ import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import com.github.cyberryan1.netunoapi.events.NetunoEventDispatcher;
+import com.github.cyberryan1.netunoapi.events.report.NetunoReportEvent;
 import com.github.cyberryan1.netunoapi.models.reports.NReport;
 import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.Bukkit;
@@ -85,6 +87,7 @@ public class ReportGUI implements Listener {
                 }
             }
 
+            List<NReport> reports = new ArrayList<>();
             for ( String reason : reasonsList ) {
                 NReport report = new NReport();
                 report.setPlayer( this.target );
@@ -92,7 +95,10 @@ public class ReportGUI implements Listener {
                 report.setReason( reason );
                 report.setTimestamp( TimeUtils.getCurrentTimestamp() );
                 ApiNetuno.getData().getNetunoReports().addReport( report );
+                reports.add( report );
             }
+
+            NetunoEventDispatcher.dispatch( new NetunoReportEvent( reports ) );
         } ) );
 
         int guiIndex = 19;

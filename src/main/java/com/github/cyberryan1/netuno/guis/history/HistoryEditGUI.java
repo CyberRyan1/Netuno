@@ -11,6 +11,9 @@ import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import com.github.cyberryan1.netunoapi.events.NetunoEventDispatcher;
+import com.github.cyberryan1.netunoapi.events.history.HistoryEditAction;
+import com.github.cyberryan1.netunoapi.events.history.NetunoHistoryEditEvent;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.Bukkit;
@@ -95,8 +98,11 @@ public class HistoryEditGUI {
         HistoryEditManager.removeEditing( staff );
         editingReason = false;
         if ( newReason.equalsIgnoreCase( "cancel" ) == false ) {
+            NPunishment oldPun = punishment.copy();
             punishment.setReason( newReason );
             ApiNetuno.getData().getNetunoPuns().updatePunishment( punishment );
+
+            NetunoEventDispatcher.dispatch( new NetunoHistoryEditEvent( oldPun, punishment, staff, HistoryEditAction.EDIT_REASON ) );
         }
 
         HistoryEditGUI newGui = new HistoryEditGUI( target, staff, punishment );
@@ -108,8 +114,11 @@ public class HistoryEditGUI {
         editingLength = false;
         if ( newLength.equalsIgnoreCase( "cancel" ) == false ) {
             if ( TimeUtils.isAllowableLength( newLength ) ) {
+                NPunishment oldPun = punishment.copy();
                 punishment.setLength( TimeUtils.durationFromUnformatted( newLength ).timestamp() );
                 ApiNetuno.getData().getNetunoPuns().updatePunishment( punishment );
+
+                NetunoEventDispatcher.dispatch( new NetunoHistoryEditEvent( oldPun, punishment, staff, HistoryEditAction.EDIT_LENGTH ) );
             }
             else {
                 CommandErrors.sendInvalidTimespan( staff, newLength );

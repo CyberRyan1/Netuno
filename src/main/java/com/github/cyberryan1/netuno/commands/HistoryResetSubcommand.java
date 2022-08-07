@@ -5,10 +5,12 @@ import com.github.cyberryan1.cybercore.helpers.command.CyberSubcommand;
 import com.github.cyberryan1.cybercore.helpers.command.SubcommandStatus;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
+import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
-import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
+import com.github.cyberryan1.netunoapi.events.NetunoEventDispatcher;
+import com.github.cyberryan1.netunoapi.events.history.NetunoHistoryResetEvent;
+import com.github.cyberryan1.netunoapi.models.players.NPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -37,17 +39,17 @@ public class HistoryResetSubcommand extends CyberSubcommand {
     @Override
     public SubcommandStatus execute( CommandSender sender, String args[] ) {
         final Player player = ( Player ) sender;
-        final OfflinePlayer target = Bukkit.getOfflinePlayer( args[1] );
+        final NPlayer target = NetunoPlayerCache.forceLoad( Bukkit.getOfflinePlayer( args[1] ) );
 
-        CoreUtils.sendMsg( player, "&sDeleting all punishments for &p" + target.getName() + "&s..." );
+        CoreUtils.sendMsg( player, "&sDeleting all punishments for &p" + target.getPlayer().getName() + "&s..." );
 
-        List<NPunishment> punishments = ApiNetuno.getData().getNetunoPuns().getPunishments( target );
-        ApiNetuno.getData().getNetunoPuns().removePunishments( target );
+        ApiNetuno.getData().getNetunoPuns().removePunishments( target.getPlayer() );
 
-        String plural = ( punishments.size() == 1 ) ? ( "punishment" ) : ( "punishments" );
-        CoreUtils.sendMsg( player, "&sSuccessfully deleted &p" + punishments.size() + " &s"
-                + plural + " from &p" + target.getName() + "&s's history" );
+        String plural = ( target.getPunishments().size() == 1 ) ? ( "punishment" ) : ( "punishments" );
+        CoreUtils.sendMsg( player, "&sSuccessfully deleted &p" + target.getPunishments().size() + " &s"
+                + plural + " from &p" + target.getPlayer().getName() + "&s's history" );
 
+        NetunoEventDispatcher.dispatch( new NetunoHistoryResetEvent( target, player ) );
         return SubcommandStatus.NORMAL;
     }
 }
