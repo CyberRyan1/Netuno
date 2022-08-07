@@ -42,17 +42,17 @@ public class KickCommand extends CyberCommand {
     public boolean execute( CommandSender sender, String args[] ) {
         final OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
 
-        NetunoPrePunishment pun = new NetunoPrePunishment();
-        pun.setPlayer( target );
-        pun.setPunishmentType( PunishmentType.KICK );
-        pun.setTimestamp( TimeUtils.getCurrentTimestamp() );
-        pun.setReason( Utils.getRemainingArgs( args, 1 ) );
-        pun.setLength( 0 );
+        NetunoPrePunishment prePun = new NetunoPrePunishment();
+        prePun.getPunishment().setPlayer( target );
+        prePun.getPunishment().setPunishmentType( PunishmentType.KICK );
+        prePun.getPunishment().setTimestamp( TimeUtils.getCurrentTimestamp() );
+        prePun.getPunishment().setReason( Utils.getRemainingArgs( args, 1 ) );
+        prePun.getPunishment().setLength( 0 );
 
-        pun.setStaffUuid( "CONSOLE" );
+        prePun.getPunishment().setStaffUuid( "CONSOLE" );
         if ( sender instanceof Player ) {
             Player staff = ( Player ) sender;
-            pun.setStaff( staff );
+            prePun.getPunishment().setStaff( staff );
 
             if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
                 CommandErrors.sendPlayerCannotBePunished( staff, target.getName() );
@@ -60,7 +60,7 @@ public class KickCommand extends CyberCommand {
             }
         }
 
-        pun.executePunishment();
+        prePun.executePunishment();
         return true;
     }
 }

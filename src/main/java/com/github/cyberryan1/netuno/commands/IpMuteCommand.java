@@ -54,18 +54,18 @@ public class IpMuteCommand extends CyberCommand {
 
         final OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
 
-        NetunoPrePunishment pun = new NetunoPrePunishment();
-        pun.setPlayer( target );
-        pun.setPunishmentType( PunishmentType.IPMUTE );
-        pun.setTimestamp( TimeUtils.getCurrentTimestamp() );
-        pun.setReason( Utils.getRemainingArgs( args, 2 ) );
-        pun.setLength( TimeUtils.durationFromUnformatted( args[1] ).timestamp() );
-        pun.setActive( true );
+        NetunoPrePunishment prePun = new NetunoPrePunishment();
+        prePun.getPunishment().setPlayer( target );
+        prePun.getPunishment().setPunishmentType( PunishmentType.IPMUTE );
+        prePun.getPunishment().setTimestamp( TimeUtils.getCurrentTimestamp() );
+        prePun.getPunishment().setReason( Utils.getRemainingArgs( args, 2 ) );
+        prePun.getPunishment().setLength( TimeUtils.durationFromUnformatted( args[1] ).timestamp() );
+        prePun.getPunishment().setActive( true );
 
-        pun.setStaffUuid( "CONSOLE" );
+        prePun.getPunishment().setStaffUuid( "CONSOLE" );
         if ( sender instanceof Player ) {
             Player staff = ( Player ) sender;
-            pun.setStaff( staff );
+            prePun.getPunishment().setStaff( staff );
 
             if ( Utils.checkStaffPunishmentAllowable( staff, target ) == false ) {
                 CommandErrors.sendPlayerCannotBePunished( staff, target.getName() );
@@ -73,7 +73,7 @@ public class IpMuteCommand extends CyberCommand {
             }
         }
 
-        pun.executePunishment();
+        prePun.executePunishment();
         return true;
     }
 }

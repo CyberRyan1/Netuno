@@ -87,28 +87,28 @@ public class SinglePunishButton {
     }
 
     public void executePunish( Player staff, OfflinePlayer player ) {
-        final NetunoPrePunishment pun = new NetunoPrePunishment();
-        pun.setPlayer( player );
-        pun.setStaff( staff );
-        pun.setTimestamp( TimeUtils.getCurrentTimestamp() );
-        pun.setGuiPun( true );
+        final NetunoPrePunishment prePun = new NetunoPrePunishment();
+        prePun.getPunishment().setPlayer( player );
+        prePun.getPunishment().setStaff( staff );
+        prePun.getPunishment().setTimestamp( TimeUtils.getCurrentTimestamp() );
+        prePun.getPunishment().setGuiPun( true );
 
         String reason = CoreUtils.removeColor( CoreUtils.getColored( this.itemName ) );
         reason += " (" + Utils.formatIntIntoAmountString( this.previousPunCount + 1 ) + " Offense)";
         if ( StaffPlayerPunishManager.getStaffSilent( staff ) ) { reason += " -s"; }
-        pun.setReason( reason );
+        prePun.getPunishment().setReason( reason );
 
         if ( this.guiType.equalsIgnoreCase( "warn" ) ) {
             if ( this.previousPunCount < this.punishAfter ) {
-                pun.setActive( false );
-                pun.setPunishmentType( PunishmentType.WARN );
-                pun.setLength( 0 );
+                prePun.getPunishment().setActive( false );
+                prePun.getPunishment().setPunishmentType( PunishmentType.WARN );
+                prePun.getPunishment().setLength( 0 );
             }
 
             else {
-                pun.setPunishmentType( PunishmentType.fromString( this.punishTypeAfter ) );
-                pun.setActive( false );
-                if ( pun.getPunishmentType().hasNoLength() == false ) {
+                prePun.getPunishment().setPunishmentType( PunishmentType.fromString( this.punishTypeAfter ) );
+                prePun.getPunishment().setActive( false );
+                if ( prePun.getPunishment().getPunishmentType().hasNoLength() == false ) {
                     NDuration length = TimeUtils.durationFromUnformatted( this.startingTime );
                     if ( this.autoscale ) {
                         length = TimeUtils.getScaledDuration(
@@ -118,18 +118,18 @@ public class SinglePunishButton {
                         );
                     }
 
-                    pun.setLength( length.timestamp() );
-                    pun.setActive( true );
+                    prePun.getPunishment().setLength( length.timestamp() );
+                    prePun.getPunishment().setActive( true );
                 }
             }
         }
 
         else {
-            pun.setPunishmentType( PunishmentType.fromString( this.guiType ) );
+            prePun.getPunishment().setPunishmentType( PunishmentType.fromString( this.guiType ) );
 
-            if ( pun.getPunishmentType() == PunishmentType.IPMUTE && this.startingTime.equalsIgnoreCase( "HIGHEST_MUTED_ALT" ) ) {
+            if ( prePun.getPunishment().getPunishmentType() == PunishmentType.IPMUTE && this.startingTime.equalsIgnoreCase( "HIGHEST_MUTED_ALT" ) ) {
                 NPunishment highest = null;
-                for ( OfflinePlayer alt : ApiNetuno.getData().getNetunoAlts().getAlts( pun.getPlayer() ) ) {
+                for ( OfflinePlayer alt : ApiNetuno.getData().getNetunoAlts().getAlts( prePun.getPunishment().getPlayer() ) ) {
                     NPlayer nAlt = NetunoPlayerCache.getOrLoad( alt );
                     for ( NPunishment altPun : nAlt.getPunishments() ) {
                         if ( altPun.isActive() && altPun.getPunishmentType() == PunishmentType.MUTE ) {
@@ -141,16 +141,16 @@ public class SinglePunishButton {
                 }
 
                 if ( highest == null ) {
-                    CoreUtils.sendMsg( staff, "&p" + pun.getPlayer().getName() + "&7 has no alts with active mutes" );
+                    CoreUtils.sendMsg( staff, "&p" + prePun.getPunishment().getPlayer().getName() + "&7 has no alts with active mutes" );
                     return;
                 }
 
-                pun.setLength( highest.getLength() );
+                prePun.getPunishment().setLength( highest.getLength() );
             }
 
-            else if ( pun.getPunishmentType() == PunishmentType.IPBAN && this.startingTime.equalsIgnoreCase( "HIGHEST_BANNED_ALT" )  ) {
+            else if ( prePun.getPunishment().getPunishmentType() == PunishmentType.IPBAN && this.startingTime.equalsIgnoreCase( "HIGHEST_BANNED_ALT" )  ) {
                 NPunishment highest = null;
-                for ( OfflinePlayer alt : ApiNetuno.getData().getNetunoAlts().getAlts( pun.getPlayer() ) ) {
+                for ( OfflinePlayer alt : ApiNetuno.getData().getNetunoAlts().getAlts( prePun.getPunishment().getPlayer() ) ) {
                     NPlayer nAlt = NetunoPlayerCache.getOrLoad( alt );
                     for ( NPunishment altPun : nAlt.getPunishments() ) {
                         if ( altPun.isActive() && altPun.getPunishmentType() == PunishmentType.BAN ) {
@@ -162,11 +162,11 @@ public class SinglePunishButton {
                 }
 
                 if ( highest == null ) {
-                    CoreUtils.sendMsg( staff, "&p" + pun.getPlayer().getName() + "&7 has no alts with active bans" );
+                    CoreUtils.sendMsg( staff, "&p" + prePun.getPunishment().getPlayer().getName() + "&7 has no alts with active bans" );
                     return;
                 }
 
-                pun.setLength( highest.getLength() );
+                prePun.getPunishment().setLength( highest.getLength() );
             }
 
             else {
@@ -178,14 +178,14 @@ public class SinglePunishButton {
                             this.previousPunCount - this.punishAfter + 1
                     );
                 }
-                pun.setLength( length.timestamp() );
+                prePun.getPunishment().setLength( length.timestamp() );
             }
 
-            pun.setActive( true );
+            prePun.getPunishment().setActive( true );
         }
 
         staff.playSound( staff.getLocation(), Sound.ENTITY_ENDER_EYE_DEATH, 10, 1 );
-        pun.executePunishment();
+        prePun.executePunishment();
     }
 
     private String replaceVariables( String str, OfflinePlayer target, int punCount ) {

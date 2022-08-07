@@ -21,13 +21,19 @@ import java.util.stream.Collectors;
 
 public class NetunoPrePunishment implements NPrePunishment {
 
-    private NPunishment pun;
+    private final NPunishment pun;
 
     public NetunoPrePunishment( NPunishment pun ) {
         this.pun = pun;
     }
 
-    public NetunoPrePunishment() {}
+    public NetunoPrePunishment() {
+        this.pun = new NPunishment();
+    }
+
+    public NPunishment getPunishment() {
+        return this.pun;
+    }
 
     public void executePunishment() {
         // Checking if the punishment is silent

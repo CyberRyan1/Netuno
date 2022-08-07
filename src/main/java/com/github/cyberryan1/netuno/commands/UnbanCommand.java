@@ -48,17 +48,17 @@ public class UnbanCommand extends CyberCommand {
                 .collect( Collectors.toList() );
 
         if ( punishments.size() >= 1 ) {
-            NetunoPrePunishment pun = new NetunoPrePunishment();
-            pun.setPlayer( target.getPlayer() );
-            pun.setPunishmentType( PunishmentType.UNBAN );
-            pun.setTimestamp( TimeUtils.getCurrentTimestamp() );
-            pun.setReason( "" );
-            pun.setLength( 0 );
+            NetunoPrePunishment prePun = new NetunoPrePunishment();
+            prePun.getPunishment().setPlayer( target.getPlayer() );
+            prePun.getPunishment().setPunishmentType( PunishmentType.UNBAN );
+            prePun.getPunishment().setTimestamp( TimeUtils.getCurrentTimestamp() );
+            prePun.getPunishment().setReason( "" );
+            prePun.getPunishment().setLength( 0 );
 
-            pun.setStaffUuid( "CONSOLE" );
-            if ( sender instanceof Player ) { pun.setStaff( ( Player ) sender ); }
+            prePun.getPunishment().setStaffUuid( "CONSOLE" );
+            if ( sender instanceof Player ) { prePun.getPunishment().setStaff( ( Player ) sender ); }
 
-            pun.executePunishment();
+            prePun.executePunishment();
         }
 
         else {
