@@ -5,11 +5,14 @@ import com.github.cyberryan1.netuno.apimplement.database.ConnectionManager;
 import com.github.cyberryan1.netuno.apimplement.database.DatabaseManager;
 import com.github.cyberryan1.netuno.apimplement.database.helpers.AltSecurityLevel;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
+import com.github.cyberryan1.netuno.apimplement.models.punishments.NetunoPrePunishment;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.NetunoApi;
 import com.github.cyberryan1.netunoapi.database.DatabaseConnection;
 import com.github.cyberryan1.netunoapi.database.NetunoDatabases;
 import com.github.cyberryan1.netunoapi.models.players.NPlayerLoader;
+import com.github.cyberryan1.netunoapi.models.punishments.NPrePunishment;
+import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import org.bukkit.plugin.ServicePriority;
 
 public class ApiNetuno implements NetunoApi {
@@ -108,6 +111,11 @@ public class ApiNetuno implements NetunoApi {
     @Override
     public NPlayerLoader getPlayerLoader() {
         return playerCache;
+    }
+
+    @Override
+    public NPrePunishment getPrePunishment( NPunishment nPunishment ) {
+        return new NetunoPrePunishment( nPunishment );
     }
 
     //

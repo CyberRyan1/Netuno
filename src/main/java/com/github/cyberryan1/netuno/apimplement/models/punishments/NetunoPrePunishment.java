@@ -10,7 +10,6 @@ import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.models.punishments.NPrePunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
-import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -18,60 +17,37 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class NetunoPrePunishment extends NetunoPunishment implements NPrePunishment {
+public class NetunoPrePunishment implements NPrePunishment {
 
-    public NetunoPrePunishment( OfflinePlayer player, OfflinePlayer staff, PunishmentType punishmentType, String unformattedLength, String reason ) {
-        super.setPlayer( player );
-        super.setStaff( staff );
-        super.setPunishmentType( punishmentType );
-        super.setLength( TimeUtils.durationFromUnformatted( unformattedLength ).timestamp() );
-        super.setReason( reason );
-    }
-
-    public NetunoPrePunishment( OfflinePlayer player, OfflinePlayer staff, PunishmentType punishmentType, String reason ) {
-        super.setPlayer( player );
-        super.setStaff( staff );
-        super.setPunishmentType( punishmentType );
-        super.setReason( reason );
-    }
+    private NPunishment pun;
 
     public NetunoPrePunishment( NPunishment pun ) {
-        super.setId( pun.getId() );
-        super.setPunishmentType( pun.getPunishmentType() );
-        super.setPlayerUuid( pun.getPlayerUuid() );
-        super.setStaffUuid( pun.getStaffUuid() );
-        super.setLength( pun.getLength() );
-        super.setTimestamp( pun.getTimestamp() );
-        super.setReason( pun.getReason() );
-        super.setReferencePunId( pun.getReferencePunId() );
-        super.setGuiPun( pun.isGuiPun() );
-        super.setActive( pun.isActive() );
-        super.setNeedsNotifSent( pun.needsNotifSent() );
+        this.pun = pun;
     }
 
     public NetunoPrePunishment() {}
 
     public void executePunishment() {
         // Checking if the punishment is silent
-        boolean silent = super.getReason().contains( "-s" );
+        boolean silent = pun.getReason().contains( "-s" );
         // Removing all -s from the reason
-        super.setReason( super.getReason().replace( "-s", "" ) );
+        pun.setReason( pun.getReason().replace( "-s", "" ) );
 
         // Set if the player needs a notification or not
         // Notifications are only sent when an offline player is warned
-        super.setNeedsNotifSent( super.getPunishmentType() == PunishmentType.WARN && super.getPlayer().isOnline() == false );
+        pun.setNeedsNotifSent( pun.getPunishmentType() == PunishmentType.WARN && pun.getPlayer().isOnline() == false );
 
         // Setting the reference ID if the punishment is an IP punishment
-        if ( super.getPunishmentType().isIpPunishment() ) {
-            super.setReferencePunId( -1 );
+        if ( pun.getPunishmentType().isIpPunishment() ) {
+            pun.setReferencePunId( -1 );
         }
 
         // Executing the punishment in the database
-        ApiNetuno.getData().getNetunoPuns().addPunishment( this );
+        ApiNetuno.getData().getNetunoPuns().addPunishment( pun );
 
         // Iterating through all the player's alts and adding reference punishments to them
         //      Only if the punishment is an IP punishment.
-        if ( super.getPunishmentType().isIpPunishment() ) {
+        if ( pun.getPunishmentType().isIpPunishment() ) {
             final int recentlyAddedId = ApiNetuno.getData().getNetunoPuns().getRecentlyInsertedId();
             if ( recentlyAddedId == -1 ) {
                 CoreUtils.logError( "An error occurred while trying to get the most recently inserted ID, "
@@ -79,21 +55,22 @@ public class NetunoPrePunishment extends NetunoPunishment implements NPrePunishm
                 return;
             }
 
-            for ( OfflinePlayer alt : ApiNetuno.getData().getNetunoAlts().getAlts( super.getPlayer() ) ) {
-                if ( alt.getUniqueId().equals( super.getPlayer().getUniqueId() ) == false ) {
-                    NetunoPrePunishment altPun = new NetunoPrePunishment( this );
+            for ( OfflinePlayer alt : ApiNetuno.getData().getNetunoAlts().getAlts( pun.getPlayer() ) ) {
+                if ( alt.getUniqueId().equals( pun.getPlayer().getUniqueId() ) == false ) {
+                    NPunishment altPun = pun.copy();
                     altPun.setId( -1 );
                     altPun.setPlayer( alt );
                     altPun.setReferencePunId( recentlyAddedId );
-                    altPun.executeAsReferencePunishment();
+                    NetunoPrePunishment altPrePun = new NetunoPrePunishment( altPun );
+                    altPrePun.executeAsReferencePunishment();
                 }
             }
         }
 
         // For unpunishments (unmutes, unbans, etc.), need to go through all their previous punishments of
         //      the unpunishment type and set them as unactive.
-        if ( super.getPunishmentType().hasNoReason() ) {
-            final PunishmentType unpunType = switch ( super.getPunishmentType() ) {
+        if ( pun.getPunishmentType().hasNoReason() ) {
+            final PunishmentType unpunType = switch ( pun.getPunishmentType() ) {
                 case UNMUTE -> PunishmentType.MUTE;
                 case UNBAN -> PunishmentType.BAN;
                 case UNIPMUTE -> PunishmentType.IPMUTE;
@@ -109,8 +86,8 @@ public class NetunoPrePunishment extends NetunoPunishment implements NPrePunishm
 
             // If the punishment type is an un IP punishment, need to go through all the player's alts
             //      Otherwise just need to go through the player
-            if ( super.getPunishmentType().isIpPunishment() == false ) {
-                final NetunoPlayer nPlayer = NetunoPlayerCache.forceLoad( super.getPlayer() );
+            if ( pun.getPunishmentType().isIpPunishment() == false ) {
+                final NetunoPlayer nPlayer = NetunoPlayerCache.forceLoad( pun.getPlayer() );
                 final List<NPunishment> puns = nPlayer.getPunishments().stream()
                         .filter( playerPun -> playerPun.getPunishmentType() == unpunType && playerPun.isActive() )
                         .collect( Collectors.toList() );
@@ -123,7 +100,7 @@ public class NetunoPrePunishment extends NetunoPunishment implements NPrePunishm
             }
 
             else {
-                for ( OfflinePlayer alt : ApiNetuno.getData().getNetunoAlts().getAlts( super.getPlayer() ) ) {
+                for ( OfflinePlayer alt : ApiNetuno.getData().getNetunoAlts().getAlts( pun.getPlayer() ) ) {
                     final NetunoPlayer nAlt = NetunoPlayerCache.forceLoad( alt );
                     final List<NPunishment> puns = nAlt.getPunishments().stream()
                             .filter( playerPun -> playerPun.getPunishmentType() == unpunType && playerPun.isActive() )
@@ -148,7 +125,7 @@ public class NetunoPrePunishment extends NetunoPunishment implements NPrePunishm
 
     private void executeAsReferencePunishment() {
         // Executing the punishment in the database
-        ApiNetuno.getData().getNetunoPuns().addPunishment( this );
+        ApiNetuno.getData().getNetunoPuns().addPunishment( pun );
 
         // Kicking the player from the server if the punishment is a kick, ban, or ipban and the player is online
         attemptKickPlayer();
@@ -157,8 +134,8 @@ public class NetunoPrePunishment extends NetunoPunishment implements NPrePunishm
     }
 
     private void attemptKickPlayer() {
-        if ( super.getPlayer().isOnline() == false ) { return; }
-        String lines = switch ( super.getPunishmentType() ) {
+        if ( pun.getPlayer().isOnline() == false ) { return; }
+        String lines = switch ( pun.getPunishmentType() ) {
             case KICK -> Utils.getCombinedString( Settings.KICK_KICKED_LINES.coloredStringlist() );
             case BAN -> Utils.getCombinedString( Settings.BAN_MESSAGE.coloredStringlist() );
             case IPBAN -> Utils.getCombinedString( Settings.IPBAN_MESSAGE.coloredStringlist() );
@@ -166,14 +143,14 @@ public class NetunoPrePunishment extends NetunoPunishment implements NPrePunishm
         };
 
         if ( lines != null && lines.replace( "\n", "" ).isBlank() == false ) {
-            lines = Utils.replaceAllVariables( lines, this );
-            super.getPlayer().getPlayer().kickPlayer( lines );
+            lines = Utils.replaceAllVariables( lines, pun );
+            pun.getPlayer().getPlayer().kickPlayer( lines );
         }
     }
 
     private void attemptSendMessage() {
-        if ( super.getPlayer().isOnline() == false ) { return; }
-        String lines = switch ( super.getPunishmentType() ) {
+        if ( pun.getPlayer().isOnline() == false ) { return; }
+        String lines = switch ( pun.getPunishmentType() ) {
             case WARN -> Utils.getCombinedString( Settings.WARN_MESSAGE.coloredStringlist() );
             case MUTE -> Utils.getCombinedString( Settings.MUTE_MESSAGE.coloredStringlist() );
             case UNMUTE -> Utils.getCombinedString( Settings.UNMUTE_MESSAGE.coloredStringlist() );
@@ -183,14 +160,14 @@ public class NetunoPrePunishment extends NetunoPunishment implements NPrePunishm
         };
 
         if ( lines != null && lines.replace( "\n", "" ).isBlank() == false ) {
-            lines = Utils.replaceAllVariables( lines, this );
-            super.getPlayer().getPlayer().sendMessage( lines );
+            lines = Utils.replaceAllVariables( lines, pun );
+            pun.getPlayer().getPlayer().sendMessage( lines );
         }
     }
 
     private void doBroadcasts( boolean silent ) {
         // Getting the public and staff announcement messages from the settings
-        final String publicBroadcastLines[] = switch ( super.getPunishmentType() ) {
+        final String publicBroadcastLines[] = switch ( pun.getPunishmentType() ) {
             case WARN -> Settings.WARN_BROADCAST.coloredStringlist();
             case KICK -> Settings.KICK_BROADCAST.coloredStringlist();
             case MUTE -> Settings.MUTE_BROADCAST.coloredStringlist();
@@ -202,7 +179,7 @@ public class NetunoPrePunishment extends NetunoPunishment implements NPrePunishm
             case IPBAN -> Settings.IPBAN_BROADCAST.coloredStringlist();
             case UNIPBAN -> Settings.UNIPBAN_BROADCAST.coloredStringlist();
         };
-        final String staffBroadcastLines[] = switch ( super.getPunishmentType() ) {
+        final String staffBroadcastLines[] = switch ( pun.getPunishmentType() ) {
             case WARN -> Settings.WARN_STAFF_BROADCAST.coloredStringlist();
             case KICK -> Settings.KICK_STAFF_BROADCAST.coloredStringlist();
             case MUTE -> Settings.MUTE_STAFF_BROADCAST.coloredStringlist();
@@ -221,10 +198,10 @@ public class NetunoPrePunishment extends NetunoPunishment implements NPrePunishm
         //      variable is either null or has no contents.
         boolean staffBroadcastNoExist = ( staffBroadcastLines == null ) || ( staffBroadcastLines.length == 0 );
         if ( silent == false && publicBroadcastLines != null && publicBroadcastLines.length > 0 ) {
-            final String publicBroadcast = Utils.replaceAllVariables( Utils.getCombinedString( publicBroadcastLines ), this );
+            final String publicBroadcast = Utils.replaceAllVariables( Utils.getCombinedString( publicBroadcastLines ), pun );
 
             for ( Player player : Bukkit.getOnlinePlayers() ) {
-                if ( player.getUniqueId().toString().equals( super.getPlayerUuid() ) == false ) {
+                if ( player.getUniqueId().toString().equals( pun.getPlayerUuid() ) == false ) {
                     if ( staffBroadcastNoExist || VaultUtils.hasPerms( player, Settings.STAFF_PERMISSION.string() ) == false ) {
                         Utils.sendAnyMsg( player, publicBroadcast );
                     }
@@ -242,7 +219,7 @@ public class NetunoPrePunishment extends NetunoPunishment implements NPrePunishm
                 if ( silent && line.replace( "\n", "" ).isBlank() == false ) {
                     staffBroadcast += Settings.SILENT_PREFIX.coloredString() + " ";
                 }
-                staffBroadcast += Utils.replaceAllVariables( line, this ) + "\n";
+                staffBroadcast += Utils.replaceAllVariables( line, pun ) + "\n";
             }
 
             String permission = Settings.STAFF_PERMISSION.string();
