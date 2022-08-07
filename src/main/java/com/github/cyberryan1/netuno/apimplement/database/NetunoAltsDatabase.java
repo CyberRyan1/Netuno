@@ -2,6 +2,7 @@ package com.github.cyberryan1.netuno.apimplement.database;
 
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.netuno.apimplement.database.helpers.AltSecurityLevel;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.database.AltsDatabase;
 import com.github.cyberryan1.netunoapi.models.alts.NAltGroup;
 import org.bukkit.Bukkit;
@@ -25,6 +26,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
 
     private final List<NAltGroup> cache = new ArrayList<>();
     private AltSecurityLevel securityLevel = AltSecurityLevel.HIGH;
+    private int SAVE_EVERY = 50;
 
     /**
      * @return The cache of punishments
@@ -86,6 +88,8 @@ public class NetunoAltsDatabase implements AltsDatabase {
         }
         CoreUtils.logInfo( "[ALTS CACHE] Successfully retrieved all IPs and players from the database" );
 
+        reloadSettings();
+
         CoreUtils.logInfo( "[ALTS CACHE] Loading the alts of all online players..." );
         for ( Player player : Bukkit.getOnlinePlayers() ) {
             loadPlayer( player );
@@ -93,6 +97,22 @@ public class NetunoAltsDatabase implements AltsDatabase {
         CoreUtils.logInfo( "[ALTS CACHE] Successfully loaded the alts of " + Bukkit.getOnlinePlayers().size() + " online players" );
 
         CoreUtils.logInfo( "[ALTS CACHE] Alt cache successfully initialized with a current size of " + cache.size() );
+    }
+
+    /**
+     * Reloads the settings from the config file
+     */
+    public void reloadSettings() {
+        // Setting for how many edits to the cache before the edits are saved to the database
+        SAVE_EVERY = Settings.CACHE_ALTS_SAVE_EVERY.integer();
+        if ( SAVE_EVERY > 0 ) {
+            CoreUtils.logInfo( "[ALTS CACHE] New and deleted alts will be saved every " + SAVE_EVERY + " alt creations/deletions" );
+        }
+        else {
+            SAVE_EVERY = 50;
+            CoreUtils.logError( "[ALTS CACHE] The value for the setting \"database.cache.alts.save-every\" must be greater than zero" );
+            CoreUtils.logError( "[ALTS CACHE] Defaulting to saving every " + SAVE_EVERY + " alt creations/deletions" );
+        }
     }
 
     /**

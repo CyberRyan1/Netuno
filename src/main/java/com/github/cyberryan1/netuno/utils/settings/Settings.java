@@ -185,6 +185,7 @@ public enum Settings {
     DATABASE_SQL_PASSWORD( "database.sql.password", "string" ),
 
 
+    CACHE_ALTS_SAVE_EVERY( "database.cache.alts.save-every", "int" ),
     CACHE_REPORTS_SAVE_EVERY( "database.cache.reports.save-every", "int" ),
     ;
 

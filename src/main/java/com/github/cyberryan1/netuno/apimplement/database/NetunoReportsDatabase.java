@@ -71,6 +71,9 @@ public class NetunoReportsDatabase implements ReportsDatabase {
         CoreUtils.logInfo( "[REPORTS CACHE] Reports cache successfully initialized with a size of " + cache.size() );
     }
 
+    /**
+     * Reloads the settings from the config file
+     */
     public void reloadSettings() {
         // Setting for how long before a report is automatically deleted
         EXPIRATION_TIME_SECS = Settings.REPORT_EXPIRE_TIME.integer() * 3600L; // converts hours to seconds
@@ -235,6 +238,11 @@ public class NetunoReportsDatabase implements ReportsDatabase {
         newlyDeletedReports.clear();
     }
 
+    /**
+     * Checks if the newly edited reports and the
+     * newly deleted reports need to be saved to
+     * the database
+     */
     private void checkNeedsSave() {
         if ( newlyCreatedReports.size() + newlyDeletedReports.size() >= SAVE_EVERY ) {
             saveAllReportEdits();

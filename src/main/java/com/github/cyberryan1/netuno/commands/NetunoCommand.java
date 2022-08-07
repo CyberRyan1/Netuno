@@ -79,6 +79,7 @@ public class NetunoCommand extends CyberCommand {
                 CyberCore.setPrimaryColor( Settings.PRIMARY_COLOR.string() );
                 CyberCore.setSecondaryColor( Settings.SECONDARY_COLOR.string() );
 
+                ApiNetuno.getData().getNetunoAlts().reloadSettings();
                 ApiNetuno.getData().getNetunoReports().reloadSettings();
 
                 CoreUtils.sendMsg( sender, "&7Successfully reloaded &6Netuno" );
