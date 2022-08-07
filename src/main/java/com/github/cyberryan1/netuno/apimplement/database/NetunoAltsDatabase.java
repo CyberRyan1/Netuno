@@ -114,16 +114,16 @@ public class NetunoAltsDatabase implements AltsDatabase {
                     .filter( g -> g.getIpList().contains( playerIp ) )
                     .collect( Collectors.toList() );
 
-            if ( groupList.isEmpty() == false && groupList.get( 0 ).containsAlt( playerUuid ) == false ) {
-                groupList.get( 0 ).addAlt( playerUuid );
-            }
-
-            else {
+            if ( groupList.isEmpty() ) {
                 NAltGroup group = new NAltGroup();
                 group.setGroupId( getNextAvailableId() );
                 group.addIp( playerIp );
                 group.addAlt( playerUuid );
                 cache.add( group );
+            }
+
+            else if ( groupList.get( 0 ).containsAlt( playerUuid ) == false ) {
+                groupList.get( 0 ).addAlt( playerUuid );
             }
         }
 
