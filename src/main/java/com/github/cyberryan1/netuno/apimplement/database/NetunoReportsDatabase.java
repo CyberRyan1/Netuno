@@ -23,8 +23,11 @@ public class NetunoReportsDatabase implements ReportsDatabase {
     private final String UNKNOWN_LIST = "(?, ?, ?, ?, ?)";
 
     private long EXPIRATION_TIME_SECS = -1L;
+    private int SAVE_EVERY = 50;
 
     private final List<NReport> cache = new ArrayList<>();
+    private final List<NReport> newlyCreatedReports = new ArrayList<>();
+    private final List<NReport> newlyDeletedReports = new ArrayList<>();
 
     /**
      * @return The cache of reports.
@@ -63,11 +66,34 @@ public class NetunoReportsDatabase implements ReportsDatabase {
         }
         CoreUtils.logInfo( "[REPORTS CACHE] Successfully retrieved all reports from the database" );
 
-        EXPIRATION_TIME_SECS = Settings.REPORT_EXPIRE_TIME.integer() * 3600L; // converts hours to seconds
-        CoreUtils.logInfo( "[REPORTS CACHE] Reports expiration time set to " + Settings.REPORT_EXPIRE_TIME.integer()
-                + " hours (" + EXPIRATION_TIME_SECS + " seconds)" );
+        reloadSettings();
 
         CoreUtils.logInfo( "[REPORTS CACHE] Reports cache successfully initialized with a size of " + cache.size() );
+    }
+
+    public void reloadSettings() {
+        // Setting for how long before a report is automatically deleted
+        EXPIRATION_TIME_SECS = Settings.REPORT_EXPIRE_TIME.integer() * 3600L; // converts hours to seconds
+        if ( EXPIRATION_TIME_SECS > 0 ) {
+            CoreUtils.logInfo( "[REPORTS CACHE] Reports expiration time set to " + Settings.REPORT_EXPIRE_TIME.integer()
+                    + " hours (" + EXPIRATION_TIME_SECS + " seconds)" );
+        }
+        else {
+            EXPIRATION_TIME_SECS = 172800L; // 48 hours
+            CoreUtils.logError( "[REPORTS CACHE] The value for the setting \"reports.delete-after\" must be greater than 0" );
+            CoreUtils.logError( "[REPORTS CACHE] Defaulting to expiring reports after 48 hours" );
+        }
+
+        // Setting for how many edits to the cache before the edits are saved to the database
+        SAVE_EVERY = Settings.CACHE_REPORTS_SAVE_EVERY.integer();
+        if ( SAVE_EVERY > 0 ) {
+            CoreUtils.logInfo( "[REPORTS CACHE] New and deleted reports will be saved every " + SAVE_EVERY + " report creations/deletions" );
+        }
+        else {
+            SAVE_EVERY = 50;
+            CoreUtils.logError( "[REPORTS CACHE] The value for the setting \"database.cache.reports.save-every\" must be greater than zero" );
+            CoreUtils.logError( "[REPORTS CACHE] Defaulting to saving every " + SAVE_EVERY + " report creations and deletions" );
+        }
     }
 
     /**
@@ -78,6 +104,8 @@ public class NetunoReportsDatabase implements ReportsDatabase {
         checkReport( report, false );
         report.setId( getNextAvailableId() );
         cache.add( report );
+        newlyCreatedReports.add( report );
+        checkNeedsSave();
     }
 
     /**
@@ -122,7 +150,15 @@ public class NetunoReportsDatabase implements ReportsDatabase {
      * @param id The id of the report to delete.
      */
     public void deleteReport( int id ) {
-        cache.removeIf( report -> report.getId() == id );
+        final NReport report = cache.stream()
+                .filter( r -> r.getId() == id )
+                .findFirst()
+                .orElse( null );
+        if ( report == null ) { return; }
+
+        cache.remove( report );
+        newlyDeletedReports.add( report );
+        checkNeedsSave();
     }
 
     /**
@@ -138,42 +174,37 @@ public class NetunoReportsDatabase implements ReportsDatabase {
      * @param playerUuid The UUID of the player to delete reports for
      */
     public void deleteReports( String playerUuid ) {
-        cache.removeIf( report -> report.getPlayerUuid().equals( playerUuid ) );
+        List<NReport> toRemove = cache.stream()
+                .filter( report -> report.getPlayerUuid().equals( playerUuid ) )
+                .collect( Collectors.toList() );
+        cache.removeAll( toRemove );
+        newlyDeletedReports.addAll( toRemove );
+        checkNeedsSave();
     }
 
     /**
      * Deletes all reports that are older than the expiration time
      */
     public void deleteOldReports() {
-        cache.removeIf( report -> report.getTimestamp() < TimeUtils.getCurrentTimestamp() - EXPIRATION_TIME_SECS );
+        List<NReport> toRemove = cache.stream()
+                .filter( report -> report.getTimestamp() < TimeUtils.getCurrentTimestamp() - EXPIRATION_TIME_SECS )
+                .collect( Collectors.toList() );
+        cache.removeAll( toRemove );
+        newlyDeletedReports.addAll( toRemove );
+        checkNeedsSave();
     }
 
     /**
-     * Deletes all reports from the database, but not the cache.
+     * Saves all recently created reports to the database and
+     * deletes all recently deleted reports from the database.
      */
-    public void deleteAllReports() {
-        try {
-            Statement stmt = ConnectionManager.CONN.createStatement();
-            stmt.execute( "DELETE FROM " + TABLE_NAME + ";" );
-            stmt.close();
-        } catch ( SQLException e ) {
-            throw new RuntimeException( e );
-        }
-    }
+    public void saveAllReportEdits() {
+        CoreUtils.logInfo( "[REPORTS CACHE] Saving all recently created and recently deleted reports to the database..." );
 
-    /**
-     * Saves all elements from the cache into the database. Note that
-     * first this method deletes all entries from the database, and then
-     * it inserts all elements from the cache into the database.
-     */
-    public void saveAll() {
-        CoreUtils.logInfo( "[REPORTS CACHE] Saving all reports in the cache to the database..." );
-        deleteAllReports();
-
-        for ( NReport report : cache ) {
+        for ( NReport report : newlyCreatedReports ) {
             try {
-                PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + " "
-                        + TYPE_LIST + " VALUES " + UNKNOWN_LIST + ";" );
+                PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + " "  +
+                        TYPE_LIST + " VALUES " + UNKNOWN_LIST );
                 ps.setInt( 1, report.getId() );
                 ps.setString( 2, report.getPlayerUuid() );
                 ps.setString( 3, report.getReporterUuid() );
@@ -187,8 +218,27 @@ public class NetunoReportsDatabase implements ReportsDatabase {
                 throw new RuntimeException( e );
             }
         }
+        CoreUtils.logInfo( "[REPORTS CACHE] Successfully saved " + newlyCreatedReports.size() + " reports to the database" );
+        newlyCreatedReports.clear();
 
-        CoreUtils.logInfo( "[REPORTS CACHE] Successfully saved " + cache.size() + " reports to the database." );
+        for ( NReport report : newlyDeletedReports ) {
+            try {
+                PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "DELETE FROM " + TABLE_NAME + " WHERE id = ?" );
+                ps.setInt( 1, report.getId() );
+                ps.execute();
+                ps.close();
+            } catch ( SQLException e ) {
+                throw new RuntimeException( e );
+            }
+        }
+        CoreUtils.logInfo( "[REPORTS CACHE] Successfully deleted " + newlyDeletedReports.size() + " reports from the database" );
+        newlyDeletedReports.clear();
+    }
+
+    private void checkNeedsSave() {
+        if ( newlyCreatedReports.size() + newlyDeletedReports.size() >= SAVE_EVERY ) {
+            saveAllReportEdits();
+        }
     }
 
     /**
