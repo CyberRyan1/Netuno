@@ -960,3 +960,13 @@ database:
     username: root
     # Password to your database
     password: password
+
+  cache:
+    reports:
+      # All reports are loaded on plugin load and permanently stored in the cache.
+
+      # How many reports to be added or deleted from the cache before the cache is saved to the database.
+      # The higher the number, the less frequently the newly added or deleted reports are saved to the database.
+      # The lower the number, the more frequently the newly added or deleted reports are saved to the database.
+      # Default of 50 reports to be added or deleted from the cache before they are saved to the database.
+      save-every: 50
