@@ -4,7 +4,7 @@ import com.github.cyberryan1.cybercore.helpers.command.ArgType;
 import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
-import com.github.cyberryan1.netuno.models.NetunoPrePunishment;
+import com.github.cyberryan1.netuno.apimplement.models.punishments.NetunoPrePunishment;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;

@@ -2,7 +2,7 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.cybercore.helpers.command.ArgType;
 import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
-import com.github.cyberryan1.netuno.models.NetunoPrePunishment;
+import com.github.cyberryan1.netuno.apimplement.models.punishments.NetunoPrePunishment;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;

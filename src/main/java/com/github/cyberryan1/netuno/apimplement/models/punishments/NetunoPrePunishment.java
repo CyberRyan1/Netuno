@@ -1,4 +1,4 @@
-package com.github.cyberryan1.netuno.models;
+package com.github.cyberryan1.netuno.apimplement.models.punishments;
 
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
