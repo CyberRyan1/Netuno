@@ -114,7 +114,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
                     .filter( g -> g.getIpList().contains( playerIp ) )
                     .collect( Collectors.toList() );
 
-            if ( groupList.isEmpty() == false ) {
+            if ( groupList.isEmpty() == false && groupList.get( 0 ).containsAlt( playerUuid ) == false ) {
                 groupList.get( 0 ).addAlt( playerUuid );
             }
 
