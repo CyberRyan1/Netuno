@@ -7,6 +7,7 @@ import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import com.github.cyberryan1.netunoapi.models.punishments.NPrePunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
 import com.github.cyberryan1.netunoapi.utils.TimeUtils;
@@ -17,7 +18,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class NetunoPrePunishment extends NPunishment {
+public class NetunoPrePunishment extends NetunoPunishment implements NPrePunishment {
 
     public NetunoPrePunishment( OfflinePlayer player, OfflinePlayer staff, PunishmentType punishmentType, String unformattedLength, String reason ) {
         super.setPlayer( player );
@@ -35,17 +36,17 @@ public class NetunoPrePunishment extends NPunishment {
     }
 
     public NetunoPrePunishment( NPunishment pun ) {
-        this.id = pun.getId();
-        this.punishmentType = pun.getPunishmentType();
-        this.playerUuid = pun.getPlayerUuid();
-        this.staffUuid = pun.getStaffUuid();
-        this.length = pun.getLength();
-        this.timestamp = pun.getTimestamp();
-        this.reason = pun.getReason();
-        this.referencePunId = pun.getReferencePunId();
-        this.guiPun = pun.isGuiPun();
-        this.active = pun.isActive();
-        this.needsNotifSent = pun.needsNotifSent();
+        super.setId( pun.getId() );
+        super.setPunishmentType( pun.getPunishmentType() );
+        super.setPlayerUuid( pun.getPlayerUuid() );
+        super.setStaffUuid( pun.getStaffUuid() );
+        super.setLength( pun.getLength() );
+        super.setTimestamp( pun.getTimestamp() );
+        super.setReason( pun.getReason() );
+        super.setReferencePunId( pun.getReferencePunId() );
+        super.setGuiPun( pun.isGuiPun() );
+        super.setActive( pun.isActive() );
+        super.setNeedsNotifSent( pun.needsNotifSent() );
     }
 
     public NetunoPrePunishment() {}
