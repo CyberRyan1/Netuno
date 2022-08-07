@@ -68,7 +68,7 @@ public class ApiNetuno implements NetunoApi {
         getData().getNetunoAlts().saveAll();
 
         // Save the reports cache
-        getData().getNetunoReports().saveAll();
+        getData().getNetunoReports().saveAllReportEdits();
 
         // Close the database connection
         instance.getNetunoConnection().closeConnection();
