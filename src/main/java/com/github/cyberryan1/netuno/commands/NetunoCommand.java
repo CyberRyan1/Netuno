@@ -1,9 +1,11 @@
 package com.github.cyberryan1.netuno.commands;
 
+import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.netuno.guis.punish.utils.PunishSettings;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
@@ -67,6 +69,14 @@ public class NetunoCommand extends CyberCommand {
                 CoreUtils.logInfo( "Attempting to reload Netuno..." );
 
                 YMLUtils.getConfig().getYMLManager().initialize();
+
+                CoreUtils.logInfo( "Reloading all settings from the config file..." );
+                for ( Settings setting : Settings.values() ) { setting.reload(); }
+                for ( PunishSettings setting : PunishSettings.values() ) { setting.reload(); }
+                CoreUtils.logInfo( "Reloaded " + ( Settings.values().length + PunishSettings.values().length ) + " settings" );
+
+                CyberCore.setPrimaryColor( Settings.PRIMARY_COLOR.string() );
+                CyberCore.setSecondaryColor( Settings.SECONDARY_COLOR.string() );
 
                 CoreUtils.sendMsg( sender, "&7Successfully reloaded &6Netuno" );
                 CoreUtils.logInfo( "Successfully reloaded Netuno and its files" );
