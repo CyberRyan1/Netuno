@@ -5,6 +5,7 @@ import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.guis.punish.utils.PunishSettings;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
@@ -77,6 +78,8 @@ public class NetunoCommand extends CyberCommand {
 
                 CyberCore.setPrimaryColor( Settings.PRIMARY_COLOR.string() );
                 CyberCore.setSecondaryColor( Settings.SECONDARY_COLOR.string() );
+
+                ApiNetuno.getData().getNetunoReports().reloadSettings();
 
                 CoreUtils.sendMsg( sender, "&7Successfully reloaded &6Netuno" );
                 CoreUtils.logInfo( "Successfully reloaded Netuno and its files" );
