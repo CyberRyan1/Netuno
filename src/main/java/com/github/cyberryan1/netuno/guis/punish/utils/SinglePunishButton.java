@@ -175,7 +175,7 @@ public class SinglePunishButton {
                     length = TimeUtils.getScaledDuration(
                             length,
                             2,
-                            this.previousPunCount - this.punishAfter + 1
+                            this.previousPunCount - this.punishAfter
                     );
                 }
                 prePun.getPunishment().setLength( length.timestamp() );
