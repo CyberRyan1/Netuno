@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.apimplement.models.punishments;
 
+import com.github.cyberryan1.cybercore.CyberCore;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
@@ -157,7 +158,13 @@ public class NetunoPrePunishment implements NPrePunishment {
 
         if ( lines != null && lines.replace( "\n", "" ).isBlank() == false ) {
             lines = Utils.replaceAllVariables( lines, pun );
-            pun.getPlayer().getPlayer().kickPlayer( lines );
+            if ( Bukkit.isPrimaryThread() ) {
+                pun.getPlayer().getPlayer().kickPlayer( lines );
+            }
+            else {
+                final String linesMsg = lines;
+                Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> pun.getPlayer().getPlayer().kickPlayer( linesMsg ) );
+            }
         }
     }
 
