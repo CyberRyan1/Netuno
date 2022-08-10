@@ -16,7 +16,7 @@
     <name>Netuno</name>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>14</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -72,7 +72,7 @@
         </repository>
         <repository>
             <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
+            <url>https://www.jitpack.io</url>
         </repository>
         <repository>
             <id>maven-central</id>
@@ -128,7 +128,7 @@
         <dependency>
             <groupId>com.github.cyberryan1</groupId>
             <artifactId>NetunoAPI</artifactId>
-            <version>0.1.0.5</version>
+            <version>0.1.1.0</version>
         </dependency>
     </dependencies>
 </project>
