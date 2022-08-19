@@ -36,7 +36,7 @@ public enum PunishSettings {
     MUTE_BUTTONS( "mute-gui", "multi" ),
 
     //
-    // Mute Inventory
+    // Ban Inventory
     //
     BAN_INVENTORY_NAME( "ban-gui.inventory_name", "string" ),
     BAN_PERMISSION( "ban-gui.permission", "string" ),
