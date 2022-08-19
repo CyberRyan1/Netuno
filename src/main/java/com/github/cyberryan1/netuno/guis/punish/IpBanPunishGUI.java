@@ -27,7 +27,7 @@ public class IpBanPunishGUI {
         this.target = target;
         this.punishButtons = PunishSettings.IPBAN_BUTTONS.multiButton();
 
-        this.rowCount = 3 + ( this.punishButtons.getButtons().size() / 9 );
+        this.rowCount = determineRowCount();
         this.gui = new GUI( PunishSettings.IPBAN_INVENTORY_NAME.coloredString().replace( "[TARGET]", target.getName() ),
                 this.rowCount, CoreGUIUtils.getBackgroundGlass() );
         insertItems();
@@ -35,30 +35,17 @@ public class IpBanPunishGUI {
 
     public void insertItems() {
         // Warn buttons are at 10-12 and 14-16, then repeat every row as needed
-        final List<SinglePunishButton> buttons = this.punishButtons.getButtons();
+        final List<SinglePunishButton> buttonsList = this.punishButtons.getButtons();
 
-        int buttonIndex = 0;
-        int guiIndex = 10;
-        for ( int row = 0; row < this.rowCount; row++ ) {
-            for ( int col = 0; col < 6; col++ ) {
-                if ( buttonIndex >= buttons.size() ) { break; }
+        for ( SinglePunishButton button : buttonsList ) {
+            if ( button.getItemMaterial().isAir() ) { continue; }
 
-                final SinglePunishButton button = buttons.get( buttonIndex );
-                if ( button.getItemMaterial().isAir() == false ) {
-                    GUIItem item = new GUIItem( button.getItem( this.target ), guiIndex, () -> {
-                        button.executePunish( this.staff, this.target );
-                        staff.closeInventory();
-                    } );
+            GUIItem item = new GUIItem( button.getItem( this.target ), button.getIndex(), () -> {
+                button.executePunish( this.staff, this.target );
+                staff.closeInventory();
+            } );
 
-                    this.gui.setItem( guiIndex, item );
-                }
-
-                guiIndex++;
-                if ( col == 2 ) { guiIndex++; }
-                buttonIndex++;
-            }
-
-            guiIndex += 2;
+            this.gui.addItem( item );
         }
 
         gui.createInventory();
@@ -72,5 +59,18 @@ public class IpBanPunishGUI {
                 StaffPlayerPunishManager.removeStaffSilent( this.staff );
             } );
         } );
+    }
+
+    private int determineRowCount() {
+        int highestIndex = 0;
+        for ( SinglePunishButton button : this.punishButtons.getButtons() ) {
+            if ( button.getItemMaterial().isAir() == false && button.getIndex() > highestIndex ) {
+                highestIndex = button.getIndex();
+            }
+        }
+
+        if ( highestIndex <= 16 ) { return 3; }
+        if ( highestIndex <= 25 ) { return 4; }
+        return 5;
     }
 }

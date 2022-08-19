@@ -26,6 +26,7 @@ public class SinglePunishButton {
     private String guiType;
 
     private String buttonType;
+    private int index;
     private String itemName;
     private String itemLore;
     private Material itemMaterial;
@@ -43,6 +44,7 @@ public class SinglePunishButton {
         this.guiType = pathKey.substring( 0, pathKey.indexOf( "-" ) );
         this.buttonType = pathKey.substring( pathKey.indexOf( "." ) + 1 );
 
+        this.index = Integer.parseInt( this.buttonType );
         this.itemName = YMLUtils.getConfig().getStr( pathKey + ".item-name" );
         this.itemLore = YMLUtils.getConfig().getStr( pathKey + ".item-lore" );
         this.itemMaterial = Material.valueOf( YMLUtils.getConfig().getStr( pathKey + ".material" ) );
@@ -61,6 +63,8 @@ public class SinglePunishButton {
     public String getPathKey() { return this.pathKey; }
 
     public String getButtonType() { return this.buttonType; }
+
+    public int getIndex() { return this.index; }
 
     public String getItemName() { return this.itemName; }
 
