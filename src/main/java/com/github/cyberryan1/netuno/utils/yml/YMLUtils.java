@@ -13,6 +13,7 @@ public class YMLUtils {
         return switch ( ymlName.toLowerCase() ) {
             case "config" -> getConfigUtils();
             case "main" -> getMainPunishUtils();
+            case "warn" -> getWarnPunishUtils();
             default -> null;
         };
     }
@@ -24,4 +25,8 @@ public class YMLUtils {
     private static MainPunishUtils mainPunishUtils = new MainPunishUtils();
     public static MainPunishUtils getMainPunishUtils() { return mainPunishUtils; }
     public static MainPunishUtils getMainGui() { return mainPunishUtils; }
+
+    private static WarnPunishUtils warnPunishUtils = new WarnPunishUtils();
+    public static WarnPunishUtils getWarnPunishUtils() { return warnPunishUtils; }
+    public static WarnPunishUtils getWarnGui() { return warnPunishUtils; }
 }
