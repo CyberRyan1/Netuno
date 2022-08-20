@@ -60,13 +60,13 @@ public enum PunishSettings {
 
     private String path;
     private PunishSettingsEntry value;
-    PunishSettings( String path, String valueType, String ymlType ) {
+    PunishSettings( String path, String valueType, String ymlName ) {
         this.path = path;
-        this.value = new PunishSettingsEntry( path, valueType, ymlType );
+        this.value = new PunishSettingsEntry( path, valueType, ymlName );
     }
 
     public void reload() {
-        this.value = new PunishSettingsEntry( this.path, this.value.getValueType(), this.value.getYmlType() );
+        this.value = new PunishSettingsEntry( this.path, this.value.getValueType(), this.value.getYmlName() );
     }
 
     public String getPath() { return this.path; }
