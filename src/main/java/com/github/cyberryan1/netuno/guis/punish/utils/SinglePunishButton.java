@@ -2,6 +2,7 @@ package com.github.cyberryan1.netuno.guis.punish.utils;
 
 import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
 import com.github.cyberryan1.cybercore.utils.CoreUtils;
+import com.github.cyberryan1.cybercore.utils.yml.YMLReadTemplate;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
@@ -39,24 +40,26 @@ public class SinglePunishButton {
     private int punishAfter;
     private String punishTypeAfter;
 
-    public SinglePunishButton( String pathKey ) {
+    public SinglePunishButton( String pathKey, String ymlName ) {
         this.pathKey = pathKey;
         this.guiType = pathKey.substring( 0, pathKey.indexOf( "-" ) );
         this.buttonType = pathKey.substring( pathKey.indexOf( "." ) + 1 );
 
+        final YMLReadTemplate YML_MANAGER = YMLUtils.fromName( ymlName );
+
         this.index = Integer.parseInt( this.buttonType );
-        this.itemName = YMLUtils.getConfig().getStr( pathKey + ".item-name" );
-        this.itemLore = YMLUtils.getConfig().getStr( pathKey + ".item-lore" );
-        this.itemMaterial = Material.valueOf( YMLUtils.getConfig().getStr( pathKey + ".material" ) );
-        this.startingTime = YMLUtils.getConfig().getStr( pathKey + ".starting-time" );
-        this.autoscale = YMLUtils.getConfig().getBool( pathKey + ".autoscale" );
+        this.itemName = YML_MANAGER.getStr( pathKey + ".item-name" );
+        this.itemLore = YML_MANAGER.getStr( pathKey + ".item-lore" );
+        this.itemMaterial = Material.valueOf( YML_MANAGER.getStr( pathKey + ".material" ) );
+        this.startingTime = YML_MANAGER.getStr( pathKey + ".starting-time" );
+        this.autoscale = YML_MANAGER.getBool( pathKey + ".autoscale" );
 
         // Below variables only apply to warns
         this.punishAfter = -1;
         this.punishTypeAfter = null;
         if ( this.guiType.equalsIgnoreCase( "warn" ) ) {
-            this.punishAfter = YMLUtils.getConfig().getInt( pathKey + ".punish-after" );
-            this.punishTypeAfter = YMLUtils.getConfig().getStr( pathKey + ".punishment" );
+            this.punishAfter = YML_MANAGER.getInt( pathKey + ".punish-after" );
+            this.punishTypeAfter = YML_MANAGER.getStr( pathKey + ".punishment" );
         }
     }
 
