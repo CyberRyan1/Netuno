@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.guis.punish.utils;
 
+import com.github.cyberryan1.cybercore.utils.yml.YMLReadTemplate;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Material;
 
@@ -7,6 +8,8 @@ public class PunishSettingsEntry {
 
     private String path;
     private String valueType;
+    private String ymlType;
+
     private int i;
     private String str;
     private float f;
@@ -17,18 +20,24 @@ public class PunishSettingsEntry {
     private MainButton main;
     private MultiPunishButton multi;
 
-    public PunishSettingsEntry( String path, String valueType ) {
+    public PunishSettingsEntry( String path, String valueType, String ymlType ) {
         this.path = path;
         this.valueType = valueType;
+        this.ymlType = ymlType;
+
+        final YMLReadTemplate YML_MANAGER = switch ( ymlType.toLowerCase() ) {
+            case "main" ->YMLUtils.getMainGui();
+            default -> YMLUtils.getConfig();
+        };
 
         switch ( valueType.toLowerCase() ) {
-            case "int" -> this.i = YMLUtils.getConfig().getInt( path );
-            case "string" -> this.str = YMLUtils.getConfig().getStr( path );
-            case "float" -> this.f = YMLUtils.getConfig().getFloat( path );
-            case "double" -> this.d = YMLUtils.getConfig().getDouble( path );
-            case "long" -> this.l = YMLUtils.getConfig().getYMLManager().getConfig().getLong( path );
-            case "boolean" -> this.b = YMLUtils.getConfig().getBool( path );
-            case "material" -> this.mat = Material.valueOf( YMLUtils.getConfig().getStr( path ) );
+            case "int" -> this.i = YML_MANAGER.getInt( path );
+            case "string" -> this.str = YML_MANAGER.getStr( path );
+            case "float" -> this.f = YML_MANAGER.getFloat( path );
+            case "double" -> this.d = YML_MANAGER.getDouble( path );
+            case "long" -> this.l = YML_MANAGER.getYMLManager().getConfig().getLong( path );
+            case "boolean" -> this.b = YML_MANAGER.getBool( path );
+            case "material" -> this.mat = Material.valueOf( YML_MANAGER.getStr( path ) );
             case "mainbutton" -> this.main = new MainButton( path.substring( path.indexOf( "." ) + 1 ) );
             case "multi" -> this.multi = new MultiPunishButton( path );
         }
@@ -37,6 +46,9 @@ public class PunishSettingsEntry {
     public String getPath() { return this.path; }
 
     public String getValueType() { return this.valueType; }
+
+    public String getYmlType() { return this.ymlType; }
+
 
     public int integer() { return this.i; }
 

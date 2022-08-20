@@ -8,65 +8,65 @@ public enum PunishSettings {
     //
     // Main Inventory
     //
-    MAIN_INVENTORY_NAME( "main-gui.inventory-name", "string" ),
-    MAIN_SKULL_BUTTON( "main-gui.skull", "mainbutton" ),
-    MAIN_HISTORY_BUTTON( "main-gui.history", "mainbutton" ),
-    MAIN_ALTS_BUTTON( "main-gui.alts", "mainbutton" ),
-    MAIN_SILENT_ENABLED_BUTTON( "main-gui.silent.true", "mainbutton" ),
-    MAIN_SILENT_DISABLED_BUTTON( "main-gui.silent.false", "mainbutton" ),
-    MAIN_SILENT_NO_PERMS_BUTTON( "main-gui.silent.no-perms", "mainbutton" ),
-    MAIN_WARN_BUTTON( "main-gui.warn", "mainbutton" ),
-    MAIN_MUTE_BUTTON( "main-gui.mute", "mainbutton" ),
-    MAIN_BAN_BUTTON( "main-gui.ban", "mainbutton" ),
-    MAIN_IPMUTE_BUTTON( "main-gui.ipmute", "mainbutton" ),
-    MAIN_IPBAN_BUTTON( "main-gui.ipban", "mainbutton" ),
+    MAIN_INVENTORY_NAME( "main-gui.inventory-name", "string", "main" ),
+    MAIN_SKULL_BUTTON( "main-gui.skull", "mainbutton", "main" ),
+    MAIN_HISTORY_BUTTON( "main-gui.history", "mainbutton", "main" ),
+    MAIN_ALTS_BUTTON( "main-gui.alts", "mainbutton", "main" ),
+    MAIN_SILENT_ENABLED_BUTTON( "main-gui.silent.true", "mainbutton", "main" ),
+    MAIN_SILENT_DISABLED_BUTTON( "main-gui.silent.false", "mainbutton", "main" ),
+    MAIN_SILENT_NO_PERMS_BUTTON( "main-gui.silent.no-perms", "mainbutton", "main" ),
+    MAIN_WARN_BUTTON( "main-gui.warn", "mainbutton", "main" ),
+    MAIN_MUTE_BUTTON( "main-gui.mute", "mainbutton", "main" ),
+    MAIN_BAN_BUTTON( "main-gui.ban", "mainbutton", "main" ),
+    MAIN_IPMUTE_BUTTON( "main-gui.ipmute", "mainbutton", "main" ),
+    MAIN_IPBAN_BUTTON( "main-gui.ipban", "mainbutton", "main" ),
 
     //
     // Warn Inventory
     //
-    WARN_INVENTORY_NAME( "warn-gui.inventory_name", "string" ),
-    WARN_PERMISSION( "warn-gui.permission", "string" ),
-    WARN_BUTTONS( "warn-gui", "multi" ),
+    WARN_INVENTORY_NAME( "warn-gui.inventory_name", "string", "warn" ),
+    WARN_PERMISSION( "warn-gui.permission", "string", "warn" ),
+    WARN_BUTTONS( "warn-gui", "multi", "warn" ),
 
     //
     // Mute Inventory
     //
-    MUTE_INVENTORY_NAME( "mute-gui.inventory_name", "string" ),
-    MUTE_PERMISSION( "mute-gui.permission", "string" ),
-    MUTE_BUTTONS( "mute-gui", "multi" ),
+    MUTE_INVENTORY_NAME( "mute-gui.inventory_name", "string", "mute" ),
+    MUTE_PERMISSION( "mute-gui.permission", "string", "mute" ),
+    MUTE_BUTTONS( "mute-gui", "multi", "mute" ),
 
     //
     // Ban Inventory
     //
-    BAN_INVENTORY_NAME( "ban-gui.inventory_name", "string" ),
-    BAN_PERMISSION( "ban-gui.permission", "string" ),
-    BAN_BUTTONS( "ban-gui", "multi" ),
+    BAN_INVENTORY_NAME( "ban-gui.inventory_name", "string", "ban" ),
+    BAN_PERMISSION( "ban-gui.permission", "string", "ban" ),
+    BAN_BUTTONS( "ban-gui", "multi", "ban" ),
 
     //
     // IP Mute Inventory
     //
-    IPMUTE_INVENTORY_NAME( "ipmute-gui.inventory_name", "string" ),
-    IPMUTE_PERMISSION( "ipmute-gui.permission", "string" ),
-    IPMUTE_BUTTONS( "ipmute-gui", "multi" ),
+    IPMUTE_INVENTORY_NAME( "ipmute-gui.inventory_name", "string", "ipmute" ),
+    IPMUTE_PERMISSION( "ipmute-gui.permission", "string", "ipmute" ),
+    IPMUTE_BUTTONS( "ipmute-gui", "multi", "ipmute" ),
 
     //
     // IP Ban Inventory
     //
-    IPBAN_INVENTORY_NAME( "ipban-gui.inventory_name", "string" ),
-    IPBAN_PERMISSION( "ipban-gui.permission", "string" ),
-    IPBAN_BUTTONS( "ipban-gui", "multi" ),
+    IPBAN_INVENTORY_NAME( "ipban-gui.inventory_name", "string", "ipban" ),
+    IPBAN_PERMISSION( "ipban-gui.permission", "string", "ipban" ),
+    IPBAN_BUTTONS( "ipban-gui", "multi", "ipban" ),
 
     ;
 
     private String path;
     private PunishSettingsEntry value;
-    PunishSettings( String path, String valueType ) {
+    PunishSettings( String path, String valueType, String ymlType ) {
         this.path = path;
-        this.value = new PunishSettingsEntry( path, valueType );
+        this.value = new PunishSettingsEntry( path, valueType, ymlType );
     }
 
     public void reload() {
-        this.value = new PunishSettingsEntry( this.path, this.value.getValueType() );
+        this.value = new PunishSettingsEntry( this.path, this.value.getValueType(), this.value.getYmlType() );
     }
 
     public String getPath() { return this.path; }
