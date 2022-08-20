@@ -1,10 +1,20 @@
 package com.github.cyberryan1.netuno.utils.yml;
 
+import com.github.cyberryan1.cybercore.utils.yml.YMLReadTemplate;
+
 public class YMLUtils {
 
     public static void initializeConfigs() {
         getConfigUtils().getYMLManager().initialize();
         getMainPunishUtils().getYMLManager().initialize();
+    }
+
+    public static YMLReadTemplate fromName( String ymlName ) {
+        return switch ( ymlName.toLowerCase() ) {
+            case "config" -> getConfigUtils();
+            case "main" -> getMainPunishUtils();
+            default -> null;
+        };
     }
 
     private static ConfigUtils configUtils = new ConfigUtils();
