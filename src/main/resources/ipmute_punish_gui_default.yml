@@ -1,0 +1,135 @@
+ipmute-gui:
+  # Maximum of 18 reasons
+
+  inventory_name: "&c&lIPMUTE &7[TARGET]"
+  permission: ""
+
+  10:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  11:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  12:
+    item-name: "&cMute Evasion"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: RED_WOOL
+    # (below) Can be set to "HIGHEST_MUTED_ALT" or "HIGHEST_BANNED_ALT" to get the highest length of a mute/ban an alt of the target has
+    # HIGHEST_MUTED_ALT = highest length of a muted alt
+    # HIGHEST_BANNED_ALT = highest length of a banned alt
+    # Only works in the ipmute and ipban GUIs
+    starting-time: HIGHEST_MUTED_ALT
+    autoscale: true
+
+  14:
+    item-name: "&6Large Amount of Mutes"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: ORANGE_WOOL
+    starting-time: forever
+    autoscale: true
+
+  15:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  16:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  19:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  20:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  21:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  23:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  24:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  25:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  28:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  29:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  30:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  32:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  33:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  34:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true

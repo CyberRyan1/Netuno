@@ -16,6 +16,7 @@ public class YMLUtils {
             case "warn" -> getWarnPunishUtils();
             case "mute" -> getMutePunishUtils();
             case "ban" -> getBanPunishUtils();
+            case "ipmute" -> getIpMutePunishUtils();
             default -> null;
         };
     }
@@ -39,4 +40,8 @@ public class YMLUtils {
     private static BanPunishUtils banPunishUtils = new BanPunishUtils();
     public static BanPunishUtils getBanPunishUtils() { return banPunishUtils; }
     public static BanPunishUtils getBanGui() { return banPunishUtils; }
+
+    private static IpMutePunishUtils ipMutePunishUtils = new IpMutePunishUtils();
+    public static IpMutePunishUtils getIpMutePunishUtils() { return ipMutePunishUtils; }
+    public static IpMutePunishUtils getIpMuteGui() { return ipMutePunishUtils; }
 }
