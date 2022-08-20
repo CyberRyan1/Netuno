@@ -7,6 +7,11 @@ public class YMLUtils {
     public static void initializeConfigs() {
         getConfigUtils().getYMLManager().initialize();
         getMainPunishUtils().getYMLManager().initialize();
+        getWarnPunishUtils().getYMLManager().initialize();
+        getMutePunishUtils().getYMLManager().initialize();
+        getBanPunishUtils().getYMLManager().initialize();
+        getIpMutePunishUtils().getYMLManager().initialize();
+        getIpBanPunishUtils().getYMLManager().initialize();
     }
 
     public static YMLReadTemplate fromName( String ymlName ) {
