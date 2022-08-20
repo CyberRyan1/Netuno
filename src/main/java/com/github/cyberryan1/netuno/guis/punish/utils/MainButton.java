@@ -17,16 +17,16 @@ public class MainButton {
         this.buttonName = buttonName;
 
         if ( buttonName.toLowerCase().contains( "silent" ) ) {
-            this.index = YMLUtils.getConfig().getInt( "main-gui.silent.index" );
+            this.index = YMLUtils.getMainGui().getInt( "main-gui.silent.index" );
         }
         else {
-            this.index = YMLUtils.getConfig().getInt( "main-gui." + buttonName + ".index" );
+            this.index = YMLUtils.getMainGui().getInt( "main-gui." + buttonName + ".index" );
         }
 
         this.material = null;
         if ( buttonName.equalsIgnoreCase( "skull" ) == false ) {
-            this.name = YMLUtils.getConfig().getStr( "main-gui." + buttonName + ".name" );
-            this.material = Material.valueOf( YMLUtils.getConfig().getStr( "main-gui." + buttonName + ".item" ) );
+            this.name = YMLUtils.getMainGui().getStr( "main-gui." + buttonName + ".name" );
+            this.material = Material.valueOf( YMLUtils.getMainGui().getStr( "main-gui." + buttonName + ".item" ) );
         }
     }
 

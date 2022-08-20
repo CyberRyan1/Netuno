@@ -52,7 +52,7 @@ public final class Netuno extends JavaPlugin {
         new VaultUtils();
 
         // Update/reload config files
-        YMLUtils.getConfig().getYMLManager().initialize();
+        YMLUtils.initializeConfigs();
 
         // Set the primary & secondary colors from the config
         CyberCore.setPrimaryColor( Settings.PRIMARY_COLOR.string() );
