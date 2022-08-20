@@ -8,7 +8,7 @@ public class PunishSettingsEntry {
 
     private String path;
     private String valueType;
-    private String ymlType;
+    private String ymlName;
 
     private int i;
     private String str;
@@ -20,15 +20,12 @@ public class PunishSettingsEntry {
     private MainButton main;
     private MultiPunishButton multi;
 
-    public PunishSettingsEntry( String path, String valueType, String ymlType ) {
+    public PunishSettingsEntry( String path, String valueType, String ymlName ) {
         this.path = path;
         this.valueType = valueType;
-        this.ymlType = ymlType;
+        this.ymlName = ymlName;
 
-        final YMLReadTemplate YML_MANAGER = switch ( ymlType.toLowerCase() ) {
-            case "main" ->YMLUtils.getMainGui();
-            default -> YMLUtils.getConfig();
-        };
+        final YMLReadTemplate YML_MANAGER = YMLUtils.fromName( ymlName );
 
         switch ( valueType.toLowerCase() ) {
             case "int" -> this.i = YML_MANAGER.getInt( path );
@@ -39,7 +36,7 @@ public class PunishSettingsEntry {
             case "boolean" -> this.b = YML_MANAGER.getBool( path );
             case "material" -> this.mat = Material.valueOf( YML_MANAGER.getStr( path ) );
             case "mainbutton" -> this.main = new MainButton( path.substring( path.indexOf( "." ) + 1 ) );
-            case "multi" -> this.multi = new MultiPunishButton( path );
+            case "multi" -> this.multi = new MultiPunishButton( path, ymlName );
         }
     }
 
@@ -47,7 +44,7 @@ public class PunishSettingsEntry {
 
     public String getValueType() { return this.valueType; }
 
-    public String getYmlType() { return this.ymlType; }
+    public String getYmlName() { return this.ymlName; }
 
 
     public int integer() { return this.i; }
