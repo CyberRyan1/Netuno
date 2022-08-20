@@ -1,21 +1,36 @@
+########################################
+#                Netuno                #
+#         Developer: CyberRyan         #
+#    Discord: discord.gg/8gxG4KfvBK    #
+#           Warn GUI Config            #
+########################################
+
+# This GUI is what you see when you click on the warn button in the punish GUI
+
+# Helpful links:
+# List of all materials: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+# Inventory slots to indexes: https://proxy.spigotmc.org/ca33289f0d69cf685454fd6d4843cd392b5572c3?url=http%3A%2F%2Fi.imgur.com%2Flr41ykP.png
+
+# Variables that can be used throughout this config file:
+# [TARGET] = Player being punished
+# [PREVIOUS] = Number of previous offenses the player has for a particular punishment
+
 warn-gui:
-  # <!> IMPORTANT <!>
-  # <!> NEW PUNISHMENT CONFIG FORMAT <!>
+  # <!> IMPORTANT- NEW PUNISHMENT CONFIG FORMAT <!>
   # Below is the NEW format for punishments in the GUI.
   # It is NOT backwards compatible with the old format.
-  # We no longer support the old format used in 1.4.2-BETA or earlier.
+  # Netuno no longer supports the old format used in 1.4.2-BETA or earlier.
   # Switching to this new format should be easy, though.
 
-  # You can customize each punishment and add new punishments to suite your needs
-  # To do so, just copy and paste the example format below, and remove the comments (hashtags)
-  # Maximum of 18 punishments per GUI
-  # The size of the GUI will be automatically calculated based off the indexes of the punishments
-  # The index of the punishment is the key of the punishment in this config file
-  #       For an image of all indexes in a GUI, see here: https://proxy.spigotmc.org/ca33289f0d69cf685454fd6d4843cd392b5572c3?url=http%3A%2F%2Fi.imgur.com%2Flr41ykP.png
-  # The reason for each punishment is the name of the item, without the colors
+  # You can customize each punishment and add new punishments to suite your needs.
+  # To do so, just copy and paste the example format below, and remove the comments (hashtags).
+  # Maximum of 18 punishments per GUI.
+  # The size of the GUI will be automatically calculated based off the indexes of the punishments.
+  # The index of the punishment is the key of the punishment in this config file.
+  # The reason for each punishment is the name of the item, without the colors.
   #       Example: if the item name is "&eSpam", then the punishment reason is "Spam"
-  # To remove a punishment item, set the material to AIR
-  # Here's the format for a punishment:
+  # To not display a punishment item, set the material to AIR.
+  # Here's the format for a punishment (what each line means is explained in further below):
   #  INDEX_HERE:
   #    item-name: "hi"
   #    item-lore: "something"
@@ -25,6 +40,8 @@ warn-gui:
   #    starting-time: 30m
   #    autoscale: true
 
+  # Name of the GUI
+  # Note: you cannot use the [PREVIOUS] variable in the name of the inventory
   inventory_name: "&a&lWARN &7[TARGET]"
   # Permission to open this GUI
   # Set to "" for no permission needed
@@ -32,12 +49,12 @@ warn-gui:
 
   # The index of the punishment item
   10:
-    # Name of the item in the GUI
+    # Name of the item
     item-name: "&eSpam"
-    # Lore of the item in the GUI
+    # Lore of the item
     # Set to "" for no lore
     item-lore: "&7Offenses: &6[PREVIOUS]"
-    # Material of the item in the GUI
+    # Material of the item
     material: YELLOW_WOOL
     # How many warns until they get the next punishment
     # Ex: if you set this to 1, then they will be punished for the second offense and higher
@@ -50,7 +67,7 @@ warn-gui:
     # Whether to autoscale the punishment length or not
     # For example, if you set the starting-time to 30m, the second warn will result in a 30 minute mute, the third mute will result in a 60 minute mute, and so on
     # For warns, the autoscale only applies to the punishment after the warn
-    # (ex: the first punishment is a warn, the second punishment is a 30 minute mute, and the third punishment is also a 30 minute mute
+    # (ex: the first punishment is a warn, the second punishment is a 30 minute mute, and the third punishment is also a 30 minute mute)
     autoscale: true
 
   11:
