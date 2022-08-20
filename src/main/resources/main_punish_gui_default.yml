@@ -1,12 +1,19 @@
-#
-# Main page of the GUI
-# What you see when you initially run /punish (player)
-# List of all materials: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+########################################
+#                Netuno                #
+#         Developer: CyberRyan         #
+#    Discord: discord.gg/8gxG4KfvBK    #
+#        Main Punish GUI Config        #
+########################################
+
+# This GUI is what you see when you run the /punish (player) commands
+
+# Helpful links:
+# List of all materials: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 # Inventory slots to indexes: https://proxy.spigotmc.org/ca33289f0d69cf685454fd6d4843cd392b5572c3?url=http%3A%2F%2Fi.imgur.com%2Flr41ykP.png
-#
-# Variables for this GUI:
+
+# Variables that can be used throughout this config file:
 # [TARGET] = Player being punished
-#
+
 main-gui:
   # Inventory indexes: starts at 0, ends at 44 (5 rows total)
   # (note: index = slot in the inventory)
