@@ -1,0 +1,132 @@
+mute-gui:
+  # Maximum of 18 reasons
+  # Punishments no longer include the punish-after or punishment option in comparison to the warns (above)
+
+  inventory_name: "&e&lMUTE &7[TARGET]"
+  permission: ""
+
+  10:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  11:
+    item-name: "&aInappropriate Behavior"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: LIME_WOOL
+    starting-time: 5h
+    autoscale: true
+
+  12:
+    item-name: "&eToxicity"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: YELLOW_WOOL
+    starting-time: 1d
+    autoscale: true
+
+  14:
+    item-name: "&6Harassment"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: ORANGE_WOOL
+    starting-time: 4d
+    autoscale: true
+
+  15:
+    item-name: "&dExtreme Spam"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: MAGENTA_WOOL
+    starting-time: 6h
+    autoscale: true
+
+  16:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  19:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  20:
+    item-name: "&bSuicidal Encouragement"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: LIGHT_BLUE_WOOL
+    starting-time: 7d
+    autoscale: true
+
+  21:
+    item-name: "&3Death Threats"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: CYAN_WOOL
+    starting-time: 7d
+    autoscale: true
+
+  23:
+    item-name: "&9DDoS Threats"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: BLUE_WOOL
+    starting-time: 7d
+    autoscale: true
+
+  24:
+    item-name: "&cDiscrimination"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: RED_WOOL
+    starting-time: 7d
+    autoscale: true
+
+  25:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  28:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  29:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  30:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  32:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  33:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  34:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
