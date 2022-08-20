@@ -71,7 +71,7 @@ public class NetunoCommand extends CyberCommand {
 
                 YMLUtils.getConfig().getYMLManager().initialize();
 
-                CoreUtils.logInfo( "Reloading all settings from the config file..." );
+                CoreUtils.logInfo( "Reloading all settings from the config files..." );
                 for ( Settings setting : Settings.values() ) { setting.reload(); }
                 for ( PunishSettings setting : PunishSettings.values() ) { setting.reload(); }
                 CoreUtils.logInfo( "Reloaded " + ( Settings.values().length + PunishSettings.values().length ) + " settings" );
