@@ -15,6 +15,7 @@ public class YMLUtils {
             case "main" -> getMainPunishUtils();
             case "warn" -> getWarnPunishUtils();
             case "mute" -> getMutePunishUtils();
+            case "ban" -> getBanPunishUtils();
             default -> null;
         };
     }
@@ -35,4 +36,7 @@ public class YMLUtils {
     public static MutePunishUtils getMutePunishUtils() { return mutePunishUtils; }
     public static MutePunishUtils getMuteGui() { return mutePunishUtils; }
 
+    private static BanPunishUtils banPunishUtils = new BanPunishUtils();
+    public static BanPunishUtils getBanPunishUtils() { return banPunishUtils; }
+    public static BanPunishUtils getBanGui() { return banPunishUtils; }
 }

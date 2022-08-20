@@ -1,0 +1,131 @@
+ban-gui:
+  # Maximum of 18 reasons
+
+  inventory_name: "&6&lBAN &7[TARGET]"
+  permission: ""
+
+  10:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  11:
+    item-name: "&bHacked Client"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: LIGHT_BLUE_WOOL
+    starting-time: 7d
+    autoscale: true
+
+  12:
+    item-name: "&eExtreme Discrimination"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: YELLOW_WOOL
+    starting-time: 14d
+    autoscale: true
+
+  14:
+    item-name: "&6Bug/Exploit Abuse"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: ORANGE_WOOL
+    starting-time: 5d
+    autoscale: true
+
+  15:
+    item-name: "&cBot"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: RED_WOOL
+    starting-time: forever
+    autoscale: true
+
+  16:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  19:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  20:
+    item-name: "&3Inappropriate Name/Skin"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: CYAN_WOOL
+    starting-time: forever
+    autoscale: true
+
+  21:
+    item-name: "&dReleasing Personal Information"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: MAGENTA_WOOL
+    starting-time: forever
+    autoscale: true
+
+  23:
+    item-name: "&dIRL Scamming"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: PURPLE_WOOL
+    starting-time: forever
+    autoscale: true
+
+  24:
+    item-name: "&fServer Advertisement"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: WHITE_WOOL
+    starting-time: forever
+    autoscale: true
+
+  25:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  28:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  29:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  30:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  32:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  33:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  34:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
