@@ -31,8 +31,8 @@ public enum SQLiteTables {
     ),
 
     RANDOM_TABLE( "CREATE TABLE IF NOT EXISTS random (" +
-            "`key` STRING NOT NULL," +
-            "`value` STRING NOT NULL );"
+            "`k` STRING NOT NULL," +
+            "`v` STRING NOT NULL );"
     );
 
     private String sql;

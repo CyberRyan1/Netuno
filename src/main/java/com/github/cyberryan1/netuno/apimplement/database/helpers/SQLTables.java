@@ -17,13 +17,14 @@ public enum SQLTables {
     ),
 
     ALTS_TABLE( "CREATE TABLE IF NOT EXISTS alts (" +
+            "inde INTEGER PRIMARY KEY AUTO_INCREMENT," + // we ignore this column
             "id INTEGER NOT NULL," +
-            "item VARCHAR(42) NOT NULL " +
+            "item VARCHAR(42) NOT NULL," +
             "type VARCHAR(6) NOT NULL );"
     ),
 
     REPORTS_TABLE( "CREATE TABLE IF NOT EXISTS reports (" +
-            "id INTEGER PRIMARY KEY" +
+            "id INTEGER PRIMARY KEY," +
             "player VARCHAR(42) NOT NULL," +
             "reporter VARCHAR(42) NOT NULL," +
             "timestamp INTEGER NOT NULL," +
@@ -31,8 +32,9 @@ public enum SQLTables {
     ),
 
     RANDOM_TABLE( "CREATE TABLE IF NOT EXISTS random (" +
-            "key TEXT NOT NULL," +
-            "value TEXT NOT NULL );"
+            "inde INTEGER PRIMARY KEY AUTO_INCREMENT," + // we ignore this column
+            "k TEXT NOT NULL," +
+            "v TEXT NOT NULL );"
     );
 
     private String sql;
