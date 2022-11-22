@@ -20,12 +20,12 @@ public class ChatslowManager {
         Bukkit.getScheduler().runTaskAsynchronously( CyberCore.getPlugin(), () -> {
             try {
                 PreparedStatement ps = ApiNetuno.getInstance().getConnectionManager()
-                        .getConn().prepareStatement( "SELECT * FROM random WHERE key = ?;" );
+                        .getConn().prepareStatement( "SELECT * FROM random WHERE k = ?;" );
                 ps.setString( 1, DATA_KEY );
 
                 ResultSet rs = ps.executeQuery();
-                if ( rs.next() ) { slow = Integer.parseInt( rs.getString( "value" ) ); }
-                else { setSlow( Settings.CHATSLOW_DEFAULT_VALUE.integer() ); }
+                if ( rs.next() ) { slow = Integer.parseInt( rs.getString( "v" ) ); }
+                else { addSlowKey(); }
 
                 ps.close();
                 rs.close();
@@ -42,9 +42,23 @@ public class ChatslowManager {
 
         try {
             PreparedStatement ps = ApiNetuno.getInstance().getConnectionManager()
-                    .getConn().prepareStatement( "UPDATE random SET value = ? WHERE key = ?;" );
+                    .getConn().prepareStatement( "UPDATE random SET v = ? WHERE k = ?;" );
             ps.setString( 1, slow + "" );
             ps.setString( 2, DATA_KEY );
+
+            ps.addBatch();
+            ps.executeBatch();
+            ps.close();
+        } catch ( SQLException e ) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    private static void addSlowKey() {
+        try {
+            PreparedStatement ps = ApiNetuno.getInstance().getConnectionManager().getConn().prepareStatement( "INSERT INTO random (k, v) VALUES (?, ?);" );
+            ps.setString( 1, DATA_KEY );
+            ps.setString( 2, Settings.CHATSLOW_DEFAULT_VALUE.integer() + "" );
 
             ps.addBatch();
             ps.executeBatch();
