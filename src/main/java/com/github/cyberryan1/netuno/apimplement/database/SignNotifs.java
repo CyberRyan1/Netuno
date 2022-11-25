@@ -9,7 +9,7 @@ public class SignNotifs {
 
     public static void addPlayerNoSignNotifs( String playerUuid ) {
         try {
-            PreparedStatement ps = ApiNetuno.getInstance().getConn().getConn().prepareStatement( "INSERT INTO random(key, value) VALUES(?, ?);" );
+            PreparedStatement ps = ApiNetuno.getInstance().getConn().getConn().prepareStatement( "INSERT INTO random(k, v) VALUES(?, ?);" );
             ps.setString( 1, "no-sign-notifs" );
             ps.setString( 2, playerUuid );
 
@@ -22,7 +22,7 @@ public class SignNotifs {
 
     public static void removePlayerNoSignNotifs( String playerUuid ) {
         try {
-            PreparedStatement ps = ApiNetuno.getInstance().getConn().getConn().prepareStatement( "DELETE FROM random WHERE key = ? AND value = ?;" );
+            PreparedStatement ps = ApiNetuno.getInstance().getConn().getConn().prepareStatement( "DELETE FROM random WHERE k = ? AND v = ?;" );
             ps.setString( 1, "no-sign-notifs" );
             ps.setString( 2, playerUuid );
 
@@ -36,7 +36,7 @@ public class SignNotifs {
     public static boolean playerHasNoSignNotifs( String playerUuid ) {
         boolean toReturn = false;
         try {
-            PreparedStatement ps = ApiNetuno.getInstance().getConn().getConn().prepareStatement( "SELECT * FROM random WHERE key = ? AND value = ?;" );
+            PreparedStatement ps = ApiNetuno.getInstance().getConn().getConn().prepareStatement( "SELECT * FROM random WHERE k = ? AND v = ?;" );
             ps.setString( 1, "no-sign-notifs" );
             ps.setString( 2, playerUuid );
 
