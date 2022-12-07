@@ -56,4 +56,14 @@ public class ActiveGuiManager {
 
         return Optional.empty();
     }
+
+    public static Optional<OpenGui> searchByGui( String guiName ) {
+        for ( OpenGui gui : activeGuis ) {
+            if ( gui.getCurrentGui().equalsIgnoreCase( guiName ) ) {
+                return Optional.of( gui );
+            }
+        }
+
+        return Optional.empty();
+    }
 }
