@@ -1,7 +1,7 @@
 package com.github.cyberryan1.netuno.models;
 
-import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
-import com.github.cyberryan1.cybercore.utils.CoreUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netunoapi.models.reports.NReport;
 import com.github.cyberryan1.netunoapi.models.time.NDate;
@@ -37,9 +37,9 @@ public class NetunoCombinedReport {
     public long getMostRecentDate() { return mostRecentDate; }
 
     public ItemStack getAsItem() {
-        ItemStack skull = CoreItemUtils.getPlayerSkull( target );
+        ItemStack skull = CyberItemUtils.getPlayerSkull( target );
 
-        skull = CoreItemUtils.setItemName( skull, "&p" + target.getName() );
+        skull = CyberItemUtils.setItemName( skull, "&p" + target.getName() );
 
         //      Reason, Amount
         HashMap<String, Integer> reasonAmount = new HashMap<>();
@@ -56,15 +56,15 @@ public class NetunoCombinedReport {
         List<String> reasons = new ArrayList<>();
         for ( String rea : reasonAmount.keySet() ) {
             int amount = reasonAmount.get( rea );
-            reasons.add( CoreUtils.getColored( " &8- &p" + amount + "x &s" + rea ) );
+            reasons.add( CyberColorUtils.getColored( " &8- &p" + amount + "x &s" + rea ) );
         }
 
         ArrayList<String> lore = new ArrayList<>();
-        lore.add( CoreUtils.getColored( "&pDate: &s" + new NDate( mostRecentDate ).getDateString() ) );
-        lore.add( CoreUtils.getColored( "&pReason(s):" ) );
+        lore.add( CyberColorUtils.getColored( "&pDate: &s" + new NDate( mostRecentDate ).getDateString() ) );
+        lore.add( CyberColorUtils.getColored( "&pReason(s):" ) );
         lore.addAll( reasons );
 
-        return CoreItemUtils.setItemLore( skull, lore );
+        return CyberItemUtils.setItemLore( skull, lore );
     }
 
 }

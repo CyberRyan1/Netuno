@@ -1,6 +1,6 @@
 package com.github.cyberryan1.netuno.guis.history;
 
-import com.github.cyberryan1.cybercore.utils.CoreUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -56,7 +56,7 @@ public class HistoryEditManager implements Listener {
         HistoryEditGUI gui = editing.get( event.getPlayer().getUniqueId().toString() );
         gui.setEditingLength( false );
         gui.setEditingReason( false );
-        CoreUtils.sendMsg( event.getPlayer(), "&sThe punishment edit has been cacelled" );
+        CyberMsgUtils.sendMsg( event.getPlayer(), "&sThe punishment edit has been cacelled" );
         removeEditing( event.getPlayer() );
     }
 }

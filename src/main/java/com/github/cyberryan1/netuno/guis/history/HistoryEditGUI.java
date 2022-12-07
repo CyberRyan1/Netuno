@@ -1,12 +1,12 @@
 package com.github.cyberryan1.netuno.guis.history;
 
-import com.github.cyberryan1.cybercore.CyberCore;
-import com.github.cyberryan1.cybercore.helpers.gui.GUI;
-import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
-import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
-import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
-import com.github.cyberryan1.cybercore.utils.CoreUtils;
-import com.github.cyberryan1.cybercore.utils.VaultUtils;
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.gui.Gui;
+import com.github.cyberryan1.cybercore.spigot.gui.GuiItem;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberGuiUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
@@ -24,7 +24,7 @@ import org.bukkit.entity.Player;
 
 public class HistoryEditGUI {
 
-    private final GUI gui;
+    private final Gui gui;
     private final OfflinePlayer target;
     private final Player staff;
     private final NPunishment punishment;
@@ -37,7 +37,7 @@ public class HistoryEditGUI {
         this.staff = staff;
         this.punishment = ApiNetuno.getData().getNetunoPuns().getPunishment( punId );
 
-        this.gui = new GUI( "&sEdit Punishment &p#" + punId, 6, CoreGUIUtils.getBackgroundGlass() );
+        this.gui = new Gui( "&sEdit Punishment &p#" + punId, 6, CyberGuiUtils.getBackgroundGlass() );
         insertItems();
     }
 
@@ -46,7 +46,7 @@ public class HistoryEditGUI {
         this.staff = staff;
         this.punishment = punishment;
 
-        this.gui = new GUI( "&sEdit Punishment &p#" + punishment.getId(), 6, CoreGUIUtils.getBackgroundGlass() );
+        this.gui = new Gui( "&sEdit Punishment &p#" + punishment.getId(), 6, CyberGuiUtils.getBackgroundGlass() );
         insertItems();
     }
 
@@ -62,30 +62,30 @@ public class HistoryEditGUI {
         //      delete punishment barrier: 33
 
         // Punishment Info
-        gui.setItem( 13, new GUIItem( GUIUtils.getPunishmentItem( punishment ), 13 ) );
+        gui.addItem( new GuiItem( GUIUtils.getPunishmentItem( punishment ), 13 ) );
 
         if ( punishment.getPunishmentType().hasNoReason() ) {
             // Delete Punishment
-            gui.setItem( 31, getDeleteBarrier( 31 ) );
+            gui.addItem( getDeleteBarrier( 31 ) );
         }
 
         else if ( punishment.getPunishmentType().hasNoLength() || punishment.isActive() == false ) {
             // Edit Reason
-            gui.setItem( 30, getEditReasonPaper( 30 ) );
+            gui.addItem( getEditReasonPaper( 30 ) );
             // Delete Punishment
-            gui.setItem( 32, getDeleteBarrier( 32 ) );
+            gui.addItem( getDeleteBarrier( 32 ) );
         }
 
         else {
             // Edit Length
-            gui.setItem( 29, getEditLengthClock( 29 ) );
+            gui.addItem( getEditLengthClock( 29 ) );
             // Edit Reason
-            gui.setItem( 31, getEditReasonPaper( 31 ) );
+            gui.addItem( getEditReasonPaper( 31 ) );
             // Delete Punishment
-            gui.setItem( 33, getDeleteBarrier( 33 ) );
+            gui.addItem( getDeleteBarrier( 33 ) );
         }
 
-        gui.createInventory();
+        gui.openInventory( staff );
     }
 
     public void open() {
@@ -124,7 +124,7 @@ public class HistoryEditGUI {
                 CommandErrors.sendInvalidTimespan( staff, newLength );
                 HistoryEditManager.addEditing( staff, this );
                 editingLength = true;
-                CoreUtils.sendMsg( staff, "&sTry again, or type &p\"cancel\"&s to cancel" );
+                CyberMsgUtils.sendMsg( staff, "&sTry again, or type &p\"cancel\"&s to cancel" );
                 return;
             }
         }
@@ -133,40 +133,40 @@ public class HistoryEditGUI {
         newGui.open();
     }
 
-    private GUIItem getDeleteBarrier( int slot ) {
-        return new GUIItem( CoreItemUtils.createItem( Material.BARRIER, "&sDelete Punishment" ), slot, () -> {
+    private GuiItem getDeleteBarrier( int slot ) {
+        return new GuiItem( CyberItemUtils.createItem( Material.BARRIER, "&sDelete Punishment" ), slot, ( item ) -> {
             staff.closeInventory();
 
-            if ( VaultUtils.hasPerms( staff, Settings.HISTORY_DELETE_PERMISSION.string() ) ) {
+            if ( CyberVaultUtils.hasPerms( staff, Settings.HISTORY_DELETE_PERMISSION.string() ) ) {
                 HistoryDeleteConfirmGUI deleteGui = new HistoryDeleteConfirmGUI( target, staff, punishment );
                 deleteGui.open();
                 staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
             }
 
             else {
-                CoreUtils.sendMsg( staff, Settings.PERM_DENIED_MSG.string() );
+                CyberMsgUtils.sendMsg( staff, Settings.PERM_DENIED_MSG.string() );
             }
         } );
     }
 
-    private GUIItem getEditReasonPaper( int slot ) {
-        return new GUIItem( CoreItemUtils.createItem( Material.PAPER, "&sEdit Reason" ), slot, () -> {
+    private GuiItem getEditReasonPaper( int slot ) {
+        return new GuiItem( CyberItemUtils.createItem( Material.PAPER, "&sEdit Reason" ), slot, ( item ) -> {
             HistoryEditManager.addEditing( staff, this );
             staff.closeInventory();
             editingReason = true;
-            CoreUtils.sendMsg( staff, "&sPlease enter the new reason for punishment &p#" + punishment.getId() );
-            CoreUtils.sendMsg( staff, "&sTo cancel, type &p\"cancel\"" );
+            CyberMsgUtils.sendMsg( staff, "&sPlease enter the new reason for punishment &p#" + punishment.getId() );
+            CyberMsgUtils.sendMsg( staff, "&sTo cancel, type &p\"cancel\"" );
             staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
         } );
     }
 
-    private GUIItem getEditLengthClock( int slot ) {
-        return new GUIItem( CoreItemUtils.createItem( Material.CLOCK, "&sEdit Length" ), slot, () -> {
+    private GuiItem getEditLengthClock( int slot ) {
+        return new GuiItem( CyberItemUtils.createItem( Material.CLOCK, "&sEdit Length" ), slot, ( item ) -> {
             HistoryEditManager.addEditing( staff, this );
             staff.closeInventory();
             editingLength = true;
-            CoreUtils.sendMsg( staff, "&sPlease enter the new length for punishment &p#" + punishment.getId() );
-            CoreUtils.sendMsg( staff, "&sTo cancel, type &p\"cancel\"" );
+            CyberMsgUtils.sendMsg( staff, "&sPlease enter the new length for punishment &p#" + punishment.getId() );
+            CyberMsgUtils.sendMsg( staff, "&sTo cancel, type &p\"cancel\"" );
             staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
         } );
     }

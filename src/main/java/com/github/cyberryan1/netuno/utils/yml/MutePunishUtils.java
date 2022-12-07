@@ -1,11 +1,11 @@
 package com.github.cyberryan1.netuno.utils.yml;
 
-import com.github.cyberryan1.cybercore.managers.YmlManager;
-import com.github.cyberryan1.cybercore.utils.yml.YMLReadTemplate;
+import com.github.cyberryan1.cybercore.spigot.config.YmlLoader;
+import com.github.cyberryan1.cybercore.spigot.config.YmlReader;
 
-public class MutePunishUtils extends YMLReadTemplate {
+public class MutePunishUtils extends YmlReader {
 
     public MutePunishUtils() {
-        super.setYMLManager( new YmlManager( "guis/mute_punish_gui.yml", "mute_punish_gui_default.yml" ) );
+        super( new YmlLoader(  "guis/mute_punish_gui.yml", "mute_punish_gui_default.yml" ) );
     }
 }

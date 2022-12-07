@@ -1,12 +1,12 @@
 package com.github.cyberryan1.netuno.utils.yml;
 
-import com.github.cyberryan1.cybercore.managers.FileType;
-import com.github.cyberryan1.cybercore.managers.YmlManager;
-import com.github.cyberryan1.cybercore.utils.yml.YMLReadTemplate;
+import com.github.cyberryan1.cybercore.spigot.config.FileType;
+import com.github.cyberryan1.cybercore.spigot.config.YmlLoader;
+import com.github.cyberryan1.cybercore.spigot.config.YmlReader;
 
-public class ConfigUtils extends YMLReadTemplate {
+public class ConfigUtils extends YmlReader {
 
     public ConfigUtils() {
-        setYMLManager( new YmlManager( FileType.CONFIG ) );
+        super( new YmlLoader( FileType.CONFIG ) );
     }
 }

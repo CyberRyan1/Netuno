@@ -1,10 +1,10 @@
 package com.github.cyberryan1.netuno.guis.history;
 
-import com.github.cyberryan1.cybercore.CyberCore;
-import com.github.cyberryan1.cybercore.helpers.gui.GUI;
-import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
-import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
-import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.gui.Gui;
+import com.github.cyberryan1.cybercore.spigot.gui.GuiItem;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberGuiUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
@@ -22,7 +22,7 @@ import java.util.List;
 
 public class HistoryListGUI {
 
-    private final GUI gui;
+    private final Gui gui;
     private final NetunoPlayer target;
     private final Player staff;
     private final int page;
@@ -38,7 +38,7 @@ public class HistoryListGUI {
         this.history = this.target.getPunishments();
         Sorter.sortPuns( this.history, sort );
 
-        this.gui = new GUI( "&p" + target.getName() + "&s's History", 6, CoreGUIUtils.getBackgroundGlass() );
+        this.gui = new Gui( "&p" + target.getName() + "&s's History", 6, CyberGuiUtils.getBackgroundGlass() );
         insertItems();
     }
 
@@ -62,14 +62,14 @@ public class HistoryListGUI {
         int guiIndex = 10;
         for ( int row = 0; row < 3; row++ ) {
             for ( int col = 0; col < 7; col++ ) {
-                GUIItem item;
+                GuiItem item;
                 if ( punIndex >= history.size() ) {
-                    item = new GUIItem( CoreItemUtils.createItem( Material.WHITE_STAINED_GLASS_PANE, "&f" ), guiIndex );
+                    item = new GuiItem( CyberItemUtils.createItem( Material.WHITE_STAINED_GLASS_PANE, "&f" ), guiIndex );
                 }
 
                 else {
                     final int finalPunIndex = punIndex;
-                    item = new GUIItem( GUIUtils.getPunishmentItem( history.get( punIndex ) ), guiIndex, () -> {
+                    item = new GuiItem( GUIUtils.getPunishmentItem( history.get( punIndex ) ), guiIndex, ( i ) -> {
                         int punId = history.get( finalPunIndex ).getId();
                         HistoryEditGUI editGui = new HistoryEditGUI( target.getPlayer(), staff, punId );
                         editGui.open();
@@ -77,7 +77,7 @@ public class HistoryListGUI {
                     } );
                 }
 
-                gui.setItem( guiIndex, item );
+                gui.addItem( item );
                 guiIndex++;
                 punIndex++;
             }
@@ -86,10 +86,10 @@ public class HistoryListGUI {
         }
 
         // Current Page Item
-        gui.setItem( 40, new GUIItem( getCurrentPagePaper(), 40 ) );
+        gui.addItem( new GuiItem( getCurrentPagePaper(), 40 ) );
 
         // Sort Hopper Item
-        gui.setItem( 49, new GUIItem( getSortHopper(), 49, () -> {
+        gui.addItem( new GuiItem( getSortHopper(), 49, ( item ) -> {
             SortBy next = SortBy.FIRST_DATE;
             if ( sort == SortBy.FIRST_DATE ) { next = SortBy.LAST_DATE; }
             else if ( sort == SortBy.LAST_DATE ) { next = SortBy.FIRST_ACTIVE; }
@@ -103,7 +103,7 @@ public class HistoryListGUI {
 
         // Previous Page Item
         if ( page >= 2 ) {
-            gui.setItem( 47, new GUIItem( Material.BOOK, "&pPrevious Page", 47, () -> {
+            gui.addItem( new GuiItem( Material.BOOK, "&pPrevious Page", 47, ( item ) -> {
                 HistoryListGUI listGui = new HistoryListGUI( target.getPlayer(), staff, page - 1, sort );
                 listGui.open();
                 staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
@@ -113,40 +113,40 @@ public class HistoryListGUI {
         // Next Page Item
         int maxPages = ( int ) Math.ceil( history.size() / 21.0 );
         if ( page < maxPages ) {
-            gui.setItem( 51, new GUIItem( Material.BOOK, "&pNext Page", 51, () -> {
+            gui.addItem( new GuiItem( Material.BOOK, "&pNext Page", 51, ( item ) -> {
                 HistoryListGUI listGui = new HistoryListGUI( target.getPlayer(), staff, page + 1, sort );
                 listGui.open();
                 staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
             } ) );
         }
 
-        gui.createInventory();
+        gui.openInventory( staff );
     }
 
     private ItemStack getCurrentPagePaper() {
-        ItemStack paper = CoreItemUtils.createItem( Material.PAPER, "&sPage &p#" + page );
-        return CoreItemUtils.setItemLore( paper, "&sClick any item to edit the punishment!" );
+        ItemStack paper = CyberItemUtils.createItem( Material.PAPER, "&sPage &p#" + page );
+        return CyberItemUtils.setItemLore( paper, "&sClick any item to edit the punishment!" );
     }
 
     private ItemStack getSortHopper() {
         if ( sort == SortBy.FIRST_DATE ) {
-            ItemStack hopper = CoreItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pOldest -> Newest" );
-            return CoreItemUtils.setItemLore( hopper, "&sNext Sort: &pNewest -> Oldest", "&sClick to change sort method" );
+            ItemStack hopper = CyberItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pOldest -> Newest" );
+            return CyberItemUtils.setItemLore( hopper, "&sNext Sort: &pNewest -> Oldest", "&sClick to change sort method" );
         }
 
         else if ( sort == SortBy.LAST_DATE ) {
-            ItemStack hopper = CoreItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pNewest -> Oldest" );
-            return CoreItemUtils.setItemLore( hopper, "&sNext Sort: &pActive -> Not Active", "&sClick to change sort method" );
+            ItemStack hopper = CyberItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pNewest -> Oldest" );
+            return CyberItemUtils.setItemLore( hopper, "&sNext Sort: &pActive -> Not Active", "&sClick to change sort method" );
         }
 
         else if ( sort == SortBy.FIRST_ACTIVE ) {
-            ItemStack hopper = CoreItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pActive -> Not Active" );
-            return CoreItemUtils.setItemLore( hopper, "&sNext Sort: &pNot Active -> Active", "&sClick to change sort method" );
+            ItemStack hopper = CyberItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pActive -> Not Active" );
+            return CyberItemUtils.setItemLore( hopper, "&sNext Sort: &pNot Active -> Active", "&sClick to change sort method" );
         }
 
         else if ( sort == SortBy.LAST_ACTIVE ) {
-            ItemStack hopper = CoreItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pNot Active -> Active" );
-            return CoreItemUtils.setItemLore( hopper, "&sNext Sort: &pOldest -> Newest", "&sClick to change sort method" );
+            ItemStack hopper = CyberItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pNot Active -> Active" );
+            return CyberItemUtils.setItemLore( hopper, "&sNext Sort: &pOldest -> Newest", "&sClick to change sort method" );
         }
 
         return null;

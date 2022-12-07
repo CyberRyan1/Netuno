@@ -1,11 +1,11 @@
 package com.github.cyberryan1.netuno.utils.yml;
 
-import com.github.cyberryan1.cybercore.managers.YmlManager;
-import com.github.cyberryan1.cybercore.utils.yml.YMLReadTemplate;
+import com.github.cyberryan1.cybercore.spigot.config.YmlLoader;
+import com.github.cyberryan1.cybercore.spigot.config.YmlReader;
 
-public class WarnPunishUtils extends YMLReadTemplate {
+public class WarnPunishUtils extends YmlReader {
 
     public WarnPunishUtils() {
-        super.setYMLManager( new YmlManager( "guis/warn_punish_gui.yml", "warn_punish_gui_default.yml" ) );
+        super( new YmlLoader(  "guis/warn_punish_gui.yml", "warn_punish_gui_default.yml" ) );
     }
 }

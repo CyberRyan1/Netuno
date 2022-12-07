@@ -1,8 +1,9 @@
 package com.github.cyberryan1.netuno.guis.punish.utils;
 
-import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
-import com.github.cyberryan1.cybercore.utils.CoreUtils;
-import com.github.cyberryan1.cybercore.utils.yml.YMLReadTemplate;
+import com.github.cyberryan1.cybercore.spigot.config.YmlReader;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
@@ -45,7 +46,7 @@ public class SinglePunishButton {
         this.guiType = pathKey.substring( 0, pathKey.indexOf( "-" ) );
         this.buttonType = pathKey.substring( pathKey.indexOf( "." ) + 1 );
 
-        final YMLReadTemplate YML_MANAGER = YMLUtils.fromName( ymlName );
+        final YmlReader YML_MANAGER = YMLUtils.fromName( ymlName );
 
         this.index = Integer.parseInt( this.buttonType );
         this.itemName = YML_MANAGER.getStr( pathKey + ".item-name" );
@@ -89,13 +90,13 @@ public class SinglePunishButton {
                 .filter( pun -> {
                     if ( pun.isGuiPun() == false || pun.getReason().contains( " (" ) == false ) { return false; }
                     String reason = pun.getReason().substring( 0, pun.getReason().lastIndexOf( " (" ) );
-                    String thisReason = CoreUtils.removeColor( CoreUtils.getColored( this.itemName ) );
+                    String thisReason = CyberColorUtils.deleteColor( CyberColorUtils.getColored( this.itemName ) );
                     return reason.equalsIgnoreCase( thisReason );
                 } )
                 .count();
 
-        ItemStack toReturn = CoreItemUtils.createItem( this.itemMaterial, replaceVariables( this.itemName, target, this.previousPunCount ) );
-        return CoreItemUtils.setItemLore( toReturn, replaceVariables( this.itemLore, target, this.previousPunCount ) );
+        ItemStack toReturn = CyberItemUtils.createItem( this.itemMaterial, replaceVariables( this.itemName, target, this.previousPunCount ) );
+        return CyberItemUtils.setItemLore( toReturn, replaceVariables( this.itemLore, target, this.previousPunCount ) );
     }
 
     public void executePunish( Player staff, OfflinePlayer player ) {
@@ -105,7 +106,7 @@ public class SinglePunishButton {
         prePun.getPunishment().setTimestamp( TimeUtils.getCurrentTimestamp() );
         prePun.getPunishment().setGuiPun( true );
 
-        String reason = CoreUtils.removeColor( CoreUtils.getColored( this.itemName ) );
+        String reason = CyberColorUtils.deleteColor( CyberColorUtils.getColored( this.itemName ) );
         reason += " (" + Utils.formatIntIntoAmountString( this.previousPunCount + 1 ) + " Offense)";
         if ( StaffPlayerPunishManager.getStaffSilent( staff ) ) { reason += " -s"; }
         prePun.getPunishment().setReason( reason );
@@ -153,7 +154,7 @@ public class SinglePunishButton {
                 }
 
                 if ( highest == null ) {
-                    CoreUtils.sendMsg( staff, "&p" + prePun.getPunishment().getPlayer().getName() + "&7 has no alts with active mutes" );
+                    CyberMsgUtils.sendMsg( staff, "&p" + prePun.getPunishment().getPlayer().getName() + "&7 has no alts with active mutes" );
                     return;
                 }
 
@@ -174,7 +175,7 @@ public class SinglePunishButton {
                 }
 
                 if ( highest == null ) {
-                    CoreUtils.sendMsg( staff, "&p" + prePun.getPunishment().getPlayer().getName() + "&7 has no alts with active bans" );
+                    CyberMsgUtils.sendMsg( staff, "&p" + prePun.getPunishment().getPlayer().getName() + "&7 has no alts with active bans" );
                     return;
                 }
 

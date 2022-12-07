@@ -1,10 +1,10 @@
 package com.github.cyberryan1.netuno.guis.report;
 
-import com.github.cyberryan1.cybercore.CyberCore;
-import com.github.cyberryan1.cybercore.helpers.gui.GUI;
-import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
-import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
-import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.gui.Gui;
+import com.github.cyberryan1.cybercore.spigot.gui.GuiItem;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberGuiUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.guis.utils.SortBy;
 import com.github.cyberryan1.netuno.models.NetunoCombinedReport;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class StaffAllReportsGUI implements Listener {
 
-    private final GUI gui;
+    private final Gui gui;
     private final Player staff;
     private final int page;
     private final SortBy sort;
@@ -41,7 +41,7 @@ public class StaffAllReportsGUI implements Listener {
         compressReports();
         sort();
 
-        gui = new GUI( "&pReports", 6, CoreGUIUtils.getBackgroundGlass() );
+        gui = new Gui( "&pReports", 6, CyberGuiUtils.getBackgroundGlass() );
         insertItems();
     }
 
@@ -61,7 +61,7 @@ public class StaffAllReportsGUI implements Listener {
             for ( int col = 0; col < 7; col++ ) {
                 if ( reportIndex < combinedReports.size() ) {
                     final int reportIndexFinal = reportIndex;
-                    gui.setItem( guiIndex, new GUIItem( combinedReports.get( reportIndex ).getAsItem(), guiIndex, () -> {
+                    gui.addItem( new GuiItem( combinedReports.get( reportIndex ).getAsItem(), guiIndex, ( item ) -> {
                         staff.closeInventory();
                         staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
                         StaffPlayerReportsGUI playerReports = new StaffPlayerReportsGUI( staff, combinedReports.get( reportIndexFinal ).getTarget() );
@@ -70,7 +70,7 @@ public class StaffAllReportsGUI implements Listener {
                 }
 
                 else {
-                    gui.setItem( guiIndex, new GUIItem( Material.LIGHT_GRAY_STAINED_GLASS_PANE, "&7", guiIndex ) );
+                    gui.addItem( new GuiItem( Material.LIGHT_GRAY_STAINED_GLASS_PANE, "&7", guiIndex ) );
                 }
 
                 guiIndex++;
@@ -80,7 +80,7 @@ public class StaffAllReportsGUI implements Listener {
             guiIndex += 2;
         }
 
-        gui.setItem( 40, new GUIItem( getSortHopper(), 40, () -> {
+        gui.addItem( new GuiItem( getSortHopper(), 40, ( item ) -> {
             staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
             SortBy newSort = switch ( sort ) {
                 case FIRST_DATE -> SortBy.LAST_DATE;
@@ -94,7 +94,7 @@ public class StaffAllReportsGUI implements Listener {
         } ) );
 
         if ( page >= 2 ) {
-            gui.setItem( 47, new GUIItem( Material.BOOK, "&pPrevious Page", 47, () -> {
+            gui.addItem( new GuiItem( Material.BOOK, "&pPrevious Page", 47, ( item ) -> {
                 staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
                 StaffAllReportsGUI newGUI = new StaffAllReportsGUI( staff, page - 1, sort );
                 newGUI.open();
@@ -103,14 +103,14 @@ public class StaffAllReportsGUI implements Listener {
 
         int maxPage = ( int ) Math.ceil( combinedReports.size() / 21.0 );
         if ( page < maxPage ) {
-            gui.setItem( 51, new GUIItem( Material.BOOK, "&pNext Page", 51, () -> {
+            gui.addItem( new GuiItem( Material.BOOK, "&pNext Page", 51, ( item ) -> {
                 staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
                 StaffAllReportsGUI newGUI = new StaffAllReportsGUI( staff, page + 1, sort );
                 newGUI.open();
             } ) );
         }
 
-        gui.createInventory();
+        gui.openInventory( staff );
     }
 
     public void open() {
@@ -120,14 +120,14 @@ public class StaffAllReportsGUI implements Listener {
     }
 
     private ItemStack getSortHopper() {
-        ItemStack hopper = CoreItemUtils.createItem( Material.HOPPER, "&sPage &p#" + page );
-        if ( sort == SortBy.FIRST_DATE ) { return CoreItemUtils.setItemLore( hopper, "", "&sSort: &pFirst Created -> Last Created",
+        ItemStack hopper = CyberItemUtils.createItem( Material.HOPPER, "&sPage &p#" + page );
+        if ( sort == SortBy.FIRST_DATE ) { return CyberItemUtils.setItemLore( hopper, "", "&sSort: &pFirst Created -> Last Created",
                 "&sNext Sort: &pLast Created -> First Created", "&sClick to change sort method" ); }
-        else if ( sort == SortBy.LAST_DATE ) { return CoreItemUtils.setItemLore( hopper, "", "&sSort: &pLast Created -> First Created",
+        else if ( sort == SortBy.LAST_DATE ) { return CyberItemUtils.setItemLore( hopper, "", "&sSort: &pLast Created -> First Created",
                 "&sNext Sort: &pOnline -> Offline", "&sClick to change sort method" ); }
-        else if ( sort == SortBy.ONLINE ) { return CoreItemUtils.setItemLore( hopper, "", "&sSort: &pOnline -> Offline",
+        else if ( sort == SortBy.ONLINE ) { return CyberItemUtils.setItemLore( hopper, "", "&sSort: &pOnline -> Offline",
                 "&sNext Sort: &pOffline -> Online", "&sClick to change sort method" ); }
-        else if ( sort == SortBy.OFFLINE ) { return CoreItemUtils.setItemLore( hopper, "", "&sSort: &pOffline -> Online",
+        else if ( sort == SortBy.OFFLINE ) { return CyberItemUtils.setItemLore( hopper, "", "&sSort: &pOffline -> Online",
                 "&sNext Sort: &pFirst Created -> Last Created", "&sClick to change sort method" ); }
 
         return null;

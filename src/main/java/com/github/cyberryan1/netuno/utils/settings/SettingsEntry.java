@@ -30,7 +30,7 @@ public class SettingsEntry {
             case "string" -> this.str = YMLUtils.getConfig().getStr( path );
             case "float" -> this.f = YMLUtils.getConfig().getFloat( path );
             case "double" -> this.d = YMLUtils.getConfig().getDouble( path );
-            case "long" -> this.l = YMLUtils.getConfig().getYMLManager().getConfig().getLong( path );
+            case "long" -> this.l = YMLUtils.getConfig().getLong( path );
             case "boolean" -> this.b = YMLUtils.getConfig().getBool( path );
             case "material" -> this.mat = Material.valueOf( YMLUtils.getConfig().getStr( path ) );
             case "strlist" -> this.strList = YMLUtils.getConfig().getStrList( path );

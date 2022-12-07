@@ -1,6 +1,6 @@
 package com.github.cyberryan1.netuno.apimplement.database;
 
-import com.github.cyberryan1.cybercore.utils.CoreUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.netuno.apimplement.database.helpers.AltSecurityLevel;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.database.AltsDatabase;
@@ -39,7 +39,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
      * @param level The alt security level to set to
      */
     public void setSecurityLevel( AltSecurityLevel level ) {
-        CoreUtils.logInfo( "[ALTS CACHE] Alt Strictness Level: " + level.name() );
+        CyberLogUtils.logInfo( "[ALTS CACHE] Alt Strictness Level: " + level.name() );
         this.securityLevel = level;
     }
 
@@ -54,9 +54,9 @@ public class NetunoAltsDatabase implements AltsDatabase {
      * Initializes the cache
      */
     public void initializeCache() {
-        CoreUtils.logInfo( "[ALTS CACHE] Initializing the cache..." );
+        CyberLogUtils.logInfo( "[ALTS CACHE] Initializing the cache..." );
 
-        CoreUtils.logInfo( "[ALTS CACHE] Getting all IPs and players from the database..." );
+        CyberLogUtils.logInfo( "[ALTS CACHE] Getting all IPs and players from the database..." );
         try {
             Statement stmt = ConnectionManager.CONN.createStatement();
             stmt.execute( "SELECT * FROM " + TABLE_NAME + ";" );
@@ -86,17 +86,17 @@ public class NetunoAltsDatabase implements AltsDatabase {
         } catch ( SQLException e ) {
             throw new RuntimeException( e );
         }
-        CoreUtils.logInfo( "[ALTS CACHE] Successfully retrieved all IPs and players from the database" );
+        CyberLogUtils.logInfo( "[ALTS CACHE] Successfully retrieved all IPs and players from the database" );
 
         reloadSettings();
 
-        CoreUtils.logInfo( "[ALTS CACHE] Loading the alts of all online players..." );
+        CyberLogUtils.logInfo( "[ALTS CACHE] Loading the alts of all online players..." );
         for ( Player player : Bukkit.getOnlinePlayers() ) {
             loadPlayer( player );
         }
-        CoreUtils.logInfo( "[ALTS CACHE] Successfully loaded the alts of " + Bukkit.getOnlinePlayers().size() + " online players" );
+        CyberLogUtils.logInfo( "[ALTS CACHE] Successfully loaded the alts of " + Bukkit.getOnlinePlayers().size() + " online players" );
 
-        CoreUtils.logInfo( "[ALTS CACHE] Alt cache successfully initialized with a current size of " + cache.size() );
+        CyberLogUtils.logInfo( "[ALTS CACHE] Alt cache successfully initialized with a current size of " + cache.size() );
     }
 
     /**
@@ -106,12 +106,12 @@ public class NetunoAltsDatabase implements AltsDatabase {
         // Setting for how many edits to the cache before the edits are saved to the database
         SAVE_EVERY = Settings.CACHE_ALTS_SAVE_EVERY.integer();
         if ( SAVE_EVERY > 0 ) {
-            CoreUtils.logInfo( "[ALTS CACHE] New and deleted alts will be saved every " + SAVE_EVERY + " alt creations/deletions" );
+            CyberLogUtils.logInfo( "[ALTS CACHE] New and deleted alts will be saved every " + SAVE_EVERY + " alt creations/deletions" );
         }
         else {
             SAVE_EVERY = 50;
-            CoreUtils.logError( "[ALTS CACHE] The value for the setting \"database.cache.alts.save-every\" must be greater than zero" );
-            CoreUtils.logError( "[ALTS CACHE] Defaulting to saving every " + SAVE_EVERY + " alt creations/deletions" );
+            CyberLogUtils.logError( "[ALTS CACHE] The value for the setting \"database.cache.alts.save-every\" must be greater than zero" );
+            CyberLogUtils.logError( "[ALTS CACHE] Defaulting to saving every " + SAVE_EVERY + " alt creations/deletions" );
         }
     }
 
@@ -260,7 +260,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
      * it inserts all elements from the cache into the database.
      */
     public void saveAll() {
-        CoreUtils.logInfo( "[ALTS CACHE] Saving all elements in the alt cache to the database..." );
+        CyberLogUtils.logInfo( "[ALTS CACHE] Saving all elements in the alt cache to the database..." );
         deleteAll();
 
         int count = 0;
@@ -269,7 +269,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
             for ( String uuid : group.getAltUuids() ) { saveUuid( group.getGroupId(), uuid ); count++; }
         }
 
-        CoreUtils.logInfo( "[ALTS CACHE] Successfully saved " + cache.size()
+        CyberLogUtils.logInfo( "[ALTS CACHE] Successfully saved " + cache.size()
                 + " different alt groups containing " + count + " IPs and UUIDs to the database" );
     }
 

@@ -1,6 +1,6 @@
 package com.github.cyberryan1.netuno.utils.settings;
 
-import com.github.cyberryan1.cybercore.utils.CoreUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
 import org.bukkit.Material;
 
 import java.util.ArrayList;
@@ -208,7 +208,7 @@ public enum Settings {
 
     public String string() { return value.string(); }
 
-    public String coloredString() { return CoreUtils.getColored( value.string() ); }
+    public String coloredString() { return CyberColorUtils.getColored( value.string() ); }
 
     public float getFloat() { return value.getFloat(); }
 
@@ -225,7 +225,7 @@ public enum Settings {
     public String[] coloredStringlist() {
         String[] toReturn = new String[ stringlist().length ];
         for ( int i = 0; i < stringlist().length; i++ ) {
-            toReturn[i] = CoreUtils.getColored( stringlist()[i] );
+            toReturn[i] = CyberColorUtils.getColored( stringlist()[i] );
         }
         return toReturn;
     }

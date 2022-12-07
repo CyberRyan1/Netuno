@@ -1,9 +1,9 @@
 package com.github.cyberryan1.netuno.guis.punish;
 
-import com.github.cyberryan1.cybercore.CyberCore;
-import com.github.cyberryan1.cybercore.helpers.gui.GUI;
-import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
-import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.gui.Gui;
+import com.github.cyberryan1.cybercore.spigot.gui.GuiItem;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberGuiUtils;
 import com.github.cyberryan1.netuno.guis.punish.utils.MultiPunishButton;
 import com.github.cyberryan1.netuno.guis.punish.utils.PunishSettings;
 import com.github.cyberryan1.netuno.guis.punish.utils.SinglePunishButton;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class MutePunishGUI {
 
-    private final GUI gui;
+    private final Gui gui;
     private final Player staff;
     private final OfflinePlayer target;
     private final MultiPunishButton punishButtons;
@@ -28,8 +28,8 @@ public class MutePunishGUI {
         this.punishButtons = PunishSettings.MUTE_BUTTONS.multiButton();
 
         this.rowCount = determineRowCount();
-        this.gui = new GUI( PunishSettings.MUTE_INVENTORY_NAME.coloredString().replace( "[TARGET]", target.getName() ),
-                this.rowCount, CoreGUIUtils.getBackgroundGlass() );
+        this.gui = new Gui( PunishSettings.MUTE_INVENTORY_NAME.coloredString().replace( "[TARGET]", target.getName() ),
+                this.rowCount, CyberGuiUtils.getBackgroundGlass() );
         insertItems();
     }
 
@@ -40,7 +40,7 @@ public class MutePunishGUI {
         for ( SinglePunishButton button : buttonsList ) {
             if ( button.getItemMaterial().isAir() ) { continue; }
 
-            GUIItem item = new GUIItem( button.getItem( this.target ), button.getIndex(), () -> {
+            GuiItem item = new GuiItem( button.getItem( this.target ), button.getIndex(), ( i ) -> {
                 button.executePunish( this.staff, this.target );
                 staff.closeInventory();
             } );
@@ -48,13 +48,13 @@ public class MutePunishGUI {
             this.gui.addItem( item );
         }
 
-        gui.createInventory();
+        gui.openInventory( staff );
     }
 
     public void open() {
         Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
             gui.openInventory( this.staff );
-            gui.setCloseAction( () -> {
+            gui.setCloseEvent( () -> {
                 StaffPlayerPunishManager.removeStaff( this.staff );
                 StaffPlayerPunishManager.removeStaffSilent( this.staff );
             } );

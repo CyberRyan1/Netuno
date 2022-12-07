@@ -2,9 +2,11 @@ package com.github.cyberryan1.netuno;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
-import com.github.cyberryan1.cybercore.CyberCore;
-import com.github.cyberryan1.cybercore.helpers.command.helper.CommandHelper;
-import com.github.cyberryan1.cybercore.utils.VaultUtils;
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.command.settings.BaseCommand;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.commands.*;
 import com.github.cyberryan1.netuno.guis.history.HistoryEditManager;
@@ -12,7 +14,6 @@ import com.github.cyberryan1.netuno.listeners.*;
 import com.github.cyberryan1.netuno.managers.ChatslowManager;
 import com.github.cyberryan1.netuno.skriptelements.conditions.RegisterConditions;
 import com.github.cyberryan1.netuno.skriptelements.expressions.RegisterExpressions;
-import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -37,7 +38,7 @@ import java.util.List;
 // ? TODO add a way to convert vanilla bans to netuno bans
 public final class Netuno extends JavaPlugin {
 
-    public static final List<CommandHelper> registeredCommands = new ArrayList<>();
+    public static final List<BaseCommand> registeredCommands = new ArrayList<>();
 
     private ChatslowManager chatslowManager;
 
@@ -49,14 +50,14 @@ public final class Netuno extends JavaPlugin {
     public void onEnable() {
         // Initialize things
         CyberCore.setPlugin( this );
-        new VaultUtils();
+        new CyberVaultUtils();
 
         // Update/reload config files
         YMLUtils.initializeConfigs();
 
         // Set the primary & secondary colors from the config
-        CyberCore.setPrimaryColor( Settings.PRIMARY_COLOR.string() );
-        CyberCore.setSecondaryColor( Settings.SECONDARY_COLOR.string() );
+        CyberColorUtils.setPrimaryColor( Settings.PRIMARY_COLOR.string() );
+        CyberColorUtils.setSecondaryColor( Settings.SECONDARY_COLOR.string() );
 
         ApiNetuno.setupInstance();
         chatslowManager = new ChatslowManager();
@@ -77,14 +78,14 @@ public final class Netuno extends JavaPlugin {
             try {
                 addon.loadClasses( "com.github.cyberryan1", "skriptelements" );
             } catch ( IOException e ) {
-                Utils.logWarn( "Could not enable as a skript addon, will still enable without this syntax!" );
+                CyberLogUtils.logWarn( "Could not enable as a skript addon, will still enable without this syntax!" );
                 enabled = false;
             }
-            Utils.logInfo( "Successfully enabled as a skript addon" );
+            CyberLogUtils.logInfo( "Successfully enabled as a skript addon" );
             RegisterExpressions.register();
             RegisterConditions.register();
         } catch ( NoClassDefFoundError error ) {
-            Utils.logWarn( "Could not enable as a skript addon, will still enable without this syntax!" );
+            CyberLogUtils.logWarn( "Could not enable as a skript addon, will still enable without this syntax!" );
             enabled = false;
         }
     }
@@ -119,13 +120,5 @@ public final class Netuno extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents( new SignChangeListener(), this );
         this.getServer().getPluginManager().registerEvents( new CommandListener(), this );
         this.getServer().getPluginManager().registerEvents( new HistoryEditManager(), this );
-    }
-
-    private void registerApi() {
-
-    }
-
-    private void unregisterApi() {
-
     }
 }

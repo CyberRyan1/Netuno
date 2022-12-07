@@ -1,6 +1,6 @@
 package com.github.cyberryan1.netuno.guis.punish.utils;
 
-import com.github.cyberryan1.cybercore.utils.yml.YMLReadTemplate;
+import com.github.cyberryan1.cybercore.spigot.config.YmlReader;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Material;
 
@@ -25,14 +25,14 @@ public class PunishSettingsEntry {
         this.valueType = valueType;
         this.ymlName = ymlName;
 
-        final YMLReadTemplate YML_MANAGER = YMLUtils.fromName( ymlName );
+        final YmlReader YML_MANAGER = YMLUtils.fromName( ymlName );
 
         switch ( valueType.toLowerCase() ) {
             case "int" -> this.i = YML_MANAGER.getInt( path );
             case "string" -> this.str = YML_MANAGER.getStr( path );
             case "float" -> this.f = YML_MANAGER.getFloat( path );
             case "double" -> this.d = YML_MANAGER.getDouble( path );
-            case "long" -> this.l = YML_MANAGER.getYMLManager().getConfig().getLong( path );
+            case "long" -> this.l = YML_MANAGER.getYmlLoader().getConfig().getLong( path );
             case "boolean" -> this.b = YML_MANAGER.getBool( path );
             case "material" -> this.mat = Material.valueOf( YML_MANAGER.getStr( path ) );
             case "mainbutton" -> this.main = new MainButton( path.substring( path.indexOf( "." ) + 1 ) );

@@ -1,20 +1,20 @@
 package com.github.cyberryan1.netuno.utils.yml;
 
-import com.github.cyberryan1.cybercore.utils.yml.YMLReadTemplate;
+import com.github.cyberryan1.cybercore.spigot.config.YmlReader;
 
 public class YMLUtils {
 
     public static void initializeConfigs() {
-        getConfigUtils().getYMLManager().initialize();
-        getMainPunishUtils().getYMLManager().initialize();
-        getWarnPunishUtils().getYMLManager().initialize();
-        getMutePunishUtils().getYMLManager().initialize();
-        getBanPunishUtils().getYMLManager().initialize();
-        getIpMutePunishUtils().getYMLManager().initialize();
-        getIpBanPunishUtils().getYMLManager().initialize();
+        getConfigUtils().getYmlLoader().initialize();
+        getMainPunishUtils().getYmlLoader().initialize();
+        getWarnPunishUtils().getYmlLoader().initialize();
+        getMutePunishUtils().getYmlLoader().initialize();
+        getBanPunishUtils().getYmlLoader().initialize();
+        getIpMutePunishUtils().getYmlLoader().initialize();
+        getIpBanPunishUtils().getYmlLoader().initialize();
     }
 
-    public static YMLReadTemplate fromName( String ymlName ) {
+    public static YmlReader fromName( String ymlName ) {
         return switch ( ymlName.toLowerCase() ) {
             case "config" -> getConfigUtils();
             case "main" -> getMainPunishUtils();

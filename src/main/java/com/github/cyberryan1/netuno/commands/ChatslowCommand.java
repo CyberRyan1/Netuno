@@ -1,8 +1,10 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.helpers.command.ArgType;
-import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
-import com.github.cyberryan1.cybercore.utils.CoreUtils;
+import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
+import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
+import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.netuno.managers.ChatslowManager;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
@@ -22,52 +24,42 @@ public class ChatslowCommand extends CyberCommand {
         register( true );
 
         setDemandPermission( true );
-        setMinArgs( 1 );
+        setMinArgLength( 1 );
+        setArgType( 0, ArgType.STRING );
+        setStringArgOptions( 0, List.of( "get", "set" ) );
         setArgType( 1, ArgType.INTEGER );
-        setAsync( true );
+        setRunAsync( true );
     }
 
     @Override
-    public List<String> tabComplete( CommandSender sender, String[] args ) {
-        if ( permissionsAllowed( sender ) ) {
-            List<String> options = List.of( "get", "set" );
-            if ( args.length == 0 || args[0].length() == 0 ) { return options; }
-            else if ( args.length == 1 ) { return matchArgs( options, args[0] ); }
-        }
-
+    public List<String> tabComplete( SentCommand command ) {
         return List.of();
     }
 
     @Override
     // /chatslow get
     // /chatslow set (amount)
-    public boolean execute( CommandSender sender, String args[] ) {
+    public boolean execute( SentCommand command ) {
 
         // /chatslow get
-        if ( args[0].equalsIgnoreCase( "get" ) ) {
-            CoreUtils.sendMsg( sender, "&sThe chatslow is currently &p" + ChatslowManager.getSlow() + " seconds" );
+        if ( command.getArg( 0 ).equalsIgnoreCase( "get" ) ) {
+            CyberMsgUtils.sendMsg( command.getSender(), "&sThe chatslow is currently &p" + ChatslowManager.getSlow() + " seconds" );
         }
 
         // /chatslow set (amount)
-        else if ( args[0].equalsIgnoreCase( "set" ) ) {
-            if ( args.length >= 2 ) {
-                int newSlow = Integer.parseInt( args[1] );
-
-                if ( newSlow < 0 ) {
-                    CoreUtils.sendMsg( sender, "&sThe chatslow must be greater than or equal to zero" );
-                    return true;
-                }
-
-                ChatslowManager.setSlow( newSlow );
-                CoreUtils.sendMsg( sender, "&sThe chatslow has been set to &p" + ChatslowManager.getSlow() + " seconds" );
-
-                if ( Settings.CHATSLOW_BROADCAST.string().isBlank() == false ) {
-                    Bukkit.broadcastMessage( CoreUtils.getColored( Settings.CHATSLOW_BROADCAST.coloredString().replace( "[AMOUNT]", newSlow + "" ) ) );
-                }
+        else if ( command.getArg( 0 ).equalsIgnoreCase( "set" ) ) {
+            int newSlow = command.getIntegerAtArg( 1 );
+            if ( newSlow < 0 ) {
+                CyberMsgUtils.sendMsg( command.getSender(), "&sThe chatslow must be greater than or equal to zero" );
+                return true;
             }
 
-            else {
-                sendUsage( sender );
+            ChatslowManager.setSlow( newSlow );
+            CyberMsgUtils.sendMsg( command.getSender(), "&sThe chatslow has been set to &p" + ChatslowManager.getSlow() + " seconds" );
+
+            if ( Settings.CHATSLOW_BROADCAST.string().isBlank() == false ) {
+                Bukkit.broadcastMessage( CyberColorUtils.getColored(
+                        Settings.CHATSLOW_BROADCAST.coloredString().replace( "[AMOUNT]", newSlow + "" ) ) );
             }
         }
 
@@ -76,7 +68,7 @@ public class ChatslowCommand extends CyberCommand {
 
     @Override
     public void sendUsage( CommandSender sender ) {
-        CoreUtils.sendMsg( sender,
+        CyberMsgUtils.sendMsg( sender,
                 "&8",
                 "&8/&schatslow &pget",
                 "&8/&schatslow &pset (amount)",

@@ -1,13 +1,12 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.helpers.command.ArgType;
-import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
+import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
+import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
+import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.netuno.guis.report.StaffAllReportsGUI;
 import com.github.cyberryan1.netuno.guis.report.StaffPlayerReportsGUI;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -25,30 +24,30 @@ public class ReportsCommand extends CyberCommand {
 
         setDemandPlayer( true );
         setDemandPermission( true );
-        setMinArgs( 0 );
+        setMinArgLength( 0 );
         setArgType( 0, ArgType.OFFLINE_PLAYER );
-        setAsync( true );
+        setRunAsync( true );
     }
 
     @Override
-    public List<String> tabComplete( CommandSender sender, String[] args ) {
+    public List<String> tabComplete( SentCommand command ) {
         return List.of();
     }
 
     @Override
     // /reports [player]
-    public boolean execute( CommandSender sender, String args[] ) {
-        final Player staff = ( Player ) sender;
+    public boolean execute( SentCommand command ) {
+        final Player staff = command.getPlayer();
 
         // /reports
-        if ( args.length == 0 ) {
+        if ( command.getArgs().length == 0 ) {
             StaffAllReportsGUI gui = new StaffAllReportsGUI( staff, 1 );
             gui.open();
         }
 
         // /reports [player]
         else {
-            final OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
+            final OfflinePlayer target = command.getOfflinePlayerAtArg( 0 );
             StaffPlayerReportsGUI gui = new StaffPlayerReportsGUI( staff, target );
             gui.open();
         }
