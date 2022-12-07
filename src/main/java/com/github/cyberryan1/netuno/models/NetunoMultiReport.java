@@ -52,11 +52,11 @@ public class NetunoMultiReport {
     public ItemStack getAsItem() {
         ItemStack skull = CoreItemUtils.getPlayerSkull( reporter );
 
-        skull = CoreItemUtils.setItemName( skull, "&pReporter: &s" + reporter.getName() );
+        skull = CyberItemUtils.setItemName( skull, "&pReporter: &s" + reporter.getName() );
 
-        skull = CoreItemUtils.addItemLore( skull, "&pDate: &s" + new NDate( date ).getDateString(), "&pReason(s):" );
+        skull = CyberItemUtils.addItemLore( skull, "&pDate: &s" + new NDate( date ).getDateString(), "&pReason(s):" );
         for ( String r : getReasons() ) {
-            skull = CoreItemUtils.addItemLore( skull, " &8- &s" + r );
+            skull = CyberItemUtils.addItemLore( skull, " &8- &s" + r );
         }
 
         return skull;

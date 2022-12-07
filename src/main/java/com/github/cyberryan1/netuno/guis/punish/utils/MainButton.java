@@ -1,6 +1,6 @@
 package com.github.cyberryan1.netuno.guis.punish.utils;
 
-import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -40,10 +40,10 @@ public class MainButton {
 
     public ItemStack getItem( OfflinePlayer target ) {
         if ( this.buttonName.equalsIgnoreCase( "skull" ) ) {
-            return CoreItemUtils.getPlayerSkull( target );
+            return CyberItemUtils.getPlayerSkull( target );
         }
         else {
-            return CoreItemUtils.createItem( this.material, this.name.replace( "[TARGET]", target.getName() ) );
+            return CyberItemUtils.createItem( this.material, this.name.replace( "[TARGET]", target.getName() ) );
         }
     }
 }

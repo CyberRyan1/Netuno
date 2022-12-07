@@ -1,6 +1,6 @@
 package com.github.cyberryan1.netuno.guis.punish.utils;
 
-import com.github.cyberryan1.cybercore.utils.CoreUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
 import org.bukkit.Material;
 
 public enum PunishSettings {
@@ -77,7 +77,7 @@ public enum PunishSettings {
 
     public String string() { return value.string(); }
 
-    public String coloredString() { return CoreUtils.getColored( value.string() ); }
+    public String coloredString() { return CyberColorUtils.getColored( value.string() ); }
 
     public float getFloat() { return value.getFloat(); }
 

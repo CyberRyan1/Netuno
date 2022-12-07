@@ -1,10 +1,10 @@
 package com.github.cyberryan1.netuno.guis.history;
 
-import com.github.cyberryan1.cybercore.CyberCore;
-import com.github.cyberryan1.cybercore.helpers.gui.GUI;
-import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
-import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
-import com.github.cyberryan1.cybercore.utils.CoreUtils;
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.gui.Gui;
+import com.github.cyberryan1.cybercore.spigot.gui.GuiItem;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberGuiUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netunoapi.events.NetunoEventDispatcher;
@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 
 public class HistoryDeleteConfirmGUI {
 
-    private final GUI gui;
+    private final Gui gui;
     private final OfflinePlayer target;
     private final Player staff;
     private final NPunishment punishment;
@@ -28,7 +28,7 @@ public class HistoryDeleteConfirmGUI {
         this.staff = staff;
         this.punishment = punishment;
 
-        this.gui = new GUI( "&sConfirm Deletion", 5, CoreGUIUtils.getBackgroundGlass() );
+        this.gui = new Gui( "&sConfirm Deletion", 5, CyberGuiUtils.getBackgroundGlass() );
         insertItems();
     }
 
@@ -43,25 +43,25 @@ public class HistoryDeleteConfirmGUI {
         // green wool confirm: 30
         // red wool cancel: 32
 
-        gui.setItem( 13, new GUIItem( GUIUtils.getPunishmentItem( punishment ), 13 ) );
+        gui.addItem( new GuiItem( GUIUtils.getPunishmentItem( punishment ), 13 ) );
 
         // Green Wool Confirm
-        gui.setItem( 30, new GUIItem( Material.LIME_WOOL, "&aConfirm", 30, () -> {
+        gui.addItem( new GuiItem( Material.LIME_WOOL, "&aConfirm", 30, ( item ) -> {
             staff.closeInventory();
             ApiNetuno.getData().getNetunoPuns().removePunishment( punishment.getId() );
-            CoreUtils.sendMsg( staff, "&sSuccessfully deleted punishment &p#" + punishment.getId() );
+            CyberMsgUtils.sendMsg( staff, "&sSuccessfully deleted punishment &p#" + punishment.getId() );
             staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 1, 2 );
 
             NetunoEventDispatcher.dispatch( new NetunoHistoryDeleteEvent( punishment, staff ) );
         } ) );
 
         // Red Wool Cancel
-        gui.setItem( 32, new GUIItem( Material.RED_WOOL, "&cCancel", 32, () -> {
+        gui.addItem( new GuiItem( Material.RED_WOOL, "&cCancel", 32, ( item ) -> {
             staff.closeInventory();
-            CoreUtils.sendMsg( staff, "&sCancelled deletion of punishment &p#" + punishment.getId() );
+            CyberMsgUtils.sendMsg( staff, "&sCancelled deletion of punishment &p#" + punishment.getId() );
             staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 1, 2 );
         } ) );
 
-        gui.createInventory();
+        gui.openInventory( staff );
     }
 }

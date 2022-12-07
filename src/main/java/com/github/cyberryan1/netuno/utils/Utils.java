@@ -1,7 +1,6 @@
 package com.github.cyberryan1.netuno.utils;
 
 import com.github.cyberryan1.cybercore.CyberCore;
-import com.github.cyberryan1.cybercore.utils.CoreUtils;
 import com.github.cyberryan1.cybercore.utils.VaultUtils;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
@@ -227,7 +226,7 @@ public class Utils {
     public static String removeColorCodes( String input ) {
         String colorCodes[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "a", "b", "c", "d", "e", "f", "n", "m", "l", "o" };
         for ( String cc : colorCodes ) {
-            input = input.replace( CoreUtils.getColored( "&" + cc ), "" );
+            input = input.replace( CyberColorUtils.getColored( "&" + cc ), "" );
         }
 
         return input;

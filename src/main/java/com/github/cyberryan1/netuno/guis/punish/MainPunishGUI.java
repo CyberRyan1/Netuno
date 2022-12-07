@@ -1,10 +1,10 @@
 package com.github.cyberryan1.netuno.guis.punish;
 
-import com.github.cyberryan1.cybercore.CyberCore;
-import com.github.cyberryan1.cybercore.helpers.gui.GUI;
-import com.github.cyberryan1.cybercore.helpers.gui.GUIItem;
-import com.github.cyberryan1.cybercore.utils.CoreGUIUtils;
-import com.github.cyberryan1.cybercore.utils.VaultUtils;
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.gui.Gui;
+import com.github.cyberryan1.cybercore.spigot.gui.GuiItem;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberGuiUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.guis.history.HistoryListGUI;
 import com.github.cyberryan1.netuno.guis.ipinfo.AltsListGUI;
 import com.github.cyberryan1.netuno.guis.punish.utils.MainButton;
@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 
 public class MainPunishGUI {
 
-    private final GUI gui;
+    private final Gui gui;
     private final Player staff;
     private final OfflinePlayer target;
 
@@ -25,8 +25,8 @@ public class MainPunishGUI {
         this.staff = staff;
         this.target = target;
 
-        this.gui = new GUI( PunishSettings.MAIN_INVENTORY_NAME.coloredString().replace( "[TARGET]", target.getName() ),
-                5, CoreGUIUtils.getBackgroundGlass() );
+        this.gui = new Gui( PunishSettings.MAIN_INVENTORY_NAME.coloredString().replace( "[TARGET]", target.getName() ),
+                5, CyberGuiUtils.getBackgroundGlass() );
         insertItems();
     }
 
@@ -35,12 +35,12 @@ public class MainPunishGUI {
 
         MainButton skull = PunishSettings.MAIN_SKULL_BUTTON.mainButton();
         if ( skull.getIndex() != -1 ) {
-            gui.setItem( skull.getIndex(), new GUIItem( skull.getItem( this.target ), skull.getIndex() ) );
+            gui.addItem( new GuiItem( skull.getItem( this.target ), skull.getIndex() ) );
         }
 
         MainButton history = PunishSettings.MAIN_HISTORY_BUTTON.mainButton();
         if ( history.getIndex() != -1 ) {
-            gui.setItem( history.getIndex(), new GUIItem( history.getItem( this.target ), history.getIndex(), () -> {
+            gui.addItem( new GuiItem( history.getItem( this.target ), history.getIndex(), ( item ) -> {
                 staff.closeInventory();
                 HistoryListGUI historyList = new HistoryListGUI( this.target, this.staff, 1 );
                 historyList.open();
@@ -49,7 +49,7 @@ public class MainPunishGUI {
 
         MainButton alts = PunishSettings.MAIN_ALTS_BUTTON.mainButton();
         if ( alts.getIndex() != -1 ) {
-            gui.setItem( alts.getIndex(), new GUIItem( alts.getItem( this.target ), alts.getIndex(), () -> {
+            gui.addItem( new GuiItem( alts.getItem( this.target ), alts.getIndex(), ( item ) -> {
                 staff.closeInventory();
                 AltsListGUI altsList = new AltsListGUI( this.staff, this.target, 1 );
                 altsList.open();
@@ -57,11 +57,11 @@ public class MainPunishGUI {
         }
 
         StaffPlayerPunishManager.setStaffSilent( this.staff, false );
-        final MainButton silent = ( VaultUtils.hasPerms( this.staff, Settings.SILENT_PERMISSION.string() ) ) ?
+        final MainButton silent = ( CyberVaultUtils.hasPerms( this.staff, Settings.SILENT_PERMISSION.string() ) ) ?
                 PunishSettings.MAIN_SILENT_DISABLED_BUTTON.mainButton() :
                 PunishSettings.MAIN_SILENT_NO_PERMS_BUTTON.mainButton();
         if ( silent.getIndex() != -1 ) {
-            gui.setItem( silent.getIndex(), new GUIItem( silent.getItem( this.target ), silent.getIndex(),
+            gui.addItem( new GuiItem( silent.getItem( this.target ), silent.getIndex(),
                     ( guiItem ) -> {
                 if ( guiItem.getType() == PunishSettings.MAIN_SILENT_NO_PERMS_BUTTON.mainButton().getItem( this.target ).getType() ) {
                     return;
@@ -82,7 +82,7 @@ public class MainPunishGUI {
 
         MainButton warn = PunishSettings.MAIN_WARN_BUTTON.mainButton();
         if ( warn.getIndex() != -1 ) {
-            gui.setItem( warn.getIndex(), new GUIItem( warn.getItem( this.target ), warn.getIndex(), () -> {
+            gui.addItem( new GuiItem( warn.getItem( this.target ), warn.getIndex(), ( item ) -> {
                 staff.closeInventory();
                 WarnPunishGUI g = new WarnPunishGUI( this.staff, this.target );
                 g.open();
@@ -92,7 +92,7 @@ public class MainPunishGUI {
 
         MainButton mute = PunishSettings.MAIN_MUTE_BUTTON.mainButton();
         if ( mute.getIndex() != -1 ) {
-            gui.setItem( mute.getIndex(), new GUIItem( mute.getItem( this.target ), mute.getIndex(), () -> {
+            gui.addItem( new GuiItem( mute.getItem( this.target ), mute.getIndex(), ( item ) -> {
                 staff.closeInventory();
                 MutePunishGUI g = new MutePunishGUI( this.staff, this.target );
                 g.open();
@@ -102,7 +102,7 @@ public class MainPunishGUI {
 
         MainButton ban = PunishSettings.MAIN_BAN_BUTTON.mainButton();
         if ( ban.getIndex() != -1 ) {
-            gui.setItem( ban.getIndex(), new GUIItem( ban.getItem( this.target ), ban.getIndex(), () -> {
+            gui.addItem( new GuiItem( ban.getItem( this.target ), ban.getIndex(), ( item ) -> {
                 staff.closeInventory();
                 BanPunishGUI g = new BanPunishGUI( this.staff, this.target );
                 g.open();
@@ -112,7 +112,7 @@ public class MainPunishGUI {
 
         MainButton ipmute = PunishSettings.MAIN_IPMUTE_BUTTON.mainButton();
         if ( ipmute.getIndex() != -1 ) {
-            gui.setItem( ipmute.getIndex(), new GUIItem( ipmute.getItem( this.target ), ipmute.getIndex(), () -> {
+            gui.addItem( new GuiItem( ipmute.getItem( this.target ), ipmute.getIndex(), ( item ) -> {
                 staff.closeInventory();
                 IpMutePunishGUI g = new IpMutePunishGUI( this.staff, this.target );
                 g.open();
@@ -122,7 +122,7 @@ public class MainPunishGUI {
 
         MainButton ipban = PunishSettings.MAIN_IPBAN_BUTTON.mainButton();
         if ( ipban.getIndex() != -1 ) {
-            gui.setItem( ipban.getIndex(), new GUIItem( ipban.getItem( this.target ), ipban.getIndex(), () -> {
+            gui.addItem( new GuiItem( ipban.getItem( this.target ), ipban.getIndex(), ( item ) -> {
                 staff.closeInventory();
                 IpBanPunishGUI g = new IpBanPunishGUI( this.staff, this.target );
                 g.open();
@@ -130,13 +130,13 @@ public class MainPunishGUI {
             } ) );
         }
 
-        gui.createInventory();
+        gui.openInventory( staff );
     }
 
     public void open() {
         Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
             gui.openInventory( this.staff );
-            gui.setCloseAction( () -> {
+            gui.setCloseEvent( () -> {
                 Bukkit.getScheduler().runTaskLaterAsynchronously( CyberCore.getPlugin(), () -> {
                     if ( StaffPlayerPunishManager.containsStaff( this.staff ) == false
                             && StaffPlayerPunishManager.containsStaffSilent( this.staff ) ) {
