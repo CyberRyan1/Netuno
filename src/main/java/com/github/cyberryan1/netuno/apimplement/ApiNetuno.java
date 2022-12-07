@@ -1,6 +1,6 @@
 package com.github.cyberryan1.netuno.apimplement;
 
-import com.github.cyberryan1.cybercore.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.netuno.apimplement.database.ConnectionManager;
 import com.github.cyberryan1.netuno.apimplement.database.DatabaseManager;
 import com.github.cyberryan1.netuno.apimplement.database.helpers.AltSecurityLevel;

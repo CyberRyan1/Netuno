@@ -1,8 +1,8 @@
 package com.github.cyberryan1.netuno.apimplement.models.punishments;
 
-import com.github.cyberryan1.cybercore.CyberCore;
-import com.github.cyberryan1.cybercore.utils.CoreUtils;
-import com.github.cyberryan1.cybercore.utils.VaultUtils;
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
@@ -64,7 +64,7 @@ public class NetunoPrePunishment implements NPrePunishment {
         if ( pun.getPunishmentType().isIpPunishment() ) {
             final int recentlyAddedId = ApiNetuno.getData().getNetunoPuns().getRecentlyInsertedId();
             if ( recentlyAddedId == -1 ) {
-                CoreUtils.logError( "An error occurred while trying to get the most recently inserted ID, "
+                CyberLogUtils.logError( "An error occurred while trying to get the most recently inserted ID, "
                         + "so the reference punishment could not be added to the player's alts." );
                 return;
             }
@@ -93,7 +93,7 @@ public class NetunoPrePunishment implements NPrePunishment {
             };
 
             if ( unpunType == null ) {
-                CoreUtils.logError( "An error occurred while trying to get the unpunishment type, "
+                CyberLogUtils.logError( "An error occurred while trying to get the unpunishment type, "
                         + "so the previous punishments could not be set as unactive." );
                 return;
             }
@@ -222,7 +222,7 @@ public class NetunoPrePunishment implements NPrePunishment {
 
             for ( Player player : Bukkit.getOnlinePlayers() ) {
                 if ( player.getUniqueId().toString().equals( pun.getPlayerUuid() ) == false ) {
-                    if ( staffBroadcastNoExist || VaultUtils.hasPerms( player, Settings.STAFF_PERMISSION.string() ) == false ) {
+                    if ( staffBroadcastNoExist || CyberVaultUtils.hasPerms( player, Settings.STAFF_PERMISSION.string() ) == false ) {
                         Utils.sendAnyMsg( player, publicBroadcast );
                     }
                 }
@@ -245,7 +245,7 @@ public class NetunoPrePunishment implements NPrePunishment {
             String permission = Settings.STAFF_PERMISSION.string();
             if ( silent ) { permission = Settings.SILENT_PERMISSION.string(); }
             for ( Player player : Bukkit.getOnlinePlayers() ) {
-                if ( VaultUtils.hasPerms( player, permission ) ) {
+                if ( CyberVaultUtils.hasPerms( player, permission ) ) {
                     Utils.sendAnyMsg( player, staffBroadcast );
                 }
             }

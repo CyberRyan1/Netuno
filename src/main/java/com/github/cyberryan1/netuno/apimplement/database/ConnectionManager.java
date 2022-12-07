@@ -1,7 +1,7 @@
 package com.github.cyberryan1.netuno.apimplement.database;
 
-import com.github.cyberryan1.cybercore.CyberCore;
-import com.github.cyberryan1.cybercore.utils.CoreUtils;
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.netuno.apimplement.database.helpers.SQLTables;
 import com.github.cyberryan1.netuno.apimplement.database.helpers.SQLiteTables;
 import com.github.cyberryan1.netunoapi.database.DatabaseConnection;
@@ -29,9 +29,9 @@ public class ConnectionManager implements DatabaseConnection {
      */
     public void initializeSql( String host, int port, String database, String username, String password ) {
         IS_SQL = true;
-        CoreUtils.logInfo( "[SQL Init] Initializing SQL..." );
+        CyberLogUtils.logInfo( "[SQL Init] Initializing SQL..." );
 
-        CoreUtils.logInfo( "[SQL Init] Establishing the connection for SQL..." );
+        CyberLogUtils.logInfo( "[SQL Init] Establishing the connection for SQL..." );
         try {
             MysqlDataSource source = new MysqlDataSource();
             source.setServerName( host );
@@ -45,12 +45,12 @@ public class ConnectionManager implements DatabaseConnection {
                 throw new SQLException( "Could not establish a connection: connection is invalid" );
             }
         } catch ( SQLException e ) {
-            CoreUtils.logError( "[SQL Init] SQL exception when establishing the connection. See error below for details" );
+            CyberLogUtils.logError( "[SQL Init] SQL exception when establishing the connection. See error below for details" );
             throw new RuntimeException( e );
         }
-        CoreUtils.logInfo( "[SQL Init] Connection for SQL successfully established" );
+        CyberLogUtils.logInfo( "[SQL Init] Connection for SQL successfully established" );
 
-        CoreUtils.logInfo( "[SQL Init] Creating tables for SQL..." );
+        CyberLogUtils.logInfo( "[SQL Init] Creating tables for SQL..." );
         try {
             Statement stmt = CONN.createStatement();
             for ( SQLTables table : SQLTables.values() ) {
@@ -58,12 +58,12 @@ public class ConnectionManager implements DatabaseConnection {
             }
             stmt.close();
         } catch ( SQLException e ) {
-            CoreUtils.logError( "[SQL Init] SQL exception when creating tables. See error below for details" );
+            CyberLogUtils.logError( "[SQL Init] SQL exception when creating tables. See error below for details" );
             throw new RuntimeException( e );
         }
-        CoreUtils.logInfo( "[SQL Init] Successfully created all tables for SQLite" );
+        CyberLogUtils.logInfo( "[SQL Init] Successfully created all tables for SQLite" );
 
-        CoreUtils.logInfo( "[SQL Init] SQL initialization complete" );
+        CyberLogUtils.logInfo( "[SQL Init] SQL initialization complete" );
     }
 
     /**
@@ -72,26 +72,26 @@ public class ConnectionManager implements DatabaseConnection {
     public void initializeSqlite() {
         IS_SQLITE = true;
 
-        CoreUtils.logInfo( "[SQLite Init] Initializing SQLite..." );
+        CyberLogUtils.logInfo( "[SQLite Init] Initializing SQLite..." );
         String databaseName = CyberCore.getPlugin().getConfig().getString( "SQLite.Filename", "database" );
 
-        CoreUtils.logInfo( "[SQLite Init] Establishing the connection for SQLite..." );
+        CyberLogUtils.logInfo( "[SQLite Init] Establishing the connection for SQLite..." );
         try {
             File dataFolder = new File( CyberCore.getPlugin().getDataFolder(), databaseName + ".db" );
             Class.forName( "org.sqlite.JDBC" );
             CONN = DriverManager.getConnection( "jdbc:sqlite:" + dataFolder );
         } catch ( SQLException e ) {
-            CoreUtils.logError( "[SQLite Init] SQLite exception when establishing the connection. See error below for details" );
+            CyberLogUtils.logError( "[SQLite Init] SQLite exception when establishing the connection. See error below for details" );
             throw new RuntimeException( e );
         } catch ( ClassNotFoundException e ) {
-            CoreUtils.logError( "[SQLite Init] SQLite exception when establishing the connection" );
-            CoreUtils.logError( "[SQLite Init] A potential reason why this happened is because you don't have the SQLite JDBC library" );
-            CoreUtils.logError( "[SQLite Init] See error below for details" );
+            CyberLogUtils.logError( "[SQLite Init] SQLite exception when establishing the connection" );
+            CyberLogUtils.logError( "[SQLite Init] A potential reason why this happened is because you don't have the SQLite JDBC library" );
+            CyberLogUtils.logError( "[SQLite Init] See error below for details" );
             throw new RuntimeException( e );
         }
-        CoreUtils.logInfo( "[SQLite Init] Connection for SQLite successfully established" );
+        CyberLogUtils.logInfo( "[SQLite Init] Connection for SQLite successfully established" );
 
-        CoreUtils.logInfo( "[SQLite Init] Creating tables for SQLite..." );
+        CyberLogUtils.logInfo( "[SQLite Init] Creating tables for SQLite..." );
         try {
             Statement stmt = CONN.createStatement();
             for ( SQLiteTables table : SQLiteTables.values() ) {
@@ -99,12 +99,12 @@ public class ConnectionManager implements DatabaseConnection {
             }
             stmt.close();
         } catch ( SQLException e ) {
-            CoreUtils.logError( "[SQLite Init] SQLite exception when creating tables. See error below for details" );
+            CyberLogUtils.logError( "[SQLite Init] SQLite exception when creating tables. See error below for details" );
             throw new RuntimeException( e );
         }
-        CoreUtils.logInfo( "[SQLite Init] Successfully created all tables for SQLite" );
+        CyberLogUtils.logInfo( "[SQLite Init] Successfully created all tables for SQLite" );
 
-        CoreUtils.logInfo( "[SQLite Init] SQLite initialization complete" );
+        CyberLogUtils.logInfo( "[SQLite Init] SQLite initialization complete" );
     }
 
     /**
@@ -125,14 +125,14 @@ public class ConnectionManager implements DatabaseConnection {
      * Closes the connection to the database
      */
     public void closeConnection() {
-        CoreUtils.logInfo( "[Connection Close] Closing the connection to the database..." );
+        CyberLogUtils.logInfo( "[Connection Close] Closing the connection to the database..." );
         try {
             CONN.close();
         } catch ( SQLException e ) {
-            CoreUtils.logError( "[Connection Close] An error occurred when closing the database connection. See error below for details" );
+            CyberLogUtils.logError( "[Connection Close] An error occurred when closing the database connection. See error below for details" );
             throw new RuntimeException( e );
         }
-        CoreUtils.logInfo( "[Connection Close] Successfully closed the database connection" );
+        CyberLogUtils.logInfo( "[Connection Close] Successfully closed the database connection" );
     }
 
     /**

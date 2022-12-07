@@ -1,6 +1,6 @@
 package com.github.cyberryan1.netuno.apimplement.database;
 
-import com.github.cyberryan1.cybercore.utils.CoreUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.database.ReportsDatabase;
 import com.github.cyberryan1.netunoapi.exceptions.ClassIncompleteException;
@@ -40,9 +40,9 @@ public class NetunoReportsDatabase implements ReportsDatabase {
      * Initializes the cache
      */
     public void initializeCache() {
-        CoreUtils.logInfo( "[REPORTS CACHE] Initializing the reports cache..." );
+        CyberLogUtils.logInfo( "[REPORTS CACHE] Initializing the reports cache..." );
 
-        CoreUtils.logInfo( "[REPORTS CACHE] Getting all reports from the database..." );
+        CyberLogUtils.logInfo( "[REPORTS CACHE] Getting all reports from the database..." );
         try {
             Statement stmt = ConnectionManager.CONN.createStatement();
             stmt.execute( "SELECT * FROM " + TABLE_NAME );
@@ -64,11 +64,11 @@ public class NetunoReportsDatabase implements ReportsDatabase {
         } catch ( SQLException e ) {
             throw new RuntimeException( e );
         }
-        CoreUtils.logInfo( "[REPORTS CACHE] Successfully retrieved all reports from the database" );
+        CyberLogUtils.logInfo( "[REPORTS CACHE] Successfully retrieved all reports from the database" );
 
         reloadSettings();
 
-        CoreUtils.logInfo( "[REPORTS CACHE] Reports cache successfully initialized with a size of " + cache.size() );
+        CyberLogUtils.logInfo( "[REPORTS CACHE] Reports cache successfully initialized with a size of " + cache.size() );
     }
 
     /**
@@ -78,24 +78,24 @@ public class NetunoReportsDatabase implements ReportsDatabase {
         // Setting for how long before a report is automatically deleted
         EXPIRATION_TIME_SECS = Settings.REPORT_EXPIRE_TIME.integer() * 3600L; // converts hours to seconds
         if ( EXPIRATION_TIME_SECS > 0 ) {
-            CoreUtils.logInfo( "[REPORTS CACHE] Reports expiration time set to " + Settings.REPORT_EXPIRE_TIME.integer()
+            CyberLogUtils.logInfo( "[REPORTS CACHE] Reports expiration time set to " + Settings.REPORT_EXPIRE_TIME.integer()
                     + " hours (" + EXPIRATION_TIME_SECS + " seconds)" );
         }
         else {
             EXPIRATION_TIME_SECS = 172800L; // 48 hours
-            CoreUtils.logError( "[REPORTS CACHE] The value for the setting \"reports.delete-after\" must be greater than 0" );
-            CoreUtils.logError( "[REPORTS CACHE] Defaulting to expiring reports after 48 hours" );
+            CyberLogUtils.logError( "[REPORTS CACHE] The value for the setting \"reports.delete-after\" must be greater than 0" );
+            CyberLogUtils.logError( "[REPORTS CACHE] Defaulting to expiring reports after 48 hours" );
         }
 
         // Setting for how many edits to the cache before the edits are saved to the database
         SAVE_EVERY = Settings.CACHE_REPORTS_SAVE_EVERY.integer();
         if ( SAVE_EVERY > 0 ) {
-            CoreUtils.logInfo( "[REPORTS CACHE] New and deleted reports will be saved every " + SAVE_EVERY + " report creations/deletions" );
+            CyberLogUtils.logInfo( "[REPORTS CACHE] New and deleted reports will be saved every " + SAVE_EVERY + " report creations/deletions" );
         }
         else {
             SAVE_EVERY = 50;
-            CoreUtils.logError( "[REPORTS CACHE] The value for the setting \"database.cache.reports.save-every\" must be greater than zero" );
-            CoreUtils.logError( "[REPORTS CACHE] Defaulting to saving every " + SAVE_EVERY + " report creations and deletions" );
+            CyberLogUtils.logError( "[REPORTS CACHE] The value for the setting \"database.cache.reports.save-every\" must be greater than zero" );
+            CyberLogUtils.logError( "[REPORTS CACHE] Defaulting to saving every " + SAVE_EVERY + " report creations and deletions" );
         }
     }
 
@@ -202,7 +202,7 @@ public class NetunoReportsDatabase implements ReportsDatabase {
      * deletes all recently deleted reports from the database.
      */
     public void saveAllReportEdits() {
-        CoreUtils.logInfo( "[REPORTS CACHE] Saving all recently created and recently deleted reports to the database..." );
+        CyberLogUtils.logInfo( "[REPORTS CACHE] Saving all recently created and recently deleted reports to the database..." );
 
         for ( NReport report : newlyCreatedReports ) {
             try {
@@ -221,7 +221,7 @@ public class NetunoReportsDatabase implements ReportsDatabase {
                 throw new RuntimeException( e );
             }
         }
-        CoreUtils.logInfo( "[REPORTS CACHE] Successfully saved " + newlyCreatedReports.size() + " reports to the database" );
+        CyberLogUtils.logInfo( "[REPORTS CACHE] Successfully saved " + newlyCreatedReports.size() + " reports to the database" );
         newlyCreatedReports.clear();
 
         for ( NReport report : newlyDeletedReports ) {
@@ -234,7 +234,7 @@ public class NetunoReportsDatabase implements ReportsDatabase {
                 throw new RuntimeException( e );
             }
         }
-        CoreUtils.logInfo( "[REPORTS CACHE] Successfully deleted " + newlyDeletedReports.size() + " reports from the database" );
+        CyberLogUtils.logInfo( "[REPORTS CACHE] Successfully deleted " + newlyDeletedReports.size() + " reports from the database" );
         newlyDeletedReports.clear();
     }
 
