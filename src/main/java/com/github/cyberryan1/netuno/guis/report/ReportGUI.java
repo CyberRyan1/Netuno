@@ -137,7 +137,7 @@ public class ReportGUI implements Listener {
     public void open() {
         if ( reasons.size() > 18 ) {
             CommandErrors.sendConfigError( player );
-            Utils.logError( "CONFIG ERROR >> The list \"report.reasons\" is greater than the limit, 18. Reports will not work until this is fixed." );
+            CyberLogUtils.logError( "CONFIG ERROR >> The list \"report.reasons\" is greater than the limit, 18. Reports will not work until this is fixed." );
         }
         else {
             Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {

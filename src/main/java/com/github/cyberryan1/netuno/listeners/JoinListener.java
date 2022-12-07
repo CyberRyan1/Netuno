@@ -1,6 +1,7 @@
 package com.github.cyberryan1.netuno.listeners;
 
 import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
@@ -213,7 +214,7 @@ public class JoinListener implements Listener {
                             }
                         }, 5L );
                     } else {
-                        Utils.logWarn( "\"ipinfo.notifs\" in the config is enabled, yet you have no message set in \"ipinfo.notif-msg\"!" );
+                        CyberLogUtils.logWarn( "\"ipinfo.notifs\" in the config is enabled, yet you have no message set in \"ipinfo.notif-msg\"!" );
                     }
                 }
             }, 20L );
