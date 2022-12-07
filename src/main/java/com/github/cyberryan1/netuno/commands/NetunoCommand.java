@@ -1,9 +1,9 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.CyberCore;
-import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
-import com.github.cyberryan1.cybercore.utils.CoreUtils;
-import com.github.cyberryan1.cybercore.utils.VaultUtils;
+import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
+import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
+import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
+import com.github.cyberryan1.cybercore.spigot.utils.*;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.guis.punish.utils.PunishSettings;
@@ -29,70 +29,68 @@ public class NetunoCommand extends CyberCommand {
         register( true );
 
         demandPermission( true );
+        setMinArgLength( 0 );
+        setArgType( 1, ArgType.INTEGER );
     }
 
     @Override
-    public List<String> tabComplete( CommandSender sender, String[] args ) {
-        if ( permissionsAllowed( sender ) ) {
-            List<String> suggestions = List.of( "reload", "help" );
-            if ( args.length == 0 || args[0].length() == 0 ) { return suggestions; }
-            if ( args.length == 1 ) { return matchArgs( suggestions, args[0] ); }
-        }
+    public List<String> tabComplete( SentCommand command ) {
+        List<String> suggestions = List.of( "reload", "help" );
+        if ( command.getArgs().length == 0 || command.getArg( 0 ).length() == 0 ) { return suggestions; }
+        if ( command.getArgs().length == 1 ) { return CyberCommandUtils.matchArgs( suggestions, command.getArg( 0 ) ); }
 
         return List.of();
     }
 
     @Override
-    public boolean execute( CommandSender sender, String args[] ) {
-        if ( args.length == 0 || args[0].equalsIgnoreCase( "help" ) ) {
-            if ( args.length > 1 ) {
-                int page = 0;
-                try { page = Integer.parseInt( args[1] ) - 1; }
-                catch ( NumberFormatException e ) { CoreUtils.sendMsg( sender, "&sInvalid page number!" ); }
+    public boolean execute( SentCommand command ) {
+        if ( command.getArgs().length == 0 || command.getArg( 0 ).equalsIgnoreCase( "help" ) ) {
+            if ( command.getArgs().length > 1 ) {
+                int page = command.getIntegerAtArg( 1 );
 
                 if ( page >= 0 && page < Math.ceil( Netuno.registeredCommands.size() / 6.0 ) ) {
-                    sendHelpMessage( sender, page * 6, page * 6 + 6 );
+                    sendHelpMessage( command.getSender(), page * 6, page * 6 + 6 );
                 }
 
                 else {
-                    CoreUtils.sendMsg( sender, "&sInvalid page number!" );
+                    CyberMsgUtils.sendMsg( command.getSender(), "&sInvalid page number!" );
                 }
             }
 
             else {
-                sendHelpMessage( sender, 0, 6 );
+                sendHelpMessage( command.getSender(), 0, 6 );
             }
         }
 
-        else if ( args[0].equalsIgnoreCase( "reload" ) ) {
-            if ( VaultUtils.hasPerms( sender, Settings.RELOAD_PERMISSION.string() ) ) {
-                CoreUtils.sendMsg( sender, "&7Attempting to reload &6Netuno&7..." );
-                CoreUtils.logInfo( "Attempting to reload Netuno..." );
+        else if ( command.getArg( 0 ).equalsIgnoreCase( "reload" ) ) {
+            if ( CyberVaultUtils.hasPerms( command.getSender(), Settings.RELOAD_PERMISSION.string() ) ) {
+                CyberMsgUtils.sendMsg( command.getSender(), "&7Attempting to reload &6Netuno&7..." );
+                CyberLogUtils.logInfo( "Attempting to reload Netuno..." );
 
                 YMLUtils.initializeConfigs();
 
-                CoreUtils.logInfo( "Reloading all settings from the config files..." );
+                CyberLogUtils.logInfo( "Reloading all settings from the config files..." );
                 for ( Settings setting : Settings.values() ) { setting.reload(); }
                 for ( PunishSettings setting : PunishSettings.values() ) { setting.reload(); }
-                CoreUtils.logInfo( "Reloaded " + ( Settings.values().length + PunishSettings.values().length ) + " settings" );
+                CyberLogUtils.logInfo( "Reloaded " + ( Settings.values().length + PunishSettings.values().length ) + " settings" );
 
-                CyberCore.setPrimaryColor( Settings.PRIMARY_COLOR.string() );
-                CyberCore.setSecondaryColor( Settings.SECONDARY_COLOR.string() );
+                CyberColorUtils.setPrimaryColor( Settings.PRIMARY_COLOR.string() );
+                CyberColorUtils.setSecondaryColor( Settings.SECONDARY_COLOR.string() );
 
                 ApiNetuno.getData().getNetunoAlts().reloadSettings();
                 ApiNetuno.getData().getNetunoReports().reloadSettings();
 
-                CoreUtils.sendMsg( sender, "&7Successfully reloaded &6Netuno" );
-                CoreUtils.logInfo( "Successfully reloaded Netuno and its files" );
+                CyberMsgUtils.sendMsg( command.getSender(), "&7Successfully reloaded &6Netuno" );
+                CyberLogUtils.logInfo( "Successfully reloaded Netuno and its files" );
             }
 
             else {
-                sendPermissionMsg( sender );
+                sendPermissionMsg( command.getSender() );
             }
         }
 
         else {
-            sendHelpMessage( sender, 0, 6 );
+            sendHelpMessage( command.getSender(), 0, 6 );
         }
 
         return true;

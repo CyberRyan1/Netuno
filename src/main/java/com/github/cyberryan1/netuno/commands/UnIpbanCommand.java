@@ -1,7 +1,8 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.helpers.command.ArgType;
-import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
+import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
+import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
+import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.apimplement.models.punishments.NetunoPrePunishment;
@@ -10,8 +11,6 @@ import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
 import com.github.cyberryan1.netunoapi.utils.TimeUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -29,19 +28,19 @@ public class UnIpbanCommand extends CyberCommand {
         register( true );
 
         demandPermission( true );
-        setMinArgs( 1 );
+        setMinArgLength( 1 );
         setArgType( 0, ArgType.OFFLINE_PLAYER );
-        setAsync( true );
+        setRunAsync( true );
     }
 
     @Override
-    public List<String> tabComplete( CommandSender sender, String[] args ) {
+    public List<String> tabComplete( SentCommand command ) {
         return List.of();
     }
 
     @Override
-    public boolean execute( CommandSender sender, String args[] ) {
-        final NetunoPlayer target = NetunoPlayerCache.getOrLoad( Bukkit.getOfflinePlayer( args[0] ).getUniqueId().toString() );
+    public boolean execute( SentCommand command ) {
+        final NetunoPlayer target = NetunoPlayerCache.getOrLoad( command.getOfflinePlayerAtArg( 0 ).getUniqueId().toString() );
 
         final List<NPunishment> punishments = target.getPunishments().stream()
                 .filter( pun -> pun.getPunishmentType() == PunishmentType.IPBAN && pun.isActive() )
@@ -56,13 +55,13 @@ public class UnIpbanCommand extends CyberCommand {
             prePun.getPunishment().setLength( 0 );
 
             prePun.getPunishment().setStaffUuid( "CONSOLE" );
-            if ( sender instanceof Player ) { prePun.getPunishment().setStaff( ( Player ) sender ); }
+            if ( command.getSender() instanceof Player ) { prePun.getPunishment().setStaff( ( Player ) command.getSender() ); }
 
             prePun.executePunishment();
         }
 
         else {
-            CommandErrors.sendNoPunishments( sender, target.getPlayer().getName(), "ipban" );
+            CommandErrors.sendNoPunishments( command.getSender(), target.getPlayer().getName(), "ipban" );
         }
 
         return true;

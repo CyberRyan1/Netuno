@@ -1,12 +1,11 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.helpers.command.ArgType;
-import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
+import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
+import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
+import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.netuno.guis.report.ReportGUI;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -24,20 +23,20 @@ public class ReportCommand extends CyberCommand {
 
         demandPlayer( true );
         if ( super.getPermission().isBlank() == false ) { demandPermission( true ); }
-        setMinArgs( 1 );
+        setMinArgLength( 1 );
         setArgType( 0, ArgType.OFFLINE_PLAYER );
     }
 
     @Override
-    public List<String> tabComplete( CommandSender sender, String[] args ) {
+    public List<String> tabComplete( SentCommand command ) {
         return List.of();
     }
 
     @Override
     // /report (player)
-    public boolean execute( CommandSender sender, String args[] ) {
-        final Player player = ( Player ) sender;
-        final OfflinePlayer target = Bukkit.getOfflinePlayer( args[0] );
+    public boolean execute( SentCommand command ) {
+        final Player player = command.getPlayer();
+        final OfflinePlayer target = command.getOfflinePlayerAtArg( 0 );
 
         ReportGUI gui = new ReportGUI( player, target );
         gui.open();

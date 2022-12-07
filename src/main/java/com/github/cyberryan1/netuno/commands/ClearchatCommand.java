@@ -1,11 +1,11 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.helpers.command.CyberCommand;
-import com.github.cyberryan1.cybercore.utils.VaultUtils;
+import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
+import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -25,18 +25,18 @@ public class ClearchatCommand extends CyberCommand {
     }
 
     @Override
-    public List<String> tabComplete( CommandSender sender, String[] args ) {
+    public List<String> tabComplete( SentCommand command ) {
         return List.of();
     }
 
     @Override
-    public boolean execute( CommandSender sender, String args[] ) {
+    public boolean execute( SentCommand command ) {
 
         String broadcast = Settings.CLEARCHAT_BROADCAST.coloredString();
-        broadcast = Utils.replaceStaffVariable( broadcast, sender );
+        broadcast = Utils.replaceStaffVariable( broadcast, command.getSender() );
 
         String staffBroadcast = Settings.CLEARCHAT_STAFF_BROADCAST.coloredString();
-        staffBroadcast = Utils.replaceStaffVariable( staffBroadcast, sender );
+        staffBroadcast = Utils.replaceStaffVariable( staffBroadcast, command.getSender() );
         boolean sendStaffBroadcast = staffBroadcast.isBlank() == false;
         boolean staffBypass = Settings.CLEARCHAT_STAFF_BYPASS.bool();
 
@@ -47,7 +47,7 @@ public class ClearchatCommand extends CyberCommand {
         }
 
         for ( Player p : Bukkit.getOnlinePlayers() ) {
-            if ( VaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) == false ) {
+            if ( CyberVaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) == false ) {
                 p.sendMessage( clear );
                 p.sendMessage( broadcast );
             }

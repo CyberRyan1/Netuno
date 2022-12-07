@@ -1,18 +1,17 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.helpers.command.ArgType;
-import com.github.cyberryan1.cybercore.helpers.command.CyberSubcommand;
-import com.github.cyberryan1.cybercore.helpers.command.SubcommandStatus;
+import com.github.cyberryan1.cybercore.spigot.command.CyberSubCommand;
+import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
+import com.github.cyberryan1.cybercore.spigot.command.sent.SentSubCommand;
+import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.netuno.guis.history.HistoryListGUI;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class HistoryListSubcommand extends CyberSubcommand {
+public class HistoryListSubcommand extends CyberSubCommand {
 
     public HistoryListSubcommand() {
         super(
@@ -24,23 +23,23 @@ public class HistoryListSubcommand extends CyberSubcommand {
 
         setDemandPlayer( true );
         setDemandPermission( true );
-        setMinArgs( 2 );
+        setMinArgLength( 2 );
         setArgType( 1, ArgType.OFFLINE_PLAYER );
-        setAsync( true );
+        setRunAsync( true );
     }
 
     @Override
-    public List<String> tabComplete( CommandSender sender, String args[] ) {
+    public List<String> tabComplete( SentCommand command, SentSubCommand subCommand ) {
         return List.of();
     }
 
     @Override
-    public SubcommandStatus execute( CommandSender sender, String args[] ) {
-        final Player player = ( Player ) sender;
-        final OfflinePlayer target = Bukkit.getOfflinePlayer( args[1] );
+    public boolean execute( SentCommand command, SentSubCommand subCommand ) {
+        final Player player = subCommand.getPlayer();
+        final OfflinePlayer target = subCommand.getOfflinePlayerAtArg( 0 );
 
         HistoryListGUI gui = new HistoryListGUI( target, player, 1 );
         gui.open();
-        return SubcommandStatus.NORMAL;
+        return true;
     }
 }

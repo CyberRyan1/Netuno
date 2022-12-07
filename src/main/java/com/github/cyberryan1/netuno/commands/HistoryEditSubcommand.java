@@ -1,9 +1,10 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.helpers.command.ArgType;
-import com.github.cyberryan1.cybercore.helpers.command.CyberSubcommand;
-import com.github.cyberryan1.cybercore.helpers.command.SubcommandStatus;
-import com.github.cyberryan1.cybercore.utils.VaultUtils;
+import com.github.cyberryan1.cybercore.spigot.command.CyberSubCommand;
+import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
+import com.github.cyberryan1.cybercore.spigot.command.sent.SentSubCommand;
+import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.guis.history.HistoryEditGUI;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
@@ -14,7 +15,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class HistoryEditSubcommand extends CyberSubcommand {
+public class HistoryEditSubcommand extends CyberSubCommand {
 
     public HistoryEditSubcommand() {
         super(
@@ -26,20 +27,20 @@ public class HistoryEditSubcommand extends CyberSubcommand {
 
         setDemandPlayer( true );
         setDemandPermission( true );
-        setMinArgs( 2 );
+        setMinArgLength( 2 );
         setArgType( 1, ArgType.INTEGER );
-        setAsync( true );
+        setRunAsync( true );
     }
 
     @Override
-    public List<String> tabComplete( CommandSender sender, String args[] ) {
+    public List<String> tabComplete( SentCommand command, SentSubCommand subCommand ) {
         return List.of();
     }
 
     @Override
-    public SubcommandStatus execute( CommandSender sender, String args[] ) {
-        final Player player = ( Player ) sender;
-        final int punId = Integer.parseInt( args[1] );
+    public boolean execute( SentCommand command, SentSubCommand subCommand ) {
+        final Player player = subCommand.getPlayer();
+        final int punId = subCommand.getIntegerAtArg( 0 );
 
         NPunishment pun = ApiNetuno.getData().getNetunoPuns().getPunishment( punId );
         if ( pun != null ) {
@@ -51,12 +52,12 @@ public class HistoryEditSubcommand extends CyberSubcommand {
             CommandErrors.sendPunishmentIDNotFound( player, punId );
         }
 
-        return SubcommandStatus.NORMAL;
+        return true;
     }
 
     @Override
     public boolean permissionsAllowed( CommandSender sender ) {
-        return VaultUtils.hasPerms( sender, Settings.HISTORY_TIME_PERMISSION.string() )
-                || VaultUtils.hasPerms( sender, Settings.HISTORY_REASON_PERMISSION.string() );
+        return CyberVaultUtils.hasPerms( sender, Settings.HISTORY_TIME_PERMISSION.string() )
+                || CyberVaultUtils.hasPerms( sender, Settings.HISTORY_REASON_PERMISSION.string() );
     }
 }
