@@ -1,6 +1,7 @@
 package com.github.cyberryan1.netuno.models;
 
-import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netunoapi.models.reports.NReport;
 import com.github.cyberryan1.netunoapi.models.time.NDate;
@@ -36,7 +37,7 @@ public class NetunoCombinedReport {
     public long getMostRecentDate() { return mostRecentDate; }
 
     public ItemStack getAsItem() {
-        ItemStack skull = CoreItemUtils.getPlayerSkull( target );
+        ItemStack skull = CyberItemUtils.getPlayerSkull( target );
 
         skull = CyberItemUtils.setItemName( skull, "&p" + target.getName() );
 

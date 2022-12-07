@@ -1,6 +1,6 @@
 package com.github.cyberryan1.netuno.models;
 
-import com.github.cyberryan1.cybercore.utils.CoreItemUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
 import com.github.cyberryan1.netunoapi.models.reports.NReport;
 import com.github.cyberryan1.netunoapi.models.time.NDate;
 import org.bukkit.OfflinePlayer;
@@ -50,7 +50,7 @@ public class NetunoMultiReport {
     }
 
     public ItemStack getAsItem() {
-        ItemStack skull = CoreItemUtils.getPlayerSkull( reporter );
+        ItemStack skull = CyberItemUtils.getPlayerSkull( reporter );
 
         skull = CyberItemUtils.setItemName( skull, "&pReporter: &s" + reporter.getName() );
 
