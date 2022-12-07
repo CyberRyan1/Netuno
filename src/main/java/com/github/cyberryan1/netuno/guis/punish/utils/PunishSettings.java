@@ -21,6 +21,11 @@ public enum PunishSettings {
     MAIN_IPMUTE_BUTTON( "main-gui.ipmute", "mainbutton", "main" ),
     MAIN_IPBAN_BUTTON( "main-gui.ipban", "mainbutton", "main" ),
 
+    MAIN_IN_USE_NAME( "main-gui.already-being-punished.name", "string", "main" ),
+    MAIN_IN_USE_LORE( "main-gui.already-being-punished.lore", "string", "main" ),
+    MAIN_IN_USE_ITEM( "main-gui.already-being-punished.item", "material", "main" ),
+    MAIN_IN_USE_GLOW( "main-gui.already-being-punished.enchant-glow", "boolean", "main" ),
+
     //
     // Warn Inventory
     //

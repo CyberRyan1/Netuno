@@ -95,3 +95,17 @@ main-gui:
     index: 33
     name: "&c&lIPBAN &7[TARGET]"
     item: BLACK_CONCRETE
+
+  # Already Being Punished button replacement
+  # This replaces the warn, mute, ban, ipmute, and ipban buttons if the target is currently being punished by another staff
+  # For example, if the staff member "staffOne" is trying to warn "playerOne" but "staffTwo" is already in the warns
+  #     section for "playerOne", then the warn button will be replaced with this button
+  already-being-punished:
+    # Available variables:
+    #    [TYPE] = punishment type (e.g. "warned", "muted", etc.)
+    #    [STAFF] = staff member who is currently punishing the target
+
+    name: "" # Set to nothing to not replace the name of the button
+    lore: "&cThis player is already being [TYPE] by [STAFF]" # Set to nothing for no lore on the item
+    item: AIR # Set to AIR to not replace the item of the button
+    enchant-glow: true # Set to true to add an enchant glow to the item
