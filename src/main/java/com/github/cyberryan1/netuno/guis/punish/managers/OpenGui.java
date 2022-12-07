@@ -7,6 +7,8 @@ public class OpenGui {
 
     private final Player staff;
     private final OfflinePlayer target;
+
+    private String currentGui = "";
     private boolean silent = false;
     private boolean cancelDelete = false;
 
@@ -23,6 +25,10 @@ public class OpenGui {
         return target;
     }
 
+    public String getCurrentGui() {
+        return currentGui;
+    }
+
     public boolean isSilent() {
         return silent;
     }
@@ -34,4 +40,8 @@ public class OpenGui {
     }
 
     public void setCancelDelete( boolean cancelDelete ) { this.cancelDelete = cancelDelete; }
+
+    public void setCurrentGui( String currentGui ) {
+        this.currentGui = currentGui;
+    }
 }
