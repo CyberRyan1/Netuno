@@ -4,10 +4,10 @@ import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.gui.Gui;
 import com.github.cyberryan1.cybercore.spigot.gui.GuiItem;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberGuiUtils;
+import com.github.cyberryan1.netuno.guis.punish.managers.ActiveGuiManager;
 import com.github.cyberryan1.netuno.guis.punish.utils.MultiPunishButton;
 import com.github.cyberryan1.netuno.guis.punish.utils.PunishSettings;
 import com.github.cyberryan1.netuno.guis.punish.utils.SinglePunishButton;
-import com.github.cyberryan1.netuno.managers.StaffPlayerPunishManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -55,9 +55,9 @@ public class BanPunishGUI {
         Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
             gui.openInventory( this.staff );
             gui.setCloseEvent( () -> {
-                StaffPlayerPunishManager.removeStaff( this.staff );
-                StaffPlayerPunishManager.removeStaffSilent( this.staff );
+                ActiveGuiManager.attemptRemoveActiveGui( this.staff );
             } );
+            ActiveGuiManager.addActiveGui( this.staff, this.target );
         } );
     }
 
