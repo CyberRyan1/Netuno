@@ -107,11 +107,6 @@
             <version>1.7</version>
             <scope>provided</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.tchristofferson</groupId>-->
-<!--            <artifactId>ConfigUpdater</artifactId>-->
-<!--            <version>1.2-SNAPSHOT</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>com.github.cyberryan1</groupId>
             <artifactId>CyberCore</artifactId>
