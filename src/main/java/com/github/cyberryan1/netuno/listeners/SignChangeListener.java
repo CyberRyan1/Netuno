@@ -1,7 +1,7 @@
 package com.github.cyberryan1.netuno.listeners;
 
-import com.github.cyberryan1.cybercore.CyberCore;
-import com.github.cyberryan1.cybercore.utils.VaultUtils;
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.apimplement.database.SignNotifs;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
@@ -64,8 +64,8 @@ public class SignChangeListener implements Listener {
 
                 final String finalMsg = msg;
                 for ( Player p : Bukkit.getOnlinePlayers() ) {
-                    if ( VaultUtils.hasPerms( p, Settings.SIGN_NOTIFS_PERMISSION.string() )
-                            && VaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) ) {
+                    if ( CyberVaultUtils.hasPerms( p, Settings.SIGN_NOTIFS_PERMISSION.string() )
+                            && CyberVaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) ) {
                         Bukkit.getScheduler().runTaskAsynchronously( CyberCore.getPlugin(), () -> {
                             if ( SignNotifs.playerHasNoSignNotifs( p.getUniqueId().toString() ) == false ) {
                                 Utils.sendAnyMsg( p, finalMsg );

@@ -1,7 +1,7 @@
 package com.github.cyberryan1.netuno.listeners;
 
-import com.github.cyberryan1.cybercore.CyberCore;
-import com.github.cyberryan1.cybercore.utils.VaultUtils;
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
@@ -140,7 +140,7 @@ public class JoinListener implements Listener {
                 if ( IPBAN_EXPIRE_STAFF != null ) {
                     String msg = IPBAN_EXPIRE_STAFF.replace( "[TARGET]", nPlayer.getPlayer().getName() );
                     for ( Player p : Bukkit.getOnlinePlayers() ) {
-                        if ( VaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) ) {
+                        if ( CyberVaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) ) {
                             Utils.sendAnyMsg( p, msg );
                         }
                     }
@@ -164,7 +164,7 @@ public class JoinListener implements Listener {
                 if ( BAN_EXPIRE_STAFF != null ) {
                     String msg = BAN_EXPIRE_STAFF.replace( "[TARGET]", nPlayer.getPlayer().getName() );
                     for ( Player p : Bukkit.getOnlinePlayers() ) {
-                        if ( VaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) ) {
+                        if ( CyberVaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) ) {
                             Utils.sendAnyMsg( p, msg );
                         }
                     }
@@ -187,7 +187,7 @@ public class JoinListener implements Listener {
                 final Player player = Bukkit.getPlayer( event.getUniqueId() );
                 if ( player == null ) { return; }
 
-                if ( VaultUtils.hasPerms( player, IPINFO_EXEMPT_PERM ) == false ) {
+                if ( CyberVaultUtils.hasPerms( player, IPINFO_EXEMPT_PERM ) == false ) {
                     if ( IPINFO_NOTIF_MSG != null ) {
                         String coloredMsg = IPINFO_NOTIF_MSG.replace( "[TARGET]", player.getName() );
 
@@ -207,7 +207,7 @@ public class JoinListener implements Listener {
 
                         Bukkit.getScheduler().runTaskLater( CyberCore.getPlugin(), () -> {
                             for ( Player p : Bukkit.getOnlinePlayers() ) {
-                                if ( VaultUtils.hasPerms( p, IPINFO_PERM ) ) {
+                                if ( CyberVaultUtils.hasPerms( p, IPINFO_PERM ) ) {
                                     p.spigot().sendMessage( message );
                                 }
                             }
