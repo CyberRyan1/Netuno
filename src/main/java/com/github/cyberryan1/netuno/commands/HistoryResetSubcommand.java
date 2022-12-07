@@ -26,8 +26,8 @@ public class HistoryResetSubcommand extends CyberSubCommand {
         );
 
         setDemandPermission( true );
-        setMinArgLength( 2 );
-        setArgType( 1, ArgType.OFFLINE_PLAYER );
+        setMinArgLength( 1 );
+        setArgType( 0, ArgType.OFFLINE_PLAYER );
     }
 
     @Override

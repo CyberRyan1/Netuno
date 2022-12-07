@@ -27,8 +27,8 @@ public class HistoryEditSubcommand extends CyberSubCommand {
 
         setDemandPlayer( true );
         setDemandPermission( true );
-        setMinArgLength( 2 );
-        setArgType( 1, ArgType.INTEGER );
+        setMinArgLength( 1 );
+        setArgType( 0, ArgType.INTEGER );
         setRunAsync( true );
     }
 
