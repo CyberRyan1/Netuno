@@ -61,7 +61,5 @@ public class HistoryDeleteConfirmGUI {
             CyberMsgUtils.sendMsg( staff, "&sCancelled deletion of punishment &p#" + punishment.getId() );
             staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 1, 2 );
         } ) );
-
-        gui.openInventory( staff );
     }
 }

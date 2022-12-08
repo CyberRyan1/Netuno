@@ -84,8 +84,6 @@ public class HistoryEditGUI {
             // Delete Punishment
             gui.addItem( getDeleteBarrier( 33 ) );
         }
-
-        gui.openInventory( staff );
     }
 
     public void open() {

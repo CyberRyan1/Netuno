@@ -47,8 +47,6 @@ public class MutePunishGUI {
 
             this.gui.addItem( item );
         }
-
-        gui.openInventory( staff );
     }
 
     public void open() {

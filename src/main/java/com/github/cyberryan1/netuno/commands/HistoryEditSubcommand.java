@@ -45,6 +45,7 @@ public class HistoryEditSubcommand extends CyberSubCommand {
         NPunishment pun = ApiNetuno.getData().getNetunoPuns().getPunishment( punId );
         if ( pun != null ) {
             HistoryEditGUI gui = new HistoryEditGUI( pun.getPlayer(), player, punId );
+
             gui.open();
         }
 

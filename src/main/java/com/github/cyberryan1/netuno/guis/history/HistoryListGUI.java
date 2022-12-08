@@ -119,8 +119,6 @@ public class HistoryListGUI {
                 staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
             } ) );
         }
-
-        gui.openInventory( staff );
     }
 
     private ItemStack getCurrentPagePaper() {

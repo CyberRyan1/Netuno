@@ -104,8 +104,6 @@ public class StaffPlayerReportsGUI implements Listener {
                 newGUI.open();
             } ) );
         }
-
-        gui.openInventory( staff );
     }
 
     public void open() {

@@ -48,7 +48,6 @@ public class BanPunishGUI {
             this.gui.addItem( item );
         }
 
-        gui.openInventory( staff );
     }
 
     public void open() {

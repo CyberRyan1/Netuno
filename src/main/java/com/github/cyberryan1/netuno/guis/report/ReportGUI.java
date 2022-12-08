@@ -130,8 +130,6 @@ public class ReportGUI implements Listener {
 
             guiIndex += 2;
         }
-
-        gui.openInventory( player );
     }
 
     public void open() {

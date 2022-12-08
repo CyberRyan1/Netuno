@@ -47,8 +47,6 @@ public class IpMutePunishGUI {
 
             this.gui.addItem( item );
         }
-
-        gui.openInventory( staff );
     }
 
     public void open() {

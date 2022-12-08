@@ -126,8 +126,6 @@ public class AltsListGUI {
                 newGui.open();
             } ) );
         }
-
-        gui.openInventory( staff );
     }
 
     private ItemStack getAltSkull( int index ) {

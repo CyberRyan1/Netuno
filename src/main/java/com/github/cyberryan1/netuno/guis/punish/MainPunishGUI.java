@@ -196,8 +196,6 @@ public class MainPunishGUI {
                 g.open();
             } ) );
         }
-
-        gui.openInventory( staff );
     }
 
     public void open() {
