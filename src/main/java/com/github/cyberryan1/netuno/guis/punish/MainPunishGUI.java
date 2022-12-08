@@ -209,7 +209,7 @@ public class MainPunishGUI {
     }
 
     private ItemStack getCorrectItem( ItemStack item, String guiType ) {
-        final OpenGui otherGui = ActiveGuiManager.searchByGui( "ipban" ).orElse( null );
+        final OpenGui otherGui = ActiveGuiManager.searchByGui( guiType ).orElse( null );
         if ( otherGui == null ) { return item; }
 
         ItemStack newItem = item.clone();
