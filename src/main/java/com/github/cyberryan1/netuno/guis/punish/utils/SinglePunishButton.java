@@ -11,16 +11,20 @@ import com.github.cyberryan1.netuno.apimplement.models.punishments.NetunoPrePuni
 import com.github.cyberryan1.netuno.guis.punish.managers.ActiveGuiManager;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
+import com.github.cyberryan1.netunoapi.models.alts.NAltGroup;
 import com.github.cyberryan1.netunoapi.models.players.NPlayer;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
 import com.github.cyberryan1.netunoapi.models.time.NDuration;
 import com.github.cyberryan1.netunoapi.utils.TimeUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.stream.Collectors;
 
 public class SinglePunishButton {
 
@@ -145,7 +149,12 @@ public class SinglePunishButton {
 
             if ( prePun.getPunishment().getPunishmentType() == PunishmentType.IPMUTE && this.startingTime.equalsIgnoreCase( "HIGHEST_MUTED_ALT" ) ) {
                 NPunishment highest = null;
-                for ( OfflinePlayer alt : ApiNetuno.getData().getNetunoAlts().getAlts( prePun.getPunishment().getPlayer() ) ) {
+                final NAltGroup altGroup = ApiNetuno.getInstance().getAltLoader().search( prePun.getPunishment().getPlayerUuid() )
+                        .orElseThrow( () -> {
+                            throw new NullPointerException( "An error occurred while trying to get the player's alt group, "
+                                    + "so the reference punishment could not be added to the player's alts." );
+                        } );
+                for ( OfflinePlayer alt : altGroup.getUuids().stream().map( Bukkit::getOfflinePlayer ).collect( Collectors.toList() ) ) {
                     NPlayer nAlt = NetunoPlayerCache.getOrLoad( alt );
                     for ( NPunishment altPun : nAlt.getPunishments() ) {
                         if ( altPun.isActive() && altPun.getPunishmentType() == PunishmentType.MUTE ) {
@@ -166,7 +175,12 @@ public class SinglePunishButton {
 
             else if ( prePun.getPunishment().getPunishmentType() == PunishmentType.IPBAN && this.startingTime.equalsIgnoreCase( "HIGHEST_BANNED_ALT" )  ) {
                 NPunishment highest = null;
-                for ( OfflinePlayer alt : ApiNetuno.getData().getNetunoAlts().getAlts( prePun.getPunishment().getPlayer() ) ) {
+                final NAltGroup altGroup = ApiNetuno.getInstance().getAltLoader().search( prePun.getPunishment().getPlayerUuid() )
+                        .orElseThrow( () -> {
+                            throw new NullPointerException( "An error occurred while trying to get the player's alt group, "
+                                    + "so the reference punishment could not be added to the player's alts." );
+                        } );
+                for ( OfflinePlayer alt : altGroup.getUuids().stream().map( Bukkit::getOfflinePlayer ).collect( Collectors.toList() ) ) {
                     NPlayer nAlt = NetunoPlayerCache.getOrLoad( alt );
                     for ( NPunishment altPun : nAlt.getPunishments() ) {
                         if ( altPun.isActive() && altPun.getPunishmentType() == PunishmentType.BAN ) {

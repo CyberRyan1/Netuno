@@ -3,7 +3,6 @@ package com.github.cyberryan1.netuno.apimplement;
 import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.netuno.apimplement.database.ConnectionManager;
 import com.github.cyberryan1.netuno.apimplement.database.DatabaseManager;
-import com.github.cyberryan1.netuno.apimplement.database.helpers.AltSecurityLevel;
 import com.github.cyberryan1.netuno.apimplement.models.alts.NetunoAltsCache;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.apimplement.models.punishments.NetunoPrePunishment;
@@ -48,12 +47,7 @@ public class ApiNetuno implements NetunoApi {
         getData().getNetunoAlts().initialize();
 
         // Initialize the alts security level
-        AltSecurityLevel altSecurityLevel = switch ( Settings.IPINFO_STRICTNESS.string().toUpperCase() ) {
-            case "LOW" -> AltSecurityLevel.LOW;
-            case "HIGH" -> AltSecurityLevel.HIGH;
-            default -> AltSecurityLevel.MEDIUM;
-        };
-        ( ( NetunoAltsCache ) instance.getAltLoader() ).setSecurityLevel( altSecurityLevel );
+        ( ( NetunoAltsCache ) instance.getAltLoader() ).reloadSecurityLevel();
 
         // Initialize the alts cache
         instance.getAltLoader().initialize();

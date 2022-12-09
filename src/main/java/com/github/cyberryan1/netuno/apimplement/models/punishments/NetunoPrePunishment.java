@@ -10,6 +10,7 @@ import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.events.NetunoEventDispatcher;
 import com.github.cyberryan1.netunoapi.events.punish.NetunoPrePunishEvent;
+import com.github.cyberryan1.netunoapi.models.alts.NAltGroup;
 import com.github.cyberryan1.netunoapi.models.punishments.NPrePunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
@@ -18,6 +19,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class NetunoPrePunishment implements NPrePunishment {
@@ -69,8 +71,14 @@ public class NetunoPrePunishment implements NPrePunishment {
                 return;
             }
 
-            for ( OfflinePlayer alt : ApiNetuno.getData().getNetunoAlts().getAlts( pun.getPlayer() ) ) {
-                if ( alt.getUniqueId().equals( pun.getPlayer().getUniqueId() ) == false ) {
+            final NAltGroup altGroup = ApiNetuno.getInstance().getAltLoader().search( pun.getPlayerUuid() )
+                    .orElseThrow( () -> {
+                        throw new NullPointerException( "An error occurred while trying to get the player's alt group, "
+                            + "so the reference punishment could not be added to the player's alts." );
+                    } );
+            for ( UUID altUuid : altGroup.getUuids() ) {
+                if ( altUuid.equals( pun.getPlayer().getUniqueId() ) == false ) {
+                    final OfflinePlayer alt = Bukkit.getOfflinePlayer( altUuid );
                     NPunishment altPun = pun.copy();
                     altPun.setId( -1 );
                     altPun.setPlayer( alt );
@@ -114,7 +122,13 @@ public class NetunoPrePunishment implements NPrePunishment {
             }
 
             else {
-                for ( OfflinePlayer alt : ApiNetuno.getData().getNetunoAlts().getAlts( pun.getPlayer() ) ) {
+                final NAltGroup altGroup = ApiNetuno.getInstance().getAltLoader().search( pun.getPlayerUuid() )
+                        .orElseThrow( () -> {
+                            throw new NullPointerException( "An error occurred while trying to get the player's alt group, "
+                                    + "so the reference punishment could not be added to the player's alts." );
+                        } );
+                for ( UUID altUuid : altGroup.getUuids() ) {
+                    final OfflinePlayer alt = Bukkit.getOfflinePlayer( altUuid );
                     final NetunoPlayer nAlt = NetunoPlayerCache.forceLoad( alt );
                     final List<NPunishment> puns = nAlt.getPunishments().stream()
                             .filter( playerPun -> playerPun.getPunishmentType() == unpunType && playerPun.isActive() )

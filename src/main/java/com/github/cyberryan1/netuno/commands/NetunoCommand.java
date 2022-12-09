@@ -6,6 +6,7 @@ import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.cybercore.spigot.utils.*;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
+import com.github.cyberryan1.netuno.apimplement.models.alts.NetunoAltsCache;
 import com.github.cyberryan1.netuno.guis.punish.utils.PunishSettings;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
@@ -77,7 +78,7 @@ public class NetunoCommand extends CyberCommand {
                 CyberColorUtils.setPrimaryColor( Settings.PRIMARY_COLOR.string() );
                 CyberColorUtils.setSecondaryColor( Settings.SECONDARY_COLOR.string() );
 
-                ApiNetuno.getData().getNetunoAlts().reloadSettings();
+                ( ( NetunoAltsCache ) ApiNetuno.getInstance().getAltLoader() ).reloadSecurityLevel();
                 ApiNetuno.getData().getNetunoReports().reloadSettings();
 
                 CyberMsgUtils.sendMsg( command.getSender(), "&7Successfully reloaded &6Netuno" );

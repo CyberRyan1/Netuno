@@ -3,10 +3,10 @@ package com.github.cyberryan1.netuno.apimplement.models.alts;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.apimplement.database.helpers.AltSecurityLevel;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.models.alts.NAltEntry;
 import com.github.cyberryan1.netunoapi.models.alts.NAltGroup;
 import com.github.cyberryan1.netunoapi.models.alts.NAltLoader;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +37,7 @@ public class NetunoAltsCache implements NAltLoader {
         CyberLogUtils.logInfo( "[ALTS CACHE] Loaded a total of " + cache.size() + " alt groups" );
     }
 
-    public void loadPlayer( Player player ) {
-        final UUID uuid = player.getUniqueId();
-        final String ip = player.getAddress().getAddress().getHostAddress();
+    public void loadPlayer( UUID uuid, String ip ) {
 
         if ( this.securityLevel == AltSecurityLevel.LOW ) {
             // Get the group the player's joined IP is in
@@ -231,6 +229,14 @@ public class NetunoAltsCache implements NAltLoader {
     public void setSecurityLevel( AltSecurityLevel level ) {
         CyberLogUtils.logInfo( "[ALTS CACHE] Alt Strictness Level: " + level.name() );
         this.securityLevel = level;
+    }
+
+    public void reloadSecurityLevel() {
+        this.securityLevel = switch ( Settings.IPINFO_STRICTNESS.string().toUpperCase() ) {
+            case "LOW" -> AltSecurityLevel.LOW;
+            case "HIGH" -> AltSecurityLevel.HIGH;
+            default -> AltSecurityLevel.MEDIUM;
+        };
     }
 
     /**

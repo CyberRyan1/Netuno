@@ -5,6 +5,7 @@ import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -135,7 +136,9 @@ public class Utils {
         }
         if ( pun.getPunishmentType().isIpPunishment() ) {
             final NetunoPlayer nPlayer = NetunoPlayerCache.getOrLoad( pun.getPlayerUuid() );
-            List<OfflinePlayer> allAltsList = nPlayer.getAltGroup().getAlts();
+            List<OfflinePlayer> allAltsList = nPlayer.getAltGroup().getUuids().stream()
+                    .map( Bukkit::getOfflinePlayer )
+                    .collect( Collectors.toList() );
             allAltsList.remove( nPlayer.getPlayer() );
 
             List<String> priorityAltsList = new ArrayList<>();

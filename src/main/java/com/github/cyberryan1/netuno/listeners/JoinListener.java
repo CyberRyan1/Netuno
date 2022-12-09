@@ -25,6 +25,7 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class JoinListener implements Listener {
@@ -51,7 +52,7 @@ public class JoinListener implements Listener {
         //
 
         // Log the player's IP address into the database
-        ApiNetuno.getData().getAlts().loadPlayer( event.getUniqueId().toString(), event.getAddress().getHostAddress() );
+        ApiNetuno.getInstance().getAltLoader().loadPlayer( event.getUniqueId(), event.getAddress().getHostAddress() );
         // Load the player into the cache
         final NetunoPlayer nPlayer = NetunoPlayerCache.getOrLoad( event.getUniqueId().toString() );
 
@@ -80,8 +81,8 @@ public class JoinListener implements Listener {
         final NAltGroup altGroup = nPlayer.getAltGroup();
         final List<NPunishment> activeAltPunishments = new ArrayList<>();
         if ( altGroup != null ) {
-            for ( String altUuid : altGroup.getAltUuids() ) {
-                final NetunoPlayer altPlayer = NetunoPlayerCache.getOrLoad( altUuid );
+            for ( UUID altUuid : altGroup.getUuids() ) {
+                final NetunoPlayer altPlayer = NetunoPlayerCache.getOrLoad( altUuid.toString() );
                 activeAltPunishments.addAll( altPlayer.getPunishments().stream()
                         .filter( pun -> pun.isActive() && pun.getReferencePunId() == -1 )
                         .collect( Collectors.toList() ) );
@@ -183,7 +184,7 @@ public class JoinListener implements Listener {
         //
 
         // Checking if the player has any punished alts and alerting staff if they do
-        if ( altGroup.getAltUuids().size() > 1 && activeAltPunishments.size() >= 1 && IPINFO_NOTIFS_ENABLED ) {
+        if ( altGroup.getUuids().size() > 1 && activeAltPunishments.size() >= 1 && IPINFO_NOTIFS_ENABLED ) {
             Bukkit.getScheduler().runTaskLaterAsynchronously( CyberCore.getPlugin(), () -> {
                 final Player player = Bukkit.getPlayer( event.getUniqueId() );
                 if ( player == null ) { return; }

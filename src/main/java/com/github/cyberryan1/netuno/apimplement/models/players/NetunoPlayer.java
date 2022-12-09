@@ -66,7 +66,7 @@ public class NetunoPlayer implements NPlayer {
      * before or if their alt group cannot be found.
      */
     public NAltGroup getAltGroup() {
-        return ApiNetuno.getData().getAlts().getAltGroup( player.getUniqueId().toString() );
+        return ApiNetuno.getInstance().getAltLoader().search( this.player.getUniqueId().toString() ).orElse( null );
     }
 
 }
