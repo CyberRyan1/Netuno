@@ -1,289 +1,168 @@
 package com.github.cyberryan1.netuno.apimplement.database;
 
-import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
-import com.github.cyberryan1.netuno.apimplement.database.helpers.AltSecurityLevel;
-import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.database.AltsDatabase;
+import com.github.cyberryan1.netunoapi.models.alts.NAltEntry;
 import com.github.cyberryan1.netunoapi.models.alts.NAltGroup;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class NetunoAltsDatabase implements AltsDatabase {
 
-    private final String TABLE_NAME = "alts";
-    private final String TYPE_LIST = "(id, item, type)";
-    private final String UNKNOWN_LIST = "(?, ?, ?)";
+    private final String TABLE_NAME = "ip_history";
+    private final String TYPE_LIST = "(id, uuid, ip, group_id)";
+    private final String UNKNOWN_LIST = "(?, ?, ?, ?)";
 
-    private final List<NAltGroup> cache = new ArrayList<>();
-    private AltSecurityLevel securityLevel = AltSecurityLevel.HIGH;
-    private int SAVE_EVERY = 50;
+    private int nextGroupId = 0;
 
-    /**
-     * @return The cache of punishments
-     */
-    public List<NAltGroup> getCache() {
-        return cache;
-    }
-
-    /**
-     * @param level The alt security level to set to
-     */
-    public void setSecurityLevel( AltSecurityLevel level ) {
-        CyberLogUtils.logInfo( "[ALTS CACHE] Alt Strictness Level: " + level.name() );
-        this.securityLevel = level;
-    }
-
-    /**
-     * @return The alt security level
-     */
-    public AltSecurityLevel getSecurityLevel() {
-        return securityLevel;
-    }
-
-    /**
-     * Initializes the cache
-     */
-    public void initializeCache() {
-        CyberLogUtils.logInfo( "[ALTS CACHE] Initializing the cache..." );
-
-        CyberLogUtils.logInfo( "[ALTS CACHE] Getting all IPs and players from the database..." );
+    public void initialize() {
         try {
-            Statement stmt = ConnectionManager.CONN.createStatement();
-            stmt.execute( "SELECT * FROM " + TABLE_NAME + ";" );
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM random WHERE k = 'next_alt_group_id'" );
 
-            ResultSet rs = stmt.getResultSet();
-            while ( rs.next() ) {
-                final int groupId = rs.getInt( "id" );
-                final String item = rs.getString( "item" );
-                final String type = rs.getString( "type" );
-
-                NAltGroup group = cache.stream()
-                        .filter( g -> g.getGroupId() == groupId )
-                        .findFirst()
-                        .orElse( null );
-                if ( group == null ) {
-                    group = new NAltGroup();
-                    group.setGroupId( groupId );
-                    cache.add( group );
-                }
-
-                if ( type.equalsIgnoreCase( "uuid" ) ) { group.addAlt( item ); }
-                else if ( type.equalsIgnoreCase( "ip" ) ) { group.addIp( item ); }
+            ResultSet rs = ps.executeQuery();
+            if ( rs.next() ) {
+                this.nextGroupId = Integer.parseInt( rs.getString( "v" ) );
             }
 
-            stmt.close();
+            ps.close();
             rs.close();
         } catch ( SQLException e ) {
             throw new RuntimeException( e );
         }
-        CyberLogUtils.logInfo( "[ALTS CACHE] Successfully retrieved all IPs and players from the database" );
-
-        reloadSettings();
-
-        CyberLogUtils.logInfo( "[ALTS CACHE] Loading the alts of all online players..." );
-        for ( Player player : Bukkit.getOnlinePlayers() ) {
-            loadPlayer( player );
-        }
-        CyberLogUtils.logInfo( "[ALTS CACHE] Successfully loaded the alts of " + Bukkit.getOnlinePlayers().size() + " online players" );
-
-        CyberLogUtils.logInfo( "[ALTS CACHE] Alt cache successfully initialized with a current size of " + cache.size() );
     }
 
-    /**
-     * Reloads the settings from the config file
-     */
-    public void reloadSettings() {
-        // Setting for how many edits to the cache before the edits are saved to the database
-        SAVE_EVERY = Settings.CACHE_ALTS_SAVE_EVERY.integer();
-        if ( SAVE_EVERY > 0 ) {
-            CyberLogUtils.logInfo( "[ALTS CACHE] New and deleted alts will be saved every " + SAVE_EVERY + " alt creations/deletions" );
-        }
-        else {
-            SAVE_EVERY = 50;
-            CyberLogUtils.logError( "[ALTS CACHE] The value for the setting \"database.cache.alts.save-every\" must be greater than zero" );
-            CyberLogUtils.logError( "[ALTS CACHE] Defaulting to saving every " + SAVE_EVERY + " alt creations/deletions" );
-        }
-    }
+    public void save() {
+        try {
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM random WHERE k = 'next_alt_group_id'" );
 
-    /**
-     * Loads a player's uuid and their current IP into the cache
-     * @param player The player to load
-     */
-    public void loadPlayer( Player player ) {
-        loadPlayer( player.getUniqueId().toString(), player.getAddress().getAddress().getHostAddress() );
-    }
-
-    /**
-     * Loads a player uuid and their current IP into the cache
-     * @param playerUuid The player uuid
-     * @param playerIp The player ip
-     */
-    public void loadPlayer( String playerUuid, String playerIp ) {
-        if ( securityLevel == AltSecurityLevel.LOW ) {
-            List<NAltGroup> groupList = cache.stream()
-                    .filter( g -> g.getIpList().contains( playerIp ) )
-                    .collect( Collectors.toList() );
-
-            if ( groupList.isEmpty() ) {
-                NAltGroup group = new NAltGroup();
-                group.setGroupId( getNextAvailableId() );
-                group.addIp( playerIp );
-                group.addAlt( playerUuid );
-                cache.add( group );
-            }
-
-            else if ( groupList.get( 0 ).containsAlt( playerUuid ) == false ) {
-                groupList.get( 0 ).addAlt( playerUuid );
-            }
-        }
-
-        else if ( securityLevel == AltSecurityLevel.MEDIUM ) {
-            List<NAltGroup> playerSearch = cache.stream()
-                    .filter( g -> g.getAltUuids().contains( playerUuid ) )
-                    .collect( Collectors.toList() );
-
-            NAltGroup group;
-            if ( playerSearch.isEmpty() == false ) {
-                group = merge( playerSearch );
-                if ( group.containsIp( playerIp ) == false ) { group.addIp( playerIp ); }
-
-                cache.removeAll( playerSearch );
+            ResultSet rs = ps.executeQuery();
+            if ( rs.next() ) {
+                PreparedStatement ps2 = ConnectionManager.CONN.prepareStatement( "UPDATE random SET v = ? WHERE k = 'next_alt_group_id'" );
+                ps2.setString( 1, String.valueOf( this.nextGroupId ) );
+                ps2.executeUpdate();
+                ps2.close();
             }
 
             else {
-                group = new NAltGroup();
-                group.setGroupId( getNextAvailableId() );
-                group.addIp( playerIp );
-                group.addAlt( playerUuid );
-            }
-            cache.add( group );
-        }
-
-        else if ( securityLevel == AltSecurityLevel.HIGH ) {
-            List<NAltGroup> groupsSearched = new ArrayList<>();
-            List<String> altsSearched = new ArrayList<>();
-            List<String> altsToSearch = new ArrayList<>();
-            List<String> ipsSearched = new ArrayList<>();
-            List<String> ipsToSearch = new ArrayList<>();
-
-            altsToSearch.add( playerUuid );
-            ipsToSearch.add( playerIp );
-
-            while ( altsToSearch.size() > 0 || ipsToSearch.size() > 0 ) {
-                String altUuid = altsToSearch.size() == 0 ? null : altsToSearch.remove( 0 );
-                String altIp = ipsToSearch.size() == 0 ? null : ipsToSearch.remove( 0 );
-                if ( altUuid != null ) { altsSearched.add( altUuid ); }
-                if ( altIp != null ) { ipsSearched.add( altIp ); }
-
-                cache.stream()
-                        .filter( g -> ( altUuid != null && g.getAltUuids().contains( altUuid ) )
-                                || ( altIp != null && g.getIpList().contains( altIp ) ) )
-                        .distinct()
-                        .forEach( group -> {
-                            if ( groupsSearched.contains( group ) == false ) { groupsSearched.add( group ); }
-
-                            group.getAltUuids().stream()
-                                    .filter( alt -> altsSearched.contains( alt ) == false )
-                                    .forEach( altsToSearch::add );
-                            group.getIpList().stream()
-                                    .filter( ip -> ipsSearched.contains( ip ) == false )
-                                    .forEach( ipsToSearch::add );
-                        } );
+                PreparedStatement ps2 = ConnectionManager.CONN.prepareStatement( "INSERT INTO random (k, v) VALUES ('next_alt_group_id', ?)" );
+                ps2.setString( 1, String.valueOf( this.nextGroupId ) );
+                ps2.executeUpdate();
+                ps2.close();
             }
 
-            NAltGroup group = new NAltGroup();
-            group.setGroupId( getNextAvailableId() );
-            for ( String a : altsSearched ) {
-                if ( group.containsAlt( a ) == false ) { group.addAlt( a ); }
-            }
-            for ( String i : ipsSearched ) {
-                if ( group.containsIp( i ) == false ) { group.addIp( i ); }
-            }
-
-            cache.removeIf( groupsSearched::contains );
-            cache.add( group );
+            ps.close();
+            rs.close();
+        } catch ( SQLException e ) {
+            throw new RuntimeException( e );
         }
     }
 
-    /**
-     * Returns a list of UUID strings of all alts a player
-     * has logged in the cache, including their own.
-     * @param player The player to get the alts of
-     * @return The alts of the player
-     */
-    public List<String> getAltUuids( OfflinePlayer player ) {
-        return cache.stream()
-                .map( NAltGroup::getAltUuids )
-                .filter( altUuids -> altUuids.contains( player.getUniqueId().toString() ) )
-                .findFirst()
-                .orElse( new ArrayList<>() );
-    }
+    public List<String> queryIps( String uuid ) {
+        List<String> toReturn = new ArrayList<>();
 
-    /**
-     * Returns a list of {@link OfflinePlayer} objects of all
-     * alts a player has logged in the cache, including themselves.
-     * @param player The player to get the alts of
-     * @return The alts of the player
-     */
-    public List<OfflinePlayer> getAlts( OfflinePlayer player ) {
-        return getAltUuids( player ).stream()
-                .map( uuid -> Bukkit.getOfflinePlayer( UUID.fromString( uuid ) ) )
-                .collect( Collectors.toList() );
-    }
-
-    /**
-     * Returns the {@link NAltGroup} that contains the given
-     * player UUID.
-     * @param playerUuid The player UUID to get the group of
-     * @return The group of the player
-     */
-    public NAltGroup getAltGroup( String playerUuid ) {
-        return cache.stream()
-                .filter( group -> group.containsAlt( playerUuid ) )
-                .findFirst()
-                .orElse( null );
-    }
-
-    /**
-     * Saves all elements from the cache into the database. Note that
-     * first this method deletes all entries from the database and then
-     * it inserts all elements from the cache into the database.
-     */
-    public void saveAll() {
-        CyberLogUtils.logInfo( "[ALTS CACHE] Saving all elements in the alt cache to the database..." );
-        deleteAll();
-
-        int count = 0;
-        for ( NAltGroup group : cache ) {
-            for ( String ip : group.getIpList() ) { saveIp( group.getGroupId(), ip ); count++; }
-            for ( String uuid : group.getAltUuids() ) { saveUuid( group.getGroupId(), uuid ); count++; }
-        }
-
-        CyberLogUtils.logInfo( "[ALTS CACHE] Successfully saved " + cache.size()
-                + " different alt groups containing " + count + " IPs and UUIDs to the database" );
-    }
-
-    /**
-     * Saves an ip into the database for a given group id
-     * @param groupId The group id
-     * @param ipAddress The ip address
-     */
-    public void saveIp( int groupId, String ipAddress ) {
         try {
-            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + "(id,item,type) VALUES (?,?,?);" );
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE uuid = ?" );
+            ps.setString( 1, uuid );
+
+            ResultSet rs = ps.executeQuery();
+            while ( rs.next() ) {
+                toReturn.add( rs.getString( "ip" ) );
+            }
+
+            ps.close();
+            rs.close();
+        } catch ( SQLException e ) {
+            throw new RuntimeException( e );
+        }
+
+        return toReturn;
+    }
+
+    public List<UUID> queryUuids( String ip ) {
+        List<UUID> toReturn = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE ip = ?" );
+            ps.setString( 1, ip );
+
+            ResultSet rs = ps.executeQuery();
+            while ( rs.next() ) {
+                toReturn.add( UUID.fromString( rs.getString( "uuid" ) ) );
+            }
+
+            ps.close();
+            rs.close();
+        } catch ( SQLException e ) {
+            throw new RuntimeException( e );
+        }
+
+        return toReturn;
+    }
+
+    public Optional<NAltGroup> queryGroup( int groupId ) {
+        NAltGroup toReturn = null;
+
+        try {
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE group_id = ?" );
             ps.setInt( 1, groupId );
-            ps.setString( 2, ipAddress );
-            ps.setString( 3, "ip" );
+
+            ResultSet rs = ps.executeQuery();
+            while ( rs.next() ) {
+                if ( toReturn == null ) {
+                    toReturn = new NAltGroup( groupId );
+                }
+
+                toReturn.addEntry( new NAltEntry(
+                        rs.getString( "uuid" ),
+                        rs.getString( "ip" ),
+                        groupId )
+                );
+            }
+
+            ps.close();
+            rs.close();
+        } catch ( SQLException e ) {
+            throw new RuntimeException( e );
+        }
+
+        return Optional.ofNullable( toReturn );
+    }
+
+    public List<NAltEntry> queryAllEntries() {
+        List<NAltEntry> toReturn = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME );
+
+            ResultSet rs = ps.executeQuery();
+            while ( rs.next() ) {
+                toReturn.add( new NAltEntry(
+                        rs.getString( "uuid" ),
+                        rs.getString( "ip" ),
+                        rs.getInt( "group_id" )
+                ) );
+            }
+
+            ps.close();
+            rs.close();
+        } catch ( SQLException e ) {
+            throw new RuntimeException( e );
+        }
+
+        return toReturn;
+    }
+
+    public void saveNewEntry( NAltEntry entry ) {
+        try {
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + " (uuid, ip, group_id) VALUES (?,?,?)" );
+            ps.setString( 1, entry.getUuid() );
+            ps.setString( 2, entry.getIp() );
+            ps.setInt( 3, entry.getGroupId() );
 
             ps.executeUpdate();
             ps.close();
@@ -292,17 +171,12 @@ public class NetunoAltsDatabase implements AltsDatabase {
         }
     }
 
-    /**
-     * Saves an uuid into the database for a given group id
-     * @param groupId The group id
-     * @param uuid The uuid
-     */
-    public void saveUuid( int groupId, String uuid ) {
+    public void updateEntryGroupId( NAltEntry entry, int newGroupId ) {
         try {
-            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + "(id,item,type) VALUES(?,?,?);" );
-            ps.setInt( 1, groupId );
-            ps.setString( 2, uuid );
-            ps.setString( 3, "uuid" );
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "UPDATE " + TABLE_NAME + " SET group_id = ? WHERE uuid = ? AND ip = ?" );
+            ps.setInt( 1, newGroupId );
+            ps.setString( 2, entry.getUuid() );
+            ps.setString( 3, entry.getIp() );
 
             ps.executeUpdate();
             ps.close();
@@ -311,63 +185,22 @@ public class NetunoAltsDatabase implements AltsDatabase {
         }
     }
 
-    /**
-     * Deletes all entries from the database
-     */
-    public void deleteAll() {
+    public void deleteEntry( NAltEntry entry ) {
         try {
-            Statement stmt = ConnectionManager.CONN.createStatement();
-            stmt.execute( "DELETE FROM " + TABLE_NAME + ";" );
-            stmt.close();
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "DELETE FROM " + TABLE_NAME + " WHERE uuid = ? AND ip = ? AND group_id = ?" );
+            ps.setString( 1, entry.getUuid() );
+            ps.setString( 2, entry.getIp() );
+            ps.setInt( 3, entry.getGroupId() );
+
+            ps.executeUpdate();
+            ps.close();
         } catch ( SQLException e ) {
             throw new RuntimeException( e );
         }
     }
 
-    /**
-     * Merges a list of {@link NAltGroup} into one. The returned
-     * alt group's group ID is the lowest group ID of the given
-     * list.
-     * @param groupList The list of alt groups
-     * @return The merged alt group
-     */
-    private NAltGroup merge( List<NAltGroup> groupList ) {
-        if ( groupList.size() == 1 ) { return groupList.get( 0 ); }
-        NAltGroup toReturn = new NAltGroup();
-        int lowestId = Integer.MAX_VALUE;
-
-        for ( NAltGroup group : groupList ) {
-            group.getAltUuids().forEach( altUuid -> {
-                if ( toReturn.containsAlt( altUuid ) == false ) {
-                    toReturn.addAlt( altUuid );
-                }
-            } );
-            group.getIpList().forEach( ip -> {
-                if ( toReturn.containsIp( ip ) == false ) {
-                    toReturn.addIp( ip );
-                }
-            } );
-
-            if ( group.getGroupId() < lowestId ) { lowestId = group.getGroupId(); }
-        }
-
-        toReturn.setGroupId( lowestId );
-        return toReturn;
-    }
-
-    /**
-     * @return The next available group id
-     */
-    private int getNextAvailableId() {
-        int toReturn = cache.size() + 1;
-        boolean continueWhile = true;
-
-        while ( continueWhile ) {
-            final int x = toReturn;
-            if ( cache.stream().anyMatch( g -> g.getGroupId() == x ) ) { toReturn++; }
-            else { continueWhile = false; }
-        }
-
-        return toReturn;
+    public int getNextGroupId() {
+        nextGroupId++;
+        return nextGroupId;
     }
 }
