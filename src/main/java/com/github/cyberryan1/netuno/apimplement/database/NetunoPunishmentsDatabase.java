@@ -235,6 +235,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
      */
     public List<NPunishment> forceGetPunishmentsFromReference( int referenceId ) {
         List<NPunishment> toReturn = new ArrayList<>();
+        if ( referenceId < 0 ) { return toReturn; }
         final NPunishment ORIGINAL_PUN = getPunishment( referenceId );
 
         try {
@@ -269,7 +270,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
 
         if ( newData.getPunishmentType().isIpPunishment() ) {
             final List<NPunishment> allReferences = forceGetPunishmentsFromReference( newData.getReferencePunId() );
-            final NPunishment original = getPunishment( newData.getReferencePunId() );
+            final NPunishment original = getPunishment( newData.getId() );
             allReferences.add( original );
 
             for ( NPunishment ref : allReferences ) {
