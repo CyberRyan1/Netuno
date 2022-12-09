@@ -149,7 +149,7 @@ public class SinglePunishButton {
 
             if ( prePun.getPunishment().getPunishmentType() == PunishmentType.IPMUTE && this.startingTime.equalsIgnoreCase( "HIGHEST_MUTED_ALT" ) ) {
                 NPunishment highest = null;
-                final NAltGroup altGroup = ApiNetuno.getInstance().getAltLoader().search( prePun.getPunishment().getPlayerUuid() )
+                final NAltGroup altGroup = ApiNetuno.getInstance().getAltLoader().searchByUuid( prePun.getPunishment().getPlayerUuid() )
                         .orElseThrow( () -> {
                             throw new NullPointerException( "An error occurred while trying to get the player's alt group, "
                                     + "so the reference punishment could not be added to the player's alts." );
@@ -175,7 +175,7 @@ public class SinglePunishButton {
 
             else if ( prePun.getPunishment().getPunishmentType() == PunishmentType.IPBAN && this.startingTime.equalsIgnoreCase( "HIGHEST_BANNED_ALT" )  ) {
                 NPunishment highest = null;
-                final NAltGroup altGroup = ApiNetuno.getInstance().getAltLoader().search( prePun.getPunishment().getPlayerUuid() )
+                final NAltGroup altGroup = ApiNetuno.getInstance().getAltLoader().searchByUuid( prePun.getPunishment().getPlayerUuid() )
                         .orElseThrow( () -> {
                             throw new NullPointerException( "An error occurred while trying to get the player's alt group, "
                                     + "so the reference punishment could not be added to the player's alts." );

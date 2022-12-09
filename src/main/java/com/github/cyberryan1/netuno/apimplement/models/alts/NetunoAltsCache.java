@@ -25,7 +25,7 @@ public class NetunoAltsCache implements NAltLoader {
 
         CyberLogUtils.logInfo( "[ALTS CACHE] Loading " + savedEntries.size() + " entries..." );
         for ( NAltEntry entry : savedEntries ) {
-            Optional<NAltGroup> group = search( entry.getGroupId() );
+            Optional<NAltGroup> group = searchByGroupId( entry.getGroupId() );
             if ( group.isPresent() ) { group.get().addEntry( entry ); }
             else {
                 NAltGroup newGroup = new NAltGroup( entry.getGroupId() );
@@ -40,7 +40,7 @@ public class NetunoAltsCache implements NAltLoader {
     public void loadPlayer( UUID uuid, String ip ) {
         if ( this.securityLevel == AltSecurityLevel.LOW ) {
             // Get the group the player's joined IP is in
-            final Optional<NAltGroup> group = search( ip );
+            final Optional<NAltGroup> group = searchByIp( ip );
 
             // If the group exists, add the player to it
             if ( group.isPresent() ) {
@@ -64,7 +64,7 @@ public class NetunoAltsCache implements NAltLoader {
             final List<NAltGroup> groups = new ArrayList<>();
 
             // Adding all the groups that the player's joined IP is in
-            for ( NAltGroup group : this.searchForMany( ip ) ) {
+            for ( NAltGroup group : this.searchManyByIp( ip ) ) {
                 if ( group.getIps().contains( ip ) ) {
                     groups.add( group );
                 }
@@ -113,14 +113,14 @@ public class NetunoAltsCache implements NAltLoader {
             final List<NAltGroup> groups = new ArrayList<>();
 
             // Adding all the groups that the player's UUID is in to the list
-            for ( NAltGroup group : this.searchForMany( uuid ) ) {
+            for ( NAltGroup group : this.searchManyByUuid( uuid ) ) {
                 if ( groups.contains( group ) == false ) {
                     groups.add( group );
                 }
             }
 
             // Adding all the groups that the player's IP is in to the list
-            for ( NAltGroup group : this.searchForMany( ip ) ) {
+            for ( NAltGroup group : this.searchManyByIp( ip ) ) {
                 if ( groups.contains( group ) == false ) {
                     groups.add( group );
                 }
@@ -194,7 +194,7 @@ public class NetunoAltsCache implements NAltLoader {
         }
     }
 
-    public Optional<NAltGroup> search( int groupId ) {
+    public Optional<NAltGroup> searchByGroupId( int groupId ) {
         for ( NAltGroup group : cache ) {
             if ( group.getGroupId() == groupId ) {
                 return Optional.of( group );
@@ -203,7 +203,7 @@ public class NetunoAltsCache implements NAltLoader {
         return Optional.empty();
     }
 
-    public Optional<NAltGroup> search( UUID uuid ) {
+    public Optional<NAltGroup> searchByUuid( UUID uuid ) {
         for ( NAltGroup group : cache ) {
             if ( group.getUuids().contains( uuid ) ) {
                 return Optional.of( group );
@@ -212,7 +212,7 @@ public class NetunoAltsCache implements NAltLoader {
         return Optional.empty();
     }
 
-    public List<NAltGroup> searchForMany( UUID uuid ) {
+    public List<NAltGroup> searchManyByUuid( UUID uuid ) {
         List<NAltGroup> groups = new ArrayList<>();
         for ( NAltGroup group : cache ) {
             if ( group.getUuids().contains( uuid ) ) {
@@ -222,7 +222,7 @@ public class NetunoAltsCache implements NAltLoader {
         return groups;
     }
 
-    public Optional<NAltGroup> search( String ip ) {
+    public Optional<NAltGroup> searchByIp( String ip ) {
         for ( NAltGroup group : cache ) {
             if ( group.getIps().contains( ip ) ) {
                 return Optional.of( group );
@@ -231,7 +231,7 @@ public class NetunoAltsCache implements NAltLoader {
         return Optional.empty();
     }
 
-    public List<NAltGroup> searchForMany( String ip ) {
+    public List<NAltGroup> searchManyByIp( String ip ) {
         List<NAltGroup> groups = new ArrayList<>();
         for ( NAltGroup group : cache ) {
             if ( group.getIps().contains( ip ) ) {

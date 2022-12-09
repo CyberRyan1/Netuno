@@ -43,7 +43,7 @@ public class AltsListGUI {
         this.target = NetunoPlayerCache.getOrLoad( target.getUniqueId().toString() );
         this.page = page;
         this.sort = sort;
-        this.alts = ApiNetuno.getInstance().getAltLoader().search( target.getUniqueId() )
+        this.alts = ApiNetuno.getInstance().getAltLoader().searchByUuid( target.getUniqueId() )
                 .map( nAltGroup -> nAltGroup.getUuids().stream()
                         .map( uuid -> NetunoPlayerCache.getOrLoad( uuid.toString() ) )
                         .collect( Collectors.toList() )

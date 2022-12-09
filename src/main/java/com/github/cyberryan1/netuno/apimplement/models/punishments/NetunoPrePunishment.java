@@ -71,7 +71,7 @@ public class NetunoPrePunishment implements NPrePunishment {
                 return;
             }
 
-            final NAltGroup altGroup = ApiNetuno.getInstance().getAltLoader().search( pun.getPlayerUuid() )
+            final NAltGroup altGroup = ApiNetuno.getInstance().getAltLoader().searchByUuid( pun.getPlayerUuid() )
                     .orElseThrow( () -> {
                         throw new NullPointerException( "An error occurred while trying to get the player's alt group, "
                             + "so the reference punishment could not be added to the player's alts." );
@@ -122,7 +122,7 @@ public class NetunoPrePunishment implements NPrePunishment {
             }
 
             else {
-                final NAltGroup altGroup = ApiNetuno.getInstance().getAltLoader().search( pun.getPlayerUuid() )
+                final NAltGroup altGroup = ApiNetuno.getInstance().getAltLoader().searchByUuid( pun.getPlayerUuid() )
                         .orElseThrow( () -> {
                             throw new NullPointerException( "An error occurred while trying to get the player's alt group, "
                                     + "so the reference punishment could not be added to the player's alts." );
