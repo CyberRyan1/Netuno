@@ -16,10 +16,11 @@ public enum SQLiteTables {
             "`notif` INTEGER NOT NULL );"
     ),
 
-    ALTS_TABLE( "CREATE TABLE IF NOT EXISTS alts ("  +
-            "`id` INTEGER NOT NULL," +
-            "`item` STRING NOT NULL," +
-            "`type` STRING NOT NULL );"
+    IP_HISTORY_TABLE( "CREATE TABLE IF NOT EXISTS ip_history (" +
+            "`id` INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "`uuid` STRING NOT NULL," +
+            "`ip` STRING NOT NULL," +
+            "`group_id` INTEGER DEFAULT -1 NOT NULL );"
     ),
 
     REPORTS_TABLE( "CREATE TABLE IF NOT EXISTS reports (" +

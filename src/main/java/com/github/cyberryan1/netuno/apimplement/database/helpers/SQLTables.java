@@ -16,11 +16,11 @@ public enum SQLTables {
             "notif INTEGER NOT NULL );"
     ),
 
-    ALTS_TABLE( "CREATE TABLE IF NOT EXISTS alts (" +
-            "inde INTEGER PRIMARY KEY AUTO_INCREMENT," + // we ignore this column
-            "id INTEGER NOT NULL," +
-            "item VARCHAR(42) NOT NULL," +
-            "type VARCHAR(6) NOT NULL );"
+    IP_HISTORY_TABLE( "CREATE TABLE IF NOT EXISTS ip_history (" +
+            "id INTEGER PRIMARY KEY AUTO_INCREMENT," +
+            "uuid VARCHAR(42) NOT NULL," +
+            "ip VARCHAR(20) NOT NULL," +
+            "group_id INTEGER DEFAULT -1 NOT NULL );"
     ),
 
     REPORTS_TABLE( "CREATE TABLE IF NOT EXISTS reports (" +
