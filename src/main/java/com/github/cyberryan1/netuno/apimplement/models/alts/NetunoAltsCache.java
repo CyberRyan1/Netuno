@@ -38,7 +38,6 @@ public class NetunoAltsCache implements NAltLoader {
     }
 
     public void loadPlayer( UUID uuid, String ip ) {
-
         if ( this.securityLevel == AltSecurityLevel.LOW ) {
             // Get the group the player's joined IP is in
             final Optional<NAltGroup> group = search( ip );
@@ -137,15 +136,34 @@ public class NetunoAltsCache implements NAltLoader {
                 ApiNetuno.getData().getAlts().saveNewEntry( entry );
             }
 
-            // If groups.size() == 1, then the player and their IP are already in a singular existing group
+            // If groups.size() == 1, then the player OR their IP are already in a singular existing group
+            // So we need to see if the group in the list contains the entry for the player's UUID and current IP
+            // If it doesn't, then we add it and save it to the database
+            else if ( groups.size() == 1 ) {
+                final NAltGroup baseGroup = groups.get( 0 );
+
+                boolean found = false;
+                for ( NAltEntry entry : baseGroup.getEntries() ) {
+                    if ( entry.getUuid().equals( uuid.toString() ) && entry.getIp().equals( ip ) ) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if ( found == false ) {
+                    NAltEntry entry = new NAltEntry( uuid.toString(), ip, baseGroup.getGroupId() );
+                    baseGroup.addEntry( entry );
+                    ApiNetuno.getData().getAlts().saveNewEntry( entry );
+                }
+            }
 
             // If the groups list has more than one group, then either the player's UUID and/or IP are in multiple groups
             // So we combine all of these groups into a singular group and save all the edited entries to the database
-            else if ( groups.size() != 1 ) {
+            else {
                 final NAltGroup baseGroup = groups.get( 0 );
                 final List<NAltEntry> editedEntries = new ArrayList<>();
 
-                for ( int index = 1; index <= groups.size(); index++ ) {
+                for ( int index = 1; index < groups.size(); index++ ) {
                     combineGroup( baseGroup, groups.get( index ) );
                     editedEntries.addAll( groups.get( index ).getEntries() );
                     this.cache.remove( groups.get( index ) );
