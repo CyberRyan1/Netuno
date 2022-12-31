@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.apimplement.database;
 
+import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netunoapi.database.PunishmentsDatabase;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
@@ -168,15 +169,29 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
 
             ResultSet rs = ps.executeQuery();
             while ( rs.next() ) {
-                NPunishment data;
+                NPunishment data = null;
                 final int referencePunId = rs.getInt( "reference" );
 
                 if ( referencePunId > 0 ) {
                     NPunishment originalPun = getPunishment( referencePunId );
-                    data = originalPun.copy();
-                    data.setId( rs.getInt( "id" ) );
-                    data.setReferencePunId( referencePunId );
-                    data.setPlayerUuid( rs.getString( "player" ) );
+                    if ( originalPun == null ) {
+                        final int punishmentId = rs.getInt( "id" );
+                        removePunishment( punishmentId );
+
+                        NetunoPlayer np = NetunoPlayerCache.searchForOne( player -> player.getPunishments().stream().anyMatch( pun -> pun.getId() == punishmentId ) );
+                        if ( np != null ) {
+                            np.getPunishments().removeIf( pun -> pun.getId() == punishmentId );
+                        }
+
+                        continue;
+                    }
+
+                    if ( originalPun != null ) {
+                        data = originalPun.copy();
+                        data.setId( rs.getInt( "id" ) );
+                        data.setReferencePunId( referencePunId );
+                        data.setPlayerUuid( rs.getString( "player" ) );
+                    }
                 }
 
                 else {
@@ -195,7 +210,7 @@ public class NetunoPunishmentsDatabase implements PunishmentsDatabase {
                     );
                 }
 
-                toReturn.add( data );
+                if ( data != null ) { toReturn.add( data ); }
             }
 
             ps.close();
