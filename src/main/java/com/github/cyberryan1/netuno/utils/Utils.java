@@ -3,8 +3,11 @@ package com.github.cyberryan1.netuno.utils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
+import com.github.cyberryan1.netunoapi.models.time.NDuration;
+import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -167,5 +170,16 @@ public class Utils {
 
     public static String replacePunGUIVariables( String str, OfflinePlayer target, int previous ) {
         return str.replace( "[TARGET]", target.getName() ).replace( "[PREVIOUS]", previous + "" );
+    }
+
+    // Checks if the ban max time setting is enabled, if the player doesn't have permission to bypass it,
+    //      and if the time is longer than the max time. If so, returns false. Otherwise returns true
+    public static boolean checkBanLengthAllowed( Player staff, String inputLength ) {
+        if ( Settings.BAN_MAX_TIME_ENABLED.bool() == false ) { return true; }
+        if ( CyberVaultUtils.hasPerms( staff, Settings.BAN_MAX_TIME_BYPASS_PERMISSION.string() ) ) { return true; }
+
+        final NDuration length = TimeUtils.durationFromUnformatted( inputLength );
+        final NDuration maxLength = TimeUtils.durationFromUnformatted( Settings.BAN_MAX_TIME_LENGTH.string() );
+        return length.asTimestamp() > maxLength.asTimestamp();
     }
 }
