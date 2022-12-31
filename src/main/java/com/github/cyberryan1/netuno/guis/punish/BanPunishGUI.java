@@ -8,6 +8,8 @@ import com.github.cyberryan1.netuno.guis.punish.managers.ActiveGuiManager;
 import com.github.cyberryan1.netuno.guis.punish.utils.MultiPunishButton;
 import com.github.cyberryan1.netuno.guis.punish.utils.PunishSettings;
 import com.github.cyberryan1.netuno.guis.punish.utils.SinglePunishButton;
+import com.github.cyberryan1.netuno.utils.CommandErrors;
+import com.github.cyberryan1.netuno.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -41,6 +43,11 @@ public class BanPunishGUI {
             if ( button.getItemMaterial().isAir() ) { continue; }
 
             GuiItem item = new GuiItem( button.getItem( this.target ), button.getIndex(), ( i ) -> {
+                if ( Utils.checkBanLengthAllowed( this.staff, button.getStartingTime() ) == false ) {
+                    CommandErrors.sendBanLengthTooLarge( this.staff );
+                    return;
+                }
+
                 button.executePunish( this.staff, this.target );
                 staff.closeInventory();
             } );

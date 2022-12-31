@@ -50,6 +50,11 @@ public class BanCommand extends CyberCommand {
             return true;
         }
 
+        if ( command.getSender() instanceof Player && Utils.checkBanLengthAllowed( command.getPlayer(), command.getArg( 1 ) ) == false ) {
+            CommandErrors.sendBanLengthTooLarge( command.getPlayer() );
+            return true;
+        }
+
         final OfflinePlayer target = command.getOfflinePlayerAtArg( 0 );
         NetunoPrePunishment prePun = new NetunoPrePunishment();
         prePun.getPunishment().setPlayer( target );
