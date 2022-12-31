@@ -64,6 +64,7 @@ public class ApiNetuno implements NetunoApi {
 
     public static void deleteInstance() {
         // Save any information needed for the alts database
+        instance.getAltLoader().save();
         getData().getNetunoAlts().save();
 
         // Save the reports cache
