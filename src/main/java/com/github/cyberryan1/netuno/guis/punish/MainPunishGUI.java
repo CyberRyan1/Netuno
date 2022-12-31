@@ -50,6 +50,12 @@ public class MainPunishGUI {
         if ( history.getIndex() != -1 ) {
             gui.addItem( new GuiItem( history.getItem( this.target ), history.getIndex(), ( itemClicked ) -> {
                 staff.closeInventory();
+
+                if ( CyberVaultUtils.hasPerms( this.staff, Settings.HISTORY_PERMISSION.string() ) == false ) {
+                    CyberMsgUtils.sendMsg( this.staff, Settings.PERM_DENIED_MSG.string() );
+                    return;
+                }
+
                 HistoryListGUI historyList = new HistoryListGUI( this.target, this.staff, 1 );
                 historyList.open();
             } ) );
@@ -59,6 +65,12 @@ public class MainPunishGUI {
         if ( alts.getIndex() != -1 ) {
             gui.addItem( new GuiItem( alts.getItem( this.target ), alts.getIndex(), ( itemClicked ) -> {
                 staff.closeInventory();
+
+                if ( CyberVaultUtils.hasPerms( this.staff, Settings.IPINFO_PERMISSION.string() ) == false ) {
+                    CyberMsgUtils.sendMsg( this.staff, Settings.PERM_DENIED_MSG.string() );
+                    return;
+                }
+
                 AltsListGUI altsList = new AltsListGUI( this.staff, this.target, 1 );
                 altsList.open();
             } ) );
@@ -91,6 +103,12 @@ public class MainPunishGUI {
         if ( warn.getIndex() != -1 ) {
             final ItemStack item = getCorrectItem( warn.getItem( this.target ), "warn" );
             gui.addItem( new GuiItem( item, warn.getIndex(), ( itemClicked ) -> {
+                if ( CyberVaultUtils.hasPerms( this.staff, Settings.WARN_PERMISSION.string() ) == false ) {
+                    CyberMsgUtils.sendMsg( this.staff, Settings.PERM_DENIED_MSG.string() );
+                    staff.closeInventory();
+                    return;
+                }
+
                 final OpenGui otherGui = ActiveGuiManager.searchByGui( "warn" ).orElse( null );
                 if ( otherGui != null ) {
                     CyberMsgUtils.sendMsg( this.staff, "&p" + this.target.getName() +
@@ -113,6 +131,12 @@ public class MainPunishGUI {
         if ( mute.getIndex() != -1 ) {
             final ItemStack item = getCorrectItem( mute.getItem( this.target ), "mute" );
             gui.addItem( new GuiItem( item, mute.getIndex(), ( itemClicked ) -> {
+                if ( CyberVaultUtils.hasPerms( this.staff, Settings.MUTE_PERMISSION.string() ) == false ) {
+                    CyberMsgUtils.sendMsg( this.staff, Settings.PERM_DENIED_MSG.string() );
+                    staff.closeInventory();
+                    return;
+                }
+
                 final OpenGui otherGui = ActiveGuiManager.searchByGui( "mute" ).orElse( null );
                 if ( otherGui != null ) {
                     CyberMsgUtils.sendMsg( this.staff, "&p" + this.target.getName() +
@@ -135,6 +159,12 @@ public class MainPunishGUI {
         if ( ban.getIndex() != -1 ) {
             final ItemStack item = getCorrectItem( ban.getItem( this.target ), "ban" );
             gui.addItem( new GuiItem( item, ban.getIndex(), ( itemClicked ) -> {
+                if ( CyberVaultUtils.hasPerms( this.staff, Settings.BAN_PERMISSION.string() ) == false ) {
+                    CyberMsgUtils.sendMsg( this.staff, Settings.PERM_DENIED_MSG.string() );
+                    staff.closeInventory();
+                    return;
+                }
+
                 final OpenGui otherGui = ActiveGuiManager.searchByGui( "ban" ).orElse( null );
                 if ( otherGui != null ) {
                     CyberMsgUtils.sendMsg( this.staff, "&p" + this.target.getName() +
@@ -157,6 +187,12 @@ public class MainPunishGUI {
         if ( ipmute.getIndex() != -1 ) {
             final ItemStack item = getCorrectItem( ipmute.getItem( this.target ), "ipmute" );
             gui.addItem( new GuiItem( item, ipmute.getIndex(), ( itemClicked ) -> {
+                if ( CyberVaultUtils.hasPerms( this.staff, Settings.IPMUTE_PERMISSION.string() ) == false ) {
+                    CyberMsgUtils.sendMsg( this.staff, Settings.PERM_DENIED_MSG.string() );
+                    staff.closeInventory();
+                    return;
+                }
+
                 final OpenGui otherGui = ActiveGuiManager.searchByGui( "ipmute" ).orElse( null );
                 if ( otherGui != null ) {
                     CyberMsgUtils.sendMsg( this.staff, "&p" + this.target.getName() +
@@ -179,6 +215,12 @@ public class MainPunishGUI {
         if ( ipban.getIndex() != -1 ) {
             final ItemStack item = getCorrectItem( ipban.getItem( this.target ), "ipban" );
             gui.addItem( new GuiItem( item, ipban.getIndex(), ( itemClicked ) -> {
+                if ( CyberVaultUtils.hasPerms( this.staff, Settings.IPBAN_PERMISSION.string() ) == false ) {
+                    CyberMsgUtils.sendMsg( this.staff, Settings.PERM_DENIED_MSG.string() );
+                    staff.closeInventory();
+                    return;
+                }
+
                 final OpenGui otherGui = ActiveGuiManager.searchByGui( "ipban" ).orElse( null );
                 if ( otherGui != null ) {
                     CyberMsgUtils.sendMsg( this.staff, "&p" + this.target.getName() +
