@@ -104,7 +104,7 @@ public class NetunoAltsDatabase implements AltsDatabase {
         return toReturn;
     }
 
-    public Optional<NAltGroup> queryGroup( int groupId ) {
+    public Optional<NAltGroup> queryGroupById( int groupId ) {
         NAltGroup toReturn = null;
 
         try {
@@ -131,6 +131,50 @@ public class NetunoAltsDatabase implements AltsDatabase {
         }
 
         return Optional.ofNullable( toReturn );
+    }
+
+    public Optional<NAltGroup> queryGroupByUuid( UUID uuid ) {
+        int toQuery = -1;
+
+        try {
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE uuid = ?" );
+            ps.setString( 1, uuid.toString() );
+
+            ResultSet rs = ps.executeQuery();
+            if ( rs.next() ) {
+                toQuery = rs.getInt( "group_id" );
+            }
+
+            ps.close();
+            rs.close();
+        } catch ( SQLException e ) {
+            throw new RuntimeException( e );
+        }
+
+        if ( toQuery < 0 ) { return Optional.empty(); }
+        return queryGroupById( toQuery );
+    }
+
+    public Optional<NAltGroup> queryGroupByIp( String ip ) {
+        int toQuery = -1;
+
+        try {
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE ip = ?" );
+            ps.setString( 1, ip );
+
+            ResultSet rs = ps.executeQuery();
+            if ( rs.next() ) {
+                toQuery = rs.getInt( "group_id" );
+            }
+
+            ps.close();
+            rs.close();
+        } catch ( SQLException e ) {
+            throw new RuntimeException( e );
+        }
+
+        if ( toQuery < 0 ) { return Optional.empty(); }
+        return queryGroupById( toQuery );
     }
 
     public List<NAltEntry> queryAllEntries() {
