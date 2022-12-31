@@ -1,12 +1,16 @@
 package com.github.cyberryan1.netuno.apimplement.models.alts;
 
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.apimplement.database.helpers.AltSecurityLevel;
+import com.github.cyberryan1.netuno.utils.Duplex;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.models.alts.NAltEntry;
 import com.github.cyberryan1.netunoapi.models.alts.NAltGroup;
 import com.github.cyberryan1.netunoapi.models.alts.NAltLoader;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,46 +20,94 @@ import java.util.UUID;
 public class NetunoAltsCache implements NAltLoader {
 
     private final List<NAltGroup> cache = new ArrayList<>();
+    //                        Alt Entry
+    //                                   Previous Group ID (-1 if none)
+    private final List<Duplex<NAltEntry, Integer>> editedCache = new ArrayList<>();
+    private final List<NAltGroup> removedCache = new ArrayList<>();
 
     private AltSecurityLevel securityLevel = AltSecurityLevel.HIGH;
 
     public void initialize() {
         CyberLogUtils.logInfo( "[ALTS CACHE] Initializing the alts cache..." );
-        List<NAltEntry> savedEntries = ApiNetuno.getData().getAlts().queryAllEntries();
 
-        CyberLogUtils.logInfo( "[ALTS CACHE] Loading " + savedEntries.size() + " entries..." );
-        for ( NAltEntry entry : savedEntries ) {
-            Optional<NAltGroup> group = searchByGroupId( entry.getGroupId() );
-            if ( group.isPresent() ) { group.get().addEntry( entry ); }
-            else {
-                NAltGroup newGroup = new NAltGroup( entry.getGroupId() );
-                newGroup.addEntry( entry );
-                cache.add( newGroup );
+        for ( Player player : Bukkit.getOnlinePlayers() ) {
+            loadPlayer( player.getUniqueId(), player.getAddress().getAddress().getHostAddress() );
+        }
+
+        // ! debug
+        CyberLogUtils.logWarn( "[ALTS CACHE] ---" );
+        for ( NAltGroup group : cache ) {
+            CyberLogUtils.logWarn( "[ALTS CACHE] " + group.getGroupId() + " : " );
+            for ( NAltEntry entry : group.getEntries() ) {
+                CyberLogUtils.logWarn( "[ALTS CACHE]     " + entry.getUuid() + " : " + entry.getIp() );
+            }
+            CyberLogUtils.logWarn( "[ALTS CACHE] ---" );
+        }
+        // ! end debug
+
+        // Repeat every 5 minutes
+        Bukkit.getScheduler().runTaskTimerAsynchronously( CyberCore.getPlugin(), this::save, 6000, 6000 );
+
+        CyberLogUtils.logInfo( "[ALTS CACHE] Loaded a total of " + cache.size() + " alt groups" );
+    }
+
+    public void save() {
+        CyberLogUtils.logInfo( "[ALTS CACHE] Saving the alts cache..." );
+
+        for ( NAltGroup group : removedCache ) {
+            for ( NAltEntry entry : group.getEntries() ) {
+                ApiNetuno.getData().getAlts().deleteEntry( entry );
             }
         }
 
-        CyberLogUtils.logInfo( "[ALTS CACHE] Loaded a total of " + cache.size() + " alt groups" );
+        int saved = 0;
+        int updated = 0;
+        for ( Duplex<NAltEntry, Integer> item : editedCache ) {
+            if ( item.getSecond() < 0 ) {
+                ApiNetuno.getData().getAlts().saveNewEntry( item.getFirst() );
+                saved++;
+            }
+            else {
+                ApiNetuno.getData().getAlts().updateEntryGroupId( item.getFirst(), item.getSecond() );
+                updated++;
+            }
+        }
+
+        CyberLogUtils.logInfo( "[ALTS CACHE] Saved " + saved + " new entries, updated " + updated + " entries, and deleted "
+                + removedCache.size() + " entries" );
+        removedCache.clear();
+        editedCache.clear();
     }
 
     public void loadPlayer( UUID uuid, String ip ) {
         if ( this.securityLevel == AltSecurityLevel.LOW ) {
             // Get the group the player's joined IP is in
-            final Optional<NAltGroup> group = searchByIp( ip );
+            final Optional<NAltGroup> queryGroup = searchByIp( ip );
 
-            // If the group exists, add the player to it
-            if ( group.isPresent() ) {
-                NAltEntry entry = new NAltEntry( uuid.toString(), ip, group.get().getGroupId() );
-                group.get().addEntry( entry );
-                ApiNetuno.getData().getAlts().saveNewEntry( entry );
+            // If the group is already cached, add the player to it
+            if ( queryGroup.isPresent() ) {
+                NAltGroup group = queryGroup.get();
+                NAltEntry entryAttempt = new NAltEntry( uuid.toString(), ip, group.getGroupId() );
+                if ( group.containsEntry( entryAttempt ) == false ) {
+                    group.addEntry( entryAttempt );
+                    this.editedCache.add( new Duplex<>( entryAttempt, -1 ) );
+                }
             }
 
-            // Otherwise create a new group and add the player to it
             else {
-                NAltGroup newGroup = new NAltGroup( ApiNetuno.getData().getAlts().getNextGroupId() );
-                NAltEntry entry = new NAltEntry( uuid.toString(), ip, newGroup.getGroupId() );
-                newGroup.addEntry( entry );
-                cache.add( newGroup );
-                ApiNetuno.getData().getAlts().saveNewEntry( entry );
+                // If the group is not cached, see if it is in the database
+                // Get the group from the database
+                final Optional<NAltGroup> queryGroup2 = ApiNetuno.getData().getAlts().queryGroupByIp( ip );
+
+                // If the group is in the database, add the player to it and load the group into the cache
+                if ( queryGroup2.isPresent() ) {
+                    loadGroupFromDatabase( queryGroup2.get(), uuid, ip );
+                }
+
+                // Otherwise create a new group, add the player to it, and load the group into the cache
+                else {
+                    createNewGroup( uuid, ip );
+                }
             }
         }
 
@@ -70,38 +122,39 @@ public class NetunoAltsCache implements NAltLoader {
                 }
             }
 
-            // If the groups list is empty, then the player's IP is not in any groups
-            // So we create a new group for them and save it to the database
+            // If the groups list is empty, then the player's IP is not in any cached groups
             if ( groups.size() == 0 ) {
-                NAltGroup newGroup = new NAltGroup( ApiNetuno.getData().getAlts().getNextGroupId() );
-                NAltEntry entry = new NAltEntry( uuid.toString(), ip, newGroup.getGroupId() );
-                newGroup.addEntry( entry );
-                cache.add( newGroup );
-                ApiNetuno.getData().getAlts().saveNewEntry( entry );
+                // Query the database for the player's previous alt group
+                final Optional<NAltGroup> queryGroup = ApiNetuno.getData().getAlts().queryGroupByUuid( uuid );
+
+                // If the group is in the database, load the group into the cache and add the player to it
+                if ( queryGroup.isPresent() ) {
+                    loadGroupFromDatabase( queryGroup.get(), uuid, ip );
+                }
+
+                // Otherwise we create a new group for the player, add the player to it, and load them into the cache
+                else {
+                    createNewGroup( uuid, ip );
+                }
             }
 
-            // If groups.size() == 1, then the player's IP is in one group
+            // If groups.size() == 1, then the player's IP is already in one group and we do nothing
 
             // If the groups list has more than one group, then the player's IP is in multiple groups
             // So we combine all of these groups into a singular group and save all the edited entries to the database
             else if ( groups.size() > 1 ) {
                 final NAltGroup baseGroup = groups.get( 0 );
-                final List<NAltEntry> editedEntries = new ArrayList<>();
 
                 for ( int index = 1; index <= groups.size(); index++ ) {
                     combineGroup( baseGroup, groups.get( index ) );
-                    editedEntries.addAll( groups.get( index ).getEntries() );
                     this.cache.remove( groups.get( index ) );
                 }
 
-                // Adding the player's UUID and current IP to the base group
+                // Adding the player's UUID and current IP to the base group, if it doesn't already exist
                 NAltEntry entry = new NAltEntry( uuid.toString(), ip, baseGroup.getGroupId() );
-                baseGroup.addEntry( entry );
-                ApiNetuno.getData().getAlts().saveNewEntry( entry );
-
-                // Saving all the edited entries to the database
-                for ( NAltEntry editedEntry : editedEntries ) {
-                    ApiNetuno.getData().getAlts().updateEntryGroupId( editedEntry, baseGroup.getGroupId() );
+                if ( baseGroup.containsEntry( entry ) ) {
+                    baseGroup.addEntry( entry );
+                    this.editedCache.add( new Duplex<>( entry, -1 ) );
                 }
 
                 // ? Unsure if the edits to the baseGroup will actually be saved to the instance of it in the cache
@@ -126,14 +179,20 @@ public class NetunoAltsCache implements NAltLoader {
                 }
             }
 
-            // If the groups list is empty, then the player's UUID nor IP is not in any groups
-            // So we create a new group for them and save it to the database
+            // If the groups list is empty, then the player's UUID nor IP is not in any cached groups
             if ( groups.size() == 0 ) {
-                NAltGroup newGroup = new NAltGroup( ApiNetuno.getData().getAlts().getNextGroupId() );
-                NAltEntry entry = new NAltEntry( uuid.toString(), ip, newGroup.getGroupId() );
-                newGroup.addEntry( entry );
-                cache.add( newGroup );
-                ApiNetuno.getData().getAlts().saveNewEntry( entry );
+                // Query the database for the player's previous alt group
+                final Optional<NAltGroup> queryGroup = ApiNetuno.getData().getAlts().queryGroupByUuid( uuid );
+
+                // If the group is in the database, load the group into the cache and add the player to it
+                if ( queryGroup.isPresent() ) {
+                    loadGroupFromDatabase( queryGroup.get(), uuid, ip );
+                }
+
+                // Otherwise we create a new group for the player, add the player to it, and load them into the cache
+                else {
+                    createNewGroup( uuid, ip );
+                }
             }
 
             // If groups.size() == 1, then the player OR their IP are already in a singular existing group
@@ -141,19 +200,10 @@ public class NetunoAltsCache implements NAltLoader {
             // If it doesn't, then we add it and save it to the database
             else if ( groups.size() == 1 ) {
                 final NAltGroup baseGroup = groups.get( 0 );
-
-                boolean found = false;
-                for ( NAltEntry entry : baseGroup.getEntries() ) {
-                    if ( entry.getUuid().equals( uuid.toString() ) && entry.getIp().equals( ip ) ) {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if ( found == false ) {
-                    NAltEntry entry = new NAltEntry( uuid.toString(), ip, baseGroup.getGroupId() );
+                final NAltEntry entry = new NAltEntry( uuid.toString(), ip, baseGroup.getGroupId() );
+                if ( baseGroup.containsEntry( entry ) == false ) {
                     baseGroup.addEntry( entry );
-                    ApiNetuno.getData().getAlts().saveNewEntry( entry );
+                    this.editedCache.add( new Duplex<>( entry, -1 ) );
                 }
             }
 
@@ -161,35 +211,20 @@ public class NetunoAltsCache implements NAltLoader {
             // So we combine all of these groups into a singular group and save all the edited entries to the database
             else {
                 final NAltGroup baseGroup = groups.get( 0 );
-                final List<NAltEntry> editedEntries = new ArrayList<>();
 
                 for ( int index = 1; index < groups.size(); index++ ) {
                     combineGroup( baseGroup, groups.get( index ) );
-                    editedEntries.addAll( groups.get( index ).getEntries() );
                     this.cache.remove( groups.get( index ) );
                 }
 
-                // Adding the player's UUID and current IP to the base group
+                // Adding the player's UUID and current IP to the base group, if it doesn't already exist
                 NAltEntry entry = new NAltEntry( uuid.toString(), ip, baseGroup.getGroupId() );
-                baseGroup.addEntry( entry );
-                ApiNetuno.getData().getAlts().saveNewEntry( entry );
-
-                // Saving all the edited entries to the database
-                for ( NAltEntry editedEntry : editedEntries ) {
-                    ApiNetuno.getData().getAlts().updateEntryGroupId( editedEntry, baseGroup.getGroupId() );
+                if ( baseGroup.containsEntry( entry ) ) {
+                    baseGroup.addEntry( entry );
+                    this.editedCache.add( new Duplex<>( entry, -1 ) );
                 }
 
                 // ? Unsure if the edits to the baseGroup will actually be saved to the instance of it in the cache
-            }
-        }
-    }
-
-    private void combineGroup( NAltGroup baseGroup, NAltGroup group ) {
-        for ( NAltEntry entry : group.getEntries() ) {
-            if ( baseGroup.getEntries().contains( entry ) == false ) {
-                NAltEntry entryCopy = entry.copy();
-                entryCopy.setGroupId( baseGroup.getGroupId() );
-                baseGroup.addEntry( entryCopy );
             }
         }
     }
@@ -241,6 +276,10 @@ public class NetunoAltsCache implements NAltLoader {
         return groups;
     }
 
+    //
+    // Methods that are not used in the interface
+    //
+
     /**
      * @param level The alt security level to set to
      */
@@ -262,5 +301,33 @@ public class NetunoAltsCache implements NAltLoader {
      */
     public AltSecurityLevel getSecurityLevel() {
         return securityLevel;
+    }
+
+    private void combineGroup( NAltGroup baseGroup, NAltGroup group ) {
+        for ( NAltEntry entry : group.getEntries() ) {
+            if ( baseGroup.getEntries().contains( entry ) == false ) {
+                NAltEntry entryCopy = entry.copy();
+                entryCopy.setGroupId( baseGroup.getGroupId() );
+                baseGroup.addEntry( entryCopy );
+                this.editedCache.add( new Duplex<>( entryCopy, entry.getGroupId() ) );
+            }
+        }
+    }
+
+    private void createNewGroup( UUID uuid, String ip ) {
+        NAltGroup newGroup = new NAltGroup( ApiNetuno.getData().getAlts().getNextGroupId() );
+        NAltEntry entry = new NAltEntry( uuid, ip, newGroup.getGroupId() );
+        newGroup.addEntry( entry );
+        this.editedCache.add( new Duplex<>( entry, -1 ) );
+        this.cache.add( newGroup );
+    }
+
+    private void loadGroupFromDatabase( NAltGroup group, UUID uuid, String ip ) {
+        NAltEntry entryAttempt = new NAltEntry( uuid, ip, group.getGroupId() );
+        if ( group.containsEntry( entryAttempt ) == false ) {
+            group.addEntry( entryAttempt );
+            this.editedCache.add( new Duplex<>( entryAttempt, -1 ) );
+        }
+        this.cache.add( group );
     }
 }
