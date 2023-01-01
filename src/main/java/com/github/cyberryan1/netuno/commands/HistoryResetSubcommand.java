@@ -8,7 +8,6 @@ import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
-import com.github.cyberryan1.netunoapi.events.NetunoEventDispatcher;
 import com.github.cyberryan1.netunoapi.events.history.NetunoHistoryResetEvent;
 import com.github.cyberryan1.netunoapi.models.players.NPlayer;
 import org.bukkit.entity.Player;
@@ -48,7 +47,7 @@ public class HistoryResetSubcommand extends CyberSubCommand {
         CyberMsgUtils.sendMsg( player, "&sSuccessfully deleted &p" + target.getPunishments().size() + " &s"
                 + plural + " from &p" + target.getPlayer().getName() + "&s's history" );
 
-        NetunoEventDispatcher.dispatch( new NetunoHistoryResetEvent( target, player ) );
+        ApiNetuno.getInstance().getEventDispatcher().dispatch( new NetunoHistoryResetEvent( target, player ) );
         return true;
     }
 }

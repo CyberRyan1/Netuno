@@ -8,7 +8,6 @@ import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
-import com.github.cyberryan1.netunoapi.events.NetunoEventDispatcher;
 import com.github.cyberryan1.netunoapi.events.report.NetunoReportEvent;
 import com.github.cyberryan1.netunoapi.models.reports.NReport;
 import com.github.cyberryan1.netunoapi.utils.TimeUtils;
@@ -95,7 +94,7 @@ public class ReportGUI implements Listener {
                 reports.add( report );
             }
 
-            NetunoEventDispatcher.dispatch( new NetunoReportEvent( reports ) );
+            ApiNetuno.getInstance().getEventDispatcher().dispatch( new NetunoReportEvent( reports ) );
         } ) );
 
         int guiIndex = 19;
