@@ -180,6 +180,6 @@ public class Utils {
 
         final NDuration length = TimeUtils.durationFromUnformatted( inputLength );
         final NDuration maxLength = TimeUtils.durationFromUnformatted( Settings.BAN_MAX_TIME_LENGTH.string() );
-        return length.asTimestamp() > maxLength.asTimestamp();
+        return length.asTimestamp() <= maxLength.asTimestamp();
     }
 }
