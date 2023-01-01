@@ -1,6 +1,5 @@
 package com.github.cyberryan1.netuno.apimplement;
 
-import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.netuno.apimplement.database.ConnectionManager;
 import com.github.cyberryan1.netuno.apimplement.database.DatabaseManager;
 import com.github.cyberryan1.netuno.apimplement.models.alts.NetunoAltsCache;
@@ -10,11 +9,11 @@ import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.NetunoApi;
 import com.github.cyberryan1.netunoapi.database.DatabaseConnection;
 import com.github.cyberryan1.netunoapi.database.NetunoDatabases;
+import com.github.cyberryan1.netunoapi.events.NetunoEventDispatcher;
 import com.github.cyberryan1.netunoapi.models.alts.NAltLoader;
 import com.github.cyberryan1.netunoapi.models.players.NPlayerLoader;
 import com.github.cyberryan1.netunoapi.models.punishments.NPrePunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
-import org.bukkit.plugin.ServicePriority;
 
 public class ApiNetuno implements NetunoApi {
 
@@ -57,9 +56,6 @@ public class ApiNetuno implements NetunoApi {
 
         // Initialize the player cache
         ( ( NetunoPlayerCache ) instance.getPlayerLoader() ).initialize();
-
-        // Register the api to the services manager
-        CyberCore.getPlugin().getServer().getServicesManager().register( NetunoApi.class, instance, CyberCore.getPlugin(), ServicePriority.Normal );
     }
 
     public static void deleteInstance() {
@@ -73,8 +69,6 @@ public class ApiNetuno implements NetunoApi {
         // Close the database connection
         instance.getNetunoConnection().closeConnection();
 
-        // Unregister the api from the services manager
-        CyberCore.getPlugin().getServer().getServicesManager().unregister( NetunoApi.class, instance );
         instance = null;
     }
 
@@ -94,6 +88,7 @@ public class ApiNetuno implements NetunoApi {
     private DatabaseManager databases = new DatabaseManager();
     private NetunoAltsCache altsCache = new NetunoAltsCache();
     private NetunoPlayerCache playerCache = new NetunoPlayerCache();
+    private NetunoEventDispatcher eventDispatcher = new NetunoEventDispatcher();
 
     //
     // Interface Methods
@@ -123,6 +118,8 @@ public class ApiNetuno implements NetunoApi {
     public NPrePunishment getPrePunishment( NPunishment nPunishment ) {
         return new NetunoPrePunishment( nPunishment );
     }
+
+    public NetunoEventDispatcher getEventDispatcher() { return eventDispatcher; }
 
     //
     // Class Methods

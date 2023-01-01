@@ -16,6 +16,8 @@ import com.github.cyberryan1.netuno.skriptelements.conditions.RegisterConditions
 import com.github.cyberryan1.netuno.skriptelements.expressions.RegisterExpressions;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
+import com.github.cyberryan1.netunoapi.NetunoApi;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -60,6 +62,7 @@ public final class Netuno extends JavaPlugin {
         CyberColorUtils.setSecondaryColor( Settings.SECONDARY_COLOR.string() );
 
         ApiNetuno.setupInstance();
+        this.getServer().getServicesManager().register( NetunoApi.class, ApiNetuno.getInstance(), this, ServicePriority.Highest );
         chatslowManager = new ChatslowManager();
 
         registerSkript();
@@ -69,6 +72,7 @@ public final class Netuno extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        this.getServer().getServicesManager().unregister( NetunoApi.class, ApiNetuno.getInstance() );
         ApiNetuno.deleteInstance();
     }
 
