@@ -11,6 +11,7 @@ import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.guis.history.HistoryListGUI;
 import com.github.cyberryan1.netuno.guis.utils.SortBy;
+import com.github.cyberryan1.netunoapi.models.alts.NAltGroup;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
 import com.github.cyberryan1.netunoapi.utils.PunishmentUtils;
@@ -26,6 +27,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class AltsListGUI {
@@ -47,7 +49,14 @@ public class AltsListGUI {
                 .map( nAltGroup -> nAltGroup.getUuids().stream()
                         .map( uuid -> NetunoPlayerCache.getOrLoad( uuid.toString() ) )
                         .collect( Collectors.toList() )
-                ).orElseGet( ArrayList::new );
+                ).orElseGet( () -> {
+                    final Optional<NAltGroup> optionalGroup = ApiNetuno.getData().getAlts().queryGroupByUuid( target.getUniqueId() );
+
+                    if ( optionalGroup.isPresent() == false ) { return new ArrayList<>(); }
+                    return optionalGroup.get().getUuids().stream()
+                            .map( uuid -> NetunoPlayerCache.getOrLoad( uuid.toString() ) )
+                            .collect( Collectors.toList() );
+                } );
         this.punishedAlts = this.alts.stream()
                 .filter( a -> PunishmentUtils.anyActive( a.getPunishments() ) )
                 .collect( Collectors.toList() );
