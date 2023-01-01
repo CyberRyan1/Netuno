@@ -134,8 +134,8 @@ public class Utils {
         str = str.replace( "[STAFF]", staffName ).replace( "[TARGET]", targetName );
 
         if ( pun.getPunishmentType().hasNoLength() == false ) {
-            str = str.replace( "[LENGTH]", pun.getTimeLength().asFormatted() );
-            str = str.replace( "[REMAIN]", pun.getLengthRemaining().asFormatted() );
+            str = str.replace( "[LENGTH]", pun.getTimeLength().asFullLength( 3 ) );
+            str = str.replace( "[REMAIN]", pun.getLengthRemaining().asFullLength( 3 ) );
         }
         if ( pun.getPunishmentType().isIpPunishment() ) {
             final NetunoPlayer nPlayer = NetunoPlayerCache.getOrLoad( pun.getPlayerUuid() );
