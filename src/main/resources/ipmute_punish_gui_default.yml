@@ -46,6 +46,30 @@ ipmute-gui:
   # Set to "" for no permission needed
   permission: ""
 
+  # Settings for the IP mute GUI
+  settings:
+
+    # When you use HIGHEST_MUTED_ALT as a starting time for a GUI punishment, the length of the IP mute can be one of two things:
+    #    a) the length of the longest mute of the player's alts
+    #    b) the length of the longest remaining mute of the player's alts
+    #
+    # Example for option a):
+    #    Player A has 2 alts, Player B, who is muted for 1 day, and Player C, who is muted for 2 days.
+    #    All accounts will be IP muted for 2 days, because the longest mute is from Player C, who is muted for 2 days.
+    # Example for option b):
+    #    Player A has 2 alts, Player B, who is muted for 1 day, and Player C, who is muted for 2 days.
+    #    Player B has 12 hours remaining on their mute, and Player C has 6 hours remaining on their mute.
+    #    All accounts will be IP muted for 12 hours, because the longest remaining mute is from Player B, who has 12 hours remaining on their mute.
+    #
+    # To use option a, set this to LENGTH_STANDARD.
+    # To use option b, set this to LENGTH_REMAINING.
+    highest-muted-alt-length: LENGTH_STANDARD
+
+    # Similar to the highest-muted-alt-length setting above, but with bans instead of mutes
+    # To use option a, set this to LENGTH_STANDARD.
+    # To use option b, set this to LENGTH_REMAINING.
+    highest-banned-alt-length: LENGTH_STANDARD
+
   # The index of the punishment item
   10:
     # Name of the item

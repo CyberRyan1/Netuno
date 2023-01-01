@@ -148,6 +148,8 @@ public class SinglePunishButton {
             prePun.getPunishment().setPunishmentType( PunishmentType.fromString( this.guiType ) );
 
             if ( prePun.getPunishment().getPunishmentType() == PunishmentType.IPMUTE && this.startingTime.equalsIgnoreCase( "HIGHEST_MUTED_ALT" ) ) {
+                final boolean lengthIsRemaining = PunishSettings.IPMUTE_SETTING_HIGHEST_MUTE_LENGTH.string().equalsIgnoreCase( "LENGTH_REMAINING" );
+
                 NPunishment highest = null;
                 final NAltGroup altGroup = ApiNetuno.getInstance().getAltLoader().searchByUuid( prePun.getPunishment().getPlayerUuid() )
                         .orElseThrow( () -> {
@@ -157,11 +159,13 @@ public class SinglePunishButton {
                 for ( OfflinePlayer alt : altGroup.getUuids().stream().map( Bukkit::getOfflinePlayer ).collect( Collectors.toList() ) ) {
                     NPlayer nAlt = NetunoPlayerCache.getOrLoad( alt );
                     for ( NPunishment altPun : nAlt.getPunishments() ) {
-                        if ( altPun.isActive() && altPun.getPunishmentType() == PunishmentType.MUTE ) {
-                            if ( highest == null || altPun.getLength() > highest.getLength() ) {
-                                highest = altPun;
-                            }
+                        if ( altPun.isActive() == false || altPun.getPunishmentType() != PunishmentType.MUTE ) { continue; }
+                        if ( highest == null ) { highest = altPun; continue; }
+
+                        if ( lengthIsRemaining == false ) {
+                            if ( altPun.getLength() > highest.getLength() ) { highest = altPun; }
                         }
+                        else if ( altPun.getSecondsRemaining() > highest.getSecondsRemaining() ) { highest = altPun; }
                     }
                 }
 
@@ -170,10 +174,12 @@ public class SinglePunishButton {
                     return;
                 }
 
-                prePun.getPunishment().setLength( highest.getLength() );
+                prePun.getPunishment().setLength( highest.getSecondsRemaining() );
             }
 
             else if ( prePun.getPunishment().getPunishmentType() == PunishmentType.IPBAN && this.startingTime.equalsIgnoreCase( "HIGHEST_BANNED_ALT" )  ) {
+                final boolean lengthIsRemaining = PunishSettings.IPBAN_SETTING_HIGHEST_BAN_LENGTH.string().equalsIgnoreCase( "LENGTH_REMAINING" );
+
                 NPunishment highest = null;
                 final NAltGroup altGroup = ApiNetuno.getInstance().getAltLoader().searchByUuid( prePun.getPunishment().getPlayerUuid() )
                         .orElseThrow( () -> {
@@ -183,11 +189,13 @@ public class SinglePunishButton {
                 for ( OfflinePlayer alt : altGroup.getUuids().stream().map( Bukkit::getOfflinePlayer ).collect( Collectors.toList() ) ) {
                     NPlayer nAlt = NetunoPlayerCache.getOrLoad( alt );
                     for ( NPunishment altPun : nAlt.getPunishments() ) {
-                        if ( altPun.isActive() && altPun.getPunishmentType() == PunishmentType.BAN ) {
-                            if ( highest == null || altPun.getLength() > highest.getLength() ) {
-                                highest = altPun;
-                            }
+                        if ( altPun.isActive() == false || altPun.getPunishmentType() != PunishmentType.BAN ) { continue; }
+                        if ( highest == null ) { highest = altPun; continue; }
+
+                        if ( lengthIsRemaining == false ) {
+                            if ( altPun.getLength() > highest.getLength() ) { highest = altPun; }
                         }
+                        else if ( altPun.getSecondsRemaining() > highest.getSecondsRemaining() ) { highest = altPun; }
                     }
                 }
 
@@ -196,7 +204,7 @@ public class SinglePunishButton {
                     return;
                 }
 
-                prePun.getPunishment().setLength( highest.getLength() );
+                prePun.getPunishment().setLength( highest.getSecondsRemaining() );
             }
 
             else {

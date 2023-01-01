@@ -53,6 +53,8 @@ public enum PunishSettings {
     IPMUTE_INVENTORY_NAME( "ipmute-gui.inventory_name", "string", "ipmute" ),
     IPMUTE_PERMISSION( "ipmute-gui.permission", "string", "ipmute" ),
     IPMUTE_BUTTONS( "ipmute-gui", "multi", "ipmute" ),
+    IPMUTE_SETTING_HIGHEST_MUTE_LENGTH( "ipmute-gui.settings.highest-muted-alt-length", "string", "ipmute" ),
+    IPMUTE_SETTING_HIGHEST_BAN_LENGTH( "ipmute-gui.settings.highest-banned-alt-length", "string", "ipmute" ),
 
     //
     // IP Ban Inventory
@@ -60,6 +62,8 @@ public enum PunishSettings {
     IPBAN_INVENTORY_NAME( "ipban-gui.inventory_name", "string", "ipban" ),
     IPBAN_PERMISSION( "ipban-gui.permission", "string", "ipban" ),
     IPBAN_BUTTONS( "ipban-gui", "multi", "ipban" ),
+    IPBAN_SETTING_HIGHEST_MUTE_LENGTH( "ipban-gui.settings.highest-muted-alt-length", "string", "ipban" ),
+    IPBAN_SETTING_HIGHEST_BAN_LENGTH( "ipban-gui.settings.highest-banned-alt-length", "string", "ipban" ),
 
     ;
 
