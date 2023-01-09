@@ -19,7 +19,7 @@ import java.util.UUID;
 
 public class NetunoAltsCache implements NAltLoader {
 
-    private final List<NAltGroup> cache = new ArrayList<>();
+    public final List<NAltGroup> cache = new ArrayList<>();
     //                        Alt Entry
     //                                   Previous Group ID (-1 if none)
     private final List<Duplex<NAltEntry, Integer>> editedCache = new ArrayList<>();
@@ -63,6 +63,7 @@ public class NetunoAltsCache implements NAltLoader {
         int saved = 0;
         int updated = 0;
         for ( Duplex<NAltEntry, Integer> item : editedCache ) {
+            CyberLogUtils.logWarn( "item: " + item.getFirst().getUuid() + " | " + item.getFirst().getIp() + " !!! " + item.getSecond() );
             if ( item.getSecond() < 0 ) {
                 ApiNetuno.getData().getAlts().saveNewEntry( item.getFirst() );
                 saved++;
