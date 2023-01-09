@@ -19,7 +19,7 @@ import java.util.UUID;
 
 public class NetunoAltsCache implements NAltLoader {
 
-    public final List<NAltGroup> cache = new ArrayList<>();
+    public static final List<NAltGroup> cache = new ArrayList<>();
     //                        Alt Entry
     //                                   Previous Group ID (-1 if none)
     private final List<Duplex<NAltEntry, Integer>> editedCache = new ArrayList<>();
