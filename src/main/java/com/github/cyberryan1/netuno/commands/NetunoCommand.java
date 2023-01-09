@@ -2,11 +2,12 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
-import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.cybercore.spigot.utils.*;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.apimplement.models.alts.NetunoAltsCache;
+import com.github.cyberryan1.netuno.debug.DebugInfo;
+import com.github.cyberryan1.netuno.debug.NetunoDebugger;
 import com.github.cyberryan1.netuno.guis.punish.utils.PunishSettings;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
@@ -25,13 +26,12 @@ public class NetunoCommand extends CyberCommand {
                 "netuno",
                 Settings.STAFF_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "netuno [reload/help] [page]"
+                "&8/&snetuno &p[reload/help] [page]"
         );
         register( true );
 
         demandPermission( true );
         setMinArgLength( 0 );
-        setArgType( 1, ArgType.INTEGER );
     }
 
     @Override
@@ -83,6 +83,27 @@ public class NetunoCommand extends CyberCommand {
 
                 CyberMsgUtils.sendMsg( command.getSender(), "&7Successfully reloaded &6Netuno" );
                 CyberLogUtils.logInfo( "Successfully reloaded Netuno and its files" );
+            }
+
+            else {
+                sendPermissionMsg( command.getSender() );
+            }
+        }
+
+        else if ( command.getArg( 0 ).equalsIgnoreCase( "debug" ) ) {
+            if ( CyberVaultUtils.hasPerms( command.getSender(), Settings.RELOAD_PERMISSION.string() ) ) {
+                if ( command.getArgs().length <= 1 || ( List.of( "all", "players", "alts", "reports" ).contains( command.getArg( 1 ) ) == false ) ) {
+                    CyberMsgUtils.sendMsg( command.getSender(), "&8/&snetuno &pdebug (all/players/alts/reports)" );
+                    return true;
+                }
+
+                final DebugInfo debugInfo = DebugInfo.valueOf( command.getArg( 1 ).toUpperCase() );
+                CyberMsgUtils.sendMsg( command.getSender(), "&7Sending debug messages with level " + debugInfo.name().toLowerCase() + "..." );
+
+                NetunoDebugger debugger = new NetunoDebugger( debugInfo );
+                debugger.start();
+
+                CyberMsgUtils.sendMsg( command.getSender(), "&7Finished sending debug messages" );
             }
 
             else {
