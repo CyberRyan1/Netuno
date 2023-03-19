@@ -4,6 +4,7 @@ import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
+import com.github.cyberryan1.netuno.apimplement.models.alts.NetunoAltsCache;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.utils.Utils;
@@ -60,7 +61,8 @@ public class NetunoPrePunishment implements NPrePunishment {
         // Executing the punishment in the database
         ApiNetuno.getData().getNetunoPuns().addPunishment( pun );
 
-        // Iterating through all the player's alts and adding reference punishments to them
+        // Iterating through all the player's alts and adding reference punishments to them.
+        //      Also confirming the player's alt group is loaded in the cache.
         //      Only if the punishment is an IP punishment.
         if ( pun.getPunishmentType().isIpPunishment() ) {
             final int recentlyAddedId = ApiNetuno.getData().getNetunoPuns().getRecentlyInsertedId();
@@ -70,6 +72,9 @@ public class NetunoPrePunishment implements NPrePunishment {
                 return;
             }
 
+            // Confirming the player's alt group is loaded in the cache
+            ( ( NetunoAltsCache ) ApiNetuno.getInstance().getAltLoader() ).loadPlayer( pun.getPlayer() );
+            // Getting the player's alt group from the cache
             final NAltGroup altGroup = ApiNetuno.getInstance().getAltLoader().searchByUuid( pun.getPlayerUuid() )
                     .orElseThrow( () -> {
                         throw new NullPointerException( "An error occurred while trying to get the player's alt group, "
@@ -122,10 +127,12 @@ public class NetunoPrePunishment implements NPrePunishment {
 
             else {
                 final NAltGroup altGroup = ApiNetuno.getInstance().getAltLoader().searchByUuid( pun.getPlayerUuid() )
-                        .orElseThrow( () -> {
-                            throw new NullPointerException( "An error occurred while trying to get the player's alt group, "
-                                    + "so the reference punishment could not be added to the player's alts." );
-                        } );
+                        .orElse( ApiNetuno.getData().getAlts().queryGroupByUuid( pun.getPlayer().getUniqueId() )
+                                .orElseThrow( () -> {
+                                    throw new NullPointerException( "An error occurred while trying to get the player's alt group, "
+                                            + "so the reference punishment could not be added to the player's alts." );
+                                } )
+                        );
                 for ( UUID altUuid : altGroup.getUuids() ) {
                     final OfflinePlayer alt = Bukkit.getOfflinePlayer( altUuid );
                     final NetunoPlayer nAlt = NetunoPlayerCache.forceLoad( alt );
@@ -225,12 +232,24 @@ public class NetunoPrePunishment implements NPrePunishment {
             case UNIPBAN -> Settings.UNIPBAN_STAFF_BROADCAST.coloredStringlist();
         };
 
+        boolean publicBroadcastIsEmpty = false;
+        if ( publicBroadcastLines.length == 0 ) { publicBroadcastIsEmpty = true; }
+        else {
+            for ( String line : publicBroadcastLines ) {
+                if ( line.replace( "\n", "" ).isBlank() == false ) {
+                    publicBroadcastIsEmpty = false;
+                    break;
+                }
+                publicBroadcastIsEmpty = true;
+            }
+        }
+
         // Send the public punishment announcement to all online, non-staff players who are not the target.
         //      No public broadcast will be sent if the punishment is silent or if the publicBroadcastLines
         //      is null or empty. Will send the publicBroadcastLines to staff if the staffBroadcastLines
         //      variable is either null or has no contents.
         boolean staffBroadcastNoExist = ( staffBroadcastLines == null ) || ( staffBroadcastLines.length == 0 );
-        if ( silent == false && publicBroadcastLines != null && publicBroadcastLines.length > 0 ) {
+        if ( silent == false && publicBroadcastLines != null && publicBroadcastIsEmpty == false ) {
             final String publicBroadcast = Utils.replaceAllVariables( Utils.getCombinedString( publicBroadcastLines ), pun );
 
             for ( Player player : Bukkit.getOnlinePlayers() ) {
