@@ -9,7 +9,6 @@ import com.github.cyberryan1.netuno.apimplement.models.alts.NetunoAltsCache;
 import com.github.cyberryan1.netuno.debug.DebugInfo;
 import com.github.cyberryan1.netuno.debug.NetunoDebugger;
 import com.github.cyberryan1.netuno.guis.punish.utils.PunishSettings;
-import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.command.CommandSender;
@@ -124,6 +123,6 @@ public class NetunoCommand extends CyberCommand {
             toSend += Netuno.registeredCommands.get( index ).getUsage() + "\n";
         }
         toSend += "\n";
-        Utils.sendAnyMsg( sender, toSend );
+        CyberMsgUtils.sendMsg( sender, toSend );
     }
 }
