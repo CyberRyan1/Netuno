@@ -10,6 +10,7 @@ import com.github.cyberryan1.netunoapi.models.alts.NAltEntry;
 import com.github.cyberryan1.netunoapi.models.alts.NAltGroup;
 import com.github.cyberryan1.netunoapi.models.alts.NAltLoader;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -280,6 +281,15 @@ public class NetunoAltsCache implements NAltLoader {
     //
     // Methods that are not used in the interface
     //
+
+    public void loadPlayer( OfflinePlayer player ) {
+        if ( player.isOnline() ) {
+            loadPlayer( player.getUniqueId(), player.getPlayer().getAddress().getAddress().getHostAddress() );
+        }
+        else if ( searchByUuid( player.getUniqueId() ).isPresent() == false ) {
+            ApiNetuno.getData().getAlts().queryGroupByUuid( player.getUniqueId() ).ifPresent( cache::add );
+        }
+    }
 
     /**
      * @param level The alt security level to set to
