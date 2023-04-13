@@ -84,7 +84,7 @@ public class JoinListener implements Listener {
             for ( UUID altUuid : altGroup.getUuids() ) {
                 final NetunoPlayer altPlayer = NetunoPlayerCache.getOrLoad( altUuid.toString() );
                 activeAltPunishments.addAll( altPlayer.getPunishments().stream()
-                        .filter( pun -> pun.isActive() && pun.getReferencePunId() == -1 )
+                        .filter( pun -> pun.isActive() && pun.getReferencePunId() < 0 )
                         .collect( Collectors.toList() ) );
             }
         }
