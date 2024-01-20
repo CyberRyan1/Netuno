@@ -131,7 +131,7 @@
         <dependency>
             <groupId>com.github.cyberryan1</groupId>
             <artifactId>NetunoAPI</artifactId>
-            <version>0.1.2.2.DEV.6</version>
+            <version>0.1.2.2.DEV.10</version>
         </dependency>
     </dependencies>
 </project>

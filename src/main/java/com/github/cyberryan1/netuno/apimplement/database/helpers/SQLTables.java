@@ -23,6 +23,10 @@ public enum SQLTables {
             "group_id INTEGER DEFAULT -1 NOT NULL );"
     ),
 
+    IP_TABLE( "CREATE TABLE IF NOT EXISTS ip (" +
+            "ip_uuids_list VARCHAR(20) PRIMARY KEY," +
+            "uuid_list LONGTEXT );" ),
+
     REPORTS_TABLE( "CREATE TABLE IF NOT EXISTS reports (" +
             "id INTEGER PRIMARY KEY," +
             "player VARCHAR(42) NOT NULL," +
