@@ -2,7 +2,7 @@ package com.github.cyberryan1.netuno.apimplement;
 
 import com.github.cyberryan1.netuno.apimplement.database.ConnectionManager;
 import com.github.cyberryan1.netuno.apimplement.database.DatabaseManager;
-import com.github.cyberryan1.netuno.apimplement.models.alts.NetunoAltsCache;
+import com.github.cyberryan1.netuno.apimplement.models.alts.redo.NNetunoAltsCache;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.apimplement.models.punishments.NetunoPrePunishment;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
@@ -10,7 +10,7 @@ import com.github.cyberryan1.netunoapi.NetunoApi;
 import com.github.cyberryan1.netunoapi.database.DatabaseConnection;
 import com.github.cyberryan1.netunoapi.database.NetunoDatabases;
 import com.github.cyberryan1.netunoapi.events.NetunoEventDispatcher;
-import com.github.cyberryan1.netunoapi.models.alts.NAltLoader;
+import com.github.cyberryan1.netunoapi.models.alts.TempAltCache;
 import com.github.cyberryan1.netunoapi.models.players.NPlayerLoader;
 import com.github.cyberryan1.netunoapi.models.punishments.NPrePunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
@@ -43,13 +43,15 @@ public class ApiNetuno implements NetunoApi {
         instance.setConnection( conn );
 
         // Initialize the alts database
-        getData().getNetunoAlts().initialize();
+//        getData().getNetunoAlts().initialize();
+        getData().getTempAltsDatabase().initialize();
 
         // Initialize the alts security level
-        ( ( NetunoAltsCache ) instance.getAltLoader() ).reloadSecurityLevel();
+        ( ( NNetunoAltsCache ) instance.getAltCache() ).reloadSecurityLevel();
 
         // Initialize the alts cache
-        instance.getAltLoader().initialize();
+//        instance.getAltLoader().initialize();
+        instance.getAltCache().initialize();
 
         // Initialize the reports cache
         getData().getNetunoReports().initializeCache();
@@ -60,8 +62,10 @@ public class ApiNetuno implements NetunoApi {
 
     public static void deleteInstance() {
         // Save any information needed for the alts database
-        instance.getAltLoader().save();
-        getData().getNetunoAlts().save();
+//        instance.getAltLoader().save();
+
+//        getData().getNetunoAlts().save();
+        getData().getTempAltsDatabase().shutdown();
 
         // Save the reports cache
         getData().getNetunoReports().saveAllReportEdits();
@@ -86,7 +90,7 @@ public class ApiNetuno implements NetunoApi {
 
     private ConnectionManager connection = new ConnectionManager();
     private DatabaseManager databases = new DatabaseManager();
-    private NetunoAltsCache altsCache = new NetunoAltsCache();
+    private NNetunoAltsCache altsCache = new NNetunoAltsCache();
     private NetunoPlayerCache playerCache = new NetunoPlayerCache();
     private NetunoEventDispatcher eventDispatcher = new NetunoEventDispatcher();
 
@@ -104,8 +108,12 @@ public class ApiNetuno implements NetunoApi {
         return databases;
     }
 
+//    @Override
+//    public NAltLoader getAltLoader() {
+//        return altsCache;
+//    }
     @Override
-    public NAltLoader getAltLoader() {
+    public TempAltCache getAltCache() {
         return altsCache;
     }
 

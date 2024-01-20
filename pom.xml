@@ -124,9 +124,14 @@
             <version>8.0.30</version>
         </dependency>
         <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>3.1.8</version>
+        </dependency>
+        <dependency>
             <groupId>com.github.cyberryan1</groupId>
             <artifactId>NetunoAPI</artifactId>
-            <version>0.1.2.11</version>
+            <version>0.1.2.2.DEV.6</version>
         </dependency>
     </dependencies>
 </project>
