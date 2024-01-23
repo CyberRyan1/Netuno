@@ -6,7 +6,7 @@
 
     <groupId>com.github.cyberryan1</groupId>
     <artifactId>Netuno</artifactId>
-    <version>1.5.0.7-DEV</version>
+    <version>1.5.0.7-DEV-0.1</version>
     <!--
     <artifactId>1.8-Netuno</artifactId>
     <version>1.4.1-BETA</version>
@@ -126,7 +126,7 @@
         <dependency>
             <groupId>com.github.cyberryan1</groupId>
             <artifactId>NetunoAPI</artifactId>
-            <version>0.1.2.11</version>
+            <version>0.1.2.2.DEV.21</version>
         </dependency>
     </dependencies>
 </project>
