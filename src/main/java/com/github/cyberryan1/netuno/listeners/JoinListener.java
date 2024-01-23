@@ -17,6 +17,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -94,6 +95,7 @@ public class JoinListener implements Listener {
             final NPunishment highestIpban = PunishmentUtils.getHighestActive( activeAltIpbans, PunishmentType.IPBAN );
 
             final NPunishment newPun = highestIpban.copy();
+            newPun.setPlayerUuid( event.getUniqueId().toString() );
             newPun.setId( -1 );
             newPun.setReferencePunId( highestIpban.getId() );
             ApiNetuno.getData().getPun().addPunishment( newPun );
@@ -113,6 +115,7 @@ public class JoinListener implements Listener {
             if ( activeAltIpmutes.size() > 0 ) {
                 final NPunishment highestIpmute = PunishmentUtils.getHighestActive( activeAltIpmutes, PunishmentType.IPMUTE );
                 final NPunishment newPun = highestIpmute.copy();
+                newPun.setPlayerUuid( event.getUniqueId().toString() );
                 newPun.setId( -1 );
                 newPun.setReferencePunId( highestIpmute.getId() );
                 ApiNetuno.getData().getPun().addPunishment( newPun );
@@ -180,7 +183,7 @@ public class JoinListener implements Listener {
         //
 
         // Checking if the player has any punished alts and alerting staff if they do
-        if ( activeAltPunishments.size() >= 1 && IPINFO_NOTIFS_ENABLED ) {
+        if ( activeAltPunishments.isEmpty() == false && IPINFO_NOTIFS_ENABLED ) {
             Bukkit.getScheduler().runTaskLaterAsynchronously( CyberCore.getPlugin(), () -> {
                 final Player player = Bukkit.getPlayer( event.getUniqueId() );
                 if ( player == null ) { return; }
@@ -203,12 +206,56 @@ public class JoinListener implements Listener {
                             message.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, hoverText.create() ) );
                         }
 
+                        // Figuring out if a sound will be played for the alt alert or not
+                        boolean sendSound = false;
+                        if ( Settings.IPINFO_NOTIFS_SOUND_ENABLED.bool() ) {
+                            String[] triggers = Settings.IPINFO_NOTIFS_SOUND_TRIGGERS.string().split( "," );
+                            for ( String trigger : triggers ) {
+                                PunishmentType type = switch ( trigger.toLowerCase() ) {
+                                    case "mute" -> PunishmentType.MUTE;
+                                    case "ban" -> PunishmentType.BAN;
+                                    case "ipmute" -> PunishmentType.IPMUTE;
+                                    case "ipban" -> PunishmentType.IPBAN;
+                                    default -> {
+                                        CyberLogUtils.logWarn( "Invalid trigger \"" + trigger + "\" given in config path" + Settings.IPINFO_NOTIFS_SOUND_TRIGGERS.getPath() );
+                                        yield null;
+                                    }
+                                };
+                                if ( type == null ) { continue; }
+
+                                if ( activeAltPunishments.stream()
+                                        .anyMatch( pun -> pun.getPunishmentType() == type ) ) {
+                                    sendSound = true;
+                                }
+                            }
+                        }
+
+                        final boolean finalSendSound = sendSound;
                         Bukkit.getScheduler().runTaskLater( CyberCore.getPlugin(), () -> {
+                            final List<Player> sendingSounds = new ArrayList<>();
                             for ( Player p : Bukkit.getOnlinePlayers() ) {
                                 if ( CyberVaultUtils.hasPerms( p, IPINFO_PERM ) ) {
                                     p.spigot().sendMessage( message );
+                                    if ( finalSendSound ) {
+                                        p.playSound( p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BIT, 1, 1 );
+                                        sendingSounds.add( p );
+                                    }
                                 }
                             }
+
+                            if ( finalSendSound == false ) { return; }
+                            Bukkit.getScheduler().runTaskLater( CyberCore.getPlugin(), () -> {
+                                for ( Player p : sendingSounds ) {
+                                    if ( p.isOnline() == false ) { continue; }
+                                    p.playSound( p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BIT, 1, .1f );
+                                }
+                            }, 4 );
+                            Bukkit.getScheduler().runTaskLater( CyberCore.getPlugin(), () -> {
+                                for ( Player p : sendingSounds ) {
+                                    if ( p.isOnline() == false ) { continue; }
+                                    p.playSound( p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BIT, 1, 2 );
+                                }
+                            }, 8 );
                         }, 5L );
                     } else {
                         CyberLogUtils.logWarn( "\"ipinfo.notifs\" in the config is enabled, yet you have no message set in \"ipinfo.notif-msg\"!" );
