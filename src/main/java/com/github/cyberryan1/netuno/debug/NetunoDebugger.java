@@ -3,10 +3,8 @@ package com.github.cyberryan1.netuno.debug;
 import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
-import com.github.cyberryan1.netuno.apimplement.models.alts.NetunoAltsCache;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
-import com.github.cyberryan1.netunoapi.models.alts.NAltGroup;
 import com.github.cyberryan1.netunoapi.models.reports.NReport;
 import com.github.cyberryan1.netunoapi.models.time.NDate;
 
@@ -15,7 +13,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class NetunoDebugger {
@@ -81,16 +78,14 @@ public class NetunoDebugger {
         msgs.add( "----------------------------------------\n" );
         msgs.add( "DEBUG TYPE :: Cached Players -\n" );
         msgs.add( "\n" );
-        msgs.add( String.format( stringFormat, "UUID", "Alt Group", "Punishment IDs" ) );
+        msgs.add( String.format( stringFormat, "UUID", "Punishment IDs" ) );
 
         for ( NetunoPlayer np : NetunoPlayerCache.getCache() ) {
             final String uuid = np.getPlayer().getUniqueId().toString();
-            final NAltGroup altGroup = np.getAltGroup();
-            final String altGroupId = ( altGroup == null ) ? "null" : altGroup.getGroupId() + "";
             final String punishmentIds = np.getPunishments().stream()
                     .map( pun -> pun.getId() + "" ).collect( Collectors.joining( ", " ) );
 
-            msgs.add( String.format( stringFormat, uuid, altGroupId, punishmentIds ) );
+            msgs.add( String.format( stringFormat, uuid, punishmentIds ) );
         }
 
         msgs.add( "\n" );
@@ -111,13 +106,17 @@ public class NetunoDebugger {
         msgs.add( "\n" );
         msgs.add( String.format( stringFormat, "Alt Group", "UUIDs", "IPs" ) );
 
-        for ( NAltGroup group : NetunoAltsCache.cache ) {
-            final String altGroupId = group.getGroupId() + "";
-            final String uuids = group.getUuids().stream().map( UUID::toString ).collect( Collectors.joining( ", " ) );
-            final String ips = String.join( ", ", group.getIps() );
-
-            msgs.add( String.format( stringFormat, altGroupId, uuids, ips ) );
-        }
+        msgs.add( "ERROR - OUT OF DATE" );
+        msgs.add( "ERROR - OUT OF DATE" );
+        msgs.add( "ERROR - OUT OF DATE" );
+        msgs.add( "ERROR - OUT OF DATE" );
+//        for ( NAltGroup group : NetunoAltsCache.cache ) {
+//            final String altGroupId = group.getGroupId() + "";
+//            final String uuids = group.getUuids().stream().map( UUID::toString ).collect( Collectors.joining( ", " ) );
+//            final String ips = String.join( ", ", group.getIps() );
+//
+//            msgs.add( String.format( stringFormat, altGroupId, uuids, ips ) );
+//        }
 
         msgs.add( "\n" );
         msgs.add( "----------------------------------------\n" );

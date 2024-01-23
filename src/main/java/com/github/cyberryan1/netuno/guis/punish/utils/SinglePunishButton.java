@@ -11,7 +11,7 @@ import com.github.cyberryan1.netuno.apimplement.models.punishments.NetunoPrePuni
 import com.github.cyberryan1.netuno.guis.punish.managers.ActiveGuiManager;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
-import com.github.cyberryan1.netunoapi.models.alts.NAltGroup;
+import com.github.cyberryan1.netunoapi.models.alts.TempUuidIpEntry;
 import com.github.cyberryan1.netunoapi.models.players.NPlayer;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
@@ -24,6 +24,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class SinglePunishButton {
@@ -151,12 +153,14 @@ public class SinglePunishButton {
                 final boolean lengthIsRemaining = PunishSettings.IPMUTE_SETTING_HIGHEST_MUTE_LENGTH.string().equalsIgnoreCase( "LENGTH_REMAINING" );
 
                 NPunishment highest = null;
-                final NAltGroup altGroup = ApiNetuno.getInstance().getAltLoader().searchByUuid( prePun.getPunishment().getPlayerUuid() )
-                        .orElseThrow( () -> {
-                            throw new NullPointerException( "An error occurred while trying to get the player's alt group, "
-                                    + "so the reference punishment could not be added to the player's alts." );
-                        } );
-                for ( OfflinePlayer alt : altGroup.getUuids().stream().map( Bukkit::getOfflinePlayer ).collect( Collectors.toList() ) ) {
+                String ip = "";
+                if ( player.isOnline() ) { ip = player.getPlayer().getAddress().getAddress().getHostAddress(); }
+                else {
+                    List<TempUuidIpEntry> entries = new ArrayList<>( ApiNetuno.getData().getTempAltsDatabase().queryByUuid( player.getUniqueId() ) );
+                    ip = entries.get( 0 ).getIp();
+                }
+
+                for ( OfflinePlayer alt : ApiNetuno.getInstance().getAltCache().queryAccounts( ip ).stream().map( Bukkit::getOfflinePlayer ).collect( Collectors.toList() ) ) {
                     NPlayer nAlt = NetunoPlayerCache.getOrLoad( alt );
                     for ( NPunishment altPun : nAlt.getPunishments() ) {
                         if ( altPun.isActive() == false || altPun.getPunishmentType() != PunishmentType.MUTE ) { continue; }
@@ -181,12 +185,14 @@ public class SinglePunishButton {
                 final boolean lengthIsRemaining = PunishSettings.IPBAN_SETTING_HIGHEST_BAN_LENGTH.string().equalsIgnoreCase( "LENGTH_REMAINING" );
 
                 NPunishment highest = null;
-                final NAltGroup altGroup = ApiNetuno.getInstance().getAltLoader().searchByUuid( prePun.getPunishment().getPlayerUuid() )
-                        .orElseThrow( () -> {
-                            throw new NullPointerException( "An error occurred while trying to get the player's alt group, "
-                                    + "so the reference punishment could not be added to the player's alts." );
-                        } );
-                for ( OfflinePlayer alt : altGroup.getUuids().stream().map( Bukkit::getOfflinePlayer ).collect( Collectors.toList() ) ) {
+                String ip = "";
+                if ( player.isOnline() ) { ip = player.getPlayer().getAddress().getAddress().getHostAddress(); }
+                else {
+                    List<TempUuidIpEntry> entries = new ArrayList<>( ApiNetuno.getData().getTempAltsDatabase().queryByUuid( player.getUniqueId() ) );
+                    ip = entries.get( 0 ).getIp();
+                }
+
+                for ( OfflinePlayer alt : ApiNetuno.getInstance().getAltCache().queryAccounts( ip ).stream().map( Bukkit::getOfflinePlayer ).collect( Collectors.toList() ) ) {
                     NPlayer nAlt = NetunoPlayerCache.getOrLoad( alt );
                     for ( NPunishment altPun : nAlt.getPunishments() ) {
                         if ( altPun.isActive() == false || altPun.getPunishmentType() != PunishmentType.BAN ) { continue; }

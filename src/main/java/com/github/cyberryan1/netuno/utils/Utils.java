@@ -139,7 +139,7 @@ public class Utils {
         }
         if ( pun.getPunishmentType().isIpPunishment() ) {
             final NetunoPlayer nPlayer = NetunoPlayerCache.getOrLoad( pun.getPlayerUuid() );
-            List<OfflinePlayer> allAltsList = nPlayer.getAltGroup().getUuids().stream()
+            List<OfflinePlayer> allAltsList = nPlayer.getAltAccounts().stream()
                     .map( Bukkit::getOfflinePlayer )
                     .collect( Collectors.toList() );
             allAltsList.remove( nPlayer.getPlayer() );

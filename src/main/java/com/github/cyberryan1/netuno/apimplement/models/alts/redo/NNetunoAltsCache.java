@@ -1,47 +1,100 @@
 package com.github.cyberryan1.netuno.apimplement.models.alts.redo;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
+import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netunoapi.models.alts.TempAltCache;
-import com.github.cyberryan1.netunoapi.models.alts.TempAltGroup;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import com.github.cyberryan1.netunoapi.models.alts.TempUuidIpEntry;
 
-import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 
 public class NNetunoAltsCache implements TempAltCache {
 
-    private final Cache<Integer, TempAltGroup> CACHE = Caffeine.newBuilder()
-            .maximumSize( 400 )
-            .expireAfterAccess( 10, TimeUnit.MINUTES )
-            .build();
+    private static final int MAX_DEPTH = 2;
 
-    public void initialize() {
-        CyberLogUtils.logInfo( "[ALTS CACHE] Initializing the alts cache..." );
+    public void initialize() {}
 
-        for ( Player player : Bukkit.getOnlinePlayers() ) {
-            loadPlayer( player.getUniqueId(), player.getAddress().getAddress().getHostAddress() );
+    public void initEntry( UUID uuid, String ip ) {
+        Set<TempUuidIpEntry> entries = ApiNetuno.getData().getTempAltsDatabase().queryByIp( ip );
+        if ( entries.stream().anyMatch( entry -> entry.getUuid().equals( uuid ) && entry.getIp().equals( ip ) ) == false ) {
+            ApiNetuno.getData().getTempAltsDatabase().save( new TempUuidIpEntry( uuid, ip, false ) );
+        }
+    }
+
+    public Set<UUID> queryAccounts( String ip ) {
+        Set<TempUuidIpEntry> entries = ApiNetuno.getData().getTempAltsDatabase().queryByIp( ip );
+
+        for ( int i = 0; i < MAX_DEPTH; i++ ) {
+            Set<String> ipList = entries.stream()
+                    .map( TempUuidIpEntry::getIp )
+                    .collect( Collectors.toSet() );
+            Set<TempUuidIpEntry> newAlts = ApiNetuno.getData().getTempAltsDatabase().queryByMultipleIps( ipList );
+            if ( newAlts.size() == 0 ) { break; }
+
+            entries.addAll( newAlts );
         }
 
-        CyberLogUtils.logInfo( "[ALTS CACHE] Loaded a total of " + CACHE.estimatedSize() + " alt groups" );
+        return entries.stream()
+                .map( TempUuidIpEntry::getUuid )
+                .collect( Collectors.toSet() );
     }
 
-    public void loadPlayer( UUID uuid, String ip ) {
 
-    }
-
-    public Optional<TempAltGroup> searchByUuid( UUID uuid ) {
-        return Optional.empty();
-    }
-
-    public Optional<TempAltGroup> searchByIp( String ip ) {
-        return Optional.empty();
-    }
-
-    public void save() {
-
-    }
+//    //                  IP
+//    //                          Set of UUID's that have joined on this IP
+//    private final Cache<String, Set<UUID>> CACHE = Caffeine.newBuilder()
+//            .maximumSize( 400 )
+//            .expireAfterAccess( 10, TimeUnit.MINUTES )
+//            .build();
+//
+////    private final Multigraph<AltGraphNode, AltGraphEdge> GRAPH = new Multigraph<>( AltGraphEdge.class );
+//
+//    public void initialize() {
+//        CyberLogUtils.logInfo( "[ALTS CACHE] Initializing the alts cache..." );
+//
+//        for ( Player player : Bukkit.getOnlinePlayers() ) {
+//            loadPlayer( player.getUniqueId(), player.getAddress().getAddress().getHostAddress() );
+//        }
+//
+//        //CyberLogUtils.logInfo( "[ALTS CACHE] Loaded a total of " + CACHE.estimatedSize() + " alt groups" );
+//    }
+//
+//    public void loadPlayer( UUID uuid, String ip ) {
+//        Optional<Set<UUID>> optionalUuidList = Optional.ofNullable( CACHE.getIfPresent( ip ) );
+//
+//        if ( optionalUuidList.isPresent() ) {
+//            Set<UUID> uuids = optionalUuidList.get();
+//        }
+//
+//        else {
+//
+//        }
+//    }
+//
+//    private void loadIpIntoCache( String ip ) {
+//        ApiNetuno.getData().getTempAltsDatabase().queryByIp( ip ).ifPresent( ipEntry -> {
+//            CACHE.put( ip, ipEntry.getUuids() );
+//        } );
+//    }
+//
+////    private void loadPlayerFromCache( UUID uuid, String ip ) {
+////        // TODO
+////    }
+////
+////    private void loadPlayerFromDatabase( UUID uuid, String ip ) {
+////        // TODO
+////    }
+//
+//    public Optional<TempAltGroup> searchByUuid( UUID uuid ) {
+//        // TODO
+//    }
+//
+//    public Optional<TempAltGroup> searchByIp( String ip ) {
+//        // TODO
+//    }
+//
+//    public void save() {
+//
+//    }
 }

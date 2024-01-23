@@ -46,9 +46,6 @@ public class ApiNetuno implements NetunoApi {
 //        getData().getNetunoAlts().initialize();
         getData().getTempAltsDatabase().initialize();
 
-        // Initialize the alts security level
-        ( ( NNetunoAltsCache ) instance.getAltCache() ).reloadSecurityLevel();
-
         // Initialize the alts cache
 //        instance.getAltLoader().initialize();
         instance.getAltCache().initialize();

@@ -9,7 +9,6 @@ import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
-import com.github.cyberryan1.netunoapi.models.alts.NAltGroup;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
 import com.github.cyberryan1.netunoapi.utils.PunishmentUtils;
@@ -52,7 +51,7 @@ public class JoinListener implements Listener {
         //
 
         // Log the player's IP address into the database
-        ApiNetuno.getInstance().getAltLoader().loadPlayer( event.getUniqueId(), event.getAddress().getHostAddress() );
+        ApiNetuno.getInstance().getAltCache().initEntry( event.getUniqueId(), event.getAddress().getHostAddress() );
         // Load the player into the cache
         final NetunoPlayer nPlayer = NetunoPlayerCache.getOrLoad( event.getUniqueId().toString() );
 
@@ -78,15 +77,12 @@ public class JoinListener implements Listener {
         }
 
         // Getting all punishments from the alt group
-        final NAltGroup altGroup = nPlayer.getAltGroup();
         final List<NPunishment> activeAltPunishments = new ArrayList<>();
-        if ( altGroup != null ) {
-            for ( UUID altUuid : altGroup.getUuids() ) {
-                final NetunoPlayer altPlayer = NetunoPlayerCache.getOrLoad( altUuid.toString() );
-                activeAltPunishments.addAll( altPlayer.getPunishments().stream()
-                        .filter( pun -> pun.isActive() && pun.getReferencePunId() < 0 )
-                        .collect( Collectors.toList() ) );
-            }
+        for ( UUID altUuid : nPlayer.getAltAccounts() ) {
+            final NetunoPlayer altPlayer = NetunoPlayerCache.getOrLoad( altUuid.toString() );
+            activeAltPunishments.addAll( altPlayer.getPunishments().stream()
+                    .filter( pun -> pun.isActive() && pun.getReferencePunId() < 0 )
+                    .collect( Collectors.toList() ) );
         }
 
         // Checking if any of the other alts in the alt group are IP banned and enforcing the IP ban on this alt if so
@@ -184,7 +180,7 @@ public class JoinListener implements Listener {
         //
 
         // Checking if the player has any punished alts and alerting staff if they do
-        if ( altGroup.getUuids().size() > 1 && activeAltPunishments.size() >= 1 && IPINFO_NOTIFS_ENABLED ) {
+        if ( activeAltPunishments.size() >= 1 && IPINFO_NOTIFS_ENABLED ) {
             Bukkit.getScheduler().runTaskLaterAsynchronously( CyberCore.getPlugin(), () -> {
                 final Player player = Bukkit.getPlayer( event.getUniqueId() );
                 if ( player == null ) { return; }
