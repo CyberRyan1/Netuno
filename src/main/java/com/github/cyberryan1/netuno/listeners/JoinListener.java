@@ -51,7 +51,7 @@ public class JoinListener implements Listener {
         //
 
         // Log the player's IP address into the database
-        ApiNetuno.getInstance().getAltCache().initEntry( event.getUniqueId(), event.getAddress().getHostAddress() );
+        ApiNetuno.getInstance().getAltInfoLoader().initEntry( event.getUniqueId(), event.getAddress().getHostAddress() );
         // Load the player into the cache
         final NetunoPlayer nPlayer = NetunoPlayerCache.getOrLoad( event.getUniqueId().toString() );
 

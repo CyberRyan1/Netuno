@@ -11,7 +11,7 @@ import com.github.cyberryan1.netuno.apimplement.models.punishments.NetunoPrePuni
 import com.github.cyberryan1.netuno.guis.punish.managers.ActiveGuiManager;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
-import com.github.cyberryan1.netunoapi.models.alts.TempUuidIpEntry;
+import com.github.cyberryan1.netunoapi.models.alts.UuidIpRecord;
 import com.github.cyberryan1.netunoapi.models.players.NPlayer;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
@@ -156,11 +156,11 @@ public class SinglePunishButton {
                 String ip = "";
                 if ( player.isOnline() ) { ip = player.getPlayer().getAddress().getAddress().getHostAddress(); }
                 else {
-                    List<TempUuidIpEntry> entries = new ArrayList<>( ApiNetuno.getData().getTempAltsDatabase().queryByUuid( player.getUniqueId() ) );
+                    List<UuidIpRecord> entries = new ArrayList<>( ApiNetuno.getData().getIpHistoryDatabase().queryByUuid( player.getUniqueId() ) );
                     ip = entries.get( 0 ).getIp();
                 }
 
-                for ( OfflinePlayer alt : ApiNetuno.getInstance().getAltCache().queryAccounts( ip ).stream().map( Bukkit::getOfflinePlayer ).collect( Collectors.toList() ) ) {
+                for ( OfflinePlayer alt : ApiNetuno.getInstance().getAltInfoLoader().queryAccounts( ip ).stream().map( Bukkit::getOfflinePlayer ).collect( Collectors.toList() ) ) {
                     NPlayer nAlt = NetunoPlayerCache.getOrLoad( alt );
                     for ( NPunishment altPun : nAlt.getPunishments() ) {
                         if ( altPun.isActive() == false || altPun.getPunishmentType() != PunishmentType.MUTE ) { continue; }
@@ -188,11 +188,11 @@ public class SinglePunishButton {
                 String ip = "";
                 if ( player.isOnline() ) { ip = player.getPlayer().getAddress().getAddress().getHostAddress(); }
                 else {
-                    List<TempUuidIpEntry> entries = new ArrayList<>( ApiNetuno.getData().getTempAltsDatabase().queryByUuid( player.getUniqueId() ) );
+                    List<UuidIpRecord> entries = new ArrayList<>( ApiNetuno.getData().getIpHistoryDatabase().queryByUuid( player.getUniqueId() ) );
                     ip = entries.get( 0 ).getIp();
                 }
 
-                for ( OfflinePlayer alt : ApiNetuno.getInstance().getAltCache().queryAccounts( ip ).stream().map( Bukkit::getOfflinePlayer ).collect( Collectors.toList() ) ) {
+                for ( OfflinePlayer alt : ApiNetuno.getInstance().getAltInfoLoader().queryAccounts( ip ).stream().map( Bukkit::getOfflinePlayer ).collect( Collectors.toList() ) ) {
                     NPlayer nAlt = NetunoPlayerCache.getOrLoad( alt );
                     for ( NPunishment altPun : nAlt.getPunishments() ) {
                         if ( altPun.isActive() == false || altPun.getPunishmentType() != PunishmentType.BAN ) { continue; }

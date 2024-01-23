@@ -11,7 +11,7 @@ import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.guis.history.HistoryListGUI;
 import com.github.cyberryan1.netuno.guis.utils.SortBy;
-import com.github.cyberryan1.netunoapi.models.alts.TempUuidIpEntry;
+import com.github.cyberryan1.netunoapi.models.alts.UuidIpRecord;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
 import com.github.cyberryan1.netunoapi.utils.PunishmentUtils;
@@ -48,10 +48,10 @@ public class AltsListGUI {
         String ip = "";
         if ( target.isOnline() ) { ip = target.getPlayer().getAddress().getAddress().getHostAddress(); }
         else {
-            List<TempUuidIpEntry> entries = new ArrayList<>( ApiNetuno.getData().getTempAltsDatabase().queryByUuid( target.getUniqueId() ) );
+            List<UuidIpRecord> entries = new ArrayList<>( ApiNetuno.getData().getIpHistoryDatabase().queryByUuid( target.getUniqueId() ) );
             ip = entries.get( 0 ).getIp();
         }
-        this.alts = ApiNetuno.getInstance().getAltCache().queryAccounts( ip ).stream()
+        this.alts = ApiNetuno.getInstance().getAltInfoLoader().queryAccounts( ip ).stream()
                 .map( uuid -> NetunoPlayerCache.getOrLoad( uuid.toString() ) )
                 .collect( Collectors.toList() );
 

@@ -4,36 +4,22 @@ import com.github.cyberryan1.netunoapi.database.*;
 
 public class DatabaseManager implements NetunoDatabases {
 
-//    private static NetunoAltsDatabase altsDatabase = new NetunoAltsDatabase();
-    private static NetunoTempAltsDatabase tempAltsDatabase = new NetunoTempAltsDatabase();
+    private static NetunoIpHistoryDatabase ipHistoryDatabase = new NetunoIpHistoryDatabase();
     private static NetunoPunishmentsDatabase punDatabase = new NetunoPunishmentsDatabase();
     private static NetunoRandomDatabase randomDatabase = new NetunoRandomDatabase();
     private static NetunoReportsDatabase reportsDatabase = new NetunoReportsDatabase();
 
-//    /**
-//     * @return The {@link AltsDatabase} instance
-//     */
-//    public AltsDatabase getAltsDatabase() {
-//        return altsDatabase;
-//    }
-//
-//    /**
-//     * @return The {@link AltsDatabase} instance
-//     */
-//    public AltsDatabase getAlts() {
-//        return altsDatabase;
-//    }
-//
-//    /**
-//     * @return The {@link NetunoAltsDatabase} instance
-//     */
-//    public NetunoAltsDatabase getNetunoAlts() {
-//        return altsDatabase;
-//    }
-
-    public TempAltsDatabase getTempAltsDatabase() {
-        return tempAltsDatabase;
+    /**
+     * @return The {@link IpHistoryDatabase} instance
+     */
+    public IpHistoryDatabase getIpHistoryDatabase() {
+        return ipHistoryDatabase;
     }
+
+    /**
+     * @return The {@link NetunoIpHistoryDatabase} instance
+     */
+    public NetunoIpHistoryDatabase getIpHistory() { return ipHistoryDatabase; }
 
     /**
      * @return The {@link PunishmentsDatabase} instance

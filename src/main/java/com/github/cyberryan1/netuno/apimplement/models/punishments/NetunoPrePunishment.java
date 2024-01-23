@@ -9,7 +9,7 @@ import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.events.punish.NetunoPrePunishEvent;
-import com.github.cyberryan1.netunoapi.models.alts.TempUuidIpEntry;
+import com.github.cyberryan1.netunoapi.models.alts.UuidIpRecord;
 import com.github.cyberryan1.netunoapi.models.punishments.NPrePunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
@@ -76,12 +76,12 @@ public class NetunoPrePunishment implements NPrePunishment {
             String ip = "";
             if ( pun.getPlayer().isOnline() ) { ip = pun.getPlayer().getPlayer().getAddress().getAddress().getHostAddress(); }
             else {
-                List<TempUuidIpEntry> entries = new ArrayList<>( ApiNetuno.getData().getTempAltsDatabase().queryByUuid( UUID.fromString( pun.getPlayerUuid() ) ) );
+                List<UuidIpRecord> entries = new ArrayList<>( ApiNetuno.getData().getIpHistoryDatabase().queryByUuid( UUID.fromString( pun.getPlayerUuid() ) ) );
                 ip = entries.get( 0 ).getIp();
             }
 
             // Querying for alts using the above IP
-            for ( UUID altUuid : ApiNetuno.getInstance().getAltCache().queryAccounts( ip ) ) {
+            for ( UUID altUuid : ApiNetuno.getInstance().getAltInfoLoader().queryAccounts( ip ) ) {
                 if ( altUuid.equals( pun.getPlayer().getUniqueId() ) == false ) {
                     final OfflinePlayer alt = Bukkit.getOfflinePlayer( altUuid );
                     NPunishment altPun = pun.copy();
@@ -131,12 +131,11 @@ public class NetunoPrePunishment implements NPrePunishment {
                 String ip = "";
                 if ( pun.getPlayer().isOnline() ) { ip = pun.getPlayer().getPlayer().getAddress().getAddress().getHostAddress(); }
                 else {
-                    List<TempUuidIpEntry> entries = new ArrayList<>( ApiNetuno.getData().getTempAltsDatabase().queryByUuid( UUID.fromString( pun.getPlayerUuid() ) ) );
+                    List<UuidIpRecord> entries = new ArrayList<>( ApiNetuno.getData().getIpHistoryDatabase().queryByUuid( UUID.fromString( pun.getPlayerUuid() ) ) );
                     ip = entries.get( 0 ).getIp();
                 }
 
-
-                for ( UUID altUuid : ApiNetuno.getInstance().getAltCache().queryAccounts( ip ) ) {
+                for ( UUID altUuid : ApiNetuno.getInstance().getAltInfoLoader().queryAccounts( ip ) ) {
                     final OfflinePlayer alt = Bukkit.getOfflinePlayer( altUuid );
                     final NetunoPlayer nAlt = NetunoPlayerCache.forceLoad( alt );
                     final List<NPunishment> puns = nAlt.getPunishments().stream()

@@ -123,25 +123,10 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.30</version>
         </dependency>
-<!--        <dependency> &lt;!&ndash; May not need &ndash;&gt;-->
-<!--            <groupId>com.github.ben-manes.caffeine</groupId>-->
-<!--            <artifactId>caffeine</artifactId>-->
-<!--            <version>3.1.8</version>-->
-<!--        </dependency>-->
-<!--        <dependency> &lt;!&ndash; May not need &ndash;&gt;-->
-<!--            <groupId>org.jgrapht</groupId>-->
-<!--            <artifactId>jgrapht-core</artifactId>-->
-<!--            <version>1.0.1</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>net.jodah</groupId>-->
-<!--            <artifactId>expiringmap</artifactId>-->
-<!--            <version>0.5.11</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>com.github.cyberryan1</groupId>
             <artifactId>NetunoAPI</artifactId>
-            <version>0.1.2.2.DEV.20</version>
+            <version>0.1.2.2.DEV.21</version>
         </dependency>
     </dependencies>
 </project>

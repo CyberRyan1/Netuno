@@ -1,7 +1,7 @@
 package com.github.cyberryan1.netuno.apimplement.models.players;
 
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
-import com.github.cyberryan1.netunoapi.models.alts.TempUuidIpEntry;
+import com.github.cyberryan1.netunoapi.models.alts.UuidIpRecord;
 import com.github.cyberryan1.netunoapi.models.players.NPlayer;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import org.bukkit.Bukkit;
@@ -57,10 +57,10 @@ public class NetunoPlayer implements NPlayer {
         String ip = "";
         if ( getPlayer().isOnline() ) { ip = getPlayer().getPlayer().getAddress().getAddress().getHostAddress(); }
         else {
-            List<TempUuidIpEntry> entries = new ArrayList<>( ApiNetuno.getData().getTempAltsDatabase().queryByUuid( player.getUniqueId() ) );
+            List<UuidIpRecord> entries = new ArrayList<>( ApiNetuno.getData().getIpHistoryDatabase().queryByUuid( player.getUniqueId() ) );
             ip = entries.get( 0 ).getIp();
         }
-        return ApiNetuno.getInstance().getAltCache().queryAccounts( ip );
+        return ApiNetuno.getInstance().getAltInfoLoader().queryAccounts( ip );
     }
 
     /**
