@@ -189,6 +189,47 @@ public enum Settings {
 
     CACHE_ALTS_SAVE_EVERY( "database.cache.alts.save-every", "int" ),
     CACHE_REPORTS_SAVE_EVERY( "database.cache.reports.save-every", "int" ),
+
+    //
+    // Sounds
+    //
+    SOUND_PUNISHMENT_WARN_STAFF( "sounds.punishments.warn.staff-sound", "sound" ),
+    SOUND_PUNISHMENT_WARN_TARGET( "sounds.punishments.warn.target-sound", "sound" ),
+    SOUND_PUNISHMENT_WARN_GLOBAL( "sounds.punishments.warn.global-sound", "sound" ),
+
+    SOUND_PUNISHMENT_KICK_STAFF( "sounds.punishments.kick.staff-sound", "sound" ),
+    SOUND_PUNISHMENT_KICK_GLOBAL( "sounds.punishments.kick.global-sound", "sound" ),
+
+    SOUND_PUNISHMENT_MUTE_STAFF( "sounds.punishments.mute.staff-sound", "sound" ),
+    SOUND_PUNISHMENT_MUTE_TARGET( "sounds.punishments.mute.target-sound", "sound" ),
+    SOUND_PUNISHMENT_MUTE_GLOBAL( "sounds.punishments.mute.global-sound", "sound" ),
+
+    SOUND_PUNISHMENT_UNMUTE_STAFF( "sounds.punishments.unmute.staff-sound", "sound" ),
+    SOUND_PUNISHMENT_UNMUTE_TARGET( "sounds.punishments.unmute.target-sound", "sound" ),
+    SOUND_PUNISHMENT_UNMUTE_GLOBAL( "sounds.punishments.unmute.global-sound", "sound" ),
+
+    SOUND_PUNISHMENT_BAN_STAFF( "sounds.punishments.ban.staff-sound", "sound" ),
+    SOUND_PUNISHMENT_BAN_GLOBAL( "sounds.punishments.ban.global-sound", "sound" ),
+
+    SOUND_PUNISHMENT_UNBAN_STAFF( "sounds.punishments.unban.staff-sound", "sound" ),
+    SOUND_PUNISHMENT_UNBAN_GLOBAL( "sounds.punishments.unban.global-sound", "sound" ),
+
+    SOUND_PUNISHMENT_IPMUTE_STAFF( "sounds.punishments.ipmute.staff-sound", "sound" ),
+    SOUND_PUNISHMENT_IPMUTE_TARGET( "sounds.punishments.ipmute.target-sound", "sound" ),
+    SOUND_PUNISHMENT_IPMUTE_GLOBAL( "sounds.punishments.ipmute.global-sound", "sound" ),
+
+    SOUND_PUNISHMENT_UNIPMUTE_STAFF( "sounds.punishments.unipmute.staff-sound", "sound" ),
+    SOUND_PUNISHMENT_UNIPMUTE_TARGET( "sounds.punishments.unipmute.target-sound", "sound" ),
+    SOUND_PUNISHMENT_UNIPMUTE_GLOBAL( "sounds.punishments.unipmute.global-sound", "sound" ),
+
+    SOUND_PUNISHMENT_IPBAN_STAFF( "sounds.punishments.ipban.staff-sound", "sound" ),
+    SOUND_PUNISHMENT_IPBAN_GLOBAL( "sounds.punishments.ipban.global-sound", "sound" ),
+
+    SOUND_PUNISHMENT_UNIPBAN_STAFF( "sounds.punishments.unipban.staff-sound", "sound" ),
+    SOUND_PUNISHMENT_UNIPBAN_GLOBAL( "sounds.punishments.unipban.global-sound", "sound" ),
+
+    SOUND_PUNISHED_ATTEMPT_MUTED( "sounds.punished-attempt.muted", "sound" ),
+    SOUND_PUNISHED_ATTEMPT_IPMUTED( "sounds.punished-attempt.ipmuted", "sound" ),
     ;
 
     private String path;
@@ -223,6 +264,8 @@ public enum Settings {
     public Material material() { return value.material(); }
 
     public String[] stringlist() { return value.stringlist(); }
+
+    public SoundSettingEntry sound() { return value.sound(); }
 
     public String[] coloredStringlist() {
         String[] toReturn = new String[ stringlist().length ];

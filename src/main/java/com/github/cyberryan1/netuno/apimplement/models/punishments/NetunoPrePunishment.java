@@ -8,6 +8,7 @@ import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import com.github.cyberryan1.netuno.utils.settings.SoundSettingEntry;
 import com.github.cyberryan1.netunoapi.events.punish.NetunoPrePunishEvent;
 import com.github.cyberryan1.netunoapi.models.alts.UuidIpRecord;
 import com.github.cyberryan1.netunoapi.models.punishments.NPrePunishment;
@@ -283,6 +284,56 @@ public class NetunoPrePunishment implements NPrePunishment {
                     Utils.sendAnyMsg( player, staffBroadcast );
                 }
             }
+        }
+
+        // Playing sounds for the players, target, and staff.
+        SoundSettingEntry SOUND_TARGET = switch ( pun.getPunishmentType() ) {
+            case WARN -> Settings.SOUND_PUNISHMENT_WARN_TARGET.sound();
+            case MUTE -> Settings.SOUND_PUNISHMENT_MUTE_TARGET.sound();
+            case UNMUTE -> Settings.SOUND_PUNISHMENT_UNMUTE_TARGET.sound();
+            case IPMUTE -> Settings.SOUND_PUNISHMENT_IPMUTE_TARGET.sound();
+            case UNIPMUTE -> Settings.SOUND_PUNISHMENT_UNIPMUTE_TARGET.sound();
+            default -> null;
+        };
+        SoundSettingEntry SOUND_STAFF = switch ( pun.getPunishmentType() ) {
+            case WARN -> Settings.SOUND_PUNISHMENT_WARN_STAFF.sound();
+            case KICK -> Settings.SOUND_PUNISHMENT_KICK_STAFF.sound();
+            case MUTE -> Settings.SOUND_PUNISHMENT_MUTE_STAFF.sound();
+            case UNMUTE -> Settings.SOUND_PUNISHMENT_UNMUTE_STAFF.sound();
+            case BAN -> Settings.SOUND_PUNISHMENT_BAN_STAFF.sound();
+            case UNBAN -> Settings.SOUND_PUNISHMENT_UNBAN_STAFF.sound();
+            case IPMUTE -> Settings.SOUND_PUNISHMENT_IPMUTE_STAFF.sound();
+            case UNIPMUTE -> Settings.SOUND_PUNISHMENT_UNIPMUTE_STAFF.sound();
+            case IPBAN -> Settings.SOUND_PUNISHMENT_IPBAN_STAFF.sound();
+            case UNIPBAN -> Settings.SOUND_PUNISHMENT_UNIPBAN_STAFF.sound();
+        };
+        SoundSettingEntry SOUND_GLOBAL = switch ( pun.getPunishmentType() ) {
+            case WARN -> Settings.SOUND_PUNISHMENT_WARN_GLOBAL.sound();
+            case KICK -> Settings.SOUND_PUNISHMENT_KICK_GLOBAL.sound();
+            case MUTE -> Settings.SOUND_PUNISHMENT_MUTE_GLOBAL.sound();
+            case UNMUTE -> Settings.SOUND_PUNISHMENT_UNMUTE_GLOBAL.sound();
+            case BAN -> Settings.SOUND_PUNISHMENT_BAN_GLOBAL.sound();
+            case UNBAN -> Settings.SOUND_PUNISHMENT_UNBAN_GLOBAL.sound();
+            case IPMUTE -> Settings.SOUND_PUNISHMENT_IPMUTE_GLOBAL.sound();
+            case UNIPMUTE -> Settings.SOUND_PUNISHMENT_UNIPMUTE_GLOBAL.sound();
+            case IPBAN -> Settings.SOUND_PUNISHMENT_IPBAN_GLOBAL.sound();
+            case UNIPBAN -> Settings.SOUND_PUNISHMENT_UNIPBAN_GLOBAL.sound();
+        };
+
+        if ( SOUND_STAFF == null || SOUND_STAFF.isEnabled() == false ) { SOUND_STAFF = SOUND_GLOBAL; }
+        if ( SOUND_TARGET != null && SOUND_TARGET.isEnabled() == false ) { SOUND_TARGET = SOUND_GLOBAL; }
+        if ( silent ) { SOUND_GLOBAL = null; }
+
+        if ( SOUND_TARGET != null && SOUND_TARGET.isEnabled() && pun.getPlayer().isOnline() ) {
+            SOUND_TARGET.playSound( pun.getPlayer().getPlayer() );
+        }
+        if ( SOUND_STAFF != null && SOUND_STAFF.isEnabled() ) {
+            SOUND_STAFF.playSoundMany( p -> p.getUniqueId().equals( pun.getPlayer().getUniqueId() ) == false
+                    && CyberVaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) );
+        }
+        if ( SOUND_GLOBAL != null && SOUND_GLOBAL.isEnabled() ) {
+            SOUND_GLOBAL.playSoundMany( p -> p.getUniqueId().equals( pun.getPlayer().getUniqueId() ) == false
+                    && CyberVaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) == false );
         }
     }
 }

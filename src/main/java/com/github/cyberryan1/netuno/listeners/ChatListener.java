@@ -41,8 +41,14 @@ public class ChatListener implements Listener {
             final NPunishment highestIpmute = PunishmentUtils.getHighestActive( active, PunishmentType.IPMUTE );
             final NPunishment highestMute = PunishmentUtils.getHighestActive( active, PunishmentType.MUTE );
 
-            if ( highestIpmute != null ) { Utils.sendDeniedMsg( event.getPlayer(), highestIpmute ); }
-            else { Utils.sendDeniedMsg( event.getPlayer(), highestMute ); }
+            if ( highestIpmute != null ) {
+                Settings.SOUND_PUNISHED_ATTEMPT_IPMUTED.sound().playSound( event.getPlayer() );
+                Utils.sendDeniedMsg( event.getPlayer(), highestIpmute );
+            }
+            else {
+                Settings.SOUND_PUNISHED_ATTEMPT_MUTED.sound().playSound( event.getPlayer() );
+                Utils.sendDeniedMsg( event.getPlayer(), highestMute );
+            }
             return;
         }
 

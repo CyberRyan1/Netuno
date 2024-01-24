@@ -19,6 +19,7 @@ public class SettingsEntry {
     private boolean b;
     private Material mat;
     private String strList[];
+    private SoundSettingEntry sound;
 
 
     public SettingsEntry( String path, String valueType ) {
@@ -34,6 +35,7 @@ public class SettingsEntry {
             case "boolean" -> this.b = YMLUtils.getConfig().getBool( path );
             case "material" -> this.mat = Material.valueOf( YMLUtils.getConfig().getStr( path ) );
             case "strlist" -> this.strList = YMLUtils.getConfig().getStrList( path );
+            case "sound" -> this.sound = new SoundSettingEntry( path );
         }
     }
 
@@ -56,4 +58,6 @@ public class SettingsEntry {
     public Material material() { return this.mat; }
 
     public String[] stringlist() { return this.strList; }
+
+    public SoundSettingEntry sound() { return this.sound; }
 }

@@ -518,6 +518,12 @@ database:
     password: password
 
   cache:
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # ! IMPORTANT !
+    # As of Netuno v1.5.0.7-DEV-0.1, the alts cache is out of date
+    # and no longer matters. We keep this here just in case.
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     alts:
       # Alts are permanently loaded into the cache every time a player joins the server.
 
@@ -534,3 +540,181 @@ database:
       # Similar to the above alts.save-every option
       # Default value is 50
       save-every: 50
+
+#########################
+#         Sounds        #
+#########################
+
+# We allow you to customize the sounds that can be played during different events, such as bans,
+#   mutes, etc., unless they have already been customized above. You can find a list of all the
+#   available sounds at https://helpch.at/docs/1.16.5/org/bukkit/Sound.html
+sounds:
+  punishments:
+    # Warn punishment
+    warn:
+      # What sound staff members hear
+      staff-sound:
+        # Whether or not this sound is enabled or not
+        enabled: false
+        # What sound to play (see https://helpch.at/docs/1.16.5/org/bukkit/Sound.html for a list of sounds)
+        sound: ""
+        # What volume to play the sound at
+        volume: 1.0
+        # What pitch to play the sound at
+        pitch: 1.0
+      # What sound the target hears
+      target-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+      # What sound everyone else hears when another player is warned. This will not be sent
+      #   if the punishment is silent
+      global-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+
+    kick:
+      staff-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+      # Note: kick, ban, and ipban do not have a target-sound, as they are being removed from the server (duh)
+      global-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+
+    mute:
+      staff-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+      target-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+      global-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+
+    unmute:
+      staff-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+      target-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+      global-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+
+    ban:
+      staff-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+      global-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+
+    unban:
+      staff-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+      global-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+
+    ipmute:
+      staff-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+      target-sound: # Played to all online accounts of the player
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+      global-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+
+    unipmute:
+      staff-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+      target-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+      global-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+
+    ipban:
+      staff-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+      global-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+
+    unipban:
+      staff-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+      global-sound:
+        enabled: false
+        sound: ""
+        volume: 1.0
+        pitch: 1.0
+
+  # Played when a player tries to speak while ipmuted or muted
+  punished-attempt:
+    muted:
+      enabled: false
+      sound: ""
+      volume: 1.0
+      pitch: 1.0
+
+    ipmuted:
+      enabled: false
+      sound: ""
+      volume: 1.0
+      pitch: 1.0
