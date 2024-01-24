@@ -5,6 +5,7 @@ import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.managers.ChatslowManager;
 import com.github.cyberryan1.netuno.managers.MutechatManager;
+import com.github.cyberryan1.netuno.managers.WatchlistManager;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
@@ -15,6 +16,7 @@ import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
@@ -26,8 +28,9 @@ public class ChatListener implements Listener {
 
     private final HashMap<Player, Long> CHAT_SLOW = new HashMap<>();
 
-    @EventHandler
+    @EventHandler( priority = EventPriority.HIGH )
     public void onPlayerChatEvent( AsyncPlayerChatEvent event ) {
+        if ( event.isCancelled() ) { return; }
 
         // IP Mute and Mute Handling
         final List<NPunishment> all = NetunoPlayerCache.getOrLoad( event.getPlayer().getUniqueId().toString() ).getPunishments().stream()
@@ -91,7 +94,7 @@ public class ChatListener implements Listener {
             }
         }
 
-        // mutechat handling
+        // Mutechat handling
         if ( MutechatManager.chatIsMuted() ) {
             if ( CyberVaultUtils.hasPerms( event.getPlayer(), Settings.STAFF_PERMISSION.string() ) == false ) {
                 if ( CyberVaultUtils.hasPerms( event.getPlayer(), Settings.MUTECHAT_BYPASS_PERMISSION.string() ) == false ) {
@@ -124,5 +127,75 @@ public class ChatListener implements Listener {
 
             CHAT_SLOW.put( event.getPlayer(), TimeUtils.getCurrentTimestamp() );
         }
+
+        if ( event.isCancelled() ) { return; }
+
+        // Watchlist handling
+//        boolean onWatchlist = false;
+        if ( WatchlistManager.getWordsList().stream()
+                .anyMatch( word -> event.getMessage().contains( word ) )
+                || WatchlistManager.getPatternsList().stream()
+                .anyMatch( pattern -> event.getMessage().matches( pattern ) ) ) {
+//            onWatchlist = true;
+            event.setFormat( Settings.WATCHLIST_NOTIFS_PREFIX.coloredString() + event.getFormat() );
+            Settings.WATCHLIST_NOTIFS_SOUND.sound()
+                    .playSoundMany( player -> CyberVaultUtils.hasPerms( player, Settings.WATCHLIST_VIEW_PERMISSION.string() ) );
+        }
+
+//        // If click to command messages is enabled, we have to send the messages a bit of a special way
+//        if ( Settings.CHATMOD_COMMAND_CLICK_ENABLED.bool() ) {
+//            event.setCancelled( true );
+//
+//            String FORMATTED_MSG = event.getFormat().replaceFirst( "%s", "%t" )
+//                    .replaceFirst( "%s", event.getMessage() )
+//                    .replaceFirst( "%t", "%s" );
+//
+//            // Removing all uncolored color codes from the message
+//            final String COLOR_CODES[] = { "&1", "&2", "&3", "&4", "&5", "&6", "&7", "&8", "&9", "&0",
+//                    "&a", "&b", "&c", "&d", "&e", "&f", "&r", "&m", "&n", "&o", "&k", "&l" };
+//            for ( String color : COLOR_CODES ) {
+//                FORMATTED_MSG = FORMATTED_MSG.replace( color, "" );
+//            }
+//
+//            String msgSending = FORMATTED_MSG.replace( "%s", event.getPlayer().getDisplayName() );
+//            for ( Player player : Bukkit.getOnlinePlayers() ) {
+//                if ( CyberVaultUtils.hasPerms( player, Settings.CHATMOD_COMMAND_CLICK_PERMISSION.string() ) == false ) {
+//                    CyberMsgUtils.sendMsg( player, msgSending );
+//                }
+//            }
+//
+//            // Adding the watchlist prefix to the message, if needed
+//            String prefix = onWatchlist ? Settings.CHATMOD_WATCHLIST_NOTIFS_PREFIX.coloredString() : "";
+//            FORMATTED_MSG = prefix + FORMATTED_MSG;
+//
+//            final BaseComponent MSG_COMPONENTS[] = TextComponent.fromLegacyText( FORMATTED_MSG );
+//            final BaseComponent DISPLAY_NAME_COMPONENTS[] = TextComponent.fromLegacyText( event.getPlayer().getDisplayName() );
+//
+//            // Adding the click event to the display name components
+//            for ( BaseComponent component : DISPLAY_NAME_COMPONENTS ) {
+//                component.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND,
+//                        Settings.CHATMOD_COMMAND_CLICK_COMMAND.string()
+//                                .replace( "[TARGET]", event.getPlayer().getName() )
+//                ) );
+//            }
+//
+//            // Combining the components into one list
+//            List<BaseComponent> COMBINED_COMPONENTS = new ArrayList<>();
+//            for ( int index = 0; index < MSG_COMPONENTS.length; index++ ) {
+//                BaseComponent current = MSG_COMPONENTS[ index ];
+//                if ( current.toPlainText().equals( CyberColorUtils.getUncolored( event.getPlayer().getDisplayName() ) ) ) {
+//                    COMBINED_COMPONENTS.addAll( List.of( DISPLAY_NAME_COMPONENTS ) );
+//                }
+//                else {
+//                    COMBINED_COMPONENTS.add( current );
+//                }
+//            }
+//
+//            for ( Player player : Bukkit.getOnlinePlayers() ) {
+//                if ( CyberVaultUtils.hasPerms( player, Settings.CHATMOD_COMMAND_CLICK_PERMISSION.string() ) ) {
+//                    player.spigot().sendMessage( COMBINED_COMPONENTS.toArray( new BaseComponent[0] ) );
+//                }
+//            }
+//        }
     }
 }

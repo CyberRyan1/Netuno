@@ -174,6 +174,15 @@ public enum Settings {
     REPORT_VIEW_PERMISSION( "reports.perm", "string" ),
     REPORT_EXPIRE_TIME( "reports.delete-after", "int" ),
 
+    //
+    // Watchlist
+    //
+    WATCHLIST_VIEW_PERMISSION( "watchlist.view-perm", "string" ),
+    WATCHLIST_EDIT_PERMISSION( "watchlist.edit-perm", "string" ),
+    WATCHLIST_NOTIFS_VIEW_PERMISSION( "watchlist.notifs.perm", "string" ),
+    WATCHLIST_NOTIFS_PREFIX( "watchlist.notifs.prefix", "string" ),
+    WATCHLIST_NOTIFS_SOUND( "watchlist.notifs.sound", "sound" ),
+
     // * Special note: Anything related to the punishment GUI is done in it's own file
 
     //

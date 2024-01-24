@@ -12,6 +12,7 @@ import com.github.cyberryan1.netuno.commands.*;
 import com.github.cyberryan1.netuno.guis.history.HistoryEditManager;
 import com.github.cyberryan1.netuno.listeners.*;
 import com.github.cyberryan1.netuno.managers.ChatslowManager;
+import com.github.cyberryan1.netuno.managers.WatchlistManager;
 import com.github.cyberryan1.netuno.skriptelements.conditions.RegisterConditions;
 import com.github.cyberryan1.netuno.skriptelements.expressions.RegisterExpressions;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
@@ -65,6 +66,9 @@ public final class Netuno extends JavaPlugin {
         this.getServer().getServicesManager().register( NetunoApi.class, ApiNetuno.getInstance(), this, ServicePriority.Highest );
         chatslowManager = new ChatslowManager();
 
+        // Setup the watchlist manager
+        WatchlistManager.initialize();
+
         registerSkript();
         registerCommands();
         registerEvents();
@@ -72,6 +76,9 @@ public final class Netuno extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        // Save the watchlist
+        WatchlistManager.save();
+
         this.getServer().getServicesManager().unregister( NetunoApi.class, ApiNetuno.getInstance() );
         ApiNetuno.deleteInstance();
     }
@@ -115,6 +122,7 @@ public final class Netuno extends JavaPlugin {
         registeredCommands.add( new UnIpmuteCommand() );
         registeredCommands.add( new UnmuteCommand() );
         registeredCommands.add( new WarnCommand() );
+        registeredCommands.add( new WatchlistCommand() );
     }
 
     private void registerEvents() {
