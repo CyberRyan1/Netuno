@@ -89,6 +89,15 @@
             <id>aikar</id>
             <url>https://ci.emc.gs/nexus/content/groups/aikar/</url>
         </repository>
+        <repository> <!-- Skript -->
+            <id>skript-releases</id>
+            <name>Skript Repository</name>
+            <url>https://repo.skriptlang.org/releases</url>
+        </repository>
+        <repository> <!-- Skript -->
+            <id>destroystokyo-repo</id>
+            <url>https://repo.destroystokyo.com/content/repositories/snapshots/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -118,11 +127,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.cyberryan1</groupId>
-            <artifactId>CyberCore</artifactId>
-            <version>2.0.0.15</version>
-        </dependency>
-        <dependency>
             <groupId>com.github.SkriptLang</groupId>
             <artifactId>Skript</artifactId>
             <version>dev37c</version>
@@ -138,6 +142,20 @@
             <artifactId>NetunoAPI</artifactId>
             <version>0.1.2.2.DEV.21</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.cyberryan1.CyberCore.spigot</groupId>
+            <artifactId>CyberCore-spigot</artifactId>
+            <version>2.0.0.33-DEV-1</version>
+        </dependency>
+        <!--
+       Above dependency used to be:
+       <dependency>
+            <groupId>com.github.cyberryan1</groupId>
+            <artifactId>CyberCore</artifactId>
+            <version>2.0.0.33-DEV-1</version>
+        </dependency>
+        I do not understand why this fixes it
+        -->
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
