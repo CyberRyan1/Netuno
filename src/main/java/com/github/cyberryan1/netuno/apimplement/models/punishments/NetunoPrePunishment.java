@@ -40,94 +40,40 @@ public class NetunoPrePunishment implements NPrePunishment {
     }
 
     public void executePunishment() {
-        // Checking if the punishment is silent
-        boolean silent = pun.getReason().contains( "-s" );
-        // Removing all -s from the reason
-        pun.setReason( pun.getReason().replace( "-s", "" ) );
+        Bukkit.getScheduler().runTaskAsynchronously( CyberCore.getPlugin(), () -> {
+            // Checking if the punishment is silent
+            boolean silent = pun.getReason().contains( "-s" );
+            // Removing all -s from the reason
+            pun.setReason( pun.getReason().replace( "-s", "" ) );
 
-        // Set if the player needs a notification or not
-        // Notifications are only sent when an offline player is warned
-        pun.setNeedsNotifSent( pun.getPunishmentType() == PunishmentType.WARN && pun.getPlayer().isOnline() == false );
+            // Set if the player needs a notification or not
+            // Notifications are only sent when an offline player is warned
+            pun.setNeedsNotifSent( pun.getPunishmentType() == PunishmentType.WARN && pun.getPlayer().isOnline() == false );
 
-        // Setting the reference ID if the punishment is an IP punishment
-        if ( pun.getPunishmentType().isIpPunishment() ) {
-            pun.setReferencePunId( -1 );
-        }
-
-        // Dispatching the event and seeing if it was cancelled
-        NetunoPrePunishEvent event = new NetunoPrePunishEvent( pun, silent );
-        ApiNetuno.getInstance().getEventDispatcher().dispatch( event );
-        if ( event.isCancelled() ) { return; }
-
-        // Executing the punishment in the database
-        ApiNetuno.getData().getNetunoPuns().addPunishment( pun );
-
-        // Iterating through all the player's alts and adding reference punishments to them.
-        //      Also confirming the player's alt group is loaded in the cache.
-        //      Only if the punishment is an IP punishment.
-        if ( pun.getPunishmentType().isIpPunishment() ) {
-            final int recentlyAddedId = ApiNetuno.getData().getNetunoPuns().getRecentlyInsertedId();
-            if ( recentlyAddedId == -1 ) {
-                CyberLogUtils.logError( "An error occurred while trying to get the most recently inserted ID, "
-                        + "so the reference punishment could not be added to the player's alts." );
-                return;
+            // Setting the reference ID if the punishment is an IP punishment
+            if ( pun.getPunishmentType().isIpPunishment() ) {
+                pun.setReferencePunId( -1 );
             }
 
-            // Getting an IP to query with
-            String ip = "";
-            if ( pun.getPlayer().isOnline() ) { ip = pun.getPlayer().getPlayer().getAddress().getAddress().getHostAddress(); }
-            else {
-                List<UuidIpRecord> entries = new ArrayList<>( ApiNetuno.getData().getIpHistoryDatabase().queryByUuid( UUID.fromString( pun.getPlayerUuid() ) ) );
-                ip = entries.get( 0 ).getIp();
-            }
+            // Dispatching the event and seeing if it was cancelled
+            NetunoPrePunishEvent event = new NetunoPrePunishEvent( pun, silent );
+            ApiNetuno.getInstance().getEventDispatcher().dispatch( event );
+            if ( event.isCancelled() ) { return; }
 
-            // Querying for alts using the above IP
-            for ( UUID altUuid : ApiNetuno.getInstance().getAltInfoLoader().queryAccounts( ip ) ) {
-                if ( altUuid.equals( pun.getPlayer().getUniqueId() ) == false ) {
-                    final OfflinePlayer alt = Bukkit.getOfflinePlayer( altUuid );
-                    NPunishment altPun = pun.copy();
-                    altPun.setId( -1 );
-                    altPun.setPlayer( alt );
-                    altPun.setReferencePunId( recentlyAddedId );
-                    NetunoPrePunishment altPrePun = new NetunoPrePunishment( altPun );
-                    altPrePun.executeAsReferencePunishment();
+            // Executing the punishment in the database
+            ApiNetuno.getData().getNetunoPuns().addPunishment( pun );
+
+            // Iterating through all the player's alts and adding reference punishments to them.
+            //      Also confirming the player's alt group is loaded in the cache.
+            //      Only if the punishment is an IP punishment.
+            if ( pun.getPunishmentType().isIpPunishment() ) {
+                final int recentlyAddedId = ApiNetuno.getData().getNetunoPuns().getRecentlyInsertedId();
+                if ( recentlyAddedId == -1 ) {
+                    CyberLogUtils.logError( "An error occurred while trying to get the most recently inserted ID, "
+                            + "so the reference punishment could not be added to the player's alts." );
+                    return;
                 }
-            }
-        }
 
-        // For unpunishments (unmutes, unbans, etc.), need to go through all their previous punishments of
-        //      the unpunishment type and set them as unactive.
-        if ( pun.getPunishmentType().hasNoReason() ) {
-            final PunishmentType unpunType = switch ( pun.getPunishmentType() ) {
-                case UNMUTE -> PunishmentType.MUTE;
-                case UNBAN -> PunishmentType.BAN;
-                case UNIPMUTE -> PunishmentType.IPMUTE;
-                case UNIPBAN -> PunishmentType.IPBAN;
-                default -> null;
-            };
-
-            if ( unpunType == null ) {
-                CyberLogUtils.logError( "An error occurred while trying to get the unpunishment type, "
-                        + "so the previous punishments could not be set as unactive." );
-                return;
-            }
-
-            // If the punishment type is an un IP punishment, need to go through all the player's alts
-            //      Otherwise just need to go through the player
-            if ( pun.getPunishmentType().isIpPunishment() == false ) {
-                final NetunoPlayer nPlayer = NetunoPlayerCache.forceLoad( pun.getPlayer() );
-                final List<NPunishment> puns = nPlayer.getPunishments().stream()
-                        .filter( playerPun -> playerPun.getPunishmentType() == unpunType && playerPun.isActive() )
-                        .collect( Collectors.toList() );
-                nPlayer.getPunishments().removeAll( puns );
-
-                puns.forEach( playerPun -> {
-                    playerPun.setActive( false );
-                    ApiNetuno.getData().getNetunoPuns().updatePunishment( playerPun );
-                } );
-            }
-
-            else {
                 // Getting an IP to query with
                 String ip = "";
                 if ( pun.getPlayer().isOnline() ) { ip = pun.getPlayer().getPlayer().getAddress().getAddress().getHostAddress(); }
@@ -136,38 +82,98 @@ public class NetunoPrePunishment implements NPrePunishment {
                     ip = entries.get( 0 ).getIp();
                 }
 
+                // Querying for alts using the above IP
                 for ( UUID altUuid : ApiNetuno.getInstance().getAltInfoLoader().queryAccounts( ip ) ) {
-                    final OfflinePlayer alt = Bukkit.getOfflinePlayer( altUuid );
-                    final NetunoPlayer nAlt = NetunoPlayerCache.forceLoad( alt );
-                    final List<NPunishment> puns = nAlt.getPunishments().stream()
+                    if ( altUuid.equals( pun.getPlayer().getUniqueId() ) == false ) {
+                        final OfflinePlayer alt = Bukkit.getOfflinePlayer( altUuid );
+                        NPunishment altPun = pun.copy();
+                        altPun.setId( -1 );
+                        altPun.setPlayer( alt );
+                        altPun.setReferencePunId( recentlyAddedId );
+                        NetunoPrePunishment altPrePun = new NetunoPrePunishment( altPun );
+                        altPrePun.executeAsReferencePunishment();
+                    }
+                }
+            }
+
+            // For unpunishments (unmutes, unbans, etc.), need to go through all their previous punishments of
+            //      the unpunishment type and set them as unactive.
+            if ( pun.getPunishmentType().hasNoReason() ) {
+                final PunishmentType unpunType = switch ( pun.getPunishmentType() ) {
+                    case UNMUTE -> PunishmentType.MUTE;
+                    case UNBAN -> PunishmentType.BAN;
+                    case UNIPMUTE -> PunishmentType.IPMUTE;
+                    case UNIPBAN -> PunishmentType.IPBAN;
+                    default -> null;
+                };
+
+                if ( unpunType == null ) {
+                    CyberLogUtils.logError( "An error occurred while trying to get the unpunishment type, "
+                            + "so the previous punishments could not be set as unactive." );
+                    return;
+                }
+
+                // If the punishment type is an un IP punishment, need to go through all the player's alts
+                //      Otherwise just need to go through the player
+                if ( pun.getPunishmentType().isIpPunishment() == false ) {
+                    final NetunoPlayer nPlayer = NetunoPlayerCache.forceLoad( pun.getPlayer() );
+                    final List<NPunishment> puns = nPlayer.getPunishments().stream()
                             .filter( playerPun -> playerPun.getPunishmentType() == unpunType && playerPun.isActive() )
                             .collect( Collectors.toList() );
-                    nAlt.getPunishments().removeAll( puns );
+                    nPlayer.getPunishments().removeAll( puns );
 
                     puns.forEach( playerPun -> {
                         playerPun.setActive( false );
                         ApiNetuno.getData().getNetunoPuns().updatePunishment( playerPun );
                     } );
                 }
-            }
-        }
 
-        // Kicking the player from the server if the punishment is a kick, ban, or ipban and the player is online
-        attemptKickPlayer();
-        // Sending the player a notification if the punishment is a warn, mute, unmute, ipmute, or unipmute and the player is online
-        attemptSendMessage();
-        // Sending the broadcasts
-        doBroadcasts( silent );
+                else {
+                    // Getting an IP to query with
+                    String ip = "";
+                    if ( pun.getPlayer().isOnline() ) { ip = pun.getPlayer().getPlayer().getAddress().getAddress().getHostAddress(); }
+                    else {
+                        List<UuidIpRecord> entries = new ArrayList<>( ApiNetuno.getData().getIpHistoryDatabase().queryByUuid( UUID.fromString( pun.getPlayerUuid() ) ) );
+                        ip = entries.get( 0 ).getIp();
+                    }
+
+                    for ( UUID altUuid : ApiNetuno.getInstance().getAltInfoLoader().queryAccounts( ip ) ) {
+                        final OfflinePlayer alt = Bukkit.getOfflinePlayer( altUuid );
+                        final NetunoPlayer nAlt = NetunoPlayerCache.forceLoad( alt );
+                        final List<NPunishment> puns = nAlt.getPunishments().stream()
+                                .filter( playerPun -> playerPun.getPunishmentType() == unpunType && playerPun.isActive() )
+                                .collect( Collectors.toList() );
+                        nAlt.getPunishments().removeAll( puns );
+
+                        puns.forEach( playerPun -> {
+                            playerPun.setActive( false );
+                            ApiNetuno.getData().getNetunoPuns().updatePunishment( playerPun );
+                        } );
+                    }
+                }
+            }
+
+            Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
+                // Kicking the player from the server if the punishment is a kick, ban, or ipban and the player is online
+                attemptKickPlayer();
+                // Sending the player a notification if the punishment is a warn, mute, unmute, ipmute, or unipmute and the player is online
+                attemptSendMessage();
+                // Sending the broadcasts
+                doBroadcasts( silent );
+            } );
+        } );
     }
 
     private void executeAsReferencePunishment() {
         // Executing the punishment in the database
         ApiNetuno.getData().getNetunoPuns().addPunishment( pun );
 
-        // Kicking the player from the server if the punishment is a kick, ban, or ipban and the player is online
-        attemptKickPlayer();
-        // Sending the player a notification if the punishment is a warn, mute, unmute, ipmute, or unipmute and the player is online
-        attemptSendMessage();
+        Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
+            // Kicking the player from the server if the punishment is a kick, ban, or ipban and the player is online
+            attemptKickPlayer();
+            // Sending the player a notification if the punishment is a warn, mute, unmute, ipmute, or unipmute and the player is online
+            attemptSendMessage();
+        } );
     }
 
     private void attemptKickPlayer() {
