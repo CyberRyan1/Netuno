@@ -107,18 +107,19 @@ public class ReportGUI implements Listener {
                 gui.addItem( new GuiItem( Material.LIGHT_GRAY_WOOL,
                         "&7" + reasons.get( reasonsIndex ), guiIndex, ( item ) -> {
 
+                    GuiItem guiItem = gui.getItem( item.getSlot() );
                     player.playSound( player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
 
-                    if ( item.getItem().getType() == Material.LIGHT_GRAY_WOOL ) {
+                    if ( guiItem.getItem().getType() == Material.LIGHT_GRAY_WOOL ) {
                         selections.add( reasons.get( finalReasonIndex ) );
-                        item.setItem( CyberItemUtils.createItem( Material.LIME_WOOL, "&a" + reasons.get( finalReasonIndex ) ) );
-                        gui.updateItem( item );
+                        guiItem.setItem( CyberItemUtils.createItem( Material.LIME_WOOL, "&a" + reasons.get( finalReasonIndex ) ) );
+                        gui.updateItem( guiItem );
                     }
 
-                    else if ( item.getItem().getType() == Material.LIME_WOOL ) {
+                    else if ( guiItem.getItem().getType() == Material.LIME_WOOL ) {
                         selections.remove( reasons.get( finalReasonIndex ) );
-                        item.setItem( CyberItemUtils.createItem( Material.LIGHT_GRAY_WOOL, "&7" + reasons.get( finalReasonIndex ) ) );
-                        gui.updateItem( item );
+                        guiItem.setItem( CyberItemUtils.createItem( Material.LIGHT_GRAY_WOOL, "&7" + reasons.get( finalReasonIndex ) ) );
+                        gui.updateItem( guiItem );
                     }
                 } ) );
 

@@ -52,7 +52,7 @@ public class MutePunishGUI {
     public void open() {
         Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
             gui.openInventory( this.staff );
-            gui.setCloseEvent( () -> {
+            gui.setCloseEvent( ( inventory ) -> {
                 ActiveGuiManager.attemptRemoveActiveGui( this.staff );
             } );
             ActiveGuiManager.addActiveGui( this.staff, this.target );
