@@ -1,24 +1,26 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.spigot.command.CyberSubCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentSubCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.netuno.guis.history.HistoryListGUI;
+import com.github.cyberryan1.netuno.models.commands.HelpableSubCommand;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class HistoryListSubcommand extends CyberSubCommand {
+public class HistoryListSubCommand extends HelpableSubCommand {
 
-    public HistoryListSubcommand() {
+    public HistoryListSubCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "list",
                 Settings.HISTORY_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),
-                "&8/&shistory &plist (player)"
+                "&8/&shistory &plist (player)",
+                "&sDisplays a player's history"
         );
 
         setDemandPlayer( true );

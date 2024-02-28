@@ -1,12 +1,12 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.spigot.command.CyberSubCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentSubCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.guis.history.HistoryEditGUI;
+import com.github.cyberryan1.netuno.models.commands.HelpableSubCommand;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
@@ -15,14 +15,16 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class HistoryEditSubcommand extends CyberSubCommand {
+public class HistoryEditSubCommand extends HelpableSubCommand {
 
-    public HistoryEditSubcommand() {
+    public HistoryEditSubCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "edit",
                 null,
                 Settings.PERM_DENIED_MSG.coloredString(),
-                "&8/&shistory &pedit (pun ID)"
+                "&8/&shistory &pedit (pun ID)",
+                "&sOpens a GUI to edit a punishment"
         );
 
         setDemandPlayer( true );

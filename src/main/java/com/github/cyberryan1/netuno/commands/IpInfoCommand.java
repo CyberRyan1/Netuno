@@ -1,10 +1,10 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.guis.ipinfo.AltsListGUI;
+import com.github.cyberryan1.netuno.models.commands.HelpableCommand;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
@@ -13,14 +13,18 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class IpInfoCommand extends CyberCommand {
+;
 
-    public IpInfoCommand() {
+public class IpInfoCommand extends HelpableCommand {
+
+    public IpInfoCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "ipinfo",
                 Settings.IPINFO_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&sipinfo &p(player)"
+                "&8/&sipinfo &p(player)",
+                "&sDisplays a player's known alt accounts"
         );
         register( true );
 

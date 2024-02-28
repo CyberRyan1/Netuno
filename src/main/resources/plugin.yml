@@ -30,3 +30,4 @@ commands:
     aliases: [pun, p]
   chatslow:
     aliases: [slowchat]
+  watchlist:

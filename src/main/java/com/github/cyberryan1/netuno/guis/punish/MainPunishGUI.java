@@ -82,20 +82,22 @@ public class MainPunishGUI {
         if ( silent.getIndex() != -1 ) {
             gui.addItem( new GuiItem( silent.getItem( this.target ), silent.getIndex(),
                     ( guiItem ) -> {
-                if ( guiItem.getType() == PunishSettings.MAIN_SILENT_NO_PERMS_BUTTON.mainButton().getItem( this.target ).getType() ) {
+                GuiItem clickedItem = gui.getItem( guiItem.getSlot() );
+
+                if ( clickedItem.getType() == PunishSettings.MAIN_SILENT_NO_PERMS_BUTTON.mainButton().getItem( this.target ).getType() ) {
                     return;
                 }
 
-                if ( guiItem.getType() == PunishSettings.MAIN_SILENT_DISABLED_BUTTON.mainButton().getItem( this.target ).getType() ) {
-                    guiItem.setItem( PunishSettings.MAIN_SILENT_ENABLED_BUTTON.mainButton().getItem( this.target ) );
+                if ( clickedItem.getType() == PunishSettings.MAIN_SILENT_DISABLED_BUTTON.mainButton().getItem( this.target ).getType() ) {
+                    clickedItem.setItem( PunishSettings.MAIN_SILENT_ENABLED_BUTTON.mainButton().getItem( this.target ) );
                     ActiveGuiManager.searchByStaff( this.staff ).ifPresent( gui -> gui.setSilent( true ) );
                 }
                 else {
-                    guiItem.setItem( PunishSettings.MAIN_SILENT_DISABLED_BUTTON.mainButton().getItem( this.target ) );
+                    clickedItem.setItem( PunishSettings.MAIN_SILENT_DISABLED_BUTTON.mainButton().getItem( this.target ) );
                     ActiveGuiManager.searchByStaff( this.staff ).ifPresent( gui -> gui.setSilent( false ) );
                 }
 
-                gui.updateItem( guiItem );
+                gui.updateItem( clickedItem );
             } ) );
         }
 
@@ -258,7 +260,7 @@ public class MainPunishGUI {
     public void open() {
         Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
             gui.openInventory( this.staff );
-            gui.setCloseEvent( () -> {
+            gui.setCloseEvent( ( inventory ) -> {
                 ActiveGuiManager.attemptRemoveActiveGui( this.staff );
             } );
             ActiveGuiManager.addActiveGui( this.staff, this.target );

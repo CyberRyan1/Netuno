@@ -489,6 +489,34 @@ reports:
   # Set to -1 to never delete (not recommended)
   delete-after: 48
 
+########################################
+#               Watchlist              #
+########################################
+
+# When a player says something that matches an item on the watchlist, it will be notified
+#   for staff to see easier. You can add a prefix to the message, as well as a sound to alert
+#   staff.
+watchlist:
+  # Permission to view the watchlist
+  view-perm: "netuno.chatmod.watchlist.view"
+  # Permission to edit the watchlist
+  edit-perm: "netuno.chatmod.watchlist.edit"
+
+  # Watchlist notifications
+  notifs:
+    # Permission to see/hear watchlist notifications
+    perm: "netuno.chatmod.watchlist.notifs"
+    # What to add as the prefix of the player's message
+    prefix: " &e&l⚠⚠⚠ &r"
+
+    # What sound to play
+    sound:
+      # If true, then a sound will play, otherwise no sound will be played
+      enabled: false
+      sound: "BLOCK_NOTE_BLOCK_IRON_XYLOPHONE"
+      volume: 10.0
+      pitch: 0.1
+
 #########################
 #       Punish GUI      #
 #########################

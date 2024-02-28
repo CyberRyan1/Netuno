@@ -1,25 +1,27 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.spigot.command.CyberSuperCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
+import com.github.cyberryan1.netuno.models.commands.HelpableSuperCommand;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 
 import java.util.List;
 
-public class HistorySupercommand extends CyberSuperCommand {
+public class HistorySuperCommand extends HelpableSuperCommand {
 
-    public HistorySupercommand() {
-        super( 
+    public HistorySuperCommand( int helpOrder ) {
+        super(
+                helpOrder,
                 "history",
                 Settings.HISTORY_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),
-                null 
+                null ,
+                null
         );
         register( true );
 
-        addSubCommand( new HistoryListSubcommand() );
-        addSubCommand( new HistoryEditSubcommand() );
-        addSubCommand( new HistoryResetSubcommand() );
+        addSubCommand( new HistoryListSubCommand( helpOrder + 10 ) );
+        addSubCommand( new HistoryEditSubCommand( helpOrder + 20 ) );
+        addSubCommand( new HistoryResetSubCommand( helpOrder + 30 ) );
 
         demandPermission( true );
         setMinArgLength( 2 );

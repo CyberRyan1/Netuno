@@ -6,16 +6,15 @@ import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
+import com.github.cyberryan1.netuno.utils.TextComponentUtils;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
 import com.github.cyberryan1.netunoapi.utils.PunishmentUtils;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -31,22 +30,24 @@ import java.util.stream.Collectors;
 public class JoinListener implements Listener {
 
     // Messages
-    private final String IPBAN_ATTEMPT = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ipban.attempt" ) );
-    private final String IPBAN_EXPIRE = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ipban.expire" ) );
-    private final String IPBAN_EXPIRE_STAFF = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ipban.expire-staff" ) );
+    private String IPBAN_ATTEMPT = null;
+    private String IPBAN_EXPIRE = null;
+    private String IPBAN_EXPIRE_STAFF = null;
 
-    private final String BAN_ATTEMPT = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ban.attempt" ) );
-    private final String BAN_EXPIRE = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ban.expire" ) );
-    private final String BAN_EXPIRE_STAFF = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ban.expire-staff" ) );
+    private String BAN_ATTEMPT = null;
+    private String BAN_EXPIRE = null;
+    private String BAN_EXPIRE_STAFF = null;
 
-    private final boolean IPINFO_NOTIFS_ENABLED = YMLUtils.getConfig().getBool( "ipinfo.notifs" );
-    private final String IPINFO_NOTIF_MSG = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ipinfo.notif-msg" ) );
-    private final String IPINFO_EXEMPT_PERM = YMLUtils.getConfig().getStr( "ipinfo.exempt-perm" );
-    private final String IPINFO_NOTIF_HOVER = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ipinfo.notif-hover" ) );
-    private final String IPINFO_PERM = YMLUtils.getConfig().getStr( "ipinfo.perm" );
+    private boolean IPINFO_NOTIFS_ENABLED = false;
+    private String IPINFO_NOTIF_MSG = null;
+    private String IPINFO_EXEMPT_PERM = null;
+    private String IPINFO_NOTIF_HOVER = null;
+    private String IPINFO_PERM = null;
 
     @EventHandler
     public void onPlayerJoin( AsyncPlayerPreLoginEvent event ) {
+        // Reloading the settings variables above, if needed
+        if ( IPBAN_ATTEMPT == null ) { reloadMessages(); }
         //
         // High priority things below here
         //
@@ -80,6 +81,7 @@ public class JoinListener implements Listener {
         // Getting all punishments from the alt group
         final List<NPunishment> activeAltPunishments = new ArrayList<>();
         for ( UUID altUuid : nPlayer.getAltAccounts() ) {
+            if ( altUuid.equals( event.getUniqueId() ) ) { continue; } // Ignoring any punishments that are on the player who is currently joining
             final NetunoPlayer altPlayer = NetunoPlayerCache.getOrLoad( altUuid.toString() );
             activeAltPunishments.addAll( altPlayer.getPunishments().stream()
                     .filter( pun -> pun.isActive() && pun.getReferencePunId() < 0 )
@@ -190,22 +192,30 @@ public class JoinListener implements Listener {
 
                 if ( CyberVaultUtils.hasPerms( player, IPINFO_EXEMPT_PERM ) == false ) {
                     if ( IPINFO_NOTIF_MSG != null ) {
-                        String coloredMsg = IPINFO_NOTIF_MSG.replace( "[TARGET]", player.getName() );
+//                        String coloredMsg = IPINFO_NOTIF_MSG.replace( "[TARGET]", player.getName() );
+//                        CyberLogUtils.logWarn( "1 coloredMsg == " + coloredMsg ); // ! debug
+//
+//                        // ? For some reason can send two blank lines, this is a "fix"
+//                        if ( coloredMsg.substring( coloredMsg.length() - 2 ).equals( "\n\n" ) ) {
+//                            coloredMsg = coloredMsg.substring( 0, coloredMsg.length() - 2 ) + "\n";
+//                        }
+//
+//                        CyberLogUtils.logWarn( "2 coloredMsg == " + coloredMsg ); // ! debug
 
-                        // ? For some reason can send two blank lines, this is a "fix"
-                        if ( coloredMsg.substring( coloredMsg.length() - 2 ).equals( "\n\n" ) ) {
-                            coloredMsg = coloredMsg.substring( 0, coloredMsg.length() - 2 ) + "\n";
-                        }
+//                        TextComponent message = new TextComponent( coloredMsg );
+                        TextComponent message = TextComponentUtils.toTextComponent( IPINFO_NOTIF_MSG.replace( "[TARGET]", player.getName() ) );
+                        message = message.clickEvent( ClickEvent.clickEvent( ClickEvent.Action.RUN_COMMAND, "/ipinfo " + player.getName() ) );
+                        // Unable to add the hover event because I don't know how haha
 
-                        TextComponent message = new TextComponent( coloredMsg );
-                        message.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/ipinfo " + player.getName() ) );
-
-                        if ( IPINFO_NOTIF_HOVER.isBlank() == false ) {
-                            String hoverColoredMsg = IPINFO_NOTIF_HOVER.replace( "[TARGET]", player.getName() );
-                            ComponentBuilder hoverText = new ComponentBuilder( hoverColoredMsg );
-                            message.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, hoverText.create() ) );
-                        }
-
+//                        message.clickEvent( new ClickE
+//                        message.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/ipinfo " + player.getName() ) );
+//
+//                        if ( IPINFO_NOTIF_HOVER.isBlank() == false ) {
+//                            String hoverColoredMsg = IPINFO_NOTIF_HOVER.replace( "[TARGET]", player.getName() );
+//                            ComponentBuilder hoverText = new ComponentBuilder( hoverColoredMsg );
+//                            message.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, hoverText.create() ) );
+//                        }
+//
                         // Figuring out if a sound will be played for the alt alert or not
                         boolean sendSound = false;
                         if ( Settings.IPINFO_NOTIFS_SOUND_ENABLED.bool() ) {
@@ -231,11 +241,12 @@ public class JoinListener implements Listener {
                         }
 
                         final boolean finalSendSound = sendSound;
+                        final TextComponent finalMsg = message;
                         Bukkit.getScheduler().runTaskLater( CyberCore.getPlugin(), () -> {
                             final List<Player> sendingSounds = new ArrayList<>();
                             for ( Player p : Bukkit.getOnlinePlayers() ) {
                                 if ( CyberVaultUtils.hasPerms( p, IPINFO_PERM ) ) {
-                                    p.spigot().sendMessage( message );
+                                    p.sendMessage( finalMsg );
                                     if ( finalSendSound ) {
                                         p.playSound( p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BIT, 1, 1 );
                                         sendingSounds.add( p );
@@ -282,5 +293,21 @@ public class JoinListener implements Listener {
                 }
             }, 90L );
         }
+    }
+
+    private void reloadMessages() {
+        IPBAN_ATTEMPT = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ipban.attempt" ) );
+        IPBAN_EXPIRE = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ipban.expire" ) );
+        IPBAN_EXPIRE_STAFF = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ipban.expire-staff" ) );
+
+        BAN_ATTEMPT = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ban.attempt" ) );
+        BAN_EXPIRE = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ban.expire" ) );
+        BAN_EXPIRE_STAFF = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ban.expire-staff" ) );
+
+        IPINFO_NOTIFS_ENABLED = YMLUtils.getConfig().getBool( "ipinfo.notifs" );
+        IPINFO_NOTIF_MSG = Utils.getCombinedString( YMLUtils.getConfig().getStrList( "ipinfo.notif-msg" ) );
+        IPINFO_EXEMPT_PERM = YMLUtils.getConfig().getStr( "ipinfo.exempt-perm" );
+        IPINFO_NOTIF_HOVER = Utils.getCombinedString( YMLUtils.getConfig().getColoredStrList( "ipinfo.notif-hover" ) );
+        IPINFO_PERM = YMLUtils.getConfig().getStr( "ipinfo.perm" );
     }
 }

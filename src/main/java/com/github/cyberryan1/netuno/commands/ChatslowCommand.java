@@ -1,25 +1,29 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.netuno.managers.ChatslowManager;
+import com.github.cyberryan1.netuno.models.commands.HelpableCommand;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
-public class ChatslowCommand extends CyberCommand {
+;
 
-    public ChatslowCommand() {
+public class ChatslowCommand extends HelpableCommand {
+
+    public ChatslowCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "chatslow",
                 Settings.CHATSLOW_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),
-                null
+                "&8/&schatslow &p(get/set) [amount]",
+                "&sGets or sets the current chatslow"
         );
         register( true );
 

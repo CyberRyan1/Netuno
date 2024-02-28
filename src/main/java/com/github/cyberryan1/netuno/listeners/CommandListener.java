@@ -2,7 +2,7 @@ package com.github.cyberryan1.netuno.listeners;
 
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
-import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
+import com.github.cyberryan1.netunoapi.models.players.NPlayer;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,8 +15,8 @@ public class CommandListener implements Listener {
 
     @EventHandler
     public void onPlayerCommand( PlayerCommandPreprocessEvent event ) {
-        List<NPunishment> punishments = ApiNetuno.getData().getPun().getPunishments( event.getPlayer() );
-        boolean anyActive = punishments.stream()
+        NPlayer nPlayer = ApiNetuno.getInstance().getPlayerLoader().load( event.getPlayer() );
+        boolean anyActive = nPlayer.getPunishments().stream()
                 .anyMatch( pun -> pun.isActive()
                         && ( pun.getPunishmentType() == PunishmentType.MUTE || pun.getPunishmentType() == PunishmentType.IPMUTE )
                 );

@@ -1,8 +1,8 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
+import com.github.cyberryan1.netuno.models.commands.HelpableCommand;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
@@ -10,14 +10,18 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class ClearchatCommand extends CyberCommand {
+;
 
-    public ClearchatCommand() {
+public class ClearchatCommand extends HelpableCommand {
+
+    public ClearchatCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "clearchat",
                 Settings.CLEARCHAT_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),
-                "&8/&sclearchat"
+                "&8/&sclearchat",
+                "&sClears the chat"
         );
         register( false );
 
