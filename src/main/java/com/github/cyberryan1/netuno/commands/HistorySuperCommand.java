@@ -6,9 +6,9 @@ import com.github.cyberryan1.netuno.utils.settings.Settings;
 
 import java.util.List;
 
-public class HistorySupercommand extends HelpableSuperCommand {
+public class HistorySuperCommand extends HelpableSuperCommand {
 
-    public HistorySupercommand( int helpOrder ) {
+    public HistorySuperCommand( int helpOrder ) {
         super( 
                 "history",
                 Settings.HISTORY_PERMISSION.string(),
@@ -17,9 +17,9 @@ public class HistorySupercommand extends HelpableSuperCommand {
         );
         register( true );
 
-        addSubCommand( new HistoryListSubcommand( helpOrder + 10 ) );
-        addSubCommand( new HistoryEditSubcommand( helpOrder + 20 ) );
-        addSubCommand( new HistoryResetSubcommand( helpOrder + 30 ) );
+        addSubCommand( new HistoryListSubCommand( helpOrder + 10 ) );
+        addSubCommand( new HistoryEditSubCommand( helpOrder + 20 ) );
+        addSubCommand( new HistoryResetSubCommand( helpOrder + 30 ) );
 
         demandPermission( true );
         setMinArgLength( 2 );

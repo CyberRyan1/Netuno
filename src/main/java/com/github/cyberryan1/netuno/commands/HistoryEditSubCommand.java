@@ -15,9 +15,9 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class HistoryEditSubcommand extends HelpableSubCommand {
+public class HistoryEditSubCommand extends HelpableSubCommand {
 
-    public HistoryEditSubcommand( int helpOrder ) {
+    public HistoryEditSubCommand( int helpOrder ) {
         super(
                 "edit",
                 null,

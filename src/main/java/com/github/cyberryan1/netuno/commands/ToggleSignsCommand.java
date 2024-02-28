@@ -12,9 +12,9 @@ import java.util.List;
 
 ;
 
-public class TogglesignsCommand extends HelpableCommand {
+public class ToggleSignsCommand extends HelpableCommand {
 
-    public TogglesignsCommand( int helpOrder ) {
+    public ToggleSignsCommand( int helpOrder ) {
         super(
                 "togglesigns",
                 Settings.SIGN_NOTIFS_PERMISSION.string(),

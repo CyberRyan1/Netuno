@@ -6,9 +6,9 @@ import com.github.cyberryan1.netuno.utils.settings.Settings;
 
 import java.util.List;
 
-public class WatchlistCommand extends HelpableSuperCommand {
+public class WatchlistSuperCommand extends HelpableSuperCommand {
 
-    public WatchlistCommand( int helpOrder ) {
+    public WatchlistSuperCommand( int helpOrder ) {
         super(
                 "watchlist",
                 Settings.WATCHLIST_VIEW_PERMISSION.string(),

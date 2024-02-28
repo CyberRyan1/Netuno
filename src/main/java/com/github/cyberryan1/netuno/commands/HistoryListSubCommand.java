@@ -11,9 +11,9 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class HistoryListSubcommand extends HelpableSubCommand {
+public class HistoryListSubCommand extends HelpableSubCommand {
 
-    public HistoryListSubcommand( int helpOrder ) {
+    public HistoryListSubCommand( int helpOrder ) {
         super(
                 "list",
                 Settings.HISTORY_PERMISSION.string(),

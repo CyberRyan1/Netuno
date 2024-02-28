@@ -14,9 +14,9 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class HistoryResetSubcommand extends HelpableSubCommand {
+public class HistoryResetSubCommand extends HelpableSubCommand {
 
-    public HistoryResetSubcommand( int helpOrder ) {
+    public HistoryResetSubCommand( int helpOrder ) {
         super(
                 "reset",
                 Settings.HISTORY_RESET_PERMISSION.string(),

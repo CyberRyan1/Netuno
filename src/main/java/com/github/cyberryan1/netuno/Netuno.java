@@ -110,7 +110,7 @@ public final class Netuno extends JavaPlugin {
         registeredCommands.add( new NetunoCommand() );
 
         registeredCommands.add( new PunishCommand( 100 ) );
-        registeredCommands.add( new HistorySupercommand( 200 ) ); // Subcommands of this take up
+        registeredCommands.add( new HistorySuperCommand( 200 ) ); // Subcommands of this take up
                                                                             // 210, 220, and 230
 
         registeredCommands.add( new WarnCommand( 300 ) );
@@ -132,10 +132,10 @@ public final class Netuno extends JavaPlugin {
         registeredCommands.add( new ClearchatCommand( 1700 ) );
         registeredCommands.add( new ChatslowCommand( 1800 ) );
 
-        registeredCommands.add( new WatchlistCommand( 1900 ) ); // Subcommands of this take up
+        registeredCommands.add( new WatchlistSuperCommand( 1900 ) ); // Subcommands of this take up
                                                                             // 1910, 1920, and 1930
 
-        registeredCommands.add( new TogglesignsCommand( 2000 ) );
+        registeredCommands.add( new ToggleSignsCommand( 2000 ) );
     }
 
     private void registerEvents() {
