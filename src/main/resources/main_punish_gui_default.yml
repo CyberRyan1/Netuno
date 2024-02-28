@@ -1,0 +1,111 @@
+########################################
+#                Netuno                #
+#         Developer: CyberRyan         #
+#    Discord: discord.gg/8gxG4KfvBK    #
+#        Main Punish GUI Config        #
+########################################
+
+# This GUI is what you see when you run the /punish (player) commands
+
+# Helpful links:
+# List of all materials: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+# Inventory slots to indexes: https://proxy.spigotmc.org/ca33289f0d69cf685454fd6d4843cd392b5572c3?url=http%3A%2F%2Fi.imgur.com%2Flr41ykP.png
+
+# Variables that can be used throughout this config file:
+# [TARGET] = Player being punished
+
+main-gui:
+  # Inventory indexes: starts at 0, ends at 44 (5 rows total)
+  # (note: index = slot in the inventory)
+
+  # Name of the inventory
+  inventory-name: "&7Punishing &6[TARGET]"
+
+  # Target skull
+  skull:
+    # Index in the gui
+    # Set to -1 to not show this item
+    index: -1
+    # Item name
+    name: "&6[TARGET]"
+
+  # History button
+  # This just forces the staff to execute "/history (target name)"
+  history:
+    index: 13
+    name: "&f&lHISTORY &7[TARGET]"
+    # Type of the item (see list of all materials above)
+    item: WHITE_CONCRETE
+
+  # Alts button
+  # This just forces the staff to execute "/ipinfo (target name)"
+  alts:
+    index: -1
+    name: "&7&lALTS &7[TARGET]"
+    item: LIGHT_GRAY_CONCRETE
+
+  # Silent button
+  # This makes the next punishment executed through the GUI silent
+  # Will only show up if the player has permission to execute silent punishments
+  # IMPORTANT NOTE: setting these all to the same item material will cause errors
+  silent:
+    index: 22
+
+    # The item that shows when the player has enabled the silent button
+    true:
+      name: "&7&lSILENT &aEnabled"
+      item: LIME_DYE
+
+    # The item that shows when the player has disabled the silent button
+    false:
+      name: "&7&lSILENT &cDisabled"
+      item: RED_DYE
+
+    # The item that shows when the player doesn't have permission to execute silent punishments
+    no-perms:
+      name: "&7"
+      item: GRAY_STAINED_GLASS_PANE
+
+  # Warn button
+  warn:
+    index: 21
+    name: "&a&lWARN &7[TARGET]"
+    item: LIME_CONCRETE
+
+  # Mute button
+  mute:
+    index: 23
+    name: "&e&lMUTE &7[TARGET]"
+    item: YELLOW_CONCRETE
+
+  # Ban button
+  ban:
+    index: 29
+    name: "&6&lBAN &7[TARGET]"
+    item: ORANGE_CONCRETE
+
+  # IP Mute button
+  ipmute:
+    index: 31
+    name: "&c&lIPMUTE &7[TARGET]"
+    item: RED_CONCRETE
+
+  # IP Ban button
+  ipban:
+    index: 33
+    name: "&c&lIPBAN &7[TARGET]"
+    item: BLACK_CONCRETE
+
+  # Already Being Punished button replacement
+  # This replaces the warn, mute, ban, ipmute, and ipban buttons if the target is currently being punished by another staff
+  # For example, if the staff member "staffOne" is trying to warn "playerOne" but "staffTwo" is already in the warns
+  #     section for "playerOne", then the warn button will be replaced with this button
+  already-being-punished:
+    # Available variables:
+    #    [TYPE] = punishment type (e.g. "warned", "muted", etc.)
+    #    [STAFF] = staff member who is currently punishing the target
+
+    name: "" # Set to nothing to not replace the name of the button
+    lore: "&cThis player is already being [TYPE] by [STAFF]" # Set to nothing for no lore on the item
+    item: AIR # Set to AIR to not replace the item of the button
+    enchant-glow: true # Set to true to add an enchant glow to the item

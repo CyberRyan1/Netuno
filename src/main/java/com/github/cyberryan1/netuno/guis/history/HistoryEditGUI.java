@@ -1,61 +1,56 @@
 package com.github.cyberryan1.netuno.guis.history;
 
-import com.github.cyberryan1.netuno.classes.Punishment;
-import com.github.cyberryan1.netuno.guis.events.GUIEventInterface;
-import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
-import com.github.cyberryan1.netuno.guis.events.GUIEventType;
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.gui.Gui;
+import com.github.cyberryan1.cybercore.spigot.gui.GuiItem;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberGuiUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
+import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.guis.utils.GUIUtils;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
-import com.github.cyberryan1.netuno.utils.Time;
-import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.VaultUtils;
-import com.github.cyberryan1.netuno.utils.database.Database;
-import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
+import com.github.cyberryan1.netunoapi.events.history.HistoryEditAction;
+import com.github.cyberryan1.netunoapi.events.history.NetunoHistoryEditEvent;
+import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
+import com.github.cyberryan1.netunoapi.utils.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
-public class HistoryEditGUI implements Listener {
+public class HistoryEditGUI {
 
-    private final Database DATA = Utils.getDatabase();
-
-    private final Inventory GUI;
+    private final Gui gui;
     private final OfflinePlayer target;
     private final Player staff;
-    private final Punishment punishment;
+    private final NPunishment punishment;
 
     private boolean editingLength = false;
     private boolean editingReason = false;
 
-    public HistoryEditGUI( OfflinePlayer target, Player staff, int punID ) {
+    public HistoryEditGUI( OfflinePlayer target, Player staff, int punId ) {
         this.target = target;
         this.staff = staff;
+        this.punishment = ApiNetuno.getData().getNetunoPuns().getPunishment( punId );
 
-        Punishment workingWith;
-        if ( DATA.checkPunIDExists( punID ) ) { punishment = DATA.getPunishment( punID ); }
-        // else is an ip punishment
-        else { punishment = DATA.getIPPunishment( punID ); }
-
-        String guiName = Utils.getColored( "&hEdit Punishment &g#" + punID );
-        GUI = Bukkit.createInventory( null, 54, guiName );
+        this.gui = new Gui( "&sEdit Punishment &p#" + punId, 6, CyberGuiUtils.getBackgroundGlass() );
         insertItems();
+    }
 
-        GUIEventManager.addEvent( this );
+    public HistoryEditGUI( OfflinePlayer target, Player staff, NPunishment punishment ) {
+        this.target = target;
+        this.staff = staff;
+        this.punishment = punishment;
+
+        this.gui = new Gui( "&sEdit Punishment &p#" + punishment.getId(), 6, CyberGuiUtils.getBackgroundGlass() );
+        insertItems();
     }
 
     public void insertItems() {
-        // glass: everything else
-        // pun info sign: 13
+        // info: 13
         // back to history list: 49
         // unpunish layout:
         //      delete punishment barrier: 31
@@ -65,169 +60,127 @@ public class HistoryEditGUI implements Listener {
         //      edit length clock: 29 || edit reason paper: 31
         //      delete punishment barrier: 33
 
-        ItemStack items[] = new ItemStack[54];
-        for ( int index = 0; index < items.length; index++ ) {
-            items[index] = GUIUtils.getBackgroundGlass();
+        // Punishment Info
+        gui.addItem( new GuiItem( GUIUtils.getPunishmentItem( punishment ), 13 ) );
+
+        if ( punishment.getPunishmentType().hasNoReason() ) {
+            // Delete Punishment
+            gui.addItem( getDeleteBarrier( 31 ) );
         }
 
-        items[13] = punishment.getPunishmentAsItem();
+        else if ( punishment.getPunishmentType().hasNoLength() || punishment.isActive() == false ) {
+            // Edit Reason
+            gui.addItem( getEditReasonPaper( 30 ) );
+            // Delete Punishment
+            gui.addItem( getDeleteBarrier( 32 ) );
+        }
 
-        if ( punishment.checkIsUnpunish() ) {
-            items[31] = GUIUtils.createItem( Material.BARRIER, "&hDelete punishment" );
-        }
-        else if ( punishment.checkHasNoTime() || punishment.getActive() == false ) {
-            items[30] = GUIUtils.createItem( Material.PAPER, "&hEdit reason" );
-            items[32] = GUIUtils.createItem( Material.BARRIER, "&hDelete punishment" );
-        }
         else {
-            items[29] = GUIUtils.setItemName( GUIUtils.getItemForVersion( "CLOCK", "WATCH" ), "&hEdit length" );
-            items[31] = GUIUtils.createItem( Material.PAPER, "&hEdit reason" );
-            items[33] = GUIUtils.createItem( Material.BARRIER, "&hDelete punishment" );
+            // Edit Length
+            gui.addItem( getEditLengthClock( 29 ) );
+            // Edit Reason
+            gui.addItem( getEditReasonPaper( 31 ) );
+            // Delete Punishment
+            gui.addItem( getDeleteBarrier( 33 ) );
         }
-
-        items[49] = GUIUtils.createItem( Material.ARROW, "&hGo back" );
-        GUI.setContents( items );
     }
 
-    public void openInventory( Player player ) {
-        player.openInventory( GUI );
-    }
-
-    @GUIEventInterface( type = GUIEventType.INVENTORY_CLICK )
-    public void onInventoryClick( InventoryClickEvent event ) {
-        if ( event.getWhoClicked().getName().equals( staff.getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&hEdit Punishment &g#" + punishment.getID() ) ) == false ) { return; }
-
-        event.setCancelled( true );
-        if ( event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER ) { return; }
-
-        ItemStack itemClicked = event.getCurrentItem();
-        if ( itemClicked == null || itemClicked.getType() == Material.AIR ) { return; }
-        String itemName = itemClicked.getItemMeta().getDisplayName();
-        if ( itemName.equals( Utils.getColored( "&hEdit length" ) ) == false
-            && itemName.equals( Utils.getColored( "&hEdit reason" ) ) == false
-            && itemName.equals( Utils.getColored( "&hDelete punishment" ) ) == false
-            && itemName.equals( Utils.getColored( "&hGo back" ) ) == false ) { return; }
-
-        if ( itemClicked.equals( GUIUtils.setItemName( GUIUtils.getItemForVersion( "CLOCK", "WATCH" ), "&hEdit length" ) ) ) {
-            if ( VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "history.time.perm" ) ) == false ) {
-                CommandErrors.sendInvalidPerms( staff );
-            }
-
-            else if ( editingLength == false ) {
-                event.getWhoClicked().closeInventory();
-                event.getWhoClicked().sendMessage( Utils.getColored( "&hPlease type the new length for punishment &g#" + punishment.getID() ) );
-                event.getWhoClicked().sendMessage( Utils.getColored( "&hTo cancel, type &g\"cancel\"" ) );
-                editingLength = true;
-            }
-        }
-
-        else if ( itemClicked.equals( GUIUtils.createItem( Material.PAPER, "&hEdit reason" ) ) ) {
-            if ( VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "history.reason.perm" ) ) == false ) {
-                CommandErrors.sendInvalidPerms( staff );
-            }
-
-            else if ( editingReason == false ) {
-                event.getWhoClicked().closeInventory();
-                event.getWhoClicked().sendMessage( Utils.getColored( "&hPlease type the new reason for punishment &g#" + punishment.getID() ) );
-                event.getWhoClicked().sendMessage( Utils.getColored( "&hTo cancel, type &g\"cancel\"" ) );
-                editingReason = true;
-            }
-        }
-
-        else if ( itemClicked.equals( GUIUtils.createItem( Material.BARRIER, "&hDelete punishment" ) ) ) {
-            if ( VaultUtils.hasPerms( staff, YMLUtils.getConfig().getStr( "history.delete.perm" ) ) == false ) {
-                CommandErrors.sendInvalidPerms( staff );
-            }
-
-            else {
-                event.getWhoClicked().closeInventory(); // like this close inventory here, helps prevent accidental deletes
-                HistoryDeleteConfirmGUI deleteGUI = new HistoryDeleteConfirmGUI( target, staff, punishment );
-                deleteGUI.openInventory( staff );
-                staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
-            }
-        }
-
-        else if ( itemClicked.equals( GUIUtils.createItem( Material.ARROW, "&hGo back" ) ) ) {
-            event.getWhoClicked().closeInventory();
-            HistoryListGUI gui = new HistoryListGUI( target, staff, 1 );
+    public void open() {
+        Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
             gui.openInventory( staff );
-            staff.playSound( staff.getLocation(), GUIUtils.getSoundForVersion( "BLOCK_DISPENSER_FAIL", "NOTE_PLING" ), 10, 2 );
+        } );
+    }
 
-            GUIEventManager.removeEvent( this );
+    public void onReasonEditInput( String newReason ) {
+        HistoryEditManager.removeEditing( staff );
+        editingReason = false;
+        if ( newReason.equalsIgnoreCase( "cancel" ) == false ) {
+            NPunishment oldPun = punishment.copy();
+            punishment.setReason( newReason );
+            ApiNetuno.getData().getNetunoPuns().updatePunishment( punishment );
+
+            ApiNetuno.getInstance().getEventDispatcher().dispatch( new NetunoHistoryEditEvent( oldPun, punishment, staff, HistoryEditAction.EDIT_REASON ) );
         }
 
+        HistoryEditGUI newGui = new HistoryEditGUI( target, staff, punishment );
+        newGui.open();
     }
 
-    @GUIEventInterface( type = GUIEventType.INVENTORY_DRAG )
-    public void onInventoryDrag( InventoryDragEvent event ) {
-        if ( event.getWhoClicked().getName().equals( staff.getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&hEdit Punishment &g#" + punishment.getID() ) ) == false ) { return; }
+    public void onLengthEditInput( String newLength ) {
+        HistoryEditManager.removeEditing( staff );
+        editingLength = false;
+        if ( newLength.equalsIgnoreCase( "cancel" ) == false ) {
+            if ( TimeUtils.isAllowableLength( newLength ) ) {
+                NPunishment oldPun = punishment.copy();
+                punishment.setLength( TimeUtils.durationFromUnformatted( newLength ).timestamp() );
+                ApiNetuno.getData().getNetunoPuns().updatePunishment( punishment );
 
-        event.setCancelled( true );
-    }
-
-    @GUIEventInterface( type = GUIEventType.INVENTORY_CLOSE )
-    public void onInventoryClose( InventoryCloseEvent event ) {
-        if ( event.getPlayer().getName().equals( staff.getName() ) == false ) { return; }
-        if ( event.getView().getTitle().equals( Utils.getColored( "&hEdit Punishment &g#" + punishment.getID() ) ) == false ) { return; }
-
-        if ( editingLength == false || editingReason == false ) { return; }
-
-        GUIEventManager.removeEvent( this );
-    }
-
-    @GUIEventInterface( type = GUIEventType.PLAYER_CHAT )
-    public void onPlayerChatEvent( PlayerChatEvent event ) {
-        if ( event.getPlayer().getName().equals( staff.getName() ) == false ) { return; }
-        if ( editingLength ) {
-            event.setCancelled( true );
-
-            if ( event.getMessage().equalsIgnoreCase( "cancel" ) ) {
-                HistoryEditGUI newGUI = new HistoryEditGUI( target, event.getPlayer(), punishment.getID() );
-                newGUI.openInventory( event.getPlayer() );
-                editingLength = false;
+                ApiNetuno.getInstance().getEventDispatcher().dispatch( new NetunoHistoryEditEvent( oldPun, punishment, staff, HistoryEditAction.EDIT_LENGTH ) );
             }
+            else {
+                CommandErrors.sendInvalidTimespan( staff, newLength );
+                HistoryEditManager.addEditing( staff, this );
+                editingLength = true;
+                CyberMsgUtils.sendMsg( staff, "&sTry again, or type &p\"cancel\"&s to cancel" );
+                return;
+            }
+        }
 
-            else if ( Time.isAllowableLength( event.getMessage() ) ) {
-                punishment.setLength( Time.getTimestampFromLength( event.getMessage() ) );
-                DATA.setPunishmentLength( punishment.getID(), punishment.getLength() );
+        HistoryEditGUI newGui = new HistoryEditGUI( target, staff, punishment );
+        newGui.open();
+    }
 
-                GUIEventManager.removeEvent( this );
-                HistoryEditGUI newGUI = new HistoryEditGUI( target, event.getPlayer(), punishment.getID() );
-                newGUI.openInventory( event.getPlayer() );
-                editingLength = false;
+    private GuiItem getDeleteBarrier( int slot ) {
+        return new GuiItem( CyberItemUtils.createItem( Material.BARRIER, "&sDelete Punishment" ), slot, ( item ) -> {
+            staff.closeInventory();
+
+            if ( CyberVaultUtils.hasPerms( staff, Settings.HISTORY_DELETE_PERMISSION.string() ) ) {
+                HistoryDeleteConfirmGUI deleteGui = new HistoryDeleteConfirmGUI( target, staff, punishment );
+                deleteGui.open();
+                staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
             }
 
             else {
-                CommandErrors.sendInvalidTimespan( event.getPlayer(), event.getMessage() );
-                event.getPlayer().sendMessage( Utils.getColored( "&hTry again, or say &g\"cancel\"&h to cancel" ) );
+                CyberMsgUtils.sendMsg( staff, Settings.PERM_DENIED_MSG.string() );
             }
-        }
-
-        else if ( editingReason ) {
-            event.setCancelled( true );
-
-            if ( event.getMessage().equalsIgnoreCase( "cancel" ) == false ) {
-                punishment.setReason( event.getMessage() );
-                DATA.setPunishmentReason( punishment.getID(), punishment.getReason() );
-            }
-
-            GUIEventManager.removeEvent( this );
-            HistoryEditGUI newGUI = new HistoryEditGUI( target, event.getPlayer(), punishment.getID() );
-            newGUI.openInventory( event.getPlayer() );
-            editingReason = false;
-        }
+        } );
     }
 
-    @GUIEventInterface( type = GUIEventType.PLAYER_COMMAND )
-    public void onPlayerCommand( PlayerCommandPreprocessEvent event ) {
-        if ( event.getPlayer().getName().equals( staff.getName() ) == false ) { return; }
-        if ( editingLength || editingReason ) {
-            editingLength = false;
-            editingReason = false;
-            event.getPlayer().sendMessage( Utils.getColored( "&hThe punishment edit has been cancelled" ) );
-            GUIEventManager.removeEvent( this );
-        }
+    private GuiItem getEditReasonPaper( int slot ) {
+        return new GuiItem( CyberItemUtils.createItem( Material.PAPER, "&sEdit Reason" ), slot, ( item ) -> {
+            HistoryEditManager.addEditing( staff, this );
+            staff.closeInventory();
+            editingReason = true;
+            CyberMsgUtils.sendMsg( staff, "&sPlease enter the new reason for punishment &p#" + punishment.getId() );
+            CyberMsgUtils.sendMsg( staff, "&sTo cancel, type &p\"cancel\"" );
+            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+        } );
     }
+
+    private GuiItem getEditLengthClock( int slot ) {
+        return new GuiItem( CyberItemUtils.createItem( Material.CLOCK, "&sEdit Length" ), slot, ( item ) -> {
+            HistoryEditManager.addEditing( staff, this );
+            staff.closeInventory();
+            editingLength = true;
+            CyberMsgUtils.sendMsg( staff, "&sPlease enter the new length for punishment &p#" + punishment.getId() );
+            CyberMsgUtils.sendMsg( staff, "&sTo cancel, type &p\"cancel\"" );
+            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+        } );
+    }
+
+    //
+    // Getters & Setters
+    //
+
+    public OfflinePlayer getTarget() { return target; }
+
+    public Player getStaff() { return staff; }
+
+    public boolean isEditingLength() { return editingLength; }
+
+    public boolean isEditingReason() { return editingReason; }
+
+    public void setEditingLength( boolean editingLength ) { this.editingLength = editingLength; }
+
+    public void setEditingReason( boolean editingReason ) { this.editingReason = editingReason; }
 }

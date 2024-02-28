@@ -1,0 +1,209 @@
+########################################
+#                Netuno                #
+#         Developer: CyberRyan         #
+#    Discord: discord.gg/8gxG4KfvBK    #
+#          IP Ban GUI Config           #
+########################################
+
+# This GUI is what you see when you click on the IP ban button in the punish GUI
+
+# Helpful links:
+# List of all materials: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+# Inventory slots to indexes: https://proxy.spigotmc.org/ca33289f0d69cf685454fd6d4843cd392b5572c3?url=http%3A%2F%2Fi.imgur.com%2Flr41ykP.png
+
+# Variables that can be used throughout this config file:
+# [TARGET] = Player being punished
+# [PREVIOUS] = Number of previous offenses the player has for a particular punishment
+
+ipban-gui:
+  # <!> IMPORTANT- NEW PUNISHMENT CONFIG FORMAT <!>
+  # Below is the NEW format for punishments in the GUI.
+  # It is NOT backwards compatible with the old format.
+  # Netuno no longer supports the old format used in 1.4.2-BETA or earlier.
+  # Switching to this new format should be easy, though.
+
+  # You can customize each punishment and add new punishments to suite your needs.
+  # To do so, just copy and paste the example format below, and remove the comments (hashtags).
+  # Maximum of 18 punishments per GUI.
+  # The size of the GUI will be automatically calculated based off the indexes of the punishments.
+  # The index of the punishment is the key of the punishment in this config file.
+  # The reason for each punishment is the name of the item, without the colors.
+  #       Example: if the item name is "&eSpam", then the punishment reason is "Spam"
+  # To not display a punishment item, set the material to AIR.
+  # Note that the format for a punishment in this GUI is different from the format of a punishment in the warn GUI.
+  # Here's the format for a punishment (what each line means is explained in further below):
+  #  INDEX_HERE:
+  #    item-name: "hi"
+  #    item-lore: "something"
+  #    item-material: GREEN_WOOL
+  #    starting-time: 30m
+  #    autoscale: true
+
+  # Name of the GUI
+  # Note: you cannot use the [PREVIOUS] variable in the name of the inventory
+  inventory_name: "&c&lIPBAN &7[TARGET]"
+  # Permission to open this GUI
+  # Set to "" for no permission needed
+  permission: ""
+
+  # Settings for the IP ban GUI
+  settings:
+
+    # When you use HIGHEST_MUTED_ALT as a starting time for a GUI punishment, the length of the IP ban can be one of two things:
+    #    a) the length of the longest mute of the player's alts
+    #    b) the length of the longest remaining mute of the player's alts
+    #
+    # Example for option a):
+    #    Player A has 2 alts, Player B, who is muted for 1 day, and Player C, who is muted for 2 days.
+    #    All accounts will be IP banned for 2 days, because the longest mute is from Player C, who is muted for 2 days.
+    # Example for option b):
+    #    Player A has 2 alts, Player B, who is muted for 1 day, and Player C, who is muted for 2 days.
+    #    Player B has 12 hours remaining on their mute, and Player C has 6 hours remaining on their mute.
+    #    All accounts will be IP banned for 12 hours, because the longest remaining mute is from Player B, who has 12 hours remaining on their mute.
+    #
+    # To use option a, set this to LENGTH_STANDARD.
+    # To use option b, set this to LENGTH_REMAINING.
+    highest-muted-alt-length: LENGTH_STANDARD
+
+    # Similar to the highest-muted-alt-length setting above, but with bans instead of mutes
+    # To use option a, set this to LENGTH_STANDARD.
+    # To use option b, set this to LENGTH_REMAINING.
+    highest-banned-alt-length: LENGTH_STANDARD
+
+  # The index of the punishment item
+  10:
+    # Name of the item
+    item-name: ""
+    # Lore of the item
+    # Set to "" for no lore
+    item-lore: ""
+    # Material of the item
+    material: AIR
+    # The starting time
+    # For the IP mute and IP ban GUIs, you can set this to "HIGHEST_MUTED_ALT" or "HIGHEST_BANNED_ALT"
+    #   to get the highest length of a mute/ban an alt of the target has.
+    #   HIGHEST_MUTED_ALT = highest length of a muted alt
+    #   HIGHEST_BANNED_ALT = highest length of a banned alt
+    starting-time: 1m
+    # Whether to autoscale the punishment length or not
+    # For example, if you set the starting-time to 30m, the second warn will result in a 30 minute mute, the third mute will result in a 60 minute mute, and so on
+    autoscale: true
+
+  11:
+    item-name: "&eBan Evasion"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: YELLOW_WOOL
+    starting-time: HIGHEST_BANNED_ALT
+    autoscale: true
+
+  12:
+    item-name: "&6Chargeback"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: ORANGE_WOOL
+    starting-time: forever
+    autoscale: true
+
+  14:
+    item-name: "&3Large Amount of Bans"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: CYAN_WOOL
+    starting-time: forever
+    autoscale: true
+
+  15:
+    item-name: "&cBlacklisted"
+    item-lore: "&7Offenses: &6[PREVIOUS]"
+    material: RED_WOOL
+    starting-time: forever
+    autoscale: true
+
+  16:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  19:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  20:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  21:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  23:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  24:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  25:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  28:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  29:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  30:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  32:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  33:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true
+
+  34:
+    item-name: ""
+    item-lore: ""
+    material: AIR
+    starting-time: 1m
+    autoscale: true

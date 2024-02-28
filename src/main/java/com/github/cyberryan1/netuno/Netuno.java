@@ -2,23 +2,34 @@ package com.github.cyberryan1.netuno;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
-import com.github.cyberryan1.cybercore.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.command.CyberSubCommand;
+import com.github.cyberryan1.cybercore.spigot.command.CyberSuperCommand;
+import com.github.cyberryan1.cybercore.spigot.command.settings.BaseCommand;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
+import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.commands.*;
-import com.github.cyberryan1.netuno.guis.events.GUIEventManager;
+import com.github.cyberryan1.netuno.guis.history.HistoryEditManager;
 import com.github.cyberryan1.netuno.listeners.*;
 import com.github.cyberryan1.netuno.managers.ChatslowManager;
+import com.github.cyberryan1.netuno.managers.WatchlistManager;
 import com.github.cyberryan1.netuno.skriptelements.conditions.RegisterConditions;
 import com.github.cyberryan1.netuno.skriptelements.expressions.RegisterExpressions;
-import com.github.cyberryan1.netuno.utils.Utils;
-import com.github.cyberryan1.netuno.utils.VaultUtils;
-import com.github.cyberryan1.netuno.utils.database.Database;
-import com.github.cyberryan1.netuno.utils.database.sql.SQL;
-import com.github.cyberryan1.netuno.utils.database.sqlite.SQLite;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
+import com.github.cyberryan1.netunoapi.NetunoApi;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+/** Note about the below TODO list: it is EXTREMELY outdated. It is here
+ * mostly as a... memorial piece? I guess that's a good way to put it. idk lol
+ */
 /* notes in to do:
     - ! = bug needs to be fixed
     - * = working on
@@ -35,10 +46,9 @@ import java.io.IOException;
 // ? TODO add a way to convert vanilla bans to netuno bans
 public final class Netuno extends JavaPlugin {
 
-    private ChatslowManager chatslowManager;
+    public static final List<BaseCommand> registeredCommands = new ArrayList<>();
 
-    private Utils util;
-    private VaultUtils vaultUtils;
+    private ChatslowManager chatslowManager;
 
     // Skript
     public SkriptAddon addon;
@@ -48,14 +58,21 @@ public final class Netuno extends JavaPlugin {
     public void onEnable() {
         // Initialize things
         CyberCore.setPlugin( this );
-        util = new Utils(this );
-        vaultUtils = new VaultUtils();
+        new CyberVaultUtils();
 
         // Update/reload config files
-        YMLUtils.getConfig().getYMLManager().initialize();
+        YMLUtils.initializeConfigs();
 
-        setupDatabase();
+        // Set the primary & secondary colors from the config
+        CyberColorUtils.setPrimaryColor( Settings.PRIMARY_COLOR.string() );
+        CyberColorUtils.setSecondaryColor( Settings.SECONDARY_COLOR.string() );
+
+        ApiNetuno.setupInstance();
+        this.getServer().getServicesManager().register( NetunoApi.class, ApiNetuno.getInstance(), this, ServicePriority.Highest );
         chatslowManager = new ChatslowManager();
+
+        // Setup the watchlist manager
+        WatchlistManager.initialize();
 
         registerSkript();
         registerCommands();
@@ -64,16 +81,11 @@ public final class Netuno extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        Utils.getDatabase().close();
-    }
+        // Save the watchlist
+        WatchlistManager.save();
 
-    private void setupDatabase() {
-        new SQL();
-        if ( SQL.isEnabled() == false ) {
-            new SQLite( this );
-        }
-
-        Utils.setDatabase( new Database( this ) );
+        this.getServer().getServicesManager().unregister( NetunoApi.class, ApiNetuno.getInstance() );
+        ApiNetuno.deleteInstance();
     }
 
     private void registerSkript() {
@@ -82,97 +94,58 @@ public final class Netuno extends JavaPlugin {
             try {
                 addon.loadClasses( "com.github.cyberryan1", "skriptelements" );
             } catch ( IOException e ) {
-                Utils.logWarn( "Could not enable as a skript addon, will still enable without this syntax!" );
+                CyberLogUtils.logWarn( "Could not enable as a skript addon, will still enable without this syntax!" );
                 enabled = false;
             }
-            Utils.logInfo( "Successfully enabled as a skript addon" );
+            CyberLogUtils.logInfo( "Successfully enabled as a skript addon" );
             RegisterExpressions.register();
             RegisterConditions.register();
         } catch ( NoClassDefFoundError error ) {
-            Utils.logWarn( "Could not enable as a skript addon, will still enable without this syntax!" );
+            CyberLogUtils.logWarn( "Could not enable as a skript addon, will still enable without this syntax!" );
             enabled = false;
         }
     }
 
     private void registerCommands() {
-        NetunoCmd netunoCmd = new NetunoCmd();
-        this.getCommand( "netuno" ).setExecutor( netunoCmd );
-        this.getCommand( "netuno" ).setTabCompleter( netunoCmd );
+        // Note: this is order in the same order the /netuno help command should show them
+        // Lower helpOrder variables -> will be shown first
+        registeredCommands.add( new NetunoCommand() );
 
-        Kick kick = new Kick();
-        this.getCommand( "kick" ).setExecutor( kick );
-        this.getCommand( "kick" ).setTabCompleter( kick );
+        registeredCommands.add( new PunishCommand( 100 ) );
+        registeredCommands.add( new HistorySuperCommand( 200 ) ); // Subcommands of this take up
+                                                                            // 210, 220, and 230
 
-        Warn warn = new Warn();
-        this.getCommand( "warn" ).setExecutor( warn );
-        this.getCommand( "warn" ).setTabCompleter( warn );
+        registeredCommands.add( new WarnCommand( 300 ) );
+        registeredCommands.add( new KickCommand( 400 ) );
+        registeredCommands.add( new MuteCommand( 500 ) );
+        registeredCommands.add( new UnmuteCommand( 600 ) );
+        registeredCommands.add( new BanCommand( 700 ) );
+        registeredCommands.add( new UnbanCommand( 800 ) );
+        registeredCommands.add( new IpMuteCommand( 900 ) );
+        registeredCommands.add( new UnIpmuteCommand( 1000 ) );
+        registeredCommands.add( new IpBanCommand( 1100 ) );
+        registeredCommands.add( new UnIpbanCommand( 1200 ) );
+        registeredCommands.add( new IpInfoCommand( 1300 ) );
 
-        Mute mute = new Mute();
-        this.getCommand( "mute" ).setExecutor( mute );
-        this.getCommand( "mute" ).setTabCompleter( mute );
+        registeredCommands.add( new ReportCommand( 1400 ) );
+        registeredCommands.add( new ReportsCommand( 1500 ) );
 
-        Unmute unmute = new Unmute();
-        this.getCommand( "unmute" ).setExecutor( unmute );
-        this.getCommand( "unmute" ).setTabCompleter( unmute );
+        registeredCommands.add( new MutechatCommand( 1600 ) );
+        registeredCommands.add( new ClearchatCommand( 1700 ) );
+        registeredCommands.add( new ChatslowCommand( 1800 ) );
 
-        Ban ban = new Ban();
-        this.getCommand( "ban" ).setExecutor( ban );
-        this.getCommand( "ban" ).setTabCompleter( ban );
+        registeredCommands.add( new WatchlistSuperCommand( 1900 ) ); // Subcommands of this take up
+                                                                            // 1910, 1920, and 1930
 
-        Unban unban = new Unban();
-        this.getCommand( "unban" ).setExecutor( unban );
-        this.getCommand( "unban" ).setTabCompleter( unban );
+        registeredCommands.add( new ToggleSignsCommand( 2000 ) );
 
-        IPInfo ipinfo = new IPInfo();
-        this.getCommand( "ipinfo" ).setExecutor( ipinfo );
-        this.getCommand( "ipinfo" ).setTabCompleter( ipinfo );
-
-        IPMute ipmute = new IPMute();
-        this.getCommand( "ipmute" ).setExecutor( ipmute );
-        this.getCommand( "ipmute" ).setTabCompleter( ipmute );
-
-        UnIPMute unipmute = new UnIPMute();
-        this.getCommand( "unipmute" ).setExecutor( unipmute );
-        this.getCommand( "unipmute" ).setTabCompleter( unipmute );
-
-        IPBan ipban = new IPBan();
-        this.getCommand( "ipban" ).setExecutor( ipban );
-        this.getCommand( "ipban" ).setTabCompleter( ipban );
-
-        UnIPBan unipban = new UnIPBan();
-        this.getCommand( "unipban" ).setExecutor( unipban );
-        this.getCommand( "unipban" ).setTabCompleter( unipban );
-
-        History history = new History();
-        this.getCommand( "history" ).setExecutor( history );
-        this.getCommand( "history" ).setTabCompleter( history );
-
-        Togglesigns togglesigns = new Togglesigns();
-        this.getCommand( "togglesigns" ).setExecutor( togglesigns );
-        this.getCommand( "togglesigns" ).setTabCompleter( togglesigns );
-
-        Mutechat mutechat = new Mutechat();
-        this.getCommand( "mutechat" ).setExecutor( mutechat );
-        this.getCommand( "mutechat" ).setTabCompleter( mutechat );
-
-        Clearchat clearchat = new Clearchat();
-        this.getCommand( "clearchat" ).setExecutor( clearchat );
-
-        Reports reports = new Reports();
-        this.getCommand( "reports" ).setExecutor( reports );
-        this.getCommand( "reports" ).setTabCompleter( reports );
-
-        Report report = new Report();
-        this.getCommand( "report" ).setExecutor( report );
-        this.getCommand( "report" ).setTabCompleter( report );
-
-        Punish punish = new Punish();
-        this.getCommand( "punish" ).setExecutor( punish );
-        this.getCommand( "punish" ).setTabCompleter( punish );
-
-        Chatslow chatslow = new Chatslow();
-        this.getCommand( "chatslow" ).setExecutor( chatslow );
-        this.getCommand( "chatslow" ).setTabCompleter( chatslow );
+        // Registering all subcommands of each supercommands
+        List<CyberSubCommand> toRegister = new ArrayList<>();
+        for ( BaseCommand cmd : registeredCommands ) {
+            if ( cmd instanceof CyberSuperCommand == false ) { continue; }
+            toRegister.addAll( ( ( CyberSuperCommand ) cmd ).getSubCommandList() );
+        }
+        registeredCommands.addAll( toRegister );
     }
 
     private void registerEvents() {
@@ -180,7 +153,7 @@ public final class Netuno extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents( new ChatListener(), this );
         this.getServer().getPluginManager().registerEvents( new LeaveListener(), this );
         this.getServer().getPluginManager().registerEvents( new SignChangeListener(), this );
-        this.getServer().getPluginManager().registerEvents( new GUIEventManager(), this );
         this.getServer().getPluginManager().registerEvents( new CommandListener(), this );
+        this.getServer().getPluginManager().registerEvents( new HistoryEditManager(), this );
     }
 }

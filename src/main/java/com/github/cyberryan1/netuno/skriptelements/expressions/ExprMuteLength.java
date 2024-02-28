@@ -3,15 +3,16 @@ package com.github.cyberryan1.netuno.skriptelements.expressions;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import com.github.cyberryan1.netuno.classes.Punishment;
+import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.skriptelements.expressions.types.StringExpression;
-import com.github.cyberryan1.netuno.utils.Time;
-import com.github.cyberryan1.netuno.utils.Utils;
+import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
+import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
+import com.github.cyberryan1.netunoapi.utils.PunishmentUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Event;
 import org.eclipse.jdt.annotation.Nullable;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ExprMuteLength extends StringExpression {
 
@@ -29,17 +30,12 @@ public class ExprMuteLength extends StringExpression {
     protected String[] get( Event event ) {
         OfflinePlayer p = player.getSingle( event );
         if ( p != null ) {
-            ArrayList<Punishment> punishments = Utils.getDatabase().getPunishment( p.getUniqueId().toString(), "mute", true );
+            List<NPunishment> punishments = ApiNetuno.getData().getPun().getPunishments( p );
             if ( punishments.size() == 0 ) { return null; }
 
-            Punishment highest = punishments.get( 0 );
-            for ( Punishment pun : punishments ) {
-                if ( pun.getExpirationDate() > highest.getExpirationDate() ) {
-                    highest = pun;
-                }
-            }
-
-            return new String[] { Time.getLengthFromTimestamp( highest.getLength() ) };
+            NPunishment highest = PunishmentUtils.getHighestActive( punishments, PunishmentType.MUTE );
+            if ( highest == null ) { return null; }
+            return new String[] { highest.getLengthRemaining().asFullLength() };
         }
         return null;
     }
