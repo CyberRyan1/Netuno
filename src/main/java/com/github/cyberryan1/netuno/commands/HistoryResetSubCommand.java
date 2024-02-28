@@ -18,6 +18,7 @@ public class HistoryResetSubCommand extends HelpableSubCommand {
 
     public HistoryResetSubCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "reset",
                 Settings.HISTORY_RESET_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),

@@ -14,6 +14,7 @@ public class WatchlistAddSubCommand extends HelpableSubCommand {
 
     public WatchlistAddSubCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "add",
                 Settings.WATCHLIST_EDIT_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),

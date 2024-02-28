@@ -18,6 +18,7 @@ public class ChatslowCommand extends HelpableCommand {
 
     public ChatslowCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "chatslow",
                 Settings.CHATSLOW_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),

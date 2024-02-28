@@ -22,6 +22,7 @@ public class UnmuteCommand extends HelpableCommand {
 
     public UnmuteCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "unmute",
                 Settings.UNMUTE_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),

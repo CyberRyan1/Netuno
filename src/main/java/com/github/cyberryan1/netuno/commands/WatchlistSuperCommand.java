@@ -10,6 +10,7 @@ public class WatchlistSuperCommand extends HelpableSuperCommand {
 
     public WatchlistSuperCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "watchlist",
                 Settings.WATCHLIST_VIEW_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),

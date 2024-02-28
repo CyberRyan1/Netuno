@@ -23,6 +23,7 @@ public class MuteCommand extends HelpableCommand {
 
     public MuteCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "mute",
                 Settings.MUTE_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),

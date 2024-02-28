@@ -19,6 +19,7 @@ public class IpInfoCommand extends HelpableCommand {
 
     public IpInfoCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "ipinfo",
                 Settings.IPINFO_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),

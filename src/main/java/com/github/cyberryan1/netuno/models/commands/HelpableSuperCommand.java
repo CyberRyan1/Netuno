@@ -6,16 +6,19 @@ public abstract class HelpableSuperCommand extends CyberSuperCommand implements 
 
     private int helpOrder = -1; // -1 means it will be skipped
 
-    public HelpableSuperCommand( String name, String permission, String permissionMsg, String usage ) {
+    public HelpableSuperCommand( int helpOrder, String name, String permission, String permissionMsg, String usage ) {
         super( name, permission, permissionMsg, usage );
+        this.helpOrder = helpOrder;
     }
 
-    public HelpableSuperCommand( String name, String permission, String usage ) {
+    public HelpableSuperCommand( int helpOrder, String name, String permission, String usage ) {
         super( name, permission, usage );
+        this.helpOrder = helpOrder;
     }
 
-    public HelpableSuperCommand( String name, String usage ) {
+    public HelpableSuperCommand( int helpOrder, String name, String usage ) {
         super( name, usage );
+        this.helpOrder = helpOrder;
     }
 
     protected void setHelpOrder( int helpOrder ) { this.helpOrder = helpOrder; }

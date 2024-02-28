@@ -22,6 +22,7 @@ public class UnIpbanCommand extends HelpableCommand {
 
     public UnIpbanCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "unipban",
                 Settings.UNIPBAN_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),

@@ -18,6 +18,7 @@ public class PunishCommand extends HelpableCommand {
 
     public PunishCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "punish",
                 Settings.PUNISH_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),

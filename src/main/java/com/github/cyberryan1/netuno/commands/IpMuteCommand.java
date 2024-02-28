@@ -23,6 +23,7 @@ public class IpMuteCommand extends HelpableCommand {
 
     public IpMuteCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "ipmute",
                 Settings.IPMUTE_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),

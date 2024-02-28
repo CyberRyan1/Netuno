@@ -20,6 +20,7 @@ public class KickCommand extends HelpableCommand {
 
     public KickCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "kick",
                 Settings.KICK_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),

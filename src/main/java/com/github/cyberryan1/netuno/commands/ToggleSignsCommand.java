@@ -16,6 +16,7 @@ public class ToggleSignsCommand extends HelpableCommand {
 
     public ToggleSignsCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "togglesigns",
                 Settings.SIGN_NOTIFS_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),

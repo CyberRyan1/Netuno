@@ -8,16 +8,19 @@ public abstract class HelpableCommand extends CyberCommand implements GenericHel
 
     private int helpOrder = -1; // -1 means it will be skipped
 
-    public HelpableCommand( String name, String permission, String permissionMsg, String usage ) {
+    public HelpableCommand( int helpOrder, String name, String permission, String permissionMsg, String usage ) {
         super( name, permission, permissionMsg, usage );
+        this.helpOrder = helpOrder;
     }
 
-    public HelpableCommand( String name, String permission, String usage ) {
+    public HelpableCommand( int helpOrder, String name, String permission, String usage ) {
         super( name, permission, usage );
+        this.helpOrder = helpOrder;
     }
 
-    public HelpableCommand( String name, String usage ) {
+    public HelpableCommand( int helpOrder, String name, String usage ) {
         super( name, usage );
+        this.helpOrder = helpOrder;
     }
 
     protected void setHelpOrder( int helpOrder ) { this.helpOrder = helpOrder; }

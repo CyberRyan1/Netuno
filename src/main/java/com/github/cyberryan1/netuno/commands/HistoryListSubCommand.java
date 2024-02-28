@@ -15,6 +15,7 @@ public class HistoryListSubCommand extends HelpableSubCommand {
 
     public HistoryListSubCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "list",
                 Settings.HISTORY_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),

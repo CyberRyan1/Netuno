@@ -23,6 +23,7 @@ public class BanCommand extends HelpableCommand {
 
     public BanCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "ban",
                 Settings.BAN_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),

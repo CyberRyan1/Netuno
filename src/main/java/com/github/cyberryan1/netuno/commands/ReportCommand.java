@@ -16,6 +16,7 @@ public class ReportCommand extends HelpableCommand {
 
     public ReportCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "report",
                 Settings.REPORT_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),

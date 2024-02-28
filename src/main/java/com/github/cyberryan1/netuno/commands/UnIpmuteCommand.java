@@ -22,6 +22,7 @@ public class UnIpmuteCommand extends HelpableCommand {
 
     public UnIpmuteCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "unipmute",
                 Settings.UNIPMUTE_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),

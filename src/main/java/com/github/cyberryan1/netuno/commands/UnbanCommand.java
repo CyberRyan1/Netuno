@@ -22,6 +22,7 @@ public class UnbanCommand extends HelpableCommand {
 
     public UnbanCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "unban",
                 Settings.UNBAN_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),

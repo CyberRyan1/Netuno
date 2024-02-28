@@ -9,7 +9,8 @@ import java.util.List;
 public class HistorySuperCommand extends HelpableSuperCommand {
 
     public HistorySuperCommand( int helpOrder ) {
-        super( 
+        super(
+                helpOrder,
                 "history",
                 Settings.HISTORY_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),

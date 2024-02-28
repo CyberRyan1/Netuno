@@ -21,6 +21,7 @@ public class MutechatCommand extends HelpableCommand {
 
     public MutechatCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "mutechat",
                 Settings.MUTECHAT_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),

@@ -20,6 +20,7 @@ public class WarnCommand extends HelpableCommand {
 
     public WarnCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "warn",
                 Settings.WARN_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),

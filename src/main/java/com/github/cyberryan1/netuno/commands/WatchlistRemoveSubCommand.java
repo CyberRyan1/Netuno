@@ -14,6 +14,7 @@ public class WatchlistRemoveSubCommand extends HelpableSubCommand {
 
     public WatchlistRemoveSubCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "remove",
                 Settings.WATCHLIST_EDIT_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),

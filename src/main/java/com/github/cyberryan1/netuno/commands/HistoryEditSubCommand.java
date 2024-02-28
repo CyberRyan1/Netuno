@@ -19,6 +19,7 @@ public class HistoryEditSubCommand extends HelpableSubCommand {
 
     public HistoryEditSubCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "edit",
                 null,
                 Settings.PERM_DENIED_MSG.coloredString(),

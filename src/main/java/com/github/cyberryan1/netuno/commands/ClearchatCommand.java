@@ -16,6 +16,7 @@ public class ClearchatCommand extends HelpableCommand {
 
     public ClearchatCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "clearchat",
                 Settings.CLEARCHAT_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),

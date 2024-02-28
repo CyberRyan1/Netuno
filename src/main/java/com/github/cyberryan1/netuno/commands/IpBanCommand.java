@@ -23,6 +23,7 @@ public class IpBanCommand extends HelpableCommand {
 
     public IpBanCommand( int helpOrder ) {
         super(
+                helpOrder,
                 "ipban",
                 Settings.IPBAN_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
