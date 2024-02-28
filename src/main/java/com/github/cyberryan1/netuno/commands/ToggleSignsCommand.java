@@ -20,7 +20,8 @@ public class ToggleSignsCommand extends HelpableCommand {
                 "togglesigns",
                 Settings.SIGN_NOTIFS_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&stogglesigns &p[enable/disable]"
+                "&8/&stogglesigns &p[enable/disable]",
+                "&sToggles whether you see sign notifications or not"
         );
         register( true );
 

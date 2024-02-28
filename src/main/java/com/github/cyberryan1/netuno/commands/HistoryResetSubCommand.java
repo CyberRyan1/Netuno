@@ -22,7 +22,8 @@ public class HistoryResetSubCommand extends HelpableSubCommand {
                 "reset",
                 Settings.HISTORY_RESET_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&shistory &preset (player)"
+                "&8/&shistory &preset (player)",
+                "&sResets a player's history"
         );
 
         setDemandPermission( true );

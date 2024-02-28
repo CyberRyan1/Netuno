@@ -24,7 +24,8 @@ public class KickCommand extends HelpableCommand {
                 "kick",
                 Settings.KICK_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&skick &p(player) (reason) [-s]"
+                "&8/&skick &p(player) (reason) [-s]",
+                "&sKicks a player"
         );
         register( true );
 

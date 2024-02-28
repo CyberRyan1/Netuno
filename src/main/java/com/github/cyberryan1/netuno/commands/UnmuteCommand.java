@@ -26,7 +26,8 @@ public class UnmuteCommand extends HelpableCommand {
                 "unmute",
                 Settings.UNMUTE_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&sunmute &p(player)"
+                "&8/&sunmute &p(player)",
+                "&sUnmutes a player"
         );
         register( true );
 

@@ -26,7 +26,8 @@ public class UnIpbanCommand extends HelpableCommand {
                 "unipban",
                 Settings.UNIPBAN_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&sunipban &p(player)"
+                "&8/&sunipban &p(player)",
+                "&sUnbans all known accounts of a player"
         );
         register( true );
 

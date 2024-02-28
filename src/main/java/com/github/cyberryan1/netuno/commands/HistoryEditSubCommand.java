@@ -23,7 +23,8 @@ public class HistoryEditSubCommand extends HelpableSubCommand {
                 "edit",
                 null,
                 Settings.PERM_DENIED_MSG.coloredString(),
-                "&8/&shistory &pedit (pun ID)"
+                "&8/&shistory &pedit (pun ID)",
+                "&sOpens a GUI to edit a punishment"
         );
 
         setDemandPlayer( true );

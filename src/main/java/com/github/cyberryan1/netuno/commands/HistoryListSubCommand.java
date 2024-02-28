@@ -19,7 +19,8 @@ public class HistoryListSubCommand extends HelpableSubCommand {
                 "list",
                 Settings.HISTORY_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),
-                "&8/&shistory &plist (player)"
+                "&8/&shistory &plist (player)",
+                "&sDisplays a player's history"
         );
 
         setDemandPlayer( true );

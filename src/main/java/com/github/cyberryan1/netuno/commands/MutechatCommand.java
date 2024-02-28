@@ -25,7 +25,8 @@ public class MutechatCommand extends HelpableCommand {
                 "mutechat",
                 Settings.MUTECHAT_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&smutechat &p[toggle/enable/disable/status]"
+                "&8/&smutechat &p[toggle/enable/disable/status]",
+                "&sMutes the chat or displays whether the chat is muted"
         );
         register( true );
 

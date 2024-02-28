@@ -27,7 +27,8 @@ public class MuteCommand extends HelpableCommand {
                 "mute",
                 Settings.MUTE_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&smute &p(player) (length/forever) (reason) [-s]"
+                "&8/&smute &p(player) (length/forever) (reason) [-s]",
+                "&sMutes a player"
         );
         register( true );
 

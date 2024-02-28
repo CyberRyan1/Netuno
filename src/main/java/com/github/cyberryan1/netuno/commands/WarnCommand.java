@@ -24,7 +24,8 @@ public class WarnCommand extends HelpableCommand {
                 "warn",
                 Settings.WARN_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&swarn &p(player) (reason) [-s]"
+                "&8/&swarn &p(player) (reason) [-s]",
+                "&sWarns a player"
         );
         register( true );
 

@@ -27,7 +27,8 @@ public class BanCommand extends HelpableCommand {
                 "ban",
                 Settings.BAN_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),
-                "&8/&sban &p(player) (length/forever) (reason) [-s]"
+                "&8/&sban &p(player) (length/forever) (reason) [-s]",
+                "&sBans a player"
         );
         register( true );
 

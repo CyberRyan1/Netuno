@@ -14,7 +14,8 @@ public class HistorySuperCommand extends HelpableSuperCommand {
                 "history",
                 Settings.HISTORY_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),
-                null 
+                null ,
+                null
         );
         register( true );
 

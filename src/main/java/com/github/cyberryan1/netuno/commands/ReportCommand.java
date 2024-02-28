@@ -20,7 +20,8 @@ public class ReportCommand extends HelpableCommand {
                 "report",
                 Settings.REPORT_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&sreport &p(player)"
+                "&8/&sreport &p(player)",
+                "&sReports a player"
         );
         register( true );
 

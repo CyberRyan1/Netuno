@@ -23,7 +23,8 @@ public class IpInfoCommand extends HelpableCommand {
                 "ipinfo",
                 Settings.IPINFO_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&sipinfo &p(player)"
+                "&8/&sipinfo &p(player)",
+                "&sDisplays a player's known alt accounts"
         );
         register( true );
 

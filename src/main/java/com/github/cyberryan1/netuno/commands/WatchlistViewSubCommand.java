@@ -18,7 +18,8 @@ public class WatchlistViewSubCommand extends HelpableSubCommand {
                 "view",
                 Settings.WATCHLIST_VIEW_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),
-                "&8/&swatchlist &pview (regex/word)"
+                "&8/&swatchlist &pview (word/regex)",
+                "&sShows the words/regex patterns on the watchlist"
         );
 
         setDemandPermission( true );

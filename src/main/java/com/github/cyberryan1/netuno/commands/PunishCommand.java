@@ -22,7 +22,8 @@ public class PunishCommand extends HelpableCommand {
                 "punish",
                 Settings.PUNISH_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&spunish &p(player)"
+                "&8/&spunish &p(player)",
+                "&sOpens a GUI to punish a player"
         );
         register( true );
 

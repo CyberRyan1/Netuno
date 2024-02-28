@@ -15,8 +15,6 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-;
-
 public class IpMuteCommand extends HelpableCommand {
 
     private static final List<String> suggestedTimes = List.of( "15m", "1h", "12h", "1d", "3d", "1w", "forever" );
@@ -27,7 +25,8 @@ public class IpMuteCommand extends HelpableCommand {
                 "ipmute",
                 Settings.IPMUTE_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&sipmute &p(player) (length/forever) (reason) [-s]"
+                "&8/&sipmute &p(player) (length/forever) (reason) [-s]",
+                "&sMutes all known accounts of a player"
         );
         register( true );
 

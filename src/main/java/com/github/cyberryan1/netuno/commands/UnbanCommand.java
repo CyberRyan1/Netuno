@@ -26,7 +26,8 @@ public class UnbanCommand extends HelpableCommand {
                 "unban",
                 Settings.UNBAN_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&sunban &p(player)"
+                "&8/&sunban &p(player)",
+                "&sUnbans a player"
         );
         register( true );
 

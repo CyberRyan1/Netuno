@@ -26,7 +26,8 @@ public class UnIpmuteCommand extends HelpableCommand {
                 "unipmute",
                 Settings.UNIPMUTE_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&sunipmute &p(player)"
+                "&8/&sunipmute &p(player)",
+                "&sUnmutes all known accounts of a player"
         );
         register( true );
 

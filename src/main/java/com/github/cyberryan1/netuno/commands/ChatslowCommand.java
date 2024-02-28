@@ -22,7 +22,8 @@ public class ChatslowCommand extends HelpableCommand {
                 "chatslow",
                 Settings.CHATSLOW_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),
-                null
+                "&8/&schatslow &p(get/set) [amount]",
+                "&sGets or sets the current chatslow"
         );
         register( true );
 

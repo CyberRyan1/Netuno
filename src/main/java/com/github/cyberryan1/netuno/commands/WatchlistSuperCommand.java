@@ -14,6 +14,7 @@ public class WatchlistSuperCommand extends HelpableSuperCommand {
                 "watchlist",
                 Settings.WATCHLIST_VIEW_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),
+                null,
                 null
         );
         register( true );

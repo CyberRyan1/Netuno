@@ -21,7 +21,8 @@ public class ReportsCommand extends HelpableCommand {
                 "reports",
                 Settings.REPORT_VIEW_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&sreports &p[player]"
+                "&8/&sreports &p[player]",
+                "&sSee all reports or reports on a specific player"
         );
         register( true );
 

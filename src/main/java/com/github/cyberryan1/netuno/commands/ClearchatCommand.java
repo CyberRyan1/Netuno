@@ -20,7 +20,8 @@ public class ClearchatCommand extends HelpableCommand {
                 "clearchat",
                 Settings.CLEARCHAT_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),
-                "&8/&sclearchat"
+                "&8/&sclearchat",
+                "&sClears the chat"
         );
         register( false );
 

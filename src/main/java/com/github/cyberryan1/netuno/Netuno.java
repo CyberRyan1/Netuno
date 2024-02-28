@@ -3,6 +3,8 @@ package com.github.cyberryan1.netuno;
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
 import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.command.CyberSubCommand;
+import com.github.cyberryan1.cybercore.spigot.command.CyberSuperCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.BaseCommand;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
@@ -136,6 +138,14 @@ public final class Netuno extends JavaPlugin {
                                                                             // 1910, 1920, and 1930
 
         registeredCommands.add( new ToggleSignsCommand( 2000 ) );
+
+        // Registering all subcommands of each supercommands
+        List<CyberSubCommand> toRegister = new ArrayList<>();
+        for ( BaseCommand cmd : registeredCommands ) {
+            if ( cmd instanceof CyberSuperCommand == false ) { continue; }
+            toRegister.addAll( ( ( CyberSuperCommand ) cmd ).getSubCommandList() );
+        }
+        registeredCommands.addAll( toRegister );
     }
 
     private void registerEvents() {

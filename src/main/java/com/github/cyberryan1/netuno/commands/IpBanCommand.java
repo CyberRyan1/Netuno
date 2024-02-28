@@ -27,7 +27,8 @@ public class IpBanCommand extends HelpableCommand {
                 "ipban",
                 Settings.IPBAN_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.string(),
-                "&8/&sipban &p(player) (length/forever) (reason) [-s]"
+                "&8/&sipban &p(player) (length/forever) (reason) [-s]",
+                "&sBans all known accounts of a player"
         );
         register( true );
 
