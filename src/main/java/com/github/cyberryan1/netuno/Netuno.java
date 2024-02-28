@@ -25,6 +25,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Note about the below TODO list: it is EXTREMELY outdated. It is here
+ * mostly as a... memorial piece? I guess that's a good way to put it. idk lol
+ */
 /* notes in to do:
     - ! = bug needs to be fixed
     - * = working on
