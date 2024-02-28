@@ -1,18 +1,18 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.spigot.command.CyberSubCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentSubCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.netuno.managers.WatchlistManager;
+import com.github.cyberryan1.netuno.models.commands.HelpableSubCommand;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 
 import java.util.List;
 
-public class WatchlistViewSubCommand extends CyberSubCommand {
+public class WatchlistViewSubCommand extends HelpableSubCommand {
 
-    public WatchlistViewSubCommand() {
+    public WatchlistViewSubCommand( int helpOrder ) {
         super(
                 "view",
                 Settings.WATCHLIST_VIEW_PERMISSION.string(),

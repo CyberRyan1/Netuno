@@ -1,10 +1,10 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberCommandUtils;
 import com.github.cyberryan1.netuno.apimplement.models.punishments.NetunoPrePunishment;
+import com.github.cyberryan1.netuno.models.commands.HelpableCommand;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
@@ -15,11 +15,13 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class IpBanCommand extends CyberCommand {
+;
+
+public class IpBanCommand extends HelpableCommand {
 
     private static final List<String> suggestedTimes = List.of( "15m", "1h", "12h", "1d", "3d", "1w", "forever" );
 
-    public IpBanCommand() {
+    public IpBanCommand( int helpOrder ) {
         super(
                 "ipban",
                 Settings.IPBAN_PERMISSION.string(),

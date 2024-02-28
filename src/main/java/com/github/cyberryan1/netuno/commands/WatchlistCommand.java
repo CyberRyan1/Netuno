@@ -1,14 +1,14 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.spigot.command.CyberSuperCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
+import com.github.cyberryan1.netuno.models.commands.HelpableSuperCommand;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 
 import java.util.List;
 
-public class WatchlistCommand extends CyberSuperCommand {
+public class WatchlistCommand extends HelpableSuperCommand {
 
-    public WatchlistCommand() {
+    public WatchlistCommand( int helpOrder ) {
         super(
                 "watchlist",
                 Settings.WATCHLIST_VIEW_PERMISSION.string(),
@@ -17,9 +17,9 @@ public class WatchlistCommand extends CyberSuperCommand {
         );
         register( true );
 
-        addSubCommand( new WatchlistViewSubCommand() );
-        addSubCommand( new WatchlistAddSubCommand() );
-        addSubCommand( new WatchlistRemoveSubCommand() );
+        addSubCommand( new WatchlistViewSubCommand( helpOrder + 10 ) );
+        addSubCommand( new WatchlistAddSubCommand( helpOrder + 20 ) );
+        addSubCommand( new WatchlistRemoveSubCommand( helpOrder + 30 ) );
 
         demandPermission( true );
     }

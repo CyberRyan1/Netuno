@@ -1,19 +1,19 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.spigot.command.CyberSubCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentSubCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.netuno.guis.history.HistoryListGUI;
+import com.github.cyberryan1.netuno.models.commands.HelpableSubCommand;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class HistoryListSubcommand extends CyberSubCommand {
+public class HistoryListSubcommand extends HelpableSubCommand {
 
-    public HistoryListSubcommand() {
+    public HistoryListSubcommand( int helpOrder ) {
         super(
                 "list",
                 Settings.HISTORY_PERMISSION.string(),

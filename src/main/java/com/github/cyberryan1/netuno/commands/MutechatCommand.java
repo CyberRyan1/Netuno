@@ -1,10 +1,10 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.netuno.managers.MutechatManager;
+import com.github.cyberryan1.netuno.models.commands.HelpableCommand;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
@@ -12,12 +12,14 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class MutechatCommand extends CyberCommand {
+;
+
+public class MutechatCommand extends HelpableCommand {
     
     private final String CHAT_MUTE_ENABLE;
     private final String CHAT_MUTE_DISABLE;
 
-    public MutechatCommand() {
+    public MutechatCommand( int helpOrder ) {
         super(
                 "mutechat",
                 Settings.MUTECHAT_PERMISSION.string(),

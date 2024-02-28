@@ -2,22 +2,24 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
+import com.github.cyberryan1.cybercore.spigot.command.settings.BaseCommand;
 import com.github.cyberryan1.cybercore.spigot.utils.*;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.debug.DebugInfo;
 import com.github.cyberryan1.netuno.debug.NetunoDebugger;
 import com.github.cyberryan1.netuno.guis.punish.utils.PunishSettings;
+import com.github.cyberryan1.netuno.models.commands.GenericHelpableCommand;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.command.CommandSender;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NetunoCommand extends CyberCommand {
 
-    private final String COMMAND_ORDER[] = { "help", "punish", "warn", "clearchat", "kick", "mute", "unmute", "history", "ban", "unban",
-            "ipinfo", "ipmute", "unipmute", "ipban", "unipban", "report", "reports", "togglesigns", "reload" };
+    private final List<String> HELP_COMMAND_ORDER = new ArrayList<>();
 
     public NetunoCommand() {
         super(
@@ -44,6 +46,8 @@ public class NetunoCommand extends CyberCommand {
     @Override
     public boolean execute( SentCommand command ) {
         if ( command.getArgs().length == 0 || command.getArg( 0 ).equalsIgnoreCase( "help" ) ) {
+            if ( HELP_COMMAND_ORDER.isEmpty() ) { initiateHelpMessage(); }
+            
             if ( command.getArgs().length > 1 ) {
                 int page = command.getIntegerAtArg( 1 );
 
@@ -118,9 +122,26 @@ public class NetunoCommand extends CyberCommand {
     private void sendHelpMessage( CommandSender sender, int start, int end ) {
         String toSend = "\n";
         for ( int index = start; index < end; index++ ) {
-            toSend += Netuno.registeredCommands.get( index ).getUsage() + "\n";
+            toSend += HELP_COMMAND_ORDER.get( index ) + "\n";
         }
         toSend += "\n";
         CyberMsgUtils.sendMsg( sender, toSend );
+    }
+    
+    private void initiateHelpMessage() {
+        HELP_COMMAND_ORDER.clear();
+        HELP_COMMAND_ORDER.add( this.getUsage() ); // This command has the highest priority
+        
+        List<GenericHelpableCommand> order = new ArrayList<>();
+        for ( BaseCommand cmd : Netuno.registeredCommands ) {
+            if ( cmd instanceof GenericHelpableCommand == false ) { continue; }
+            if ( ( ( GenericHelpableCommand ) cmd ).getHelpOrder() == -1 ) { continue; }
+            order.add( ( GenericHelpableCommand ) cmd );
+        }
+        
+        order.sort( ( h1, h2 ) -> h2.getHelpOrder() - h1.getHelpOrder() );
+        for ( GenericHelpableCommand command : order ) {
+            HELP_COMMAND_ORDER.add( CyberColorUtils.getColored( command.getHelpMsg() ) );
+        }
     }
 }

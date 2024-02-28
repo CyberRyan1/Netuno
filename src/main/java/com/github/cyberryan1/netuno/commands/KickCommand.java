@@ -1,9 +1,9 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.netuno.apimplement.models.punishments.NetunoPrePunishment;
+import com.github.cyberryan1.netuno.models.commands.HelpableCommand;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Utils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
@@ -14,9 +14,11 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class KickCommand extends CyberCommand {
+;
 
-    public KickCommand() {
+public class KickCommand extends HelpableCommand {
+
+    public KickCommand( int helpOrder ) {
         super(
                 "kick",
                 Settings.KICK_PERMISSION.string(),

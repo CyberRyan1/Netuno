@@ -102,27 +102,37 @@ public final class Netuno extends JavaPlugin {
     }
 
     private void registerCommands() {
+        // Note: this is order in the same order the /netuno help command should show them
+        // Lower helpOrder variables -> will be shown first
         registeredCommands.add( new NetunoCommand() );
-        registeredCommands.add( new BanCommand() );
-        registeredCommands.add( new ChatslowCommand() );
-        registeredCommands.add( new ClearchatCommand() );
-        registeredCommands.add( new HistorySupercommand() );
-        registeredCommands.add( new IpBanCommand() );
-        registeredCommands.add( new IpInfoCommand() );
-        registeredCommands.add( new IpMuteCommand() );
-        registeredCommands.add( new KickCommand() );
-        registeredCommands.add( new MuteCommand() );
-        registeredCommands.add( new MutechatCommand() );
-        registeredCommands.add( new PunishCommand() );
-        registeredCommands.add( new ReportCommand() );
-        registeredCommands.add( new ReportsCommand() );
-        registeredCommands.add( new TogglesignsCommand() );
-        registeredCommands.add( new UnbanCommand() );
-        registeredCommands.add( new UnIpbanCommand() );
-        registeredCommands.add( new UnIpmuteCommand() );
-        registeredCommands.add( new UnmuteCommand() );
-        registeredCommands.add( new WarnCommand() );
-        registeredCommands.add( new WatchlistCommand() );
+
+        registeredCommands.add( new PunishCommand( 100 ) );
+        registeredCommands.add( new HistorySupercommand( 200 ) ); // Subcommands of this take up
+                                                                            // 210, 220, and 230
+
+        registeredCommands.add( new WarnCommand( 300 ) );
+        registeredCommands.add( new KickCommand( 400 ) );
+        registeredCommands.add( new MuteCommand( 500 ) );
+        registeredCommands.add( new UnmuteCommand( 600 ) );
+        registeredCommands.add( new BanCommand( 700 ) );
+        registeredCommands.add( new UnbanCommand( 800 ) );
+        registeredCommands.add( new IpMuteCommand( 900 ) );
+        registeredCommands.add( new UnIpmuteCommand( 1000 ) );
+        registeredCommands.add( new IpBanCommand( 1100 ) );
+        registeredCommands.add( new UnIpbanCommand( 1200 ) );
+        registeredCommands.add( new IpInfoCommand( 1300 ) );
+
+        registeredCommands.add( new ReportCommand( 1400 ) );
+        registeredCommands.add( new ReportsCommand( 1500 ) );
+
+        registeredCommands.add( new MutechatCommand( 1600 ) );
+        registeredCommands.add( new ClearchatCommand( 1700 ) );
+        registeredCommands.add( new ChatslowCommand( 1800 ) );
+
+        registeredCommands.add( new WatchlistCommand( 1900 ) ); // Subcommands of this take up
+                                                                            // 1910, 1920, and 1930
+
+        registeredCommands.add( new TogglesignsCommand( 2000 ) );
     }
 
     private void registerEvents() {

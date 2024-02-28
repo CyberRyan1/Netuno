@@ -1,18 +1,20 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.netuno.apimplement.database.SignNotifs;
+import com.github.cyberryan1.netuno.models.commands.HelpableCommand;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class TogglesignsCommand extends CyberCommand {
+;
 
-    public TogglesignsCommand() {
+public class TogglesignsCommand extends HelpableCommand {
+
+    public TogglesignsCommand( int helpOrder ) {
         super(
                 "togglesigns",
                 Settings.SIGN_NOTIFS_PERMISSION.string(),

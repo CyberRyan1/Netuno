@@ -1,11 +1,11 @@
 package com.github.cyberryan1.netuno.commands;
 
-import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayerCache;
 import com.github.cyberryan1.netuno.apimplement.models.punishments.NetunoPrePunishment;
+import com.github.cyberryan1.netuno.models.commands.HelpableCommand;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
@@ -16,9 +16,11 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class UnIpmuteCommand extends CyberCommand {
+;
 
-    public UnIpmuteCommand() {
+public class UnIpmuteCommand extends HelpableCommand {
+
+    public UnIpmuteCommand( int helpOrder ) {
         super(
                 "unipmute",
                 Settings.UNIPMUTE_PERMISSION.string(),
