@@ -20,6 +20,7 @@ import com.github.cyberryan1.netuno.skriptelements.expressions.RegisterExpressio
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import com.github.cyberryan1.netunoapi.NetunoApi;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -54,6 +55,10 @@ public final class Netuno extends JavaPlugin {
     public SkriptAddon addon;
     public boolean enabled = true;
 
+    // bStats
+    private static final int BSTATS_PLUGIN_ID = 21155;
+    public static Metrics metrics;
+
     @Override
     public void onEnable() {
         // Initialize things
@@ -77,6 +82,9 @@ public final class Netuno extends JavaPlugin {
         registerSkript();
         registerCommands();
         registerEvents();
+
+        // Initializing bStats
+        metrics = new Metrics( this, BSTATS_PLUGIN_ID );
     }
 
     @Override
