@@ -18,5 +18,13 @@ public final class RegisterExpressions {
 
         // ExprIPMuteLength
         Skript.registerExpression( ExprIPMuteLength.class, String.class, ExpressionType.COMBINED, "length of netuno ipmute [of] %offlineplayer%" );
+
+//        // ExprPunishment
+//        Skript.registerExpression(
+//                ExprPunishment.class,
+//                NPunishment.class,
+//                ExpressionType.SIMPLE,
+//                "[the] pun[ishment]"
+//        );
     }
 }

@@ -16,6 +16,7 @@ import com.github.cyberryan1.netuno.listeners.*;
 import com.github.cyberryan1.netuno.managers.ChatslowManager;
 import com.github.cyberryan1.netuno.managers.WatchlistManager;
 import com.github.cyberryan1.netuno.skriptelements.conditions.RegisterConditions;
+import com.github.cyberryan1.netuno.skriptelements.events.RegisterEvents;
 import com.github.cyberryan1.netuno.skriptelements.expressions.RegisterExpressions;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
@@ -27,8 +28,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Note about the below TODO list: it is EXTREMELY outdated. It is here
- * mostly as a... memorial piece? I guess that's a good way to put it. idk lol
+/* Note about the below to do list: it is EXTREMELY outdated. It is here
+   mostly as a... memorial piece? I guess that's a good way to put it. idk lol
  */
 /* notes in to do:
     - ! = bug needs to be fixed
@@ -92,14 +93,16 @@ public final class Netuno extends JavaPlugin {
         try {
             addon = Skript.registerAddon( this );
             try {
-                addon.loadClasses( "com.github.cyberryan1", "skriptelements" );
+                addon.loadClasses( "com.github.cyberryan1.skriptelements" );
             } catch ( IOException e ) {
                 CyberLogUtils.logWarn( "Could not enable as a skript addon, will still enable without this syntax!" );
                 enabled = false;
             }
+
             CyberLogUtils.logInfo( "Successfully enabled as a skript addon" );
             RegisterExpressions.register();
             RegisterConditions.register();
+            RegisterEvents.register();
         } catch ( NoClassDefFoundError error ) {
             CyberLogUtils.logWarn( "Could not enable as a skript addon, will still enable without this syntax!" );
             enabled = false;
