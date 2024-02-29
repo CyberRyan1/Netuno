@@ -10,7 +10,6 @@ import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
 import com.github.cyberryan1.netunoapi.utils.PunishmentUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
 
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class ExprMuteLength extends StringExpression {
         return true;
     }
 
-    @Nullable
+    
     @Override
     protected String[] get( Event event ) {
         OfflinePlayer p = player.getSingle( event );
@@ -46,7 +45,7 @@ public class ExprMuteLength extends StringExpression {
     }
 
     @Override
-    public String toString( @Nullable Event event, boolean debug ) {
+    public String toString(  Event event, boolean debug ) {
         return "length of netuno mute [of] %offlineplayer%" + player.toString( event, debug );
     }
 }

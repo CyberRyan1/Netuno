@@ -11,7 +11,6 @@ import com.github.cyberryan1.netunoapi.utils.PunishmentUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Event;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class ExprBanLength extends StringExpression {
@@ -36,12 +35,12 @@ public class ExprBanLength extends StringExpression {
     }
 
     @Override
-    public String toString( @Nullable Event event, boolean debug ) {
+    public String toString(  Event event, boolean debug ) {
         return "length of netuno ban [of] %offlineplayer%" + player.toString( event, debug );
     }
 
     @Override
-    @Nullable
+    
     public String[] get( Event event ) {
         OfflinePlayer p = player.getSingle( event );
         if ( p != null ) {
