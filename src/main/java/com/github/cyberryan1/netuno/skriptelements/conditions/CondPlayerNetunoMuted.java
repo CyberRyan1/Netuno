@@ -8,7 +8,7 @@ import com.github.cyberryan1.netuno.skriptelements.conditions.types.RegularCondi
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class CondPlayerNetunoMuted extends RegularCondition {
 

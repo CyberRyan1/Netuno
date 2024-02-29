@@ -10,7 +10,7 @@ import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
 import com.github.cyberryan1.netunoapi.utils.PunishmentUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Event;
-import org.eclipse.jdt.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
