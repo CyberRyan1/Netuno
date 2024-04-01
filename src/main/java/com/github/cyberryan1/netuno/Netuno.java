@@ -98,9 +98,9 @@ public final class Netuno extends JavaPlugin {
 
     private void registerSkript() {
         try {
-            addon = Skript.registerAddon( this );
+            addon = Skript.registerAddon( this ).setLanguageFileDirectory( "lang" );;
             try {
-                addon.loadClasses( "com.github.cyberryan1", "skriptelements" );
+                addon.loadClasses( "com.github.cyberryan1.netuno.skriptelements" );
             } catch ( IOException e ) {
                 CyberLogUtils.logWarn( "Could not enable as a skript addon, will still enable without this syntax!" );
                 enabled = false;
@@ -112,6 +112,10 @@ public final class Netuno extends JavaPlugin {
             CyberLogUtils.logWarn( "Could not enable as a skript addon, will still enable without this syntax!" );
             enabled = false;
         }
+
+        Skript.getEvents().forEach( event -> {
+            CyberLogUtils.logWarn( event.getName() + event.getOriginClassPath() );
+        } );
     }
 
     private void registerCommands() {
