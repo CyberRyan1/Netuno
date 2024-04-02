@@ -17,6 +17,7 @@ import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -31,7 +32,7 @@ public class PunishCommand extends HelpableCommand {
     //          Target's UUID
     //                       Instant Key
     //                               Timestamp
-    private Map<UUID, Duplex<String, Timestamp>> instantPunishCooldowns;
+    private Map<UUID, Duplex<String, Timestamp>> instantPunishCooldowns = new HashMap<>();
 
     public PunishCommand( int helpOrder ) {
         super(
@@ -104,7 +105,7 @@ public class PunishCommand extends HelpableCommand {
 
             if ( instantPunishCooldowns.containsKey( target.getUniqueId() )
                     && instantPunishCooldowns.get( target.getUniqueId() ).getFirst().equalsIgnoreCase( command.getArg( 1 ) ) ) {
-                if ( new Timestamp().getTimestamp() - instantPunishCooldowns.get( target.getUniqueId() ).getSecond().getTimestamp() < Settings.PUNISH_INSTANT_COOLDOWN.getLong() ) {
+                if ( new Timestamp().getTimestamp() - instantPunishCooldowns.get( target.getUniqueId() ).getSecond().getTimestamp() < Settings.PUNISH_INSTANT_COOLDOWN.integer() ) {
                     command.respond( "&p" + target.getName() + " &shas already been punished for this recently" );
                     return true;
                 }
