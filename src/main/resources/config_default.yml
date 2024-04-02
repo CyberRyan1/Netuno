@@ -295,6 +295,28 @@ punish:
   # Should staff be able to /punish each other?
   staff-punish: false
 
+  # Instant punishments
+  # This feature allows staff members to swiftly apply punishments
+  #   by typing '/punish (target) (instant punishment)'. For example,
+  #   if 'warn_spam' is a configured instant key for Spam in the warn GUI,
+  #   a staff member can expedite the penalty process by entering
+  #   '/punish (target) warn_spam', bypassing the need for navigating
+  #   through GUIs.
+  instant:
+    # Whether instant punishments are enabled or not
+    enabled: true
+
+    # Permission to use instant punishments
+    perm: "netuno.punish.instant"
+
+    # Prevents a player from receiving the same instant punishments
+    #   within a defined timeframe.
+    # This should help prevent accidental double punishments by
+    #   staff members, and it is recommended that you use this.
+    # You can set this to zero to not have a cooldown.
+    # The cooldown is in seconds.
+    cooldown: 3
+
 ########################################
 #                 Alts                 #
 ########################################

@@ -38,6 +38,7 @@ ipmute-gui:
   #    item-material: GREEN_WOOL
   #    starting-time: 30m
   #    autoscale: true
+  #    instant-key: "hi_hello"
 
   # Name of the GUI
   # Note: you cannot use the [PREVIOUS] variable in the name of the inventory
@@ -88,6 +89,9 @@ ipmute-gui:
     # Whether to autoscale the punishment length or not
     # For example, if you set the starting-time to 30m, the second warn will result in a 30 minute mute, the third mute will result in a 60 minute mute, and so on
     autoscale: true
+    # If you have instant punishments enabled for the /punish command, this is the key
+    #   that is used to reference this punishment
+    instant-key: ""
 
   11:
     item-name: ""
@@ -95,6 +99,7 @@ ipmute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   12:
     item-name: "&cMute Evasion"
@@ -106,6 +111,7 @@ ipmute-gui:
     # Only works in the ipmute and ipban GUIs
     starting-time: HIGHEST_MUTED_ALT
     autoscale: true
+    instant-key: "ipmute_mute_evasion"
 
   14:
     item-name: "&6Large Amount of Mutes"
@@ -113,6 +119,7 @@ ipmute-gui:
     material: ORANGE_WOOL
     starting-time: forever
     autoscale: true
+    instant-key: "ipmute_many_mutes"
 
   15:
     item-name: ""
@@ -120,6 +127,7 @@ ipmute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   16:
     item-name: ""
@@ -127,6 +135,7 @@ ipmute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   19:
     item-name: ""
@@ -134,6 +143,7 @@ ipmute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   20:
     item-name: ""
@@ -141,6 +151,7 @@ ipmute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   21:
     item-name: ""
@@ -148,6 +159,7 @@ ipmute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   23:
     item-name: ""
@@ -155,6 +167,7 @@ ipmute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   24:
     item-name: ""
@@ -162,6 +175,7 @@ ipmute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   25:
     item-name: ""
@@ -169,6 +183,7 @@ ipmute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   28:
     item-name: ""
@@ -176,6 +191,7 @@ ipmute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   29:
     item-name: ""
@@ -183,6 +199,7 @@ ipmute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   30:
     item-name: ""
@@ -190,6 +207,7 @@ ipmute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   32:
     item-name: ""
@@ -197,6 +215,7 @@ ipmute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   33:
     item-name: ""
@@ -204,6 +223,7 @@ ipmute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   34:
     item-name: ""
@@ -211,3 +231,4 @@ ipmute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""

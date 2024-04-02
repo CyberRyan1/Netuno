@@ -38,6 +38,7 @@ ban-gui:
   #    item-material: GREEN_WOOL
   #    starting-time: 30m
   #    autoscale: true
+  #    instant-key: "hi_hello"
 
   # Name of the GUI
   # Note: you cannot use the [PREVIOUS] variable in the name of the inventory
@@ -60,6 +61,9 @@ ban-gui:
     # Whether to autoscale the punishment length or not
     # For example, if you set the starting-time to 30m, the second warn will result in a 30 minute mute, the third mute will result in a 60 minute mute, and so on
     autoscale: true
+    # If you have instant punishments enabled for the /punish command, this is the key
+    #   that is used to reference this punishment
+    instant-key: ""
 
   11:
     item-name: "&bHacked Client"
@@ -67,6 +71,7 @@ ban-gui:
     material: LIGHT_BLUE_WOOL
     starting-time: 7d
     autoscale: true
+    instant-key: "ban_hacked_client"
 
   12:
     item-name: "&eExtreme Discrimination"
@@ -74,6 +79,7 @@ ban-gui:
     material: YELLOW_WOOL
     starting-time: 14d
     autoscale: true
+    instant-key: "ban_extreme_discrimination"
 
   14:
     item-name: "&6Bug/Exploit Abuse"
@@ -81,6 +87,7 @@ ban-gui:
     material: ORANGE_WOOL
     starting-time: 5d
     autoscale: true
+    instant-key: "ban_bug_exploit_abuse"
 
   15:
     item-name: "&cBot"
@@ -88,6 +95,7 @@ ban-gui:
     material: RED_WOOL
     starting-time: forever
     autoscale: true
+    instant-key: "ban_bot"
 
   16:
     item-name: ""
@@ -95,6 +103,7 @@ ban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   19:
     item-name: ""
@@ -102,6 +111,7 @@ ban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   20:
     item-name: "&3Inappropriate Name/Skin"
@@ -109,6 +119,7 @@ ban-gui:
     material: CYAN_WOOL
     starting-time: forever
     autoscale: true
+    instant-key: "ban_inappropriate_name_skin"
 
   21:
     item-name: "&dReleasing Personal Information"
@@ -116,6 +127,7 @@ ban-gui:
     material: MAGENTA_WOOL
     starting-time: forever
     autoscale: true
+    instant-key: "ban_releasing_personal_info"
 
   23:
     item-name: "&dIRL Scamming"
@@ -123,6 +135,7 @@ ban-gui:
     material: PURPLE_WOOL
     starting-time: forever
     autoscale: true
+    instant-key: "ban_irl_scamming"
 
   24:
     item-name: "&fServer Advertisement"
@@ -130,6 +143,7 @@ ban-gui:
     material: WHITE_WOOL
     starting-time: forever
     autoscale: true
+    instant-key: "ban_server_advertisement"
 
   25:
     item-name: ""
@@ -137,6 +151,7 @@ ban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   28:
     item-name: ""
@@ -144,6 +159,7 @@ ban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   29:
     item-name: ""
@@ -151,6 +167,7 @@ ban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   30:
     item-name: ""
@@ -158,6 +175,7 @@ ban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   32:
     item-name: ""
@@ -165,6 +183,7 @@ ban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   33:
     item-name: ""
@@ -172,6 +191,7 @@ ban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   34:
     item-name: ""
@@ -179,3 +199,4 @@ ban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""

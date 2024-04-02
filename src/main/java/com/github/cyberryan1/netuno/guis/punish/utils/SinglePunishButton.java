@@ -40,6 +40,7 @@ public class SinglePunishButton {
     private Material itemMaterial;
     private String startingTime;
     private boolean autoscale;
+    private String instantKey;
     private int previousPunCount;
 
     // Below variables only apply to warns
@@ -60,6 +61,7 @@ public class SinglePunishButton {
         this.itemMaterial = Material.valueOf( YML_MANAGER.getStr( pathKey + ".material" ) );
         this.startingTime = YML_MANAGER.getStr( pathKey + ".starting-time" );
         this.autoscale = YML_MANAGER.getBool( pathKey + ".autoscale" );
+        this.instantKey = YML_MANAGER.getStr( pathKey + ".instant-key" );
 
         // Below variables only apply to warns
         this.punishAfter = -1;
@@ -71,6 +73,8 @@ public class SinglePunishButton {
     }
 
     public String getPathKey() { return this.pathKey; }
+
+    public String getGuiType() { return this.guiType; }
 
     public String getButtonType() { return this.buttonType; }
 
@@ -85,6 +89,8 @@ public class SinglePunishButton {
     public String getStartingTime() { return this.startingTime; }
 
     public boolean getAutoscale() { return this.autoscale; }
+
+    public String getInstantKey() { return this.instantKey; }
 
     public int getPunishAfter() { return this.punishAfter; }
 
