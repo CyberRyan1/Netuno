@@ -16,7 +16,7 @@ public enum SQLiteTables {
             "`notif` INTEGER NOT NULL );"
     ),
 
-    IP_HISTORY_TABLE( "CREATE TABLE IF NOT EXISTS ip_history (" +
+    IP_HISTORY_TABLE( "CREATE TABLE IF NOT EXISTS ip (" +
             "`id` INTEGER PRIMARY KEY AUTOINCREMENT," +
             "`uuid` STRING NOT NULL," +
             "`ip` STRING NOT NULL," +

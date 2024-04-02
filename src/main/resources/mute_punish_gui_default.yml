@@ -38,6 +38,7 @@ mute-gui:
   #    item-material: GREEN_WOOL
   #    starting-time: 30m
   #    autoscale: true
+  #    instant-key: "hi_hello"
 
   # Name of the GUI
   # Note: you cannot use the [PREVIOUS] variable in the name of the inventory
@@ -60,6 +61,9 @@ mute-gui:
     # Whether to autoscale the punishment length or not
     # For example, if you set the starting-time to 30m, the second warn will result in a 30 minute mute, the third mute will result in a 60 minute mute, and so on
     autoscale: true
+    # If you have instant punishments enabled for the /punish command, this is the key
+    #   that is used to reference this punishment
+    instant-key: ""
 
   11:
     item-name: "&aInappropriate Behavior"
@@ -67,6 +71,7 @@ mute-gui:
     material: LIME_WOOL
     starting-time: 5h
     autoscale: true
+    instant-key: "mute_inappropriate_behavior"
 
   12:
     item-name: "&eToxicity"
@@ -74,6 +79,7 @@ mute-gui:
     material: YELLOW_WOOL
     starting-time: 1d
     autoscale: true
+    instant-key: "mute_toxicity"
 
   14:
     item-name: "&6Harassment"
@@ -81,6 +87,7 @@ mute-gui:
     material: ORANGE_WOOL
     starting-time: 4d
     autoscale: true
+    instant-key: "mute_harassment"
 
   15:
     item-name: "&dExtreme Spam"
@@ -88,6 +95,7 @@ mute-gui:
     material: MAGENTA_WOOL
     starting-time: 6h
     autoscale: true
+    instant-key: "mute_extreme_spam"
 
   16:
     item-name: ""
@@ -95,6 +103,7 @@ mute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   19:
     item-name: ""
@@ -102,6 +111,7 @@ mute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   20:
     item-name: "&bSuicidal Encouragement"
@@ -109,6 +119,7 @@ mute-gui:
     material: LIGHT_BLUE_WOOL
     starting-time: 7d
     autoscale: true
+    instant-key: "mute_suicidal_encouragement"
 
   21:
     item-name: "&3Death Threats"
@@ -116,6 +127,7 @@ mute-gui:
     material: CYAN_WOOL
     starting-time: 7d
     autoscale: true
+    instant-key: "mute_death_threats"
 
   23:
     item-name: "&9DDoS Threats"
@@ -123,6 +135,7 @@ mute-gui:
     material: BLUE_WOOL
     starting-time: 7d
     autoscale: true
+    instant-key: "mute_ddos_threats"
 
   24:
     item-name: "&cDiscrimination"
@@ -130,6 +143,7 @@ mute-gui:
     material: RED_WOOL
     starting-time: 7d
     autoscale: true
+    instant-key: "mute_discrimination"
 
   25:
     item-name: ""
@@ -137,6 +151,7 @@ mute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   28:
     item-name: ""
@@ -144,6 +159,7 @@ mute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   29:
     item-name: ""
@@ -151,6 +167,7 @@ mute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   30:
     item-name: ""
@@ -158,6 +175,7 @@ mute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   32:
     item-name: ""
@@ -165,6 +183,7 @@ mute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   33:
     item-name: ""
@@ -172,6 +191,7 @@ mute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   34:
     item-name: ""
@@ -179,3 +199,4 @@ mute-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""

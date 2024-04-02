@@ -38,6 +38,7 @@ ipban-gui:
   #    item-material: GREEN_WOOL
   #    starting-time: 30m
   #    autoscale: true
+  #    instant-key: "hi_hello"
 
   # Name of the GUI
   # Note: you cannot use the [PREVIOUS] variable in the name of the inventory
@@ -88,6 +89,9 @@ ipban-gui:
     # Whether to autoscale the punishment length or not
     # For example, if you set the starting-time to 30m, the second warn will result in a 30 minute mute, the third mute will result in a 60 minute mute, and so on
     autoscale: true
+    # If you have instant punishments enabled for the /punish command, this is the key
+    #   that is used to reference this punishment
+    instant-key: ""
 
   11:
     item-name: "&eBan Evasion"
@@ -95,6 +99,7 @@ ipban-gui:
     material: YELLOW_WOOL
     starting-time: HIGHEST_BANNED_ALT
     autoscale: true
+    instant-key: "ipban_ban_evasion"
 
   12:
     item-name: "&6Chargeback"
@@ -102,6 +107,7 @@ ipban-gui:
     material: ORANGE_WOOL
     starting-time: forever
     autoscale: true
+    instant-key: "ipban_chargeback"
 
   14:
     item-name: "&3Large Amount of Bans"
@@ -109,6 +115,7 @@ ipban-gui:
     material: CYAN_WOOL
     starting-time: forever
     autoscale: true
+    instant-key: "ipban_many_bans"
 
   15:
     item-name: "&cBlacklisted"
@@ -116,6 +123,7 @@ ipban-gui:
     material: RED_WOOL
     starting-time: forever
     autoscale: true
+    instant-key: ""
 
   16:
     item-name: ""
@@ -123,6 +131,7 @@ ipban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   19:
     item-name: ""
@@ -130,6 +139,7 @@ ipban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   20:
     item-name: ""
@@ -137,6 +147,7 @@ ipban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   21:
     item-name: ""
@@ -144,6 +155,7 @@ ipban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   23:
     item-name: ""
@@ -151,6 +163,7 @@ ipban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   24:
     item-name: ""
@@ -158,6 +171,7 @@ ipban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   25:
     item-name: ""
@@ -165,6 +179,7 @@ ipban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   28:
     item-name: ""
@@ -172,6 +187,7 @@ ipban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   29:
     item-name: ""
@@ -179,6 +195,7 @@ ipban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   30:
     item-name: ""
@@ -186,6 +203,7 @@ ipban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   32:
     item-name: ""
@@ -193,6 +211,7 @@ ipban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   33:
     item-name: ""
@@ -200,6 +219,7 @@ ipban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   34:
     item-name: ""
@@ -207,3 +227,4 @@ ipban-gui:
     material: AIR
     starting-time: 1m
     autoscale: true
+    instant-key: ""
