@@ -3,6 +3,9 @@ package com.github.cyberryan1.netuno.guis.punish.utils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
 import org.bukkit.Material;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum PunishSettings {
 
     //
@@ -67,10 +70,34 @@ public enum PunishSettings {
 
     ;
 
+    public static List<SinglePunishButton> getAllSinglePunishments() {
+        List<SinglePunishButton> buttons = new ArrayList<>();
+        for ( PunishSettings value : values() ) {
+            if ( value.getValueType().equals( "multi" ) ) {
+                buttons.addAll( value.multiButton().getButtons() );
+            }
+        }
+
+        return buttons;
+    }
+
+    public static List<MainButton> getAllMainButtons() {
+        List<MainButton> buttons = new ArrayList<>();
+        for ( PunishSettings value : values() ) {
+            if ( value.getValueType().equals( "mainbutton" ) ) {
+                buttons.add( value.mainButton() );
+            }
+        }
+
+        return buttons;
+    }
+
     private String path;
+    private String valueType;
     private PunishSettingsEntry value;
     PunishSettings( String path, String valueType, String ymlName ) {
         this.path = path;
+        this.valueType = valueType;
         this.value = new PunishSettingsEntry( path, valueType, ymlName );
     }
 
@@ -79,6 +106,8 @@ public enum PunishSettings {
     }
 
     public String getPath() { return this.path; }
+
+    private String getValueType() { return this.valueType; }
 
     public PunishSettingsEntry getValue() { return this.value; }
 

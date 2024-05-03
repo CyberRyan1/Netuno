@@ -108,6 +108,10 @@ public enum Settings {
     PUNISH_PERMISSION( "punish.perm", "string" ),
     PUNISH_OTHER_STAFF( "punish.staff-punish", "boolean" ),
 
+    PUNISH_INSTANT_ENABLED( "punish.instant.enabled", "boolean" ),
+    PUNISH_INSTANT_PERMISSION( "punish.instant.perm", "string" ),
+    PUNISH_INSTANT_COOLDOWN( "punish.instant.cooldown", "int" ),
+
     //
     // Alt Management
     //

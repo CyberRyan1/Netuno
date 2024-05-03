@@ -39,6 +39,7 @@ warn-gui:
   #    punishment: mute
   #    starting-time: 30m
   #    autoscale: true
+  #    instant-key: "hi_hello"
 
   # Name of the GUI
   # Note: you cannot use the [PREVIOUS] variable in the name of the inventory
@@ -69,6 +70,9 @@ warn-gui:
     # For warns, the autoscale only applies to the punishment after the warn
     # (ex: the first punishment is a warn, the second punishment is a 30 minute mute, and the third punishment is also a 30 minute mute)
     autoscale: true
+    # If you have instant punishments enabled for the /punish command, this is the key
+    #   that is used to reference this punishment
+    instant-key: "warn_spam"
 
   11:
     item-name: "&6Caps"
@@ -78,6 +82,7 @@ warn-gui:
     punishment: mute
     starting-time: 15m
     autoscale: true
+    instant-key: "warn_caps"
 
   12:
     item-name: "&aFlood"
@@ -87,6 +92,7 @@ warn-gui:
     punishment: mute
     starting-time: 30m
     autoscale: true
+    instant-key: "warn_flood"
 
   14:
     item-name: "&2Swearing"
@@ -96,6 +102,7 @@ warn-gui:
     punishment: mute
     starting-time: 30m
     autoscale: true
+    instant-key: "warn_swear"
 
   15:
     item-name: "&cGeneral Disrespect"
@@ -105,6 +112,7 @@ warn-gui:
     punishment: mute
     starting-time: 1h
     autoscale: true
+    instant-key: "warn_general_disrespect"
 
   16:
     item-name: "&bMedia Advertisement"
@@ -114,6 +122,7 @@ warn-gui:
     punishment: mute
     starting-time: 30m
     autoscale: true
+    instant-key: "warn_media_advertisement"
 
   19:
     item-name: ""
@@ -123,6 +132,7 @@ warn-gui:
     punishment: mute
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   20:
     item-name: ""
@@ -132,6 +142,7 @@ warn-gui:
     punishment: mute
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   21:
     item-name: "&3Report Spam"
@@ -141,6 +152,7 @@ warn-gui:
     punishment: ban
     starting-time: 30m
     autoscale: true
+    instant-key: "warn_report_spam"
 
   23:
     item-name: "&dCharacter Spam"
@@ -150,6 +162,7 @@ warn-gui:
     punishment: mute
     starting-time: 30m
     autoscale: true
+    instant-key: "warn_char_spam"
 
   24:
     item-name: ""
@@ -159,6 +172,7 @@ warn-gui:
     punishment: mute
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   25:
     item-name: ""
@@ -168,6 +182,7 @@ warn-gui:
     punishment: mute
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   28:
     item-name: ""
@@ -177,6 +192,7 @@ warn-gui:
     punishment: mute
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   29:
     item-name: ""
@@ -186,6 +202,7 @@ warn-gui:
     punishment: mute
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   30:
     item-name: ""
@@ -195,6 +212,7 @@ warn-gui:
     punishment: mute
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   32:
     item-name: ""
@@ -204,6 +222,7 @@ warn-gui:
     punishment: mute
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   33:
     item-name: ""
@@ -213,6 +232,7 @@ warn-gui:
     punishment: mute
     starting-time: 1m
     autoscale: true
+    instant-key: ""
 
   34:
     item-name: ""
@@ -222,3 +242,4 @@ warn-gui:
     punishment: mute
     starting-time: 1m
     autoscale: true
+    instant-key: ""
