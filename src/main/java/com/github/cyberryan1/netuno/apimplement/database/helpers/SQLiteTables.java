@@ -16,12 +16,17 @@ public enum SQLiteTables {
             "`notif` INTEGER NOT NULL );"
     ),
 
-    IP_HISTORY_TABLE( "CREATE TABLE IF NOT EXISTS ip (" +
-            "`id` INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "`uuid` STRING NOT NULL," +
-            "`ip` STRING NOT NULL," +
-            "`group_id` INTEGER DEFAULT -1 NOT NULL );"
-    ),
+//    IP_HISTORY_TABLE( "CREATE TABLE IF NOT EXISTS ip (" +
+//            "`id` INTEGER PRIMARY KEY AUTOINCREMENT," +
+//            "`uuid` STRING NOT NULL," +
+//            "`ip` STRING NOT NULL," +
+//            "`group_id` INTEGER DEFAULT -1 NOT NULL );"
+//    ),
+
+    IP_TABLE( "CREATE TABLE IF NOT EXISTS ip (" +
+            "inde INTEGER PRIMARY KEY AUTO_INCREMENT," +
+            "ip VARCHAR(20)," +
+            "uuid VARCHAR(40) );" ),
 
     REPORTS_TABLE( "CREATE TABLE IF NOT EXISTS reports (" +
             "`id` INTEGER PRIMARY KEY," +
