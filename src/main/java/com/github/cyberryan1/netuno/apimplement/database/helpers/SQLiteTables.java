@@ -24,7 +24,7 @@ public enum SQLiteTables {
 //    ),
 
     IP_TABLE( "CREATE TABLE IF NOT EXISTS ip (" +
-            "inde INTEGER PRIMARY KEY AUTO_INCREMENT," +
+            "inde INTEGER PRIMARY KEY AUTOINCREMENT," +
             "ip VARCHAR(20)," +
             "uuid VARCHAR(40) );" ),
 
@@ -37,8 +37,9 @@ public enum SQLiteTables {
     ),
 
     RANDOM_TABLE( "CREATE TABLE IF NOT EXISTS random (" +
-            "`k` STRING NOT NULL," +
-            "`v` STRING NOT NULL );"
+            "inde INTEGER PRIMARY KEY AUTOINCREMENT," + // we ignore this column
+            "k TEXT NOT NULL," +
+            "v TEXT NOT NULL );"
     );
 
     private String sql;
