@@ -2,6 +2,7 @@ package com.github.cyberryan1.netuno.apimplement.models.punishments;
 
 import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.apimplement.ApiNetuno;
 import com.github.cyberryan1.netuno.apimplement.models.players.NetunoPlayer;
@@ -16,9 +17,9 @@ import com.github.cyberryan1.netunoapi.models.punishments.NPunishment;
 import com.github.cyberryan1.netunoapi.models.punishments.PunishmentType;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -199,19 +200,30 @@ public class NetunoPrePunishment implements NPrePunishment {
 
     private void attemptSendMessage() {
         if ( pun.getPlayer().isOnline() == false ) { return; }
-        String lines = switch ( pun.getPunishmentType() ) {
-            case WARN -> Utils.getCombinedString( Settings.WARN_MESSAGE.coloredStringlist() );
-            case MUTE -> Utils.getCombinedString( Settings.MUTE_MESSAGE.coloredStringlist() );
-            case UNMUTE -> Utils.getCombinedString( Settings.UNMUTE_MESSAGE.coloredStringlist() );
-            case IPMUTE -> Utils.getCombinedString( Settings.IPMUTE_MESSAGE.coloredStringlist() );
-            case UNIPMUTE -> Utils.getCombinedString( Settings.UNIPMUTE_MESSAGE.coloredStringlist() );
+        String lines[] = switch ( pun.getPunishmentType() ) {
+            case WARN -> Settings.WARN_MESSAGE.coloredStringlist();
+            case MUTE -> Settings.MUTE_MESSAGE.coloredStringlist();
+            case UNMUTE -> Settings.UNMUTE_MESSAGE.coloredStringlist();
+            case IPMUTE -> Settings.IPMUTE_MESSAGE.coloredStringlist();
+            case UNIPMUTE -> Settings.UNIPMUTE_MESSAGE.coloredStringlist();
             default -> null;
         };
 
-        if ( lines != null && lines.replace( "\n", "" ).isBlank() == false ) {
-            lines = Utils.replaceAllVariables( lines, pun );
-            pun.getPlayer().getPlayer().sendMessage( lines );
+        if ( lines == null || lines.length == 0 ) { return; }
+        else {
+            boolean empty = true;
+            for ( String line : lines ) {
+                if ( line.replace( "\n", "" ).isBlank() == false ) {
+                    empty = false;
+                    break;
+                }
+            }
+
+            if ( empty ) { return; }
         }
+
+        List<String> message = Arrays.asList( Utils.replaceAllVariables( lines, pun ) );
+        CyberMsgUtils.sendMsg( pun.getPlayer().getPlayer(), message );
     }
 
     private void doBroadcasts( boolean silent ) {
@@ -259,15 +271,9 @@ public class NetunoPrePunishment implements NPrePunishment {
         //      variable is either null or has no contents.
         boolean staffBroadcastNoExist = ( staffBroadcastLines == null ) || ( staffBroadcastLines.length == 0 );
         if ( silent == false && publicBroadcastLines != null && publicBroadcastIsEmpty == false ) {
-            final String publicBroadcast = Utils.replaceAllVariables( Utils.getCombinedString( publicBroadcastLines ), pun );
-
-            for ( Player player : Bukkit.getOnlinePlayers() ) {
-                if ( player.getUniqueId().toString().equals( pun.getPlayerUuid() ) == false ) {
-                    if ( staffBroadcastNoExist || CyberVaultUtils.hasPerms( player, Settings.STAFF_PERMISSION.string() ) == false ) {
-                        Utils.sendAnyMsg( player, publicBroadcast );
-                    }
-                }
-            }
+            final List<String> publicBroadcast = Arrays.asList( Utils.replaceAllVariables( publicBroadcastLines, pun ) );
+            CyberMsgUtils.broadcast( publicBroadcast, player -> player.getUniqueId().equals( pun.getPlayer().getUniqueId() ) == false
+                    && ( staffBroadcastNoExist || CyberVaultUtils.hasPerms( player, Settings.STAFF_PERMISSION.string() ) == false ) );
         }
 
         // Send the staff punishment announcement to all online players, even if the staff is the target.
@@ -275,21 +281,17 @@ public class NetunoPrePunishment implements NPrePunishment {
         //      silent variable is true, the staff announcement needs to be sent with the silent prefix
         //      and the broadcast should only be sent to staff who have the view silent punishments permission.
         if ( staffBroadcastNoExist == false ) {
-            String staffBroadcast = "";
-            for ( String line : staffBroadcastLines ) {
-                if ( silent && line.replace( "\n", "" ).isBlank() == false ) {
-                    staffBroadcast += Settings.SILENT_PREFIX.coloredString() + " ";
+            // If the punishment is silent, this adds the silent prefix to all non-empty lines
+            for ( int index = 0; index < staffBroadcastLines.length; index++ ) {
+                if ( silent && staffBroadcastLines[index].replace( "\n", "" ).isBlank() == false ) {
+                    staffBroadcastLines[index] = Settings.SILENT_PREFIX.coloredString() + " " + staffBroadcastLines[index];
                 }
-                staffBroadcast += Utils.replaceAllVariables( line, pun ) + "\n";
             }
 
-            String permission = Settings.STAFF_PERMISSION.string();
-            if ( silent ) { permission = Settings.SILENT_PERMISSION.string(); }
-            for ( Player player : Bukkit.getOnlinePlayers() ) {
-                if ( CyberVaultUtils.hasPerms( player, permission ) ) {
-                    Utils.sendAnyMsg( player, staffBroadcast );
-                }
-            }
+            final List<String> staffBroadcast = Arrays.asList( Utils.replaceAllVariables( staffBroadcastLines, pun ) );
+            // Getting the permission needed to see the broadcast
+            final String permission = silent ? Settings.SILENT_PERMISSION.string() : Settings.STAFF_PERMISSION.string();
+            CyberMsgUtils.broadcast( staffBroadcast, player -> CyberVaultUtils.hasPerms( player, permission ) );
         }
 
         // Playing sounds for the players, target, and staff.
@@ -341,5 +343,11 @@ public class NetunoPrePunishment implements NPrePunishment {
             SOUND_GLOBAL.playSoundMany( p -> p.getUniqueId().equals( pun.getPlayer().getUniqueId() ) == false
                     && CyberVaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) == false );
         }
+    }
+
+    // ! debug method
+    private static void temp( String str ) {
+        str = str.replaceAll( "\n", "/n" );
+        CyberMsgUtils.broadcast( "&fdebug >> " + str );
     }
 }

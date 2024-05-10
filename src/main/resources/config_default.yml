@@ -11,10 +11,12 @@
 # [STAFF] = Staff executing the command
 # [TARGET] = Player being punished
 # [LENGTH] = Length of a punishment (ex: 30 minutes, 3 hours, etc)
+# [LENGTH_CAPS] = Length of a punishment, in all caps (ex: 30 MINUTES, 3 HOURS, etc.)
 # [REMAIN] = Length remaining of a punishment
+# [REMAIN_CAPS] = Length remaining of a punishment, in all caps
 # [REASON] = Reason for a punishment
 # Note: some variables may be disabled in certain sections,
-  # and more may be introduced in certain sections
+# and more may be introduced in certain sections
 
 ########################################
 #                General               #

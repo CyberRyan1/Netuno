@@ -134,8 +134,10 @@ public class Utils {
         str = str.replace( "[STAFF]", staffName ).replace( "[TARGET]", targetName );
 
         if ( pun.getPunishmentType().hasNoLength() == false ) {
-            str = str.replace( "[LENGTH]", pun.getTimeLength().asFullLength( 3 ) );
-            str = str.replace( "[REMAIN]", pun.getLengthRemaining().asFullLength( 3 ) );
+            str = str.replace( "[LENGTH]", pun.getTimeLength().asFullLength( 3 ) )
+                    .replace( "[LENGTH_CAPS]", pun.getTimeLength().asFullLength( 3 ).toUpperCase() );
+            str = str.replace( "[REMAIN]", pun.getLengthRemaining().asFullLength( 3 ) )
+                    .replace( "[REMAIN_CAPS]", pun.getLengthRemaining().asFullLength( 3 ).toUpperCase() );
         }
         if ( pun.getPunishmentType().isIpPunishment() ) {
             final NetunoPlayer nPlayer = NetunoPlayerCache.getOrLoad( pun.getPlayerUuid() );
@@ -156,6 +158,20 @@ public class Utils {
 
         str = str.replace( "[REASON]", pun.getReason() );
 
+        return str;
+    }
+
+    public static String[] replaceAllVariables( String str[], NPunishment pun ) {
+        for ( int index = 0; index < str.length; index++ ) {
+            str[index] = replaceAllVariables( str[index], pun );
+        }
+        return str;
+    }
+
+    public static List<String> replaceAllVariables( List<String> str, NPunishment pun ) {
+        for ( int index = 0; index < str.size(); index++ ) {
+            str.add( index, replaceAllVariables( str.get( index ), pun ) );
+        }
         return str;
     }
 
