@@ -9,6 +9,73 @@ import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/*
+TODO List
+
+Backend:
+- Better punishment model
+- Better alt searching algorithm
+- Better player model
+- Databases
+
+Commands:
+- Ban Command
+- Chatslow Command
+- Clearchat Command
+- History Command (edit, list, reset subcommands)
+- Ipban Command
+- Ipinfo Command
+- Ipmute Command
+- Kick Command
+- Mute Command
+- Mutechat Command
+- Netuno Command
+- Punish Command
+- Report Command
+- Reports Command
+- Togglesigns Command
+- Unipban Command
+- Unipmute Command
+- Unban Command
+- Unmute Command
+- Warn Command
+
+Alts Feature:
+- List all alts in GUI
+- Warn when player joins w/ punished alts
+
+Reports Feature:
+- Report options in GUI
+- Staff can view reports in GUI
+
+History Feature:
+- Staff can view all punishments of a player in a GUI
+- Staff can edit a particular punishment in a GUI
+
+Sign Notifications Feature:
+- Send sign contents to all staff
+- Allow staff to disable these broadcasts for themselves with a command
+
+Punish Feature:
+- Staff can punish players via a GUI
+- Staff can also quick punish, i.e. /punish (target) (quick punish)
+
+Skript Features:
+- Condition if player is netuno banned
+- Condition if player is netuno ipbanned
+- Condition if player is netuno muted
+- Condition if player is netuno ipmuted
+- Expression ban length
+- Expression ipban length
+- Expression ipmute length
+- Expression mute length
+
+API Feature:
+- Better API player model
+- Better API punishment model
+- Better API alts searching
+ */
+
 public final class Netuno extends JavaPlugin {
 
     // Skript
