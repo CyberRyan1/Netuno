@@ -7,10 +7,6 @@
     <groupId>com.github.cyberryan1</groupId>
     <artifactId>Netuno</artifactId>
     <version>1.5.1</version>
-    <!--
-    <artifactId>1.8-Netuno</artifactId>
-    <version>1.4.1-BETA</version>
-    -->
     <packaging>jar</packaging>
 
     <name>Netuno</name>
@@ -111,12 +107,6 @@
     </repositories>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>org.spigotmc</groupId>-->
-<!--            <artifactId>spigot-api</artifactId>-->
-<!--            <version>1.16.5-R0.1-SNAPSHOT</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
@@ -128,13 +118,6 @@
             <artifactId>adventure-api</artifactId>
             <version>4.16.0</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.8.8-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency> -->
         <dependency>
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
