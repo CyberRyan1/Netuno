@@ -19,7 +19,9 @@ public class PunishmentsDatabase {
     private static final String UNKNOWN_LIST = "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     /**
-     * Adds a punishment to the database, but not the cache
+     * Adds a punishment to the database. After this is completed,
+     * the punishment passed to this method is updated to have
+     * the correct punishment ID
      * @param punishment The punishment to add
      */
     public static void addPunishment( Punishment punishment ) {
@@ -47,6 +49,8 @@ public class PunishmentsDatabase {
         } catch ( SQLException e ) {
             throw new RuntimeException( e );
         }
+
+        punishment.setId( getRecentlyInsertedId() );
     }
 
     /**
@@ -65,9 +69,7 @@ public class PunishmentsDatabase {
             if ( rs.next() ) {
                 final int referencePunId = rs.getInt( "reference" );
 
-                // ! this will error, need to fix -- if the IP punishment is the original reference, then
-                // !    the referencePunId will be set to ApiPunishment.DEFAULT_REFERENCE_ID, which can be negative
-                if ( referencePunId > 0 ) {
+                if ( referencePunId != ApiPunishment.DEFAULT_REFERENCE_ID ) {
                     Punishment originalPun = getPunishment( referencePunId );
                     data = ( Punishment ) originalPun.copy();
                     data.setId( rs.getInt( "id" ) );
@@ -77,20 +79,23 @@ public class PunishmentsDatabase {
 
                 else {
                     ApiPunishment.PunType type = ApiPunishment.PunType.fromIndex( rs.getInt( "type" ) );
-                    data = new Punishment(
-                            rs.getInt( "id" ),
-                            rs.getString( "player" ),
-                            rs.getString( "staff" ),
-                            type,
-                            rs.getLong( "timestamp" ),
-                            rs.getLong( "length" ),
-                            rs.getString( "reason" ),
-                            rs.getInt( "active" ) == 1,
-                            referencePunId,
-                            rs.getInt( "guipun" ) == 1,
-                            rs.getInt( "notif" ) == 1,
-                            true
-                    );
+                    data = processResultSetIntoPunishment( rs );
+                    data.setType( type );
+                    data.setReferenceId( referencePunId );
+//                    data = new Punishment(
+//                            rs.getInt( "id" ),
+//                            rs.getString( "player" ),
+//                            rs.getString( "staff" ),
+//                            type,
+//                            rs.getLong( "timestamp" ),
+//                            rs.getLong( "length" ),
+//                            rs.getString( "reason" ),
+//                            rs.getInt( "active" ) == 1,
+//                            referencePunId,
+//                            rs.getInt( "guipun" ) == 1,
+//                            rs.getInt( "notif" ) == 1,
+//                            true
+//                    );
                 }
             }
 
@@ -131,36 +136,41 @@ public class PunishmentsDatabase {
                 Punishment data = null;
                 final int referencePunId = rs.getInt( "reference" );
 
-                if ( referencePunId > 0 ) {
+                if ( referencePunId != ApiPunishment.DEFAULT_REFERENCE_ID ) {
                     Punishment originalPun = getPunishment( referencePunId );
+
+                    // If the original punishment is null, remove this punishment
+                    //      from the database
                     if ( originalPun == null ) {
-                        final int punishmentId = rs.getInt( "id" );
-                        removePunishment( punishmentId );
+                        removePunishment( rs.getInt( "id" ) );
                     }
 
                     if ( originalPun != null ) {
-                        data = ( Punishment ) originalPun.copy();
-                        data.setId( rs.getInt( "id" ) );
-                        data.setReferenceId( referencePunId );
-                        data.setPlayer( UUID.fromString( rs.getString( "player" ) ) );
+                        data = getPunishment( rs.getInt( "id" ) );
+//                        data = ( Punishment ) originalPun.copy();
+//                        data.setId( rs.getInt( "id" ) );
+//                        data.setReferenceId( referencePunId );
+//                        data.setPlayer( UUID.fromString( rs.getString( "player" ) ) );
                     }
                 }
 
                 else {
-                    data = new Punishment(
-                            rs.getInt( "id" ),
-                            rs.getString( "player" ),
-                            rs.getString( "staff" ),
-                            ApiPunishment.PunType.fromIndex( rs.getInt( "type" ) ),
-                            rs.getLong( "timestamp" ),
-                            rs.getLong( "length" ),
-                            rs.getString( "reason" ),
-                            rs.getInt( "active" ) == 1,
-                            referencePunId,
-                            rs.getInt( "guipun" ) == 1,
-                            rs.getInt( "notif" ) == 1,
-                            true
-                    );
+                    data = processResultSetIntoPunishment( rs );
+                    data.setReferenceId( referencePunId );
+//                    data = new Punishment(
+//                            rs.getInt( "id" ),
+//                            rs.getString( "player" ),
+//                            rs.getString( "staff" ),
+//                            ApiPunishment.PunType.fromIndex( rs.getInt( "type" ) ),
+//                            rs.getLong( "timestamp" ),
+//                            rs.getLong( "length" ),
+//                            rs.getString( "reason" ),
+//                            rs.getInt( "active" ) == 1,
+//                            referencePunId,
+//                            rs.getInt( "guipun" ) == 1,
+//                            rs.getInt( "notif" ) == 1,
+//                            true
+//                    );
                 }
 
                 if ( data != null ) { toReturn.add( data ); }
@@ -177,15 +187,15 @@ public class PunishmentsDatabase {
 
     /**
      * Searches for all punishments in the database that have the given
-     * reference ID as the reference ID, along with the punishment
-     * whose ID is the same as the given reference ID
+     * reference ID as the reference ID. Note that the list returned by
+     * this method will NOT include the original punishment
      * @param referenceId The reference ID to search for
      * @return A {@link List<Punishment>} of all punishments for the reference ID.
      */
     public static List<Punishment> getPunishmentsFromReference( int referenceId ) {
         List<Punishment> toReturn = new ArrayList<>();
         if ( referenceId < 0 ) { return toReturn; }
-        final Punishment ORIGINAL_PUN = getPunishment( referenceId );
+//        final Punishment ORIGINAL_PUN = getPunishment( referenceId );
 
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE reference = ?;" );
@@ -193,10 +203,13 @@ public class PunishmentsDatabase {
 
             ResultSet rs = ps.executeQuery();
             while ( rs.next() ) {
-                Punishment data = ( Punishment ) ORIGINAL_PUN.copy();
-                data.setId( rs.getInt( "id" ) );
+                Punishment data = processResultSetIntoPunishment( rs );
                 data.setReferenceId( referenceId );
-                data.setPlayer( UUID.fromString( rs.getString( "player" ) ) );
+
+//                Punishment data = ( Punishment ) ORIGINAL_PUN.copy();
+//                data.setId( rs.getInt( "id" ) );
+//                data.setReferenceId( referenceId );
+//                data.setPlayer( UUID.fromString( rs.getString( "player" ) ) );
 
                 toReturn.add( data );
             }
@@ -314,7 +327,7 @@ public class PunishmentsDatabase {
      * Deletes all punishments that have the given reference ID
      * @param referenceId The reference ID to delete punishments for
      */
-    public static void removePunishments( int referenceId ) {
+    public static void removePunishmentsWithReferenceId( int referenceId ) {
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "DELETE FROM " + TABLE_NAME + " WHERE reference = ?" );
             ps.setInt( 1, referenceId );
@@ -346,5 +359,22 @@ public class PunishmentsDatabase {
         }
 
         return toReturn;
+    }
+
+    private static Punishment processResultSetIntoPunishment( ResultSet rs ) throws SQLException {
+        return new Punishment(
+                rs.getInt( "id" ),
+                rs.getString( "player" ),
+                rs.getString( "staff" ),
+                ApiPunishment.PunType.fromIndex( rs.getInt( "type" ) ),
+                rs.getLong( "timestamp" ),
+                rs.getLong( "length" ),
+                rs.getString( "reason" ),
+                rs.getInt( "active" ) == 1,
+                rs.getInt( "reference" ),
+                rs.getInt( "guipun" ) == 1,
+                rs.getInt( "notif" ) == 1,
+                true
+        );
     }
 }
