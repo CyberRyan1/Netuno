@@ -2,12 +2,14 @@ package com.github.cyberryan1.netuno.models;
 
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.api.services.ApiPunishmentService;
+import com.github.cyberryan1.netuno.database.PunishmentsDatabase;
 import org.bukkit.OfflinePlayer;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class PunishmentService implements ApiPunishmentService {
 
@@ -17,7 +19,7 @@ public class PunishmentService implements ApiPunishmentService {
      */
     @Override
     public CompletableFuture<Optional<ApiPunishment>> getPunishment( int id ) {
-        return null;
+        return CompletableFuture.supplyAsync( () -> Optional.ofNullable( PunishmentsDatabase.getPunishment( id ) ) );
     }
 
     /**
@@ -26,7 +28,10 @@ public class PunishmentService implements ApiPunishmentService {
      */
     @Override
     public CompletableFuture<List<ApiPunishment>> getPunishments( UUID uuid ) {
-        return null;
+        return CompletableFuture.supplyAsync( () -> PunishmentsDatabase.getPunishments( uuid.toString() ).stream()
+                .map( pun -> ( ApiPunishment ) pun )
+                .collect( Collectors.toList() )
+        );
     }
 
     /**
@@ -35,7 +40,7 @@ public class PunishmentService implements ApiPunishmentService {
      */
     @Override
     public CompletableFuture<List<ApiPunishment>> getPunishments( OfflinePlayer player ) {
-        return null;
+        return getPunishments( player.getUniqueId() );
     }
 
     @Override
