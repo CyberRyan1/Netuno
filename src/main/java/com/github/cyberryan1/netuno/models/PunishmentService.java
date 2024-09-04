@@ -40,10 +40,10 @@ public class PunishmentService implements ApiPunishmentService {
 
     @Override
     public PunishmentBuilder punishmentBuilder() {
-        return null;
+        return new PunBuilder();
     }
 
-    class PunBuilder implements PunishmentBuilder {
+    static class PunBuilder implements PunishmentBuilder {
 
         private Punishment punishment;
 
