@@ -28,7 +28,10 @@ public class ConnectionManager {
     /**
      * Looks at the settings and determines whether or
      * not the user wants to use SQL or SQLite. This
-     * will then initialize the databases accordingly
+     * will then initialize the databases accordingly. <br><br>
+     *
+     * <b>IMPORTANT!</b> This must be done <u>after</u>
+     * the settings are loaded
      */
     public void initialize() {
         // Initialize the database connection
