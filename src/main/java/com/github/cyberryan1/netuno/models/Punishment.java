@@ -327,4 +327,22 @@ public class Punishment implements ApiPunishment {
                 false // note that isExecuted will always be set back to false, unsure if we should do this or not
         );
     }
+
+    @Override
+    public String toString() {
+        return "Punishment{" +
+                "id=" + id +
+                ", playerUuid=" + playerUuid +
+                ", staffUuid=" + staffUuid +
+                ", punType=" + punType +
+                ", timestamp=" + timestamp +
+                ", length=" + length +
+                ", reason='" + reason + '\'' +
+                ", isActive=" + isActive +
+                ", referenceId=" + referenceId +
+                ", isGuiPun=" + isGuiPun +
+                ", isNotifSent=" + isNotifSent +
+                ", isExecuted=" + isExecuted +
+                '}';
+    }
 }
