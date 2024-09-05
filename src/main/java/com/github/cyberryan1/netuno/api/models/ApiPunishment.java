@@ -15,7 +15,7 @@ public interface ApiPunishment {
 
     int DEFAULT_ID = -1;
     int DEFAULT_REFERENCE_ID = -1;
-
+    long PERMANENT_PUNISHMENT_LENGTH = Long.MAX_VALUE;
 
     /**
      * @return the ID of the punishment
