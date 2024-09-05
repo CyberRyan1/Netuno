@@ -4,6 +4,7 @@ import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.netuno.database.helpers.SQLTables;
 import com.github.cyberryan1.netuno.database.helpers.SQLiteTables;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.mysql.cj.jdbc.MysqlDataSource;
 
 import java.io.File;
@@ -12,11 +13,38 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Used for managing the connection to the database as well
+ * as setting up the databases.
+ *
+ * @author Ryan
+ */
 public class ConnectionManager {
 
     protected static Connection CONN = null;
     protected static boolean IS_SQLITE = false;
     protected static boolean IS_SQL = false;
+
+    /**
+     * Looks at the settings and determines whether or
+     * not the user wants to use SQL or SQLite. This
+     * will then initialize the databases accordingly
+     */
+    public void initialize() {
+        // Initialize the database connection
+        if ( Settings.DATABASE_USE_SQLITE.bool() ) {
+            initializeSqlite();
+        }
+        else {
+            initializeSql(
+                    Settings.DATABASE_SQL_HOST.string(),
+                    Settings.DATABASE_SQL_PORT.integer(),
+                    Settings.DATABASE_SQL_DATABASE.string(),
+                    Settings.DATABASE_SQL_USERNAME.string(),
+                    Settings.DATABASE_SQL_PASSWORD.string()
+            );
+        }
+    }
 
     /**
      * Initializes the connection to the SQL database and creates all tables needed.
@@ -26,7 +54,7 @@ public class ConnectionManager {
      * @param username The username of the SQL database
      * @param password The password of the SQL database
      */
-    public void initializeSql( String host, int port, String database, String username, String password ) {
+    private void initializeSql( String host, int port, String database, String username, String password ) {
         IS_SQL = true;
         CyberLogUtils.logInfo( "[SQL Init] Initializing SQL..." );
 
@@ -68,7 +96,7 @@ public class ConnectionManager {
     /**
      * Initializes the connection to the SQLite database and creates all tables needed.
      */
-    public void initializeSqlite() {
+    private void initializeSqlite() {
         IS_SQLITE = true;
 
         CyberLogUtils.logInfo( "[SQLite Init] Initializing SQLite..." );
