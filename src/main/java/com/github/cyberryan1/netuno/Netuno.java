@@ -4,6 +4,8 @@ import ch.njol.skript.SkriptAddon;
 import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
+import com.github.cyberryan1.netuno.database.ConnectionManager;
+import com.github.cyberryan1.netuno.models.NetunoService;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bstats.bukkit.Metrics;
@@ -78,6 +80,12 @@ API Feature:
 
 public final class Netuno extends JavaPlugin {
 
+    // Database Connection
+    public static final ConnectionManager CONNECTION_MANAGER = new ConnectionManager();
+
+    // API Things
+    public static final NetunoService SERVICE = new NetunoService();
+
     // Skript
     public SkriptAddon addon;
     public boolean enabled = true;
@@ -101,6 +109,12 @@ public final class Netuno extends JavaPlugin {
 
         // Initializing bStats
         metrics = new Metrics( this, BSTATS_PLUGIN_ID );
+
+        // Initializing databases
+        CONNECTION_MANAGER.initialize();
+
+        // Initializing the API services
+        SERVICE.initialize();
     }
 
     @Override
