@@ -4,6 +4,7 @@ import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.api.services.ApiNetunoService;
 import com.github.cyberryan1.netuno.database.PunishmentsDatabase;
+import com.github.cyberryan1.netuno.debug.CacheDebugPrinter;
 import com.github.cyberryan1.netuno.models.helpers.PlayerLoginLogoutCache;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -21,6 +22,27 @@ import java.util.stream.Collectors;
  * @author Ryan
  */
 public class NetunoService implements ApiNetunoService {
+
+    private static final CacheDebugPrinter.PrintSpecifier<NPlayer> DEBUG_PRINTER_NPLAYER = player -> {
+        String output = "\tPunishments (" + player.getPunishments().size() + " total):\n";
+        for ( ApiPunishment aPun : player.getPunishments() ) {
+            Punishment p = ( Punishment ) aPun;
+
+            output += "\t\tPunishment #" + p.getId() + "\n";
+            output += "\t\t\tPlayer = " + p.getPlayer().getName() + " (UUID \"" + p.getPlayerUuid().toString() + "\")\n";
+            output += "\t\t\tStaff =" + p.getStaff().getName() + " (UUID \"" + p.getStaffUuid().toString() + "\")\n";
+            output += "\t\t\tPunishment Type = " + p.getType().name().toUpperCase() + "\n";
+            output += "\t\t\tTimestamp = " + p.getTimestamp() + "\n";
+            output += "\t\t\tReason = \"" + p.getReason() + "\"\n";
+            output += "\t\t\tActive = " + ( p.isActive() ? "TRUE" : "FALSE" ) + "\n";
+            output += "\t\t\tReference ID = " + p.getReferenceId() + "\n";
+            output += "\t\t\tGUI Punishment = " + ( p.isGuiPun() ? "YES" : "NO" ) + "\n";
+            output += "\t\t\tNotification Sent = " + ( p.isNotifSent() ? "YES" : "NO" ) + "\n";
+            output += "\t\t\tExecuted = " + ( p.isExecuted() ? "YES" : "NO" ) + "\n";
+        }
+
+        return output;
+    };
 
     private final PlayerLoginLogoutCache<NPlayer> PLAYER_CACHE = new PlayerLoginLogoutCache<>();
 
@@ -153,6 +175,14 @@ public class NetunoService implements ApiNetunoService {
         }
 
         return toReturn;
+    }
+
+    /**
+     * Used to output debug information about the cache
+     * to a file
+     */
+    public void startCacheDebugPrinter() {
+        PLAYER_CACHE.printDebugInfo( DEBUG_PRINTER_NPLAYER );
     }
 
     @Override

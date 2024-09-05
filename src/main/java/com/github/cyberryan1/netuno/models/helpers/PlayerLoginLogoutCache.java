@@ -1,6 +1,7 @@
 package com.github.cyberryan1.netuno.models.helpers;
 
 import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.netuno.debug.CacheDebugPrinter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -424,6 +425,26 @@ public class PlayerLoginLogoutCache<T> {
     }
 
     /**
+     * Outputs the contents of this cache to a file to
+     * help with debugging
+     *
+     * @param printerB The way the data will be printed to
+     *                 the file
+     */
+    public void printDebugInfo( CacheDebugPrinter.PrintSpecifier<T> printerB ) {
+        CacheDebugPrinter<UUID, T> debugger = new CacheDebugPrinter<>();
+
+        for ( UUID uuid : this.CACHE.keySet() ) {
+            debugger.getCache().put( uuid, this.CACHE.get( uuid ).accessDataWithoutUpdate() );
+        }
+
+        debugger.setPrinterA( UUID::toString );
+        debugger.setPrinterB( printerB );
+
+        debugger.printToFile();
+    }
+
+    /**
      * Used to hold a piece of cached data, along with other
      * data associated with it, including the last timestamp
      * it was accessed and the state of this data
@@ -457,6 +478,17 @@ public class PlayerLoginLogoutCache<T> {
          */
         public H accessData() {
             recentlyAccessedUpdate();
+            return this.h;
+        }
+
+        /**
+         * Accesses the data but does NOT update its last
+         * access timestamp to the current time. This should
+         * rarely be used
+         *
+         * @return The data held by this instance
+         */
+        public H accessDataWithoutUpdate() {
             return this.h;
         }
 
