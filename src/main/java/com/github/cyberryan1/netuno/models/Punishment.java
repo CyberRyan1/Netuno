@@ -1,6 +1,7 @@
 package com.github.cyberryan1.netuno.models;
 
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
+import com.github.cyberryan1.netuno.utils.TimestampUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -211,12 +212,27 @@ public class Punishment implements ApiPunishment {
     }
 
     /**
+     * This will check if the punishment is active or not. If the
+     * punishment has been set to inactive, returns false. Otherwise,
+     * this will check if the punishment has expired yet or not. If the
+     * punishment has expired, the punishment is set as inactive and false
+     * is returned. Otherwise returns true<br><br>
+     *
      * Note: if the punishment is not active, it can NOT be set back to active.
      *
      * @return True if this punishment is active, false otherwise
      */
     @Override
     public boolean isActive() {
+        if ( this.isActive ) {
+            if ( this.length == ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) return true;
+            if ( TimestampUtils.timestampHasExpired( this.timestamp, this.length ) ) {
+                this.isActive = false;
+                return false;
+            }
+
+            return true;
+        }
         return this.isActive;
     }
 
