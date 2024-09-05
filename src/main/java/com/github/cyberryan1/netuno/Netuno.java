@@ -4,6 +4,8 @@ import ch.njol.skript.SkriptAddon;
 import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
+import com.github.cyberryan1.netuno.commands.NetunoCommand;
+import com.github.cyberryan1.netuno.commands.PunishCommand;
 import com.github.cyberryan1.netuno.database.ConnectionManager;
 import com.github.cyberryan1.netuno.models.NetunoService;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
@@ -115,10 +117,19 @@ public final class Netuno extends JavaPlugin {
 
         // Initializing the API services
         SERVICE.initialize();
+
+        // Registering commands
+        registerCommands();
     }
 
     @Override
     public void onDisable() {
+        // Closing database connections
+        CONNECTION_MANAGER.closeConnection();
+    }
 
+    private void registerCommands() {
+        new NetunoCommand();
+        new PunishCommand( 1 );
     }
 }
