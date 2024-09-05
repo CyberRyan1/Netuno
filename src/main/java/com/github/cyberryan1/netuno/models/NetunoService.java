@@ -24,7 +24,17 @@ public class NetunoService implements ApiNetunoService {
 
     private final PlayerLoginLogoutCache<NPlayer> PLAYER_CACHE = new PlayerLoginLogoutCache<>();
 
-    public NetunoService() {
+    /**
+     * Note that almost nothing should be done in the
+     * constructor, but instead be done in the
+     * {@link #initialize()} method
+     */
+    public NetunoService() {}
+
+    /**
+     * Initializes this service
+     */
+    public void initialize() {
         this.PLAYER_CACHE.setLoginScript( event -> Optional.of( new NPlayer( event.getUniqueId() ) ) );
     }
 
