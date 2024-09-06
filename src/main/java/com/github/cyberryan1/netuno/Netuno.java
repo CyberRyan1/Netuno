@@ -8,6 +8,7 @@ import com.github.cyberryan1.netuno.commands.NetunoCommand;
 import com.github.cyberryan1.netuno.commands.PunishCommand;
 import com.github.cyberryan1.netuno.database.ConnectionManager;
 import com.github.cyberryan1.netuno.models.NetunoService;
+import com.github.cyberryan1.netuno.models.PunishmentService;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bstats.bukkit.Metrics;
@@ -86,7 +87,8 @@ public final class Netuno extends JavaPlugin {
     public static final ConnectionManager CONNECTION_MANAGER = new ConnectionManager();
 
     // API Things
-    public static final NetunoService SERVICE = new NetunoService();
+    public static final PunishmentService PUNISHMENT_SERVICE = new PunishmentService();
+    public static final NetunoService SERVICE = new NetunoService( PUNISHMENT_SERVICE );
 
     // Skript
     public SkriptAddon addon;
@@ -120,6 +122,8 @@ public final class Netuno extends JavaPlugin {
 
         // Registering commands
         registerCommands();
+
+        // Registering listeners
     }
 
     @Override
@@ -131,5 +135,9 @@ public final class Netuno extends JavaPlugin {
     private void registerCommands() {
         new NetunoCommand();
         new PunishCommand( 1 );
+    }
+
+    private void registerListeners() {
+
     }
 }
