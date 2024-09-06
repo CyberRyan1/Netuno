@@ -60,10 +60,17 @@ public class NetunoService implements ApiNetunoService {
     public void initialize() {
         this.PLAYER_CACHE.setLoginScript( event -> Optional.of( new NPlayer( event.getUniqueId() ) ) );
 
+        // TODO on join, we need to update this list
         Map<UUID, List<String>> storedRows = IpListDatabase.getAllEntries();
         for ( Map.Entry<UUID, List<String>> entry : storedRows.entrySet() ) {
             this.ALL_PLAYERS_JOINED_IPS.add( new PlayerIpsRecord( entry.getKey(), true, entry.getValue() ) );
         }
+    }
+
+    public void close() {
+        // TODO on server shutdown, run this method
+
+        // TODO save all unsaved data to the IP list database
     }
 
     /**
@@ -138,5 +145,13 @@ public class NetunoService implements ApiNetunoService {
         }
 
         return toReturn;
+    }
+
+    /**
+     * @return A list of {@link PlayerIpsRecord} that is loaded
+     *         in this instance
+     */
+    public List<PlayerIpsRecord> getPlayerIpsRecords() {
+        return this.ALL_PLAYERS_JOINED_IPS;
     }
 }
