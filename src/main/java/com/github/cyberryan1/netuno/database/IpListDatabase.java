@@ -63,4 +63,43 @@ public class IpListDatabase {
             throw new RuntimeException( e );
         }
     }
+
+    /**
+     * Saves multiple entries in bulk to the database
+     *
+     * @param entries A map of UUIDs to Strings, where the key is
+     *                the player's UUID and the value is the IP
+     *                address
+     */
+    public static void saveBulkEntries( Map<UUID, String> entries ) {
+        // Important: apparently you are supposed to set rewriteBatchedStatements=true
+        //      in the actual database settings
+        try {
+            final boolean PRIOR_AUTOCOMMIT_STATUS = ConnectionManager.CONN.getAutoCommit();
+            ConnectionManager.CONN.setAutoCommit( false );
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + "(ip, uuid) VALUES(?,?);" );
+
+            for ( Map.Entry<UUID, String> entry : entries.entrySet() ) {
+                ps.setString( 1, entry.getKey().toString() );
+                ps.setString( 2, entry.getValue() );
+                ps.addBatch();
+            }
+
+            int numUpdates[] = ps.executeBatch();
+            for ( int index = 0; index < numUpdates.length; index++ ) {
+                if ( numUpdates[index] == PreparedStatement.SUCCESS_NO_INFO ) {
+                    CyberLogUtils.logWarn( "Execution " + index + ": unknown number of rows updated" );
+                }
+                else {
+                    CyberLogUtils.logInfo( "Execution " + index + " successful: " + numUpdates[index] + " rows updated" );
+                }
+            }
+
+            ConnectionManager.CONN.commit();
+
+            ConnectionManager.CONN.setAutoCommit( PRIOR_AUTOCOMMIT_STATUS );
+        } catch ( SQLException e ) {
+            throw new RuntimeException( e );
+        }
+    }
 }
