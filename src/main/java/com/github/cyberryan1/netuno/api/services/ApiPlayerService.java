@@ -1,5 +1,6 @@
 //package com.github.cyberryan1.netuno.api.services;
 //
+//import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 //import org.bukkit.OfflinePlayer;
 //
 //import java.util.UUID;
@@ -7,6 +8,7 @@
 //
 ///**
 // * Used to query for players and view/edit their data
+// * related to Netuno
 // *
 // * @author Ryan
 // */
@@ -16,11 +18,11 @@
 //     * @param player A player
 //     * @return The player and all of their Netuno data
 //     */
-//    CompletableFuture<ApiPlayerService> getPlayer( OfflinePlayer player );
+//    CompletableFuture<ApiPlayer> getPlayer( OfflinePlayer player );
 //
 //    /**
 //     * @param uuid A player's uuid
 //     * @return The player and all of their Netuno data
 //     */
-//    CompletableFuture<ApiPlayerService> getPlayer( UUID uuid );
+//    CompletableFuture<ApiPlayer> getPlayer( UUID uuid );
 //}
