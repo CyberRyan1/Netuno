@@ -30,6 +30,12 @@ public interface ApiPlayer {
     void reloadData();
 
     /**
+     * @return A list of all known accounts this player has
+     *         joined the server with
+     */
+    List<UUID> getAlts();
+
+    /**
      * @return List of all punishments of this player
      */
     List<ApiPunishment> getPunishments();
