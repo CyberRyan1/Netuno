@@ -12,7 +12,6 @@ import java.util.UUID;
  */
 public class PlayerIpsRecord /*implements ApiPlayerIpList*/ {
 
-    // test2
     private final UUID uuid;
     private final List<String> ipList;
     private boolean dataMatchesDatabase;
