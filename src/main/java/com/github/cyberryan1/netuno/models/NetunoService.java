@@ -4,6 +4,7 @@ import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.api.services.ApiNetunoService;
 import com.github.cyberryan1.netuno.api.services.ApiPunishmentService;
+import com.github.cyberryan1.netuno.database.IpListDatabase;
 import com.github.cyberryan1.netuno.debug.CacheDebugPrinter;
 import com.github.cyberryan1.netuno.models.helpers.PlayerLoginLogoutCache;
 import org.bukkit.Bukkit;
@@ -59,7 +60,10 @@ public class NetunoService implements ApiNetunoService {
     public void initialize() {
         this.PLAYER_CACHE.setLoginScript( event -> Optional.of( new NPlayer( event.getUniqueId() ) ) );
 
-        // TODO query all rows from the joined IPs database and add them to the ALL_PLAYERS_JOINED_IP list
+        Map<UUID, List<String>> storedRows = IpListDatabase.getAllEntries();
+        for ( Map.Entry<UUID, List<String>> entry : storedRows.entrySet() ) {
+            this.ALL_PLAYERS_JOINED_IPS.add( new PlayerIpsRecord( entry.getKey(), true, entry.getValue() ) );
+        }
     }
 
     /**
