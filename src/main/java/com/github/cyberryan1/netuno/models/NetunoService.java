@@ -1,21 +1,16 @@
 package com.github.cyberryan1.netuno.models;
 
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
-import com.github.cyberryan1.netuno.api.models.ApiPlayerIpList;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.api.services.ApiNetunoService;
-import com.github.cyberryan1.netuno.database.PunishmentsDatabase;
+import com.github.cyberryan1.netuno.api.services.ApiPunishmentService;
 import com.github.cyberryan1.netuno.debug.CacheDebugPrinter;
 import com.github.cyberryan1.netuno.models.helpers.PlayerLoginLogoutCache;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 /**
  * An implementation of the {@link ApiNetunoService} interface
@@ -24,7 +19,7 @@ import java.util.stream.Collectors;
  */
 public class NetunoService implements ApiNetunoService {
 
-    private static final CacheDebugPrinter.PrintSpecifier<NPlayer> DEBUG_PRINTER_NPLAYER = player -> {
+    public static final CacheDebugPrinter.PrintSpecifier<NPlayer> DEBUG_PRINTER_NPLAYER = player -> {
         String output = "\tPunishments (" + player.getPunishments().size() + " total):\n";
         for ( ApiPunishment aPun : player.getPunishments() ) {
             Punishment p = ( Punishment ) aPun;
@@ -46,14 +41,17 @@ public class NetunoService implements ApiNetunoService {
     };
 
     private final PlayerLoginLogoutCache<NPlayer> PLAYER_CACHE = new PlayerLoginLogoutCache<>();
-    private final List<ApiPlayerIpList> ALL_PLAYERS_JOINED_IPS = new ArrayList<>();
+    private final List<PlayerIpList> ALL_PLAYERS_JOINED_IPS = new ArrayList<>();
+    private final PunishmentService PUNISHMENT_SERVICE;
 
     /**
      * Note that almost nothing should be done in the
      * constructor, but instead be done in the
      * {@link #initialize()} method
      */
-    public NetunoService() {}
+    public NetunoService( PunishmentService punishmentService ) {
+        this.PUNISHMENT_SERVICE = punishmentService;
+    }
 
     /**
      * Initializes this service
@@ -62,6 +60,14 @@ public class NetunoService implements ApiNetunoService {
         this.PLAYER_CACHE.setLoginScript( event -> Optional.of( new NPlayer( event.getUniqueId() ) ) );
 
         // TODO query all rows from the joined IPs database and add them to the ALL_PLAYERS_JOINED_IP list
+    }
+
+    /**
+     * @return The {@link ApiPunishmentService}
+     */
+    @Override
+    public ApiPunishmentService getPunishmentService() {
+        return this.PUNISHMENT_SERVICE;
     }
 
     /**
@@ -86,10 +92,12 @@ public class NetunoService implements ApiNetunoService {
             if ( this.PLAYER_CACHE.containsPlayer( uuid ) == false ) {
                 // If the cache doesn't contain the player and they are
                 //      offline, add their data as inactive
-                if ( playerOnline ) this.PLAYER_CACHE.insertActiveData( uuid, toReturn );
-                // If the cache doesn't contain the player but they are
-                //      online, add their data as active
-                else this.PLAYER_CACHE.insertInactiveData( uuid, toReturn );
+                if ( playerOnline )
+                    this.PLAYER_CACHE.insertActiveData( uuid, toReturn );
+                    // If the cache doesn't contain the player but they are
+                    //      online, add their data as active
+                else
+                    this.PLAYER_CACHE.insertInactiveData( uuid, toReturn );
             }
             else {
                 // If the cache does contain the player, we just update
@@ -104,166 +112,27 @@ public class NetunoService implements ApiNetunoService {
     }
 
     /**
-     * @return A list of {@link ApiPlayerIpList} which
-     * contains the player's UUID and all of the IPs
-     * that player has joined the server with
+     * @return Access the player cache. Note that this should
+     *         rarely be used for editing and instead mainly used
+     *         for reading of the data provided
+     */
+    public PlayerLoginLogoutCache<NPlayer> getPlayerCache() {
+        return this.PLAYER_CACHE;
+    }
+
+    /**
+     * @return A list of all players who have ever joined the
+     *         server which maps to a list of all the IPs they
+     *         have joined the server with
      */
     @Override
-    public List<ApiPlayerIpList> getAllPlayersIpList() {
-        // TODO
-        return null;
-    }
+    public Map<UUID, List<String>> getAllPlayersJoinedIps() {
+        Map<UUID, List<String>> toReturn = new HashMap<>();
 
-    /**
-     * Searches through a cache of punishments first. If nothing
-     * is found, then queries the database.
-     *
-     * @param id A punishment ID
-     * @return The punishment with the given id, empty otherwise
-     */
-    @Override
-    public CompletableFuture<Optional<ApiPunishment>> getPunishment( int id ) {
-        for ( Punishment pun : getAllCachedPunishments() ) {
-            if ( pun.getId() == id ) return CompletableFuture.supplyAsync( () -> Optional.of( pun ) );
-        }
-        return CompletableFuture.supplyAsync( () -> Optional.ofNullable( PunishmentsDatabase.getPunishment( id ) ) );
-    }
-
-    /**
-     * Searches through a cache of punishments first. If nothing
-     * is found, then queries the database.
-     *
-     * @param uuid A player's uuid
-     * @return A list of punishments the given player has
-     */
-    @Override
-    public CompletableFuture<List<ApiPunishment>> getPunishments( UUID uuid ) {
-        List<ApiPunishment> toReturn = getAllCachedPunishments().stream()
-                .filter( pun -> pun.getPlayerUuid().equals( uuid ) )
-                .map( pun -> ( ApiPunishment ) pun )
-                .collect( Collectors.toList() );
-        if ( toReturn.isEmpty() == false ) return CompletableFuture.supplyAsync( () -> toReturn );
-
-        return CompletableFuture.supplyAsync( () ->
-                convertPunishmentsToApiPunishments( PunishmentsDatabase.getPunishments( uuid.toString() ) ) );
-    }
-
-    /**
-     * Searches through a cache of punishments first. If nothing
-     * is found, then queries the database.
-     *
-     * @param player A player
-     * @return A list of punishments the given player has
-     */
-    @Override
-    public CompletableFuture<List<ApiPunishment>> getPunishments( OfflinePlayer player ) {
-        return getPunishments( player.getUniqueId() );
-    }
-
-    /**
-     * This will always have to query the database, as searching
-     * a cache can mean that some elements will drop out of the
-     * cache while others remain within it, causing a nightmare
-     *
-     * @param referenceId A reference ID
-     * @return A list of punishments that have the given reference ID
-     */
-    public CompletableFuture<List<ApiPunishment>> getPunishmentsByReferenceId( int referenceId ) {
-        return CompletableFuture.supplyAsync( () ->
-                convertPunishmentsToApiPunishments( PunishmentsDatabase.getPunishmentsFromReference( referenceId ) ) );
-    }
-
-    /**
-     * @return A list of the punishments of all cached players
-     */
-    public List<Punishment> getAllCachedPunishments() {
-        List<Punishment> toReturn = new ArrayList<>();
-
-        for ( UUID uuid : PLAYER_CACHE.getKeySet() ) {
-            // No need to check if the optional is empty since we are
-            //      iterating through all the keyed UUIDs
-            NPlayer player = this.PLAYER_CACHE.getData( uuid ).get();
-            toReturn.addAll( player.getPunishments().stream()
-                    .map( pun -> ( Punishment ) pun )
-                    .collect( Collectors.toList() )
-            );
+        for ( PlayerIpList pil : this.ALL_PLAYERS_JOINED_IPS ) {
+            toReturn.put( pil.getPlayer(), pil.getIps() );
         }
 
         return toReturn;
-    }
-
-    /**
-     * Used to output debug information about the cache
-     * to a file
-     */
-    public void startCacheDebugPrinter() {
-        PLAYER_CACHE.printDebugInfo( DEBUG_PRINTER_NPLAYER );
-    }
-
-    @Override
-    public PunishmentBuilder punishmentBuilder() {
-        return new PunBuilder();
-    }
-
-    static class PunBuilder implements PunishmentBuilder {
-
-        private Punishment punishment;
-
-        public PunBuilder() {
-            punishment = new Punishment();
-        }
-
-        @Override
-        public PunishmentBuilder setPlayer( UUID uuid ) {
-            punishment.setPlayer( uuid );
-            return this;
-        }
-
-        @Override
-        public PunishmentBuilder setPlayer( OfflinePlayer player ) {
-            punishment.setPlayer( player.getUniqueId() );
-            return this;
-        }
-
-        @Override
-        public PunishmentBuilder setStaff( UUID uuid ) {
-            punishment.setStaff( uuid );
-            return this;
-        }
-
-        @Override
-        public PunishmentBuilder setStaff( OfflinePlayer player ) {
-            punishment.setStaff( player.getUniqueId() );
-            return this;
-        }
-
-        @Override
-        public PunishmentBuilder setType( ApiPunishment.PunType type ) {
-            punishment.setType( type );
-            return this;
-        }
-
-        @Override
-        public PunishmentBuilder setLength( long length ) {
-            punishment.setLength( length );
-            return this;
-        }
-
-        @Override
-        public PunishmentBuilder setReason( String reason ) {
-            punishment.setReason( reason );
-            return this;
-        }
-
-        @Override
-        public ApiPunishment build() {
-            return punishment;
-        }
-    }
-
-    private List<ApiPunishment> convertPunishmentsToApiPunishments( List<Punishment> list ) {
-        return list.stream()
-                .map( p -> ( ApiPunishment ) p )
-                .collect( Collectors.toList() );
     }
 }
