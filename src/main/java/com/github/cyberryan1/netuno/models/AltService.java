@@ -17,16 +17,11 @@ public class AltService implements ApiAltService {
 
     // TODO javadoc
     public void initialize() {
-        // TODO on join, we need to update this list
+        // TODO on join, we need to update this list and update the database
         Map<UUID, List<String>> storedRows = IpListDatabase.getAllEntries();
         for ( Map.Entry<UUID, List<String>> entry : storedRows.entrySet() ) {
             this.ALL_PLAYERS_JOINED_IPS.add( new PlayerIpsRecord( entry.getKey(), true, entry.getValue() ) );
         }
-    }
-
-    // TODO javadoc
-    public void close() {
-        // TODO save all unsaved data to the IP list database
     }
 
     /**

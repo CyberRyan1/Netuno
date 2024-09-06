@@ -66,8 +66,6 @@ public class NetunoService implements ApiNetunoService {
 
     // TODO javadoc
     public void close() {
-        this.ALT_SERVICE.close();
-        // TODO on server shutdown, run this method
     }
 
     /**
