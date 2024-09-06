@@ -94,6 +94,13 @@ public interface ApiPunishment {
     void setLength( long length );
 
     /**
+     * @return Returns how long the remaining duration of this
+     *         punishment is. If {@link #isActive()} is false,
+     *         returns 0
+     */
+    long getDurationRemaining();
+
+    /**
      * @return The reason for this punishment
      */
     String getReason();

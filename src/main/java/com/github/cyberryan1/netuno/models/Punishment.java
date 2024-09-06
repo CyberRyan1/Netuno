@@ -196,6 +196,18 @@ public class Punishment implements ApiPunishment {
     }
 
     /**
+     * @return Returns how long the remaining duration of this
+     *         punishment is. If {@link #isActive()} is false,
+     *         returns 0
+     */
+    @Override
+    public long getDurationRemaining() {
+        if ( isActive() == false ) return 0;
+        long durationSinceTimestamp = TimestampUtils.getTimeSince( this.timestamp );
+        return this.length - durationSinceTimestamp;
+    }
+
+    /**
      * @return The reason for this punishment
      */
     @Override
