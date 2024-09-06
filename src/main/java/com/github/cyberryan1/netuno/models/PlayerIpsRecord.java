@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Used to manage the IPs a player has joined with and manages if
- * the list held by this instance matches what is held in the
+ * Used to manage the IPs a player has joined with and manages if the list held by this instance matches what is held in the
  * database
  *
  * @author Ryan
  */
 public class PlayerIpsRecord /*implements ApiPlayerIpList*/ {
 
+    // test
     private final UUID uuid;
     private final List<String> ipList;
     private boolean dataMatchesDatabase;
