@@ -4,7 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-// TODO javadoc
+/**
+ * Used to manage the IPs a player has joined with and manages if
+ * the list held by this instance matches what is held in the
+ * database
+ *
+ * @author Ryan
+ */
 public class PlayerIpsRecord /*implements ApiPlayerIpList*/ {
 
     private final UUID uuid;
