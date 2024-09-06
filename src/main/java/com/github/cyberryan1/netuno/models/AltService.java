@@ -10,14 +10,21 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-// TODO javadoc
+/**
+ * A service to manage alts. This will load all alt entries from
+ * the database, allow updating of alt entries, and more.
+ *
+ * @author Ryan
+ */
 public class AltService implements ApiAltService {
 
     private final List<PlayerIpsRecord> ALL_PLAYERS_JOINED_IPS = new ArrayList<>();
 
-    // TODO javadoc
+    /**
+     * Initializes this service. Note that this will execute a
+     * (most likely) large query from the database.
+     */
     public void initialize() {
-        // TODO on join, we need to update this list and update the database
         Map<UUID, List<String>> storedRows = IpListDatabase.getAllEntries();
         for ( Map.Entry<UUID, List<String>> entry : storedRows.entrySet() ) {
             this.ALL_PLAYERS_JOINED_IPS.add( new PlayerIpsRecord( entry.getKey(), entry.getValue() ) );
