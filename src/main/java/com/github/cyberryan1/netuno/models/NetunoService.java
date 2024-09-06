@@ -1,6 +1,7 @@
 package com.github.cyberryan1.netuno.models;
 
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
+import com.github.cyberryan1.netuno.api.models.ApiPlayerIpList;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.api.services.ApiNetunoService;
 import com.github.cyberryan1.netuno.database.PunishmentsDatabase;
@@ -45,6 +46,7 @@ public class NetunoService implements ApiNetunoService {
     };
 
     private final PlayerLoginLogoutCache<NPlayer> PLAYER_CACHE = new PlayerLoginLogoutCache<>();
+    private final List<ApiPlayerIpList> ALL_PLAYERS_JOINED_IPS = new ArrayList<>();
 
     /**
      * Note that almost nothing should be done in the
@@ -58,6 +60,8 @@ public class NetunoService implements ApiNetunoService {
      */
     public void initialize() {
         this.PLAYER_CACHE.setLoginScript( event -> Optional.of( new NPlayer( event.getUniqueId() ) ) );
+
+        // TODO query all rows from the joined IPs database and add them to the ALL_PLAYERS_JOINED_IP list
     }
 
     /**
@@ -97,6 +101,17 @@ public class NetunoService implements ApiNetunoService {
 
             return toReturn;
         } );
+    }
+
+    /**
+     * @return A list of {@link ApiPlayerIpList} which
+     * contains the player's UUID and all of the IPs
+     * that player has joined the server with
+     */
+    @Override
+    public List<ApiPlayerIpList> getAllPlayersIpList() {
+        // TODO
+        return null;
     }
 
     /**

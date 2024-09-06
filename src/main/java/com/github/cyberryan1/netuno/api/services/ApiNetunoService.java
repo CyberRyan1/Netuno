@@ -1,6 +1,7 @@
 package com.github.cyberryan1.netuno.api.services;
 
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
+import com.github.cyberryan1.netuno.api.models.ApiPlayerIpList;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import org.bukkit.OfflinePlayer;
 
@@ -28,6 +29,13 @@ public interface ApiNetunoService {
      * @return The player and all of their Netuno data
      */
     CompletableFuture<ApiPlayer> getPlayer( UUID uuid );
+
+    /**
+     * @return A list of {@link ApiPlayerIpList} which
+     * contains the player's UUID and all of the IPs
+     * that player has joined the server with
+     */
+    List<ApiPlayerIpList> getAllPlayersIpList();
 
     /**
      * @param id A punishment ID
