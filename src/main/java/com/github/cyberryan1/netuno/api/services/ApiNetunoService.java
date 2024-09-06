@@ -3,8 +3,6 @@ package com.github.cyberryan1.netuno.api.services;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import org.bukkit.OfflinePlayer;
 
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -17,9 +15,14 @@ import java.util.concurrent.CompletableFuture;
 public interface ApiNetunoService {
 
     /**
-     * @return The {@link ApiPunishmentService}
+     * @return The {@link ApiPunishmentService} instance
      */
     ApiPunishmentService getPunishmentService();
+
+    /**
+     * @return The {@link ApiAltService} instance
+     */
+    ApiAltService getAltService();
 
     /**
      * @param player A player
@@ -32,12 +35,4 @@ public interface ApiNetunoService {
      * @return The player and all of their Netuno data
      */
     CompletableFuture<ApiPlayer> getPlayer( UUID uuid );
-
-    /**
-     * @return A list of all players who have ever
-     * joined the server which maps to a list of
-     * all the IPs they have joined the server
-     * with
-     */
-    Map<UUID, List<String>> getAllPlayersJoinedIps();
 }

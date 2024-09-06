@@ -30,8 +30,9 @@ public interface ApiPlayer {
     void reloadData();
 
     /**
-     * @return A list of all known accounts this player has
-     *         joined the server with
+     * Alias to {@link com.github.cyberryan1.netuno.api.services.ApiAltService#getAlts(UUID)}
+     * @return A list of known accounts that this player has
+     * joined the server with
      */
     List<UUID> getAlts();
 

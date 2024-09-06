@@ -2,15 +2,16 @@ package com.github.cyberryan1.netuno.models;
 
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
+import com.github.cyberryan1.netuno.api.services.ApiAltService;
 import com.github.cyberryan1.netuno.api.services.ApiNetunoService;
 import com.github.cyberryan1.netuno.api.services.ApiPunishmentService;
-import com.github.cyberryan1.netuno.database.IpListDatabase;
 import com.github.cyberryan1.netuno.debug.CacheDebugPrinter;
 import com.github.cyberryan1.netuno.models.helpers.PlayerLoginLogoutCache;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-import java.util.*;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -42,16 +43,17 @@ public class NetunoService implements ApiNetunoService {
     };
 
     private final PlayerLoginLogoutCache<NPlayer> PLAYER_CACHE = new PlayerLoginLogoutCache<>();
-    private final List<PlayerIpsRecord> ALL_PLAYERS_JOINED_IPS = new ArrayList<>();
     private final PunishmentService PUNISHMENT_SERVICE;
+    private final AltService ALT_SERVICE;
 
     /**
      * Note that almost nothing should be done in the
      * constructor, but instead be done in the
      * {@link #initialize()} method
      */
-    public NetunoService( PunishmentService punishmentService ) {
+    public NetunoService( PunishmentService punishmentService, AltService altService ) {
         this.PUNISHMENT_SERVICE = punishmentService;
+        this.ALT_SERVICE = altService;
     }
 
     /**
@@ -59,18 +61,13 @@ public class NetunoService implements ApiNetunoService {
      */
     public void initialize() {
         this.PLAYER_CACHE.setLoginScript( event -> Optional.of( new NPlayer( event.getUniqueId() ) ) );
-
-        // TODO on join, we need to update this list
-        Map<UUID, List<String>> storedRows = IpListDatabase.getAllEntries();
-        for ( Map.Entry<UUID, List<String>> entry : storedRows.entrySet() ) {
-            this.ALL_PLAYERS_JOINED_IPS.add( new PlayerIpsRecord( entry.getKey(), true, entry.getValue() ) );
-        }
+        this.ALT_SERVICE.initialize();
     }
 
+    // TODO javadoc
     public void close() {
+        this.ALT_SERVICE.close();
         // TODO on server shutdown, run this method
-
-        // TODO save all unsaved data to the IP list database
     }
 
     /**
@@ -79,6 +76,14 @@ public class NetunoService implements ApiNetunoService {
     @Override
     public ApiPunishmentService getPunishmentService() {
         return this.PUNISHMENT_SERVICE;
+    }
+
+    /**
+     * @return The {@link ApiAltService} instance
+     */
+    @Override
+    public ApiAltService getAltService() {
+        return this.ALT_SERVICE;
     }
 
     /**
@@ -129,29 +134,5 @@ public class NetunoService implements ApiNetunoService {
      */
     public PlayerLoginLogoutCache<NPlayer> getPlayerCache() {
         return this.PLAYER_CACHE;
-    }
-
-    /**
-     * @return A list of all players who have ever joined the
-     *         server which maps to a list of all the IPs they
-     *         have joined the server with
-     */
-    @Override
-    public Map<UUID, List<String>> getAllPlayersJoinedIps() {
-        Map<UUID, List<String>> toReturn = new HashMap<>();
-
-        for ( PlayerIpsRecord pil : this.ALL_PLAYERS_JOINED_IPS ) {
-            toReturn.put( pil.getPlayer(), pil.getIps() );
-        }
-
-        return toReturn;
-    }
-
-    /**
-     * @return A list of {@link PlayerIpsRecord} that is loaded
-     *         in this instance
-     */
-    public List<PlayerIpsRecord> getPlayerIpsRecords() {
-        return this.ALL_PLAYERS_JOINED_IPS;
     }
 }

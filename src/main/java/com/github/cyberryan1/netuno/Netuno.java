@@ -7,6 +7,7 @@ import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.commands.NetunoCommand;
 import com.github.cyberryan1.netuno.commands.PunishCommand;
 import com.github.cyberryan1.netuno.database.ConnectionManager;
+import com.github.cyberryan1.netuno.models.AltService;
 import com.github.cyberryan1.netuno.models.NetunoService;
 import com.github.cyberryan1.netuno.models.PunishmentService;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
@@ -88,7 +89,8 @@ public final class Netuno extends JavaPlugin {
 
     // API Things
     public static final PunishmentService PUNISHMENT_SERVICE = new PunishmentService();
-    public static final NetunoService SERVICE = new NetunoService( PUNISHMENT_SERVICE );
+    public static final AltService ALT_SERVICE = new AltService();
+    public static final NetunoService SERVICE = new NetunoService( PUNISHMENT_SERVICE, ALT_SERVICE );
 
     // Skript
     public SkriptAddon addon;
@@ -128,7 +130,11 @@ public final class Netuno extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        // Closing any API services
+        SERVICE.close();
+
         // Closing database connections
+        // This should be one of the last things done
         CONNECTION_MANAGER.closeConnection();
     }
 
