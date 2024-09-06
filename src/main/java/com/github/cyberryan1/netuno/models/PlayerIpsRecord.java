@@ -5,19 +5,19 @@ import java.util.List;
 import java.util.UUID;
 
 // TODO javadoc
-public class PlayerIpList /*implements ApiPlayerIpList*/ {
+public class PlayerIpsRecord /*implements ApiPlayerIpList*/ {
 
     private final UUID uuid;
     private final List<String> ipList;
     private boolean dataMatchesDatabase;
 
-    public PlayerIpList( UUID uuid, boolean dataMatchesDatabase, List<String> ipList ) {
+    public PlayerIpsRecord( UUID uuid, boolean dataMatchesDatabase, List<String> ipList ) {
         this.uuid = uuid;
         this.ipList = ipList;
         this.dataMatchesDatabase = dataMatchesDatabase;
     }
 
-    public PlayerIpList( UUID uuid, boolean dataMatchesDatabase ) {
+    public PlayerIpsRecord( UUID uuid, boolean dataMatchesDatabase ) {
         this( uuid, dataMatchesDatabase, new ArrayList<>() );
     }
 

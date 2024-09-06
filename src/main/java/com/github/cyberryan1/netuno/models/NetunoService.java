@@ -41,7 +41,7 @@ public class NetunoService implements ApiNetunoService {
     };
 
     private final PlayerLoginLogoutCache<NPlayer> PLAYER_CACHE = new PlayerLoginLogoutCache<>();
-    private final List<PlayerIpList> ALL_PLAYERS_JOINED_IPS = new ArrayList<>();
+    private final List<PlayerIpsRecord> ALL_PLAYERS_JOINED_IPS = new ArrayList<>();
     private final PunishmentService PUNISHMENT_SERVICE;
 
     /**
@@ -129,7 +129,7 @@ public class NetunoService implements ApiNetunoService {
     public Map<UUID, List<String>> getAllPlayersJoinedIps() {
         Map<UUID, List<String>> toReturn = new HashMap<>();
 
-        for ( PlayerIpList pil : this.ALL_PLAYERS_JOINED_IPS ) {
+        for ( PlayerIpsRecord pil : this.ALL_PLAYERS_JOINED_IPS ) {
             toReturn.put( pil.getPlayer(), pil.getIps() );
         }
 
