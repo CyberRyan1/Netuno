@@ -157,6 +157,43 @@ public class AltService implements ApiAltService {
     }
 
     /**
+     * Adds a new IP address to the provided player's record. If
+     * there are no records for the player, creates a new record
+     * for them. This will also update the database to reflect
+     * these changes
+     *
+     * @param uuid The player's UUID
+     * @param ip   The IP address
+     */
+    public void addNewIpAddress( UUID uuid, String ip ) {
+        PlayerIpsRecord record = getPlayerFromIpRecords( uuid ).orElse( null );
+
+        // If player has never joined the server before, we create
+        //      a new record for them, add it to the record list,
+        //      and save it into the database
+        if ( record == null ) {
+            record = new PlayerIpsRecord( uuid );
+            record.addIp( ip );
+            this.ALL_PLAYERS_JOINED_IPS.add( record );
+            IpListDatabase.saveEntry( uuid, ip );
+        }
+
+        // If the record already contains the provided IP, throw
+        //      an error
+        else if ( record.getIps().contains( ip ) ) {
+            throw new IllegalArgumentException( "Player with UUID \"" + uuid.toString()
+                    + "\" already has IP address " + ip + " logged" );
+        }
+
+        // Otherwise, we add the IP to the player's record and
+        //      save it into the database
+        else {
+            record.addIp( ip );
+            IpListDatabase.saveEntry( uuid, ip );
+        }
+    }
+
+    /**
      * @return A list of {@link PlayerIpsRecord} that is loaded
      *         in this instance
      */
@@ -170,7 +207,7 @@ public class AltService implements ApiAltService {
      *         {@link #getPlayerIpsRecords()} that contain the
      *         provided IP
      */
-    private List<PlayerIpsRecord> getRecordsWithIp( String ip ) {
+    public List<PlayerIpsRecord> getRecordsWithIp( String ip ) {
         return this.ALL_PLAYERS_JOINED_IPS.stream()
                 .filter( rec -> rec.getIps().stream()
                         .anyMatch( element -> element.equals( ip ) ) )
@@ -184,7 +221,7 @@ public class AltService implements ApiAltService {
      *         {@link #getPlayerIpsRecords()}, otherwise returns
      *         an empty optional
      */
-    private Optional<PlayerIpsRecord> getPlayerFromIpRecords( UUID uuid ) {
+    public Optional<PlayerIpsRecord> getPlayerFromIpRecords( UUID uuid ) {
         return this.ALL_PLAYERS_JOINED_IPS.stream()
                 .filter( rec -> rec.getPlayer().equals( uuid ) )
                 .findFirst();
