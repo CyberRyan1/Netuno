@@ -39,6 +39,15 @@ public class PlayerIpsRecord {
     }
 
     /**
+     * @param ip An IP address
+     * @return True if this record contains the provided IP
+     *         address, false otherwise.
+     */
+    public boolean containsIp( String ip ) {
+        return this.ipList.contains( ip );
+    }
+
+    /**
      * Adds the given IP to this list
      *
      * @param ip The IP to add
