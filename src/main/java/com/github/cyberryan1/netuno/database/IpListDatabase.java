@@ -20,7 +20,7 @@ public class IpListDatabase {
      * @return A map of each player and the IPs they have joined
      *         the server with
      */
-    public Map<UUID, List<String>> getAllEntries() {
+    public static Map<UUID, List<String>> getAllEntries() {
         CyberLogUtils.logWarn( "Attempting to query all entries in the IP list database" );
         CyberLogUtils.logWarn( "Lag may occur!" );
 
@@ -51,7 +51,7 @@ public class IpListDatabase {
      * @param uuid The UUID of the player
      * @param ip   The IP address
      */
-    public void saveEntry( UUID uuid, String ip ) {
+    public static void saveEntry( UUID uuid, String ip ) {
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME + "(ip, uuid) VALUES(?,?);" );
             ps.setString( 1, ip );
