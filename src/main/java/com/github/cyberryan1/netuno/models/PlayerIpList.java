@@ -1,13 +1,11 @@
 package com.github.cyberryan1.netuno.models;
 
-import com.github.cyberryan1.netuno.api.models.ApiPlayerIpList;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 // TODO javadoc
-public class PlayerIpList implements ApiPlayerIpList {
+public class PlayerIpList /*implements ApiPlayerIpList*/ {
 
     private final UUID uuid;
     private final List<String> ipList;
@@ -26,7 +24,7 @@ public class PlayerIpList implements ApiPlayerIpList {
     /**
      * @return The UUID of the player represented
      */
-    @Override
+//    @Override
     public UUID getPlayer() {
         return this.uuid;
     }
@@ -34,7 +32,7 @@ public class PlayerIpList implements ApiPlayerIpList {
     /**
      * @return A list of IPs this player has joined the server with
      */
-    @Override
+//    @Override
     public List<String> getIps() {
         return this.ipList;
     }
@@ -67,7 +65,7 @@ public class PlayerIpList implements ApiPlayerIpList {
      * @return True if the data regarding the list of IPs the player has joined with in this
      *         instance matches the data stored in the database, false otherwise
      */
-    @Override
+//    @Override
     public boolean isUpdatedInDatabase() {
         return this.dataMatchesDatabase;
     }
