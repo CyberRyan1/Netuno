@@ -1,11 +1,20 @@
 package com.github.cyberryan1.netuno.models;
 
+import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
+import com.github.cyberryan1.netuno.utils.PrettyStringLibrary;
 import com.github.cyberryan1.netuno.utils.TimestampUtils;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Represents a punishment given to a player
@@ -334,6 +343,51 @@ public class Punishment implements ApiPunishment {
         if ( this.isExecuted ) throw new RuntimeException( "This punishment has already been executed" );
 
         this.isExecuted = true;
+    }
+
+    /**
+     * Replaces all the config variables within the provided
+     * setting and returns it <br> <br>
+     * <p>
+     * List of config variables:
+     * <ul>
+     *     <li><code>[STAFF]</code> Staff who executed the punishment</li>
+     *     <li><code>[TARGET]</code> The player who was punished</li>
+     *     <li><code>[LENGTH]</code> The length of the punishment</li>
+     *     <li><code>[REMAIN]</code> How long until the punishment expires</li>
+     *     <li><code>[REASON]</code> The reason of the punishment</li>
+     *     <li><code>[ACCOUNTS]</code> A list of all known alt accounts of the target player</li>
+     *
+     * </ul>
+     *
+     * @param setting The {@link Settings} to use
+     * @return The filled component
+     */
+    public Component fillSettingMessage( Settings setting ) {
+        String msg = setting.string();
+
+        Map<String, String> replacements = new HashMap<>();
+        replacements.put( "[STAFF]", getStaff().getName() );
+        replacements.put( "[TARGET]", getPlayer().getName() );
+        replacements.put( "[LENGTH]", TimestampUtils.durationToString( getLength() ) );
+        replacements.put( "[REMAIN]", TimestampUtils.durationToString( getDurationRemaining() ) );
+        replacements.put( "[REASON]", getReason() );
+        for ( Map.Entry<String, String> entry : replacements.entrySet() ) {
+            msg = msg.replace( entry.getKey(), entry.getValue() );
+        }
+
+        // Since accounts might be resource intensive, we do it
+        //      separately from the others
+        if ( msg.contains( "[ACCOUNTS]" ) ) {
+            List<String> altNames = Netuno.ALT_SERVICE.getAlts( getPlayerUuid() ).stream()
+                    .map( altUuid -> Bukkit.getOfflinePlayer( altUuid ).getName() )
+                    .collect( Collectors.toList() );
+            // Only going to allow a maximum of three list elements
+            String replacement = PrettyStringLibrary.getNonOxfordCommaListWithRemainder( altNames, 3 );
+            msg = msg.replace( "[ACCOUNTS]", replacement );
+        }
+
+        return MiniMessage.miniMessage().deserialize( msg );
     }
 
     /**
