@@ -165,13 +165,16 @@ public class NetunoService implements ApiNetunoService {
      * refreshes the last access timestamp for each of the
      * returned players
      */
-    public List<NPlayer> getAllThatSatisfy( Predicate<? super UUID> predicate ) {
+    public List<NPlayer> getAllThatSatisfy( Predicate<? super NPlayer> predicate ) {
         List<NPlayer> toReturn = new ArrayList<>();
-        this.PLAYER_CACHE.getKeySet().stream()
-                .filter( predicate )
+        this.PLAYER_CACHE.getKeySet()
                 .forEach( uuid -> {
-                    getPlayer( uuid ).thenAccept( player -> toReturn.add( ( NPlayer ) player ) );
-                    this.PLAYER_CACHE.refreshLastAccessTimestamp( uuid );
+                    getPlayer( uuid ).thenAccept( player -> {
+                        if ( predicate.test( ( NPlayer ) player ) == false ) return;
+
+                        toReturn.add( ( NPlayer ) player );
+                        this.PLAYER_CACHE.refreshLastAccessTimestamp( uuid );
+                    } );
                 } );
         return toReturn;
     }
