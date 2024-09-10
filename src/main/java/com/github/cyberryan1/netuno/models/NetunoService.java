@@ -64,7 +64,9 @@ public class NetunoService implements ApiNetunoService {
         this.ALT_SERVICE.initialize();
     }
 
-    // TODO javadoc
+    /**
+     * Closes this service
+     */
     public void close() {
     }
 
