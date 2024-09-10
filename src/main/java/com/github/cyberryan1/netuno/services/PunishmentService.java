@@ -223,6 +223,11 @@ public class PunishmentService implements ApiPunishmentService {
             return this;
         }
 
+        public PunishmentBuilder setIsGuiPunishment( boolean isGuiPunishment ) {
+            punishment.setGuiPun( isGuiPunishment );
+            return this;
+        }
+
         @Override
         public ApiPunishment build() {
             return punishment;
