@@ -83,6 +83,9 @@ API Feature:
 - Better API player model
 - Better API punishment model
 - Better API alts searching
+
+Config:
+- Change config updater to better one (do research)
  */
 
 public final class Netuno extends JavaPlugin {
