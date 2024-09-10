@@ -6,6 +6,7 @@ import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.commands.NetunoCommand;
 import com.github.cyberryan1.netuno.commands.PunishCommand;
+import com.github.cyberryan1.netuno.commands.PunishmentCommandGenerator;
 import com.github.cyberryan1.netuno.database.ConnectionManager;
 import com.github.cyberryan1.netuno.listeners.ChatListener;
 import com.github.cyberryan1.netuno.listeners.PreLoginListener;
@@ -143,6 +144,8 @@ public final class Netuno extends JavaPlugin {
     private void registerCommands() {
         new NetunoCommand();
         new PunishCommand( 1 );
+        // Generates all punishment commands
+        PunishmentCommandGenerator.generateCommands( 2 );
     }
 
     private void registerListeners() {
