@@ -4,7 +4,6 @@ import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.api.services.ApiPunishmentService;
 import com.github.cyberryan1.netuno.database.PunishmentsDatabase;
-import com.github.cyberryan1.netuno.models.helpers.PlayerLoginLogoutCache;
 import org.bukkit.OfflinePlayer;
 
 import java.util.ArrayList;
@@ -85,13 +84,21 @@ public class PunishmentService implements ApiPunishmentService {
     }
 
     /**
-     * Creates the provided punishment in the database. Preferred
-     * method of creating punishments is by executing the punishment
-     * via {@link ApiPunishment#execute( boolean )}
+     * Creates the provided punishment in the database. Also adds
+     * the provided punishment to any players loaded in {@link NetunoService}.
+     * Preferred method of creating punishments is by executing
+     * the punishment via {@link ApiPunishment#execute( boolean )}
      * @param pun The punishment
      */
     public void createPunishment( Punishment pun ) {
         PunishmentsDatabase.addPunishment( pun );
+
+        // Adding the punishment to any players in NetunoService
+        if ( Netuno.SERVICE.containsPlayer( pun.getPlayerUuid() ) == false ) return;
+        Netuno.SERVICE.getPlayer( pun.getPlayerUuid() ).thenAccept( player -> {
+            if ( player.getPunishments().contains( pun ) ) return;
+            player.getPunishments().add( pun );
+        } );
     }
 
     /**
@@ -130,11 +137,7 @@ public class PunishmentService implements ApiPunishmentService {
         PunishmentsDatabase.removePunishmentsWithReferenceId( id );
 
         // Removing the punishment from all cached players
-        final PlayerLoginLogoutCache<NPlayer> PLAYER_CACHE = Netuno.SERVICE.getPlayerCache();
-        for ( UUID uuid : PLAYER_CACHE.getKeySet() ) {
-            // No need to check if the optional is empty since we are
-            //      iterating through all the keyed UUIDs
-            NPlayer player = PLAYER_CACHE.getData( uuid ).get();
+        for ( NPlayer player : Netuno.SERVICE.getAll() ) {
             for ( int index = player.getPunishments().size() - 1; index >= 0; index-- ) {
                 ApiPunishment current = player.getPunishments().get( index );
                 if ( current.getId() == id || current.getReferenceId() == id ) {
@@ -149,17 +152,10 @@ public class PunishmentService implements ApiPunishmentService {
      */
     public List<Punishment> getAllCachedPunishments() {
         List<Punishment> toReturn = new ArrayList<>();
-
-        final PlayerLoginLogoutCache<NPlayer> PLAYER_CACHE = Netuno.SERVICE.getPlayerCache();
-        for ( UUID uuid : PLAYER_CACHE.getKeySet() ) {
-            // No need to check if the optional is empty since we are
-            //      iterating through all the keyed UUIDs
-            NPlayer player = PLAYER_CACHE.getData( uuid ).get();
+        for ( NPlayer player : Netuno.SERVICE.getAll() )
             toReturn.addAll( player.getPunishments().stream()
                     .map( pun -> ( Punishment ) pun )
-                    .collect( Collectors.toList() )
-            );
-        }
+                    .collect( Collectors.toList() ) );
 
         return toReturn;
     }
