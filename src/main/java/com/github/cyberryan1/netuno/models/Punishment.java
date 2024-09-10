@@ -2,6 +2,7 @@ package com.github.cyberryan1.netuno.models;
 
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
+import com.github.cyberryan1.netuno.models.libraries.PunishmentLibrary;
 import com.github.cyberryan1.netuno.utils.PrettyStringLibrary;
 import com.github.cyberryan1.netuno.utils.TimestampUtils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
@@ -315,14 +316,17 @@ public class Punishment implements ApiPunishment {
 
     /**
      * If the player is online and a notification has not yet been sent to them, this will send the
-     * notification to them. After this, a notification cannot be sent to them again. <br> <br>
-     *
-     * Note: a notification should only be sent for punishments that occur when the player is offline,
-     * such as a mute or warn. This should not be done for things like kicks or bans
+     * notification to them. After this, a notification cannot be sent to them again.
      */
     @Override
     public void sendNotification() {
-        // TODO
+        OfflinePlayer player = getPlayer();
+        if ( player.isOnline() == false )
+            throw new RuntimeException( "Player " + player.getName() + " (uuid " + player.getUniqueId().toString() + ") is not online" );
+        Settings settingToFill = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.JOIN_NOTIFICATION );
+        Component message = fillSettingMessage( settingToFill );
+        player.getPlayer().sendMessage( message );
+        this.isNotifSent = true;
     }
 
     /**
