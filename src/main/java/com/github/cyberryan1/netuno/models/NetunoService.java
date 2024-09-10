@@ -10,9 +10,12 @@ import com.github.cyberryan1.netuno.models.helpers.PlayerLoginLogoutCache;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
 
 /**
  * An implementation of the {@link ApiNetunoService} interface
@@ -132,8 +135,44 @@ public class NetunoService implements ApiNetunoService {
      * @return Access the player cache. Note that this should
      *         rarely be used for editing and instead mainly used
      *         for reading of the data provided
+     * @deprecated Please use other methods provided within this
+     * class
      */
     public PlayerLoginLogoutCache<NPlayer> getPlayerCache() {
         return this.PLAYER_CACHE;
+    }
+
+    /**
+     * @return A list of type {@link NPlayer} of all the players
+     * who are cached. Does NOT refresh the last access timestamp
+     * for each of the returned players
+     */
+    public List<NPlayer> getAll() {
+        List<NPlayer> toReturn = new ArrayList<>();
+        for ( UUID uuid : this.PLAYER_CACHE.getKeySet() ) {
+            getPlayer( uuid ).thenAccept( player -> toReturn.add( ( NPlayer ) player ) );
+            this.PLAYER_CACHE.refreshLastAccessTimestamp( uuid );
+        }
+
+        return toReturn;
+    }
+
+    /**
+     * @param predicate A predicate with the argument being of
+     *                  type UUID
+     * @return A list of type {@link NPlayer} of all the players
+     * who are cached and satisfy the given predicate. Also
+     * refreshes the last access timestamp for each of the
+     * returned players
+     */
+    public List<NPlayer> getAllThatSatisfy( Predicate<? super UUID> predicate ) {
+        List<NPlayer> toReturn = new ArrayList<>();
+        this.PLAYER_CACHE.getKeySet().stream()
+                .filter( predicate )
+                .forEach( uuid -> {
+                    getPlayer( uuid ).thenAccept( player -> toReturn.add( ( NPlayer ) player ) );
+                    this.PLAYER_CACHE.refreshLastAccessTimestamp( uuid );
+                } );
+        return toReturn;
     }
 }
