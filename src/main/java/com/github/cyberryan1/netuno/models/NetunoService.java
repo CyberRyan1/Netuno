@@ -104,12 +104,13 @@ public class NetunoService implements ApiNetunoService {
             final boolean playerOnline = Bukkit.getPlayer( uuid ) != null;
 
             if ( this.PLAYER_CACHE.containsPlayer( uuid ) == false ) {
-                // If the cache doesn't contain the player and they are
-                //      offline, add their data as inactive
+
+                // If the cache doesn't contain the player but they are
+                //      online, add their data as active
                 if ( playerOnline )
                     this.PLAYER_CACHE.insertActiveData( uuid, toReturn );
-                    // If the cache doesn't contain the player but they are
-                    //      online, add their data as active
+                    // If the cache doesn't contain the player and they are
+                    //      offline, add their data as inactive
                 else
                     this.PLAYER_CACHE.insertInactiveData( uuid, toReturn );
             }
