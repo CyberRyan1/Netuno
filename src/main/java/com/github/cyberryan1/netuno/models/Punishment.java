@@ -315,6 +315,17 @@ public class Punishment implements ApiPunishment {
     }
 
     /**
+     * Only works for IP punishments
+     *
+     * @return True if {@link #getReferenceId()} is equal to
+     *         {@link #DEFAULT_REFERENCE_ID}, false otherwise
+     */
+    @Override
+    public boolean isOriginalPunishment() {
+        return getReferenceId() == DEFAULT_REFERENCE_ID;
+    }
+
+    /**
      * If the player is online and a notification has not yet been sent to them, this will send the
      * notification to them. After this, a notification cannot be sent to them again.
      */
