@@ -340,9 +340,11 @@ public class Punishment implements ApiPunishment {
     /**
      * Executes this punishment, provided it has not already been executed. Note that after doing
      * this, some data of this punishment will no longer be editable
+     * @param silent True to execute this punishment silently,
+     *               false otherwise
      */
     @Override
-    public void execute() {
+    public void execute( boolean silent ) {
         // TODO
         if ( this.isExecuted ) throw new RuntimeException( "This punishment has already been executed" );
 
