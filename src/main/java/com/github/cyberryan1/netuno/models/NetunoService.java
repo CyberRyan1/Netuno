@@ -132,6 +132,14 @@ public class NetunoService implements ApiNetunoService {
     }
 
     /**
+     * @param uuid A player's UUID
+     * @return True if the provided UUID is cached, false otherwise
+     */
+    public boolean containsPlayer( UUID uuid ) {
+        return this.PLAYER_CACHE.containsPlayer( uuid );
+    }
+
+    /**
      * @return Access the player cache. Note that this should
      *         rarely be used for editing and instead mainly used
      *         for reading of the data provided
