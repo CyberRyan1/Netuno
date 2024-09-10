@@ -173,7 +173,7 @@ public class TimestampUtils {
      * @param timestamp The timestamp
      * @return The unformulated length string
      */
-    public String timestampToUnformulatedLength( long timestamp ) {
+    public static String timestampToUnformulatedLength( long timestamp ) {
         if ( timestamp == ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) return "forever";
         long seconds = timestamp / 1000;
         long minutes = ( seconds / 60 ) % 60;
@@ -196,7 +196,7 @@ public class TimestampUtils {
      * @param limit The maximum number of units to include in the string (set to -1 for no limit)
      * @return The formatted length string
      */
-    public String timestampToFormulatedLength( long timestamp, int limit ) {
+    public static String timestampToFormulatedLength( long timestamp, int limit ) {
         if ( timestamp == ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) return "forever";
         long seconds = timestamp / 1000;
         long minutes = ( seconds / 60 ) % 60;
