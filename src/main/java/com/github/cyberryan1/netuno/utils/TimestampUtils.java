@@ -166,4 +166,97 @@ public class TimestampUtils {
         if ( start == ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) return ApiPunishment.PERMANENT_PUNISHMENT_LENGTH;
         return 1000L * ( long ) ( start * Math.pow( ( scale * 1F ), ( count - 1 ) ) );
     }
+
+    /**
+     * Converts the timestamp length into an unformulated length string. <br>
+     * Example: 3,600,000 = "1h", 259,200,000 = "3d", etc
+     * @param timestamp The timestamp
+     * @return The unformulated length string
+     */
+    public String timestampToUnformulatedLength( long timestamp ) {
+        if ( timestamp == ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) return "forever";
+        long seconds = timestamp / 1000;
+        long minutes = ( seconds / 60 ) % 60;
+        long hours = ( seconds / 3600 ) % 24;
+        long days = ( seconds / 86400 ) % 7;
+        long weeks = ( seconds / 604800 );
+
+        if ( weeks > 0 ) { return weeks + "w"; }
+        if ( days > 0 ) { return days + "d"; }
+        if ( hours > 0 ) { return hours + "h"; }
+        if ( minutes > 0 ) { return minutes + "m"; }
+        return seconds + "s";
+    }
+
+    /**
+     * Converts the timestamp length into a full formatted length string. <br>
+     * Example: 3,600,000 = "1 hour", 259,203,000 = "3 days and 3 seconds",
+     * 3,729,000 = "1 hour, 2 minutes, and 9 seconds", 108,201,000 = "1 day, 6 hours, 3 minutes, and 21 seconds"
+     * @param timestamp The timestamp
+     * @param limit The maximum number of units to include in the string (set to -1 for no limit)
+     * @return The formatted length string
+     */
+    public String timestampToFormulatedLength( long timestamp, int limit ) {
+        if ( timestamp == ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) return "forever";
+        long seconds = timestamp / 1000;
+        long minutes = ( seconds / 60 ) % 60;
+        long hours = ( seconds / 3600 ) % 24;
+        long days = ( seconds / 86400 ) % 7;
+        long weeks = ( seconds / 604800 );
+
+        List<String> elements = new ArrayList<>();
+        if ( weeks > 0 ) {
+            String e = weeks + " week";
+            if ( weeks > 1 ) { e += "s"; }
+            elements.add( e );
+        }
+
+        if ( days > 0 ) {
+            String e = days + " day";
+            if ( days > 1 ) { e += "s"; }
+            elements.add( e );
+        }
+
+        if ( hours > 0 ) {
+            String e = hours + " hour";
+            if ( hours > 1 ) { e += "s"; }
+            elements.add( e );
+        }
+
+        if ( minutes > 0 ) {
+            String e = minutes + " minute";
+            if ( minutes > 1 ) { e += "s"; }
+            elements.add( e );
+        }
+
+        if ( seconds > 0 ) {
+            String e = seconds + " second";
+            if ( seconds > 1 ) { e += "s"; }
+            elements.add( e );
+        }
+
+        final List<String> finalElements = new ArrayList<>();
+        if ( limit > 0 ) {
+            for ( int i = 0; i < limit; i++ ) {
+                if ( i >= elements.size() ) { break; }
+                finalElements.add( elements.get( i ) );
+            }
+        }
+        else {
+            finalElements.addAll( elements );
+        }
+
+        if ( finalElements.size() == 0 ) { return "0 seconds"; }
+        else if ( finalElements.size() == 1 ) { return finalElements.get( 0 ); }
+        else if ( finalElements.size() == 2 ) { return finalElements.get( 0 ) + " and " + finalElements.get( 1 ); }
+        else {
+            String toReturn = "";
+            for ( int i = 0; i < finalElements.size(); i++ ) {
+                if ( i == finalElements.size() - 1 ) { toReturn += " and "; }
+                else if ( i > 0 ) { toReturn += ", "; }
+                toReturn += finalElements.get( i );
+            }
+            return toReturn;
+        }
+    }
 }
