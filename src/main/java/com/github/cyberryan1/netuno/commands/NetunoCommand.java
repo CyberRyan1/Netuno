@@ -122,7 +122,7 @@ public class NetunoCommand extends CyberCommand {
                         "<dark_gray> > </dark_gray><yellow>Developed by</yellow> <light_purple>CyberRyan</light_purple>\n" +
                         "<dark_gray> > </dark_gray><hover:show_text:'<yellow>Download <gold>Netuno</gold></yellow>'><click:open_url:'https://www.spigotmc.org/resources/netuno.94864/'><yellow>Click <gold>here</gold> to <green>download</green></yellow></click></hover>\n" +
                         "<dark_gray> > </dark_gray><hover:show_text:'<yellow>Join the <aqua>discord</aqua></yellow>'><click:open_url:'https://discord.gg/8gxG4KfvBK'><yellow>Click <gold>here</gold> to join the <aqua>discord</aqua></yellow></click></hover>\n" +
-                        "<click:run_command:'/netuno help 1'><yellow>For help with commands, click <gold>here</gold></yellow></click>"
+                        "<hover:show_text:'<yellow>Click for help</yellow>'><click:run_command:'/netuno help 1'><yellow>For help with commands, click <gold>here</gold></yellow></click></hover>"
         );
         command.getPlayer().sendMessage( parsed );
         return true;
