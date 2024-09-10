@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.models;
 
+import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.models.libraries.PunishmentLibrary;
@@ -10,6 +11,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.List;
@@ -356,8 +358,35 @@ public class Punishment implements ApiPunishment {
      */
     @Override
     public void execute( boolean silent ) {
-        // TODO
         if ( this.isExecuted ) throw new RuntimeException( "This punishment has already been executed" );
+
+        // Only sending the public broadcast if the punishment
+        //      is NOT silent
+        if ( silent == false ) {
+            Settings publicBroadcastSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.BROADCAST );
+            Settings publicBroadcastSound = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.SOUND_GLOBAL );
+            Component component = fillSettingMessage( publicBroadcastSetting );
+
+            for ( Player p : Bukkit.getOnlinePlayers() ) {
+                if ( CyberVaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) && p.getUniqueId().equals( getPlayerUuid() ) == false ) {
+                    p.sendMessage( component );
+                    publicBroadcastSound.sound().playSound( p );
+                }
+            }
+        }
+
+        // Staff broadcast
+        Settings staffBroadcastSetting
+
+        // If the punishment requires the player to be kicked
+        if ( List.of( PunType.KICK, PunType.BAN, PunType.IPBAN ).contains( getType() ) ) {
+
+        }
+
+        // If the punishment requires the player to receive a message
+        else {
+
+        }
 
         this.isExecuted = true;
     }
@@ -374,15 +403,47 @@ public class Punishment implements ApiPunishment {
      *     <li><code>[REMAIN]</code> How long until the punishment expires</li>
      *     <li><code>[REASON]</code> The reason of the punishment</li>
      *     <li><code>[ACCOUNTS]</code> A list of all known alt accounts of the target player</li>
-     *
      * </ul>
      *
      * @param setting The {@link Settings} to use
      * @return The filled component
      */
     public Component fillSettingMessage( Settings setting ) {
-        String msg = setting.string();
+        return MiniMessage.miniMessage().deserialize( executeReplacements( setting.toString() ) );
+    }
 
+    /**
+     * Replaces all the config variables within the provided
+     * setting and returns it <br> <br>
+     * <p>
+     * List of config variables:
+     * <ul>
+     *     <li><code>[STAFF]</code> Staff who executed the punishment</li>
+     *     <li><code>[TARGET]</code> The player who was punished</li>
+     *     <li><code>[LENGTH]</code> The length of the punishment</li>
+     *     <li><code>[REMAIN]</code> How long until the punishment expires</li>
+     *     <li><code>[REASON]</code> The reason of the punishment</li>
+     *     <li><code>[ACCOUNTS]</code> A list of all known alt accounts of the target player</li>
+     * </ul>
+     *
+     * @param setting The {@link Settings} to use
+     * @param silent True if each line should include the silent prefix,
+     *               false otherwise
+     * @return The filled component
+     */
+    public Component fillSettingMessage( Settings setting, boolean silent ) {
+        String msg = "";
+        final String SILENT_PREFIX = Settings.SILENT_PREFIX.string();
+        for ( String str : setting.string().split( "\n" ) ) {
+            if ( str.isBlank() ) msg += str;
+            else if ( silent ) msg += SILENT_PREFIX + str;
+            else msg += str;
+        }
+
+        return MiniMessage.miniMessage().deserialize( executeReplacements( msg ) );
+    }
+
+    private String executeReplacements( String msg ) {
         Map<String, String> replacements = new HashMap<>();
         replacements.put( "[STAFF]", getStaff().getName() );
         replacements.put( "[TARGET]", getPlayer().getName() );
@@ -404,7 +465,7 @@ public class Punishment implements ApiPunishment {
             msg = msg.replace( "[ACCOUNTS]", replacement );
         }
 
-        return MiniMessage.miniMessage().deserialize( msg );
+        return msg;
     }
 
     /**
