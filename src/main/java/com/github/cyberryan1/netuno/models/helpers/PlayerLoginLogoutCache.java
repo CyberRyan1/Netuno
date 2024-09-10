@@ -425,6 +425,18 @@ public class PlayerLoginLogoutCache<T> {
     }
 
     /**
+     * Updates the recently accessed timestamp of the data
+     * associated with the provided UUID to the current timestamp
+     * @param uuid A UUID
+     */
+    public void refreshLastAccessTimestamp( UUID uuid ) {
+        if ( this.CACHE.containsKey( uuid ) == false ) throw new IllegalArgumentException( "Player with uuid \""
+                + uuid + "\" does not exist within this cache" );
+
+        this.CACHE.get( uuid ).recentlyAccessedUpdate();
+    }
+
+    /**
      * Outputs the contents of this cache to a file to
      * help with debugging
      *
