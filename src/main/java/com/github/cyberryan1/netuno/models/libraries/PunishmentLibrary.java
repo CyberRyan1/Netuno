@@ -29,6 +29,21 @@ public class PunishmentLibrary {
     }
 
     /**
+     * @param list A list of punishments
+     * @return The punishment with the highest length from the
+     *         provided list
+     */
+    public static Punishment getPunishmentWithHighestOriginalLength( List<Punishment> list ) {
+        Punishment highest = list.get( 0 );
+        for ( int index = 1; index < list.size(); index++ ) {
+            if ( highest.getLength() < list.get( index ).getLength() ) {
+                highest = list.get( index );
+            }
+        }
+        return highest;
+    }
+
+    /**
      * Gets a settings message of the provided punishment type
      * for the specific setting type
      *
