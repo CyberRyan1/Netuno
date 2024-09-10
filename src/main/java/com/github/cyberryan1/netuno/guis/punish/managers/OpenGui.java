@@ -4,6 +4,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 // TODO move this into ActiveGuiManager class (?)
+// TODO redo this class, I don't like it -- needs to contain actual info about the open GUI
 public class OpenGui {
 
     private final Player staff;
