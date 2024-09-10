@@ -1,14 +1,8 @@
 package com.github.cyberryan1.netuno.models.libraries;
 
-import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
-import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
-import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.models.Punishment;
-import com.github.cyberryan1.netuno.utils.TimestampUtils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.command.ConsoleCommandSender;
 
 import java.util.List;
 
@@ -322,51 +316,5 @@ public class PunishmentLibrary {
          * punishment is executed
          */
         SOUND_STAFF;
-    }
-
-    /**
-     * Attempts to execute a punishment just from the args of a command
-     * @param command The sent command
-     */
-    public static void executePunishmentFromCommandArgs( SentCommand command ) {
-        ApiPunishment.PunType punType = switch ( command.getCommand().getName().toLowerCase() ) {
-            case "warn" -> ApiPunishment.PunType.WARN;
-            case "kick" -> ApiPunishment.PunType.KICK;
-            case "mute" -> ApiPunishment.PunType.MUTE;
-            case "unmute" -> ApiPunishment.PunType.UNMUTE;
-            case "ban" -> ApiPunishment.PunType.BAN;
-            case "unban" -> ApiPunishment.PunType.UNBAN;
-            case "ipmute" -> ApiPunishment.PunType.IPMUTE;
-            case "unipmute" -> ApiPunishment.PunType.UNIPMUTE;
-            case "ipban" -> ApiPunishment.PunType.IPBAN;
-            case "unipban" -> ApiPunishment.PunType.UNIPBAN;
-            default -> null;
-        };
-        if ( punType == null ) throw new NullPointerException();
-
-        OfflinePlayer staff = command.getSender() instanceof ConsoleCommandSender ? ApiPunishment.CONSOLE_IS_STAFF : ( OfflinePlayer ) command.getSender();
-        OfflinePlayer target = command.getOfflinePlayerAtArg( 0 );
-        long duration = ApiPunishment.PUNISHMENT_NO_LENGTH;
-        String reason;
-
-        if ( punType.hasNoLength() == false ) {
-            duration = TimestampUtils.getTimestampFromUnformulatedLength( command.getArg( 1 ) );
-            reason = command.getCombinedArgs( 2 );
-        }
-        else {
-            reason = command.getCombinedArgs( 1 );
-        }
-
-        boolean silent = reason.contains( "-s" ) && CyberVaultUtils.hasPerms( command.getSender(), Settings.SILENT_PERMISSION.string() );
-        if ( silent ) reason = reason.replaceAll( "-s", "" );
-
-        Netuno.PUNISHMENT_SERVICE.punishmentBuilder()
-                .setPlayer( target )
-                .setStaff( staff )
-                .setType( punType )
-                .setLength( duration )
-                .setReason( reason )
-                .build()
-                .execute( silent );
     }
 }
