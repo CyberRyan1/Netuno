@@ -173,7 +173,7 @@ public class PunishmentService implements ApiPunishmentService {
         return new PunBuilder();
     }
 
-    static class PunBuilder implements PunishmentBuilder {
+    public static class PunBuilder implements PunishmentBuilder {
 
         private Punishment punishment;
 
@@ -223,7 +223,8 @@ public class PunishmentService implements ApiPunishmentService {
             return this;
         }
 
-        public PunishmentBuilder setIsGuiPunishment( boolean isGuiPunishment ) {
+        @Override
+        public PunishmentBuilder markAsGuiPunishment( boolean isGuiPunishment ) {
             punishment.setGuiPun( isGuiPunishment );
             return this;
         }

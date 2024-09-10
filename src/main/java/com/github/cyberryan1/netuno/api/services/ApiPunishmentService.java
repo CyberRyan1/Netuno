@@ -78,6 +78,8 @@ public interface ApiPunishmentService {
 
         PunishmentBuilder setReason( String reason );
 
+        PunishmentBuilder markAsGuiPunishment( boolean isGuiPunishment );
+
         ApiPunishment build();
     }
 }
