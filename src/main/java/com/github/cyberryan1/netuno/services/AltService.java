@@ -1,9 +1,10 @@
-package com.github.cyberryan1.netuno.models;
+package com.github.cyberryan1.netuno.services;
 
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.services.ApiAltService;
 import com.github.cyberryan1.netuno.database.IpListDatabase;
+import com.github.cyberryan1.netuno.models.PlayerIpsRecord;
 import org.bukkit.OfflinePlayer;
 
 import java.util.*;

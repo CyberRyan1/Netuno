@@ -1,4 +1,4 @@
-package com.github.cyberryan1.netuno.models;
+package com.github.cyberryan1.netuno.services;
 
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
@@ -6,6 +6,8 @@ import com.github.cyberryan1.netuno.api.services.ApiAltService;
 import com.github.cyberryan1.netuno.api.services.ApiNetunoService;
 import com.github.cyberryan1.netuno.api.services.ApiPunishmentService;
 import com.github.cyberryan1.netuno.debug.CacheDebugPrinter;
+import com.github.cyberryan1.netuno.models.NPlayer;
+import com.github.cyberryan1.netuno.models.Punishment;
 import com.github.cyberryan1.netuno.models.helpers.PlayerLoginLogoutCache;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

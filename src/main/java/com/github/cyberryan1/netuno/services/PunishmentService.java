@@ -1,9 +1,11 @@
-package com.github.cyberryan1.netuno.models;
+package com.github.cyberryan1.netuno.services;
 
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.api.services.ApiPunishmentService;
 import com.github.cyberryan1.netuno.database.PunishmentsDatabase;
+import com.github.cyberryan1.netuno.models.NPlayer;
+import com.github.cyberryan1.netuno.models.Punishment;
 import org.bukkit.OfflinePlayer;
 
 import java.util.ArrayList;
