@@ -16,6 +16,8 @@ public interface ApiPunishment {
     int DEFAULT_ID = -1;
     int DEFAULT_REFERENCE_ID = -1;
     long PERMANENT_PUNISHMENT_LENGTH = Long.MAX_VALUE;
+    long PUNISHMENT_NO_LENGTH = -1;
+    OfflinePlayer CONSOLE_IS_STAFF = null;
 
     /**
      * @return the ID of the punishment
