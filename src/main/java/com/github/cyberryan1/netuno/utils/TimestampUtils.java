@@ -1,5 +1,7 @@
 package com.github.cyberryan1.netuno.utils;
 
+import com.github.cyberryan1.netuno.api.models.ApiPunishment;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,5 +106,64 @@ public class TimestampUtils {
         }
 
         return output;
+    }
+
+    /**
+     * Checks if a given unformulated length is valid.
+     * @param unformulatedLength The unformulated length to check (i.e. "3m" or "12h")
+     * @return True if the length is valid, false otherwise.
+     */
+    public static boolean isAllowableLength( String unformulatedLength ) {
+        if ( unformulatedLength == null || unformulatedLength.length() <= 1 ) { return false; }
+        if ( unformulatedLength.equalsIgnoreCase( "forever" ) ) { return true; }
+
+        char unit = unformulatedLength.charAt( unformulatedLength.length() - 1 );
+        if ( unit != 'w' && unit != 'd' && unit != 'h' && unit != 'm' && unit != 's' ) { return false; }
+
+        int amount;
+        try {
+            amount = Integer.parseInt( unformulatedLength.substring( 0, unformulatedLength.length() - 1 ) );
+        } catch ( NumberFormatException ex ) {
+            return false;
+        }
+
+        return amount > 0;
+    }
+
+    /**
+     * Converts the unformulated length format into a
+     * timestamp. <br>
+     * Example: "1h" = 3,600,000 milliseconds, "1d" = 86,400,000
+     * milliseconds, etc
+     * @param unformulatedLength The unformulated string to convert
+     * @return The timestamp. Returns {@link ApiPunishment#PERMANENT_PUNISHMENT_LENGTH}
+     * if it is a permanent punishment length
+     */
+    public static long getTimestampFromUnformulatedLength( String unformulatedLength ) {
+        if ( unformulatedLength.equalsIgnoreCase( "forever" ) ) return ApiPunishment.PERMANENT_PUNISHMENT_LENGTH;
+
+        String amount = unformulatedLength.substring( 0, unformulatedLength.length() - 1 );
+        char unit = unformulatedLength.charAt( unformulatedLength.length() - 1 );
+        return 1000L * switch ( unit ) {
+            case 'w' -> Long.parseLong( amount ) * 604800;
+            case 'd' -> Long.parseLong( amount ) * 86400;
+            case 'h' -> Long.parseLong( amount ) * 3600;
+            case 'm' -> Long.parseLong( amount ) * 60;
+            case 's' -> Long.parseLong( amount );
+            default -> -1;
+        };
+    }
+
+    /**
+     * Scales a duration by a given scale (e.g. 2x, 3x, etc)
+     * and the given count.
+     * @param start The duration to scale
+     * @param scale The scale to use
+     * @param count The count to use
+     * @return The scaled duration
+     */
+    public static long getScaledDuration( long start, int scale, int count ) {
+        if ( start == ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) return ApiPunishment.PERMANENT_PUNISHMENT_LENGTH;
+        return 1000L * ( long ) ( start * Math.pow( ( scale * 1F ), ( count - 1 ) ) );
     }
 }
