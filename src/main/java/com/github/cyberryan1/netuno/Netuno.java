@@ -94,9 +94,9 @@ public final class Netuno extends JavaPlugin {
     public static final ConnectionManager CONNECTION_MANAGER = new ConnectionManager();
 
     // API Things
-    public static final PunishmentService PUNISHMENT_SERVICE = new PunishmentService();
-    public static final AltService ALT_SERVICE = new AltService();
-    public static final NetunoService SERVICE = new NetunoService( PUNISHMENT_SERVICE, ALT_SERVICE );
+    public static PunishmentService PUNISHMENT_SERVICE = null;
+    public static AltService ALT_SERVICE = null;
+    public static NetunoService SERVICE = null;
 
     // Skript
     public SkriptAddon addon;
@@ -126,6 +126,9 @@ public final class Netuno extends JavaPlugin {
         CONNECTION_MANAGER.initialize();
 
         // Initializing the API services
+        PUNISHMENT_SERVICE = new PunishmentService();
+        ALT_SERVICE = new AltService();
+        SERVICE = new NetunoService( PUNISHMENT_SERVICE, ALT_SERVICE );
         SERVICE.initialize();
 
         // Registering commands
