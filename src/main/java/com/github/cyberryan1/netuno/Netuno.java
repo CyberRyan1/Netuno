@@ -132,6 +132,7 @@ public final class Netuno extends JavaPlugin {
         registerCommands();
 
         // Registering listeners
+        registerListeners();
     }
 
     @Override
