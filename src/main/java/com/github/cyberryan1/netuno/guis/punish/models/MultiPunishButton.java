@@ -3,6 +3,7 @@ package com.github.cyberryan1.netuno.guis.punish.models;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO javadoc
 public class MultiPunishButton {
 
     private String guiPath;

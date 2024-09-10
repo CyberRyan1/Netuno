@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
+// TODO javadoc
 public class MainButton {
 
     private String buttonName;
