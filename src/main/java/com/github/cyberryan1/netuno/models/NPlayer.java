@@ -25,8 +25,9 @@ public class NPlayer implements ApiPlayer {
 
     /**
      * Note that after this constructor is finished,
-     * {@link #reloadData()} is called. You may want to
-     * run this constructor async to avoid lag
+     * {@link #reloadData()} is called. You may want to run this
+     * constructor async to avoid lag
+     *
      * @param uuid The UUID of the player
      */
     public NPlayer( UUID uuid ) {
@@ -37,8 +38,9 @@ public class NPlayer implements ApiPlayer {
 
     /**
      * Note that after this constructor is finished,
-     * {@link #reloadData()} is called. You may want to
-     * run this constructor async to avoid lag
+     * {@link #reloadData()} is called. You may want to run this
+     * constructor async to avoid lag
+     *
      * @param player The player
      */
     public NPlayer( OfflinePlayer player ) {
@@ -62,8 +64,8 @@ public class NPlayer implements ApiPlayer {
     }
 
     /**
-     * Reloads the data for this player. Should be
-     * ran async to avoid lag.
+     * Reloads the data for this player. Should be ran async to
+     * avoid lag.
      */
     @Override
     public void reloadData() {
@@ -73,9 +75,12 @@ public class NPlayer implements ApiPlayer {
     }
 
     /**
-     * Alias to {@link com.github.cyberryan1.netuno.api.services.ApiAltService#getAlts(UUID)}
+     * Alias to
+     * {@link
+     * com.github.cyberryan1.netuno.api.services.ApiAltService#getAlts(UUID)}
+     *
      * @return A list of known accounts that this player has
-     * joined the server with
+     *         joined the server with
      */
     @Override
     public List<UUID> getAlts() {
