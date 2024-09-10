@@ -86,8 +86,6 @@ public class PunishmentService implements ApiPunishmentService {
     /**
      * Creates the provided punishment in the database. Also adds
      * the provided punishment to any players loaded in {@link NetunoService}.
-     * Preferred method of creating punishments is by executing
-     * the punishment via {@link ApiPunishment#execute( boolean )}
      * @param pun The punishment
      */
     public void createPunishment( Punishment pun ) {
