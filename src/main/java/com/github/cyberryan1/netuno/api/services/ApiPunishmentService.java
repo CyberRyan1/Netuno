@@ -40,6 +40,26 @@ public interface ApiPunishmentService {
      */
     CompletableFuture<List<ApiPunishment>> getPunishmentsByReferenceId( int referenceId );
 
+    /**
+     * Updates the provided punishment within the database with
+     * any new data
+     *
+     * @param punishment The punishment
+     */
+    void updatePunishment( ApiPunishment punishment );
+
+    /**
+     * @param punishment A punishment to remove from the database
+     *                   and from any caches
+     */
+    void deletePunishment( ApiPunishment punishment );
+
+    /**
+     * @param id The ID of a punishment to remove from the
+     *           database and from any caches
+     */
+    void deletePunishment( int id );
+
     PunishmentBuilder punishmentBuilder();
 
     interface PunishmentBuilder {

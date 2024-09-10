@@ -85,6 +85,56 @@ public class PunishmentService implements ApiPunishmentService {
     }
 
     /**
+     * Updates the provided punishment within the database with
+     * any new data
+     *
+     * @param punishment The punishment
+     */
+    @Override
+    public void updatePunishment( ApiPunishment punishment ) {
+        PunishmentsDatabase.updatePunishment( ( Punishment ) punishment );
+    }
+
+    /**
+     * @param punishment A punishment to remove from the database
+     *                   and any caches. Also removes any
+     *                   punishments with a reference ID equal to
+     *                   the ID of this punishment
+     */
+    @Override
+    public void deletePunishment( ApiPunishment punishment ) {
+        deletePunishment( punishment.getId() );
+    }
+
+    /**
+     * @param id The ID of a punishment to remove from the
+     *           database and any caches. Also removes any
+     *           punishments with a reference ID equal to the
+     *           provided ID
+     */
+    @Override
+    public void deletePunishment( int id ) {
+        // Removing the punishment from the database
+        PunishmentsDatabase.removePunishment( id );
+        // Removing all reference punishments from the database
+        PunishmentsDatabase.removePunishmentsWithReferenceId( id );
+
+        // Removing the punishment from all cached players
+        final PlayerLoginLogoutCache<NPlayer> PLAYER_CACHE = Netuno.SERVICE.getPlayerCache();
+        for ( UUID uuid : PLAYER_CACHE.getKeySet() ) {
+            // No need to check if the optional is empty since we are
+            //      iterating through all the keyed UUIDs
+            NPlayer player = PLAYER_CACHE.getData( uuid ).get();
+            for ( int index = player.getPunishments().size() - 1; index >= 0; index-- ) {
+                ApiPunishment current = player.getPunishments().get( index );
+                if ( current.getId() == id || current.getReferenceId() == id ) {
+                    player.getPunishments().remove( current );
+                }
+            }
+        }
+    }
+
+    /**
      * @return A list of the punishments of all cached players
      */
     public List<Punishment> getAllCachedPunishments() {
