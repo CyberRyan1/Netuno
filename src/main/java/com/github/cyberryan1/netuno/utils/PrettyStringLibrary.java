@@ -87,4 +87,30 @@ public class PrettyStringLibrary {
         toReturn += " and " + numberRemainingElements + " more";
         return toReturn;
     }
+
+    /**
+     * Returns the integer with a correct suffix added. Examples:
+     * <ul>
+     *     <li>1 -> "1st"</li>
+     *     <li>2 -> "2nd"</li>
+     *     <li>3 -> "3rd"</li>
+     *     <li>4 -> "4th"</li>
+     *     <li>5 -> "5th"</li>
+     *     <li>11 -> "11th"</li>
+     *     <li>12 -> "12th"</li>
+     *     <li>21 -> "21st"</li>
+     *     <li>22 -> "22nd"</li>
+     * </ul>
+     * @param i The integer
+     * @return The formatted integer
+     */
+    public static String getIntegerAsAmount( int i ) {
+        String suffix = "th";
+        if ( i < 3 || i > 20 ) {
+            if ( i % 10 == 1 ) suffix = "st";
+            if ( i % 10 == 2 ) suffix = "nd";
+            if ( i % 10 == 3 ) suffix = "rd";
+        }
+        return i + suffix;
+    }
 }
