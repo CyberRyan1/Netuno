@@ -85,6 +85,16 @@ public class PunishmentService implements ApiPunishmentService {
     }
 
     /**
+     * Creates the provided punishment in the database. Preferred
+     * method of creating punishments is by executing the punishment
+     * via {@link ApiPunishment#execute( boolean )}
+     * @param pun The punishment
+     */
+    public void createPunishment( Punishment pun ) {
+        PunishmentsDatabase.addPunishment( pun );
+    }
+
+    /**
      * Updates the provided punishment within the database with
      * any new data
      *
