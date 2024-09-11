@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class ChatListener implements Listener {
@@ -20,21 +21,24 @@ public class ChatListener implements Listener {
     @EventHandler
     public void onPlayerChat( AsyncChatEvent event ) {
         // Loading the player from NetunoService
-        Netuno.SERVICE.getPlayer( event.getPlayer().getUniqueId() ).thenAccept( apiPlayer -> {
-            final NPlayer player = ( NPlayer ) apiPlayer;
+        final NPlayer player;
+        try {
+            player = ( NPlayer ) Netuno.SERVICE.getPlayer( event.getPlayer().getUniqueId() ).get();
+        } catch ( ExecutionException | InterruptedException e ) {
+            throw new RuntimeException( e );
+        }
 
-            // If the player has any mute or IP mute punishments,
-            //      we disallow them from chatting
-            final List<Punishment> activePunishments = player.getActivePunishments().stream()
-                    .map( pun -> ( Punishment ) pun )
-                    .collect( Collectors.toList() );
-            if ( activePunishments.stream().anyMatch( pun -> pun.getType() == ApiPunishment.PunType.MUTE
-                    || pun.getType() == ApiPunishment.PunType.IPMUTE ) ) {
-                final Punishment highestPunishment = PunishmentLibrary.getPunishmentWithHighestDurationRemaining( activePunishments );
-                denyChat( event, highestPunishment );
-                return;
-            }
-        } );
+        // If the player has any mute or IP mute punishments,
+        //      we disallow them from chatting
+        final List<Punishment> activePunishments = player.getActivePunishments().stream()
+                .map( pun -> ( Punishment ) pun )
+                .collect( Collectors.toList() );
+        if ( activePunishments.stream().anyMatch( pun -> pun.getType() == ApiPunishment.PunType.MUTE
+                || pun.getType() == ApiPunishment.PunType.IPMUTE ) ) {
+            final Punishment highestPunishment = PunishmentLibrary.getPunishmentWithHighestDurationRemaining( activePunishments );
+            denyChat( event, highestPunishment );
+            return;
+        }
     }
 
     private void denyChat( AsyncChatEvent event, Punishment pun ) {
