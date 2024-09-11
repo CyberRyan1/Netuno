@@ -22,11 +22,15 @@ public class CommandHelpInfo {
         this.command = command;
         this.helpOrder = helpOrder;
 
+        boolean added = false;
         for ( int index = 0; index < REGISTRY.size(); index++ ) {
             if ( REGISTRY.get( index ).getHelpOrder() > helpOrder ) {
                 REGISTRY.add( index, this );
+                added = true;
+                break;
             }
         }
+        if ( added == false ) REGISTRY.add( this );
     }
 
     public BaseCommand getCommand() {

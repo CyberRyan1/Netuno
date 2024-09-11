@@ -16,12 +16,12 @@ import java.util.List;
 
 public class NetunoCommand extends CyberCommand {
 
-    private static final int COMMAND_PER_HELP_PAGE = 7;
-    private static final String HELP_MESSAGE_BASE_MSG = "    <gold><b>Netuno</b></gold> <yellow>Command Help</yellow>";
+    private static final int COMMANDS_PER_HELP_PAGE = 7;
+    private static final String HELP_MESSAGE_BASE_MSG = "\n    <gold><b>Netuno</b></gold> <yellow>Command Help</yellow>";
     private static final String HELP_MESSAGE_COMMAND_USAGE_BASE_MSG = "<dark_gray>/</dark_gray><gray>{COMMAND_NAME}</gray> <gold>{COMMAND_ARGS}</gold>";
-    private static final String HELP_MESSAGE_CHANGE_PAGE_BASE_MSG = "{PREVIOUS_PAGE}             {NEXT_PAGE}";
-    private static final String HELP_MESSAGE_PREVIOUS_PAGE_MSG = "<click:run_command:'/netuno help {PAGE_NUMBER}'><gray> << </gray> <yellow>Previous</click>";
-    private static final String HELP_MESSAGE_NEXT_PAGE_MSG = "<click:run_command:'/netuno help {PAGE_NUMBER}'>Next <gray>>></click>";
+    private static final String HELP_MESSAGE_CHANGE_PAGE_BASE_MSG = "{PREVIOUS_PAGE}             {NEXT_PAGE}\n";
+    private static final String HELP_MESSAGE_PREVIOUS_PAGE_MSG = "<hover:show_text:'<yellow>Previous Page</yellow>'><click:run_command:'/netuno help {PAGE_NUMBER}'><gray> << </gray> <yellow>Previous</click></hover>";
+    private static final String HELP_MESSAGE_NEXT_PAGE_MSG = "<hover:show_text:'<yellow>Next Page</yellow>'><click:run_command:'/netuno help {PAGE_NUMBER}'><yellow>Next</yellow> <gray>>></click></hover>";
 
     public NetunoCommand() {
         super(
@@ -68,10 +68,10 @@ public class NetunoCommand extends CyberCommand {
                 int startIndex = 0;
                 if ( command.getArgs().length > 1 ) {
                     try {
-                        startIndex = Integer.parseInt( command.getArg( 1 ) );
+                        startIndex = COMMANDS_PER_HELP_PAGE * ( Integer.parseInt( command.getArg( 1 ) ) - 1 );
                     } catch ( NumberFormatException ignore ) {}
                 }
-                int endIndex = startIndex + COMMAND_PER_HELP_PAGE;
+                int endIndex = startIndex + COMMANDS_PER_HELP_PAGE;
 
                 final List<CommandHelpInfo> registry = CommandHelpInfo.getRegistry();
 
@@ -83,28 +83,10 @@ public class NetunoCommand extends CyberCommand {
                     String commandUsage = HELP_MESSAGE_COMMAND_USAGE_BASE_MSG + "\n";
                     commandUsage = commandUsage.replace( "{COMMAND_NAME}", com.getCommand().getName() );
                     commandUsage = commandUsage.replace( "{COMMAND_ARGS}", extractCommandHelpArgsOnly( com.getCommand() ) );
-                    unparsedMsg += commandUsage + "\n";
+                    unparsedMsg += commandUsage;
                 }
 
-                int currentPage = startIndex / COMMAND_PER_HELP_PAGE;
-                int maxPage = ( int ) Math.ceil( registry.size() * 1.0 / COMMAND_PER_HELP_PAGE );
-
-                String changePageLine = HELP_MESSAGE_CHANGE_PAGE_BASE_MSG + "";
-                if ( currentPage == 1 ) {
-                    String replacePreviousPageWithSpaces = " ".repeat( "{PREVIOUS_PAGE}".length() );
-                    changePageLine = changePageLine.replace( "{PREVIOUS_PAGE}", replacePreviousPageWithSpaces );
-                }
-                else if ( currentPage == maxPage ) {
-                    String replaceNextPageWithSpaces = " ".repeat( "{NEXT_PAGE}".length() );
-                    changePageLine = changePageLine.replace( "{NEXT_PAGE}", replaceNextPageWithSpaces );
-                }
-
-                String previousPage = HELP_MESSAGE_PREVIOUS_PAGE_MSG.replace( "{PAGE_NUMBER}", "" + ( currentPage - 1 ) );
-                String nextPage = HELP_MESSAGE_NEXT_PAGE_MSG.replace( "{PAGE_NUMBER}", "" + ( currentPage + 1 ) );
-                changePageLine = changePageLine.replace( "{PREVIOUS_PAGE}", previousPage )
-                        .replace( "{NEXT_PAGE}", nextPage );
-
-                unparsedMsg += changePageLine;
+                unparsedMsg += getChangePageString( startIndex, registry );
                 command.getPlayer().sendMessage( MiniMessage.miniMessage().deserialize( unparsedMsg ) );
                 return true;
             }
@@ -128,11 +110,31 @@ public class NetunoCommand extends CyberCommand {
         return true;
     }
 
+    private String getChangePageString( int startIndex, List<CommandHelpInfo> registry ) {
+        int currentPage = ( startIndex / COMMANDS_PER_HELP_PAGE ) + 1;
+        int maxPage = ( int ) Math.ceil( registry.size() * 1.0 / COMMANDS_PER_HELP_PAGE );
+
+        String changePageLine = HELP_MESSAGE_CHANGE_PAGE_BASE_MSG;
+        if ( currentPage == 1 ) {
+            String replacePreviousPageWithSpaces = " ".repeat( "{PREVIOUS_PAGE}".length() );
+            changePageLine = changePageLine.replace( "{PREVIOUS_PAGE}", replacePreviousPageWithSpaces );
+        }
+        else if ( currentPage == maxPage ) {
+            String replaceNextPageWithSpaces = " ".repeat( "{NEXT_PAGE}".length() );
+            changePageLine = changePageLine.replace( "{NEXT_PAGE}", replaceNextPageWithSpaces );
+        }
+
+        String previousPage = HELP_MESSAGE_PREVIOUS_PAGE_MSG.replace( "{PAGE_NUMBER}", "" + ( currentPage - 1 ) );
+        String nextPage = HELP_MESSAGE_NEXT_PAGE_MSG.replace( "{PAGE_NUMBER}", "" + ( currentPage + 1 ) );
+        changePageLine = changePageLine.replace( "{PREVIOUS_PAGE}", previousPage )
+                .replace( "{NEXT_PAGE}", nextPage );
+        return changePageLine;
+    }
+
     private String extractCommandHelpArgsOnly( BaseCommand command ) {
-        String usage = command.getUsage();
-        int startIndex = 1 + command.getName().length() + 1; // 1 is the slash and the rest is from the name and another 1 is from the space
-        usage = usage.substring( startIndex );
-        // Removing the color and returning that
-        return CyberColorUtils.deleteColor( usage );
+        String usage = CyberColorUtils.reverseColor( command.getUsage() );
+        int startIndex2 = usage.indexOf( " " ); // gets the index of the first space -- everything after that should be the args
+        usage = usage.substring( startIndex2 + 1 );
+        return CyberColorUtils.deleteColor( CyberColorUtils.getColored( usage ) );
     }
 }
