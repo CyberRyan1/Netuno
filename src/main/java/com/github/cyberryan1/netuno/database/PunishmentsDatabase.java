@@ -263,8 +263,8 @@ public class PunishmentsDatabase {
                     "guipun = ?, reference = ?, notif = ? WHERE id = ?;" );
             ps.setString( 1, newData.getPlayerUuid().toString() );
             ps.setString( 2, newData.getStaffUuid().toString() );
-            ps.setLong( 3, newData.getLength() );
-            ps.setLong( 4, newData.getTimestamp() );
+            ps.setLong( 3, newData.getLength() / 1000L );
+            ps.setLong( 4, newData.getTimestamp() / 1000L );
             ps.setString( 5, newData.getReason() );
             ps.setInt( 6, newData.isActive() ? 1 : 0 );
             ps.setInt( 7, newData.isGuiPun() ? 1 : 0 );
