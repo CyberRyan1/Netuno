@@ -64,48 +64,28 @@ public class TimestampUtils {
      * @return
      */
     public static String durationToString( long duration, int maxUnits ) {
-        List<Long> amount = new ArrayList<>();
-        amount.add( duration / WEEKS );
-        duration %= WEEKS;
-        amount.add( duration / DAYS );
-        duration %= DAYS;
-        amount.add( duration / HOURS );
-        duration %= HOURS;
-        amount.add( duration / MINUTES );
-        duration %= MINUTES;
-        amount.add( duration );
+        List<String> strings = new ArrayList<>();
 
-        String output = "";
-        int unitCount = 0;
-        for ( int index = 0; index < maxUnits; index++ ) {
-            long value = amount.get( index );
-            if ( value == 0 ) continue;
+        long weeks = duration / WEEKS;
+        duration = duration - ( weeks * WEEKS );
+        if ( weeks != 0 ) strings.add( weeks + " week" + ( ( weeks == 1 ) ? "" : "s" ) );
 
-            // TODO continue from here
-            String unitType = switch ( index ) {
-                case 1 -> "week";
-                case 2 -> "day";
-                case 3 -> "hour";
-                case 4 -> "minute";
-                case 5 -> "second";
-                default -> null;
-            };
-            if ( value > 1 ) unitType += "s";
+        long days = duration / DAYS;
+        duration = duration - ( days * DAYS );
+        if ( days != 0 ) strings.add( days + " day" + ( ( days == 1 ) ? "" : "s" ) );
 
-            output += value + " " + unitType + ", ";
-            unitCount++;
-            if ( unitCount >= maxUnits ) break;
-        }
+        long hours = duration / HOURS;
+        duration = duration - ( hours * HOURS );
+        if ( hours != 0 ) strings.add( hours + " hour" + ( ( hours == 1 ) ? "" : "s" ) );
 
-        int lastIndex = output.lastIndexOf( ", " );
-        if ( lastIndex >= 0 ) {
-            String temp = output.substring( 0, lastIndex - 1 );
-            temp += ", and ";
-            temp += output.substring( lastIndex + ", ".length() );
-            output = temp;
-        }
+        long minutes = duration / MINUTES;
+        duration = duration - ( minutes * MINUTES );
+        if ( minutes != 0 ) strings.add( minutes + " minute" + ( ( minutes == 1 ) ? "" : "s" ) );
 
-        return output;
+        long seconds = duration / SECONDS;
+        if ( seconds != 0 ) strings.add( seconds + " second" + ( ( seconds == 1 ) ? "" : "s" ) );
+
+        return PrettyStringLibrary.getNonOxfordCommaList( strings, maxUnits );
     }
 
     /**
