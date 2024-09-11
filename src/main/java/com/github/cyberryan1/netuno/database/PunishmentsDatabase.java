@@ -35,8 +35,8 @@ public class PunishmentsDatabase {
             ps.setString( 1, punishment.getPlayerUuid().toString() ); // player
             ps.setString( 2, punishment.getStaffUuid().toString() ); // staff
             ps.setInt( 3, punishment.getType().getIndex() ); // type
-            ps.setLong( 4, punishment.getLength() ); // length
-            ps.setLong( 5, punishment.getTimestamp() ); // timestamp
+            ps.setLong( 4, punishment.getLength() / 1000L ); // length -- We store timestamp and length in seconds, but the class uses them in milliseconds
+            ps.setLong( 5, punishment.getTimestamp() / 1000L ); // timestamp
             ps.setString( 6, punishment.getReason() ); // reason
             ps.setInt( 7, punishment.isActive() ? 1 : 0 ); // active
             ps.setInt( 8, punishment.isGuiPun() ? 1 : 0 ); // guipun
@@ -367,8 +367,8 @@ public class PunishmentsDatabase {
                 rs.getString( "player" ),
                 rs.getString( "staff" ),
                 ApiPunishment.PunType.fromIndex( rs.getInt( "type" ) ),
-                rs.getLong( "timestamp" ),
-                rs.getLong( "length" ),
+                rs.getLong( "timestamp" ) * 1000L, // We store timestamp and length in seconds,
+                rs.getLong( "length" ) * 1000L,             // but the class uses them in milliseconds
                 rs.getString( "reason" ),
                 rs.getInt( "active" ) == 1,
                 rs.getInt( "reference" ),

@@ -7,8 +7,8 @@ public enum SQLiteTables {
             "`player` STRING NOT NULL," +
             "`staff` STRING NOT NULL," +
             "`type` INTEGER NOT NULL," +
-            "`length` INTEGER NOT NULL," +
-            "`timestamp` INTEGER NOT NULL," +
+            "`length` BIGINT NOT NULL," +
+            "`timestamp` BIGINT NOT NULL," +
             "`reason` STRING NOT NULL," +
             "`active` INTEGER NOT NULL," +
             "`guipun` INTEGER NOT NULL," +

@@ -7,8 +7,8 @@ public enum SQLTables {
             "player VARCHAR(42) NOT NULL," +
             "staff VARCHAR(42) NOT NULL," +
             "type INTEGER NOT NULL," +
-            "length INTEGER NOT NULL," +
-            "timestamp INTEGER NOT NULL," +
+            "length BIGINT NOT NULL," +
+            "timestamp BIGINT NOT NULL," +
             "reason TEXT NOT NULL," +
             "active INTEGER NOT NULL," +
             "guipun INTEGER NOT NULL," +

@@ -8,7 +8,7 @@ import com.github.cyberryan1.netuno.utils.PrettyStringLibrary;
 import com.github.cyberryan1.netuno.utils.TimestampUtils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -358,6 +358,7 @@ public class Punishment implements ApiPunishment {
     @Override
     public void execute( boolean silent ) {
         if ( this.isExecuted ) throw new RuntimeException( "This punishment has already been executed" );
+        this.timestamp = TimestampUtils.getCurrentTimestamp();
 
         // Only sending the public broadcast if the punishment
         //      is NOT silent
@@ -423,7 +424,7 @@ public class Punishment implements ApiPunishment {
      * @return The filled component
      */
     public Component fillSettingMessage( Settings setting ) {
-        return MiniMessage.miniMessage().deserialize( executeReplacements( setting.toString() ) );
+        return fillSettingMessage( setting, false );
     }
 
     /**
@@ -448,13 +449,15 @@ public class Punishment implements ApiPunishment {
     public Component fillSettingMessage( Settings setting, boolean silent ) {
         String msg = "";
         final String SILENT_PREFIX = Settings.SILENT_PREFIX.string();
-        for ( String str : setting.string().split( "\n" ) ) {
+        for ( String str : setting.stringlist() ) {
             if ( str.isBlank() ) msg += str;
             else if ( silent ) msg += SILENT_PREFIX + str;
             else msg += str;
+            msg += "\n";
         }
 
-        return MiniMessage.miniMessage().deserialize( executeReplacements( msg ) );
+        msg = msg.substring( 0, msg.lastIndexOf( "\n" ) ); // Removing the last \n
+        return LegacyComponentSerializer.legacyAmpersand().deserialize( executeReplacements( msg ) );
     }
 
     private String executeReplacements( String msg ) {

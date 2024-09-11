@@ -203,7 +203,7 @@ public interface ApiPunishment {
         if ( this.getType() == null ) { throw new ClassIncompleteException( "Punishment incomplete: Punishment type cannot be null" ); }
         if ( this.getPlayerUuid() == null ) { throw new ClassIncompleteException( "Punishment incomplete: Player UUID cannot be null" ); }
         if ( this.getStaffUuid() == null ) { throw new ClassIncompleteException( "Punishment incomplete: Staff UUID cannot be null" ); }
-        if ( this.getLength() <= 0 && this.getType().hasNoLength() == false && this.getLength() != -1 ) { throw new ClassIncompleteException( "Punishment incomplete: Length must be greater than zero seconds" ); }
+        if ( this.getLength() <= 0 && this.getType().hasNoLength() == false ) { throw new ClassIncompleteException( "Punishment incomplete: Length must be greater than zero seconds" ); }
         if ( this.getTimestamp() <= 0 ) { throw new ClassIncompleteException( "Punishment incomplete: Timestamp must be greater than zero" ); }
         if ( this.getReason() == null ) { throw new ClassIncompleteException( "Punishment incomplete: Reason cannot be null" ); }
         if ( this.getType().isIpPunishment() && this.getReferenceId() < -1 ) { throw new ClassIncompleteException( "Punishment incomplete: Reference Punishment ID must be greater than zero for IP punishments" ); }

@@ -128,19 +128,7 @@ public class PunishmentCommandGenerator {
      * @param command The sent command
      */
     public static void executePunishmentFromCommandArgs( SentCommand command ) {
-        ApiPunishment.PunType punType = switch ( command.getCommand().getName().toLowerCase() ) {
-            case "warn" -> ApiPunishment.PunType.WARN;
-            case "kick" -> ApiPunishment.PunType.KICK;
-            case "mute" -> ApiPunishment.PunType.MUTE;
-            case "unmute" -> ApiPunishment.PunType.UNMUTE;
-            case "ban" -> ApiPunishment.PunType.BAN;
-            case "unban" -> ApiPunishment.PunType.UNBAN;
-            case "ipmute" -> ApiPunishment.PunType.IPMUTE;
-            case "unipmute" -> ApiPunishment.PunType.UNIPMUTE;
-            case "ipban" -> ApiPunishment.PunType.IPBAN;
-            case "unipban" -> ApiPunishment.PunType.UNIPBAN;
-            default -> null;
-        };
+        ApiPunishment.PunType punType = ApiPunishment.PunType.valueOf( command.getCommand().getName().toUpperCase() );
         if ( punType == null ) throw new NullPointerException();
 
         OfflinePlayer staff = command.getSender() instanceof ConsoleCommandSender ? ApiPunishment.CONSOLE_IS_STAFF : ( OfflinePlayer ) command.getSender();
