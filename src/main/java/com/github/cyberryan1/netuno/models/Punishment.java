@@ -386,24 +386,30 @@ public class Punishment implements ApiPunishment {
             }
         }
 
-        // If the punishment requires the player to be kicked
-        if ( List.of( PunType.KICK, PunType.BAN, PunType.IPBAN ).contains( getType() ) ) {
-            Settings playerMsgSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.MESSAGE );
-            Component comp = fillSettingMessage( playerMsgSetting );
-            getPlayer().getPlayer().kick( comp );
+        this.isNotifSent = false;
+        if ( getPlayer().isOnline() ) {
+            this.isNotifSent = true;
+
+            // If the punishment requires the player to be kicked
+            if ( List.of( PunType.KICK, PunType.BAN, PunType.IPBAN ).contains( getType() ) ) {
+                Settings playerMsgSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.MESSAGE );
+                Component comp = fillSettingMessage( playerMsgSetting );
+                getPlayer().getPlayer().kick( comp );
+            }
+
+            // If the punishment requires the player to receive a message
+            else {
+                Settings playerMsgSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.MESSAGE );
+                Settings playerMsgSound = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.SOUND_TARGET );
+                Component comp = fillSettingMessage( playerMsgSetting );
+                getPlayer().getPlayer().sendMessage( comp );
+                playerMsgSound.sound().playSound( getPlayer().getPlayer() );
+            }
         }
 
-        // If the punishment requires the player to receive a message
-        else {
-            Settings playerMsgSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.MESSAGE );
-            Settings playerMsgSound = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.SOUND_TARGET );
-            Component comp = fillSettingMessage( playerMsgSetting );
-            getPlayer().getPlayer().sendMessage( comp );
-            playerMsgSound.sound().playSound( getPlayer().getPlayer() );
-        }
-
-        Netuno.PUNISHMENT_SERVICE.createPunishment( this );
+        this.isActive = this.punType.hasNoLength() == false;
         this.isExecuted = true;
+        Netuno.PUNISHMENT_SERVICE.createPunishment( this );
     }
 
     /**
