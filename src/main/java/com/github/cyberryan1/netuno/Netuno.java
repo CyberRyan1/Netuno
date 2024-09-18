@@ -88,6 +88,9 @@ Config:
 - Change config updater to better one (do research)
  */
 
+// TODO unpunishments don't work
+// TODO unpunishments require two args, not one
+
 public final class Netuno extends JavaPlugin {
 
     // Database Connection
