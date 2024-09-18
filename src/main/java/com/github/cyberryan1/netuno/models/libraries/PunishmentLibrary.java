@@ -20,7 +20,8 @@ public class PunishmentLibrary {
      */
     public static Punishment getPunishmentWithHighestDurationRemaining( List<Punishment> list ) {
         Punishment highest = list.get( 0 );
-        for ( int index = 1; index < list.size(); index++ ) {
+        for ( int index = 1; index < list.size() && highest.getDurationRemaining() != ApiPunishment.PERMANENT_PUNISHMENT_LENGTH; index++ ) {
+            if ( list.get( index ).getDurationRemaining() == ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) return list.get( index );
             if ( highest.getDurationRemaining() < list.get( index ).getDurationRemaining() ) {
                 highest = list.get( index );
             }
@@ -35,7 +36,8 @@ public class PunishmentLibrary {
      */
     public static Punishment getPunishmentWithHighestOriginalLength( List<Punishment> list ) {
         Punishment highest = list.get( 0 );
-        for ( int index = 1; index < list.size(); index++ ) {
+        for ( int index = 1; index < list.size() && highest.getLength() != ApiPunishment.PERMANENT_PUNISHMENT_LENGTH; index++ ) {
+            if ( list.get( index ).getLength() == ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) return list.get( index );
             if ( highest.getLength() < list.get( index ).getLength() ) {
                 highest = list.get( index );
             }
