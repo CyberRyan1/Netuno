@@ -11,6 +11,7 @@ import com.github.cyberryan1.netuno.models.Punishment;
 import com.github.cyberryan1.netuno.models.helpers.PlayerLoginLogoutCache;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +68,11 @@ public class NetunoService implements ApiNetunoService {
     public void initialize() {
         this.PLAYER_CACHE.setLoginScript( event -> Optional.of( new NPlayer( event.getUniqueId() ) ) );
         this.ALT_SERVICE.initialize();
+
+        // Loading all online players
+        for ( Player p : Bukkit.getOnlinePlayers() ) {
+            getPlayer( p );
+        }
     }
 
     /**
