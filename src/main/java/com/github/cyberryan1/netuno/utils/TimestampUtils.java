@@ -64,6 +64,7 @@ public class TimestampUtils {
      * @return
      */
     public static String durationToString( long duration, int maxUnits ) {
+        if ( duration == ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) return "Forever";
         List<String> strings = new ArrayList<>();
 
         long weeks = duration / WEEKS;
