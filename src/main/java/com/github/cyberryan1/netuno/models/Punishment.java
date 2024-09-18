@@ -215,6 +215,7 @@ public class Punishment implements ApiPunishment {
     @Override
     public long getDurationRemaining() {
         if ( isActive() == false ) return 0;
+        if ( this.length == ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) return ApiPunishment.PERMANENT_PUNISHMENT_LENGTH;
         long durationSinceTimestamp = TimestampUtils.getTimeSince( this.timestamp );
         return this.length - durationSinceTimestamp;
     }
