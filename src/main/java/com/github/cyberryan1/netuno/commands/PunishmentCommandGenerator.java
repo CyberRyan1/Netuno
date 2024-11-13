@@ -4,6 +4,7 @@ import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberCommandUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
@@ -35,14 +36,18 @@ public class PunishmentCommandGenerator {
      *                          order
      */
     public static void generateCommands( int startingHelpOrder ) {
+        // TODO fix usage and minimum cmd args for unpunishments
+        // * above is fixed, needs testing
         for ( CommandSettings setting : CommandSettings.values() ) {
             final String label = setting.name().toLowerCase();
             final CommandSettings settings = CommandSettings.valueOf( label.toUpperCase() );
             final ApiPunishment.PunType punishmentType = ApiPunishment.PunType.valueOf( label.toUpperCase() );
             final String permission = PunishmentLibrary.getSettingForMessageType( punishmentType, PunishmentLibrary.MessageSetting.PERMISSION ).string();
+            CyberMsgUtils.broadcast( "&cgenerating command " + label ); // ! debug
 
             // Extracting the usage
             String usage = USAGE_MESSAGE_FORMAT.replace( "[LABEL]", label );
+            CyberMsgUtils.broadcast( "&cstarting usage == " + usage ); // ! debug
             // If the command is an unpunishment, only arg is the player and an optional -s
             if ( settings.isUnpunishment() ) {
                 usage = usage.replace( "[ARGS]", "(player) [-s]" );
@@ -55,6 +60,7 @@ public class PunishmentCommandGenerator {
             else {
                 usage = usage.replace( "[ARGS]", "(player) (length) (reason) [-s]" );
             }
+            CyberMsgUtils.broadcast( "&cending usage == " + usage ); // ! debug
 
             CyberCommand command = new CyberCommand( label, permission, Settings.PERM_DENIED_MSG.coloredString(), usage ) {
                 @Override
@@ -104,6 +110,7 @@ public class PunishmentCommandGenerator {
             int commandMinArgs = 2;
             if ( settings.isUnpunishment ) commandMinArgs = 1;
             else if ( settings.hasLength() ) commandMinArgs = 3;
+            CyberMsgUtils.broadcast( "&ccommandMinArgs == " + commandMinArgs ); // ! debug
             command.setMinArgLength( commandMinArgs );
 
             // Setting the arg type of the first argument
@@ -161,13 +168,13 @@ public class PunishmentCommandGenerator {
         WARN( 1, false, false ),
         KICK( 2, false, false ),
         MUTE( 3, true, false ),
-        UNMUTE( 4, false, false ),
+        UNMUTE( 4, false, true ), // * note to later self: forgot to set isUnpunishment to true, test later
         IPMUTE( 7, true, false ),
-        UNIPMUTE( 8, false, false ),
+        UNIPMUTE( 8, false, true ),
         BAN( 5, true, false ),
-        UNBAN( 6, false, false ),
+        UNBAN( 6, false, true ),
         IPBAN( 9, true, false ),
-        UNIPBAN( 10, false, false );
+        UNIPBAN( 10, false, true );
 
         private final int helpOrder;
         private final boolean hasLength;
