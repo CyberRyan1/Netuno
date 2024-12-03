@@ -46,7 +46,7 @@ public class PunishCommand extends HelpableCommand {
         register( true );
 
         demandPermission( true );
-        demandPlayer( true );
+        demandPlayer( false );
         setMinArgLength( 1 );
         setArgType( 0, ArgType.OFFLINE_PLAYER );
 
