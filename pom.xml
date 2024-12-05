@@ -154,7 +154,7 @@
         </dependency>
         I do not understand why this fixes it
         -->
-        <dependency>
+        <dependency> <!-- For some reason this is imported twice, probably don't want to do that-->
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
             <version>4.15.0</version>
