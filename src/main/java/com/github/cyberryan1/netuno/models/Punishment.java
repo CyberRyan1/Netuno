@@ -26,6 +26,24 @@ import java.util.stream.Collectors;
  */
 public class Punishment implements ApiPunishment {
 
+    /**
+     * @param staff The staff trying to use a punishment
+     * @param target The target of the punishment
+     * @return True if the staff member can punish the target,
+     * false otherwise
+     */
+    public static boolean checkPlayerCanPunish( OfflinePlayer staff, OfflinePlayer target ) {
+        if ( Settings.PUNISH_OTHER_STAFF.bool() ) return true;
+
+        final String STAFF_PERM = Settings.STAFF_PERMISSION.string();
+        final String ALL_NETUNO_PERM = Settings.ALL_PERMISSIONS.string();
+
+        if ( CyberVaultUtils.hasPerms( staff, ALL_NETUNO_PERM ) ) return true;
+        if ( CyberVaultUtils.hasPerms( target, STAFF_PERM ) == false ) return true;
+        if ( CyberVaultUtils.hasPerms( target, ALL_NETUNO_PERM ) ) return false;
+        return true;
+    }
+
     // Data that is stored in the database
     private int id;
     private UUID playerUuid;
