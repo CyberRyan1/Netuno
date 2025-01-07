@@ -39,6 +39,15 @@ public class MainButton {
         return this.index;
     }
 
+    /**
+     * Gets the item that is specific to the target. Replaces
+     * any [TARGET] setting variables within the name of the item.
+     * Also, if {@link #getButtonName()} is "<code>skull</code>",
+     * sets the type of this item to be the target's skull.
+     *
+     * @param target The target
+     * @return The item
+     */
     public ItemStack getItem( OfflinePlayer target ) {
         if ( this.buttonName.equalsIgnoreCase( "skull" ) ) {
             return CyberItemUtils.getPlayerSkull( target );
