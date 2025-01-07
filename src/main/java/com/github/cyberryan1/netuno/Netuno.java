@@ -91,6 +91,7 @@ Config:
 
 // TODO unpunishments don't work
 // TODO unpunishments require two args, not one
+// TODO quick punishments don't increment the # of punishments the player has properly, but it should
 
 public final class Netuno extends JavaPlugin {
 
