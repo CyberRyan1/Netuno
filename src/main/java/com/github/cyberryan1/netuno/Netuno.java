@@ -86,7 +86,7 @@ API Feature:
 - Better API alts searching
 
 Config:
-- Change config updater to better one (do research)
+- Change config updater to better one (do research) <-- want to use ConfigUpdater
  */
 
 // TODO unpunishments don't work
