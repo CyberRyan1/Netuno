@@ -8,6 +8,7 @@ import com.github.cyberryan1.netuno.commands.NetunoCommand;
 import com.github.cyberryan1.netuno.commands.PunishCommand;
 import com.github.cyberryan1.netuno.commands.PunishmentCommandGenerator;
 import com.github.cyberryan1.netuno.database.ConnectionManager;
+import com.github.cyberryan1.netuno.guis.punish.managers.ActivePunishGuiManager;
 import com.github.cyberryan1.netuno.listeners.ChatListener;
 import com.github.cyberryan1.netuno.listeners.PreLoginListener;
 import com.github.cyberryan1.netuno.services.AltService;
@@ -100,6 +101,8 @@ public final class Netuno extends JavaPlugin {
     public static PunishmentService PUNISHMENT_SERVICE = null;
     public static AltService ALT_SERVICE = null;
     public static NetunoService SERVICE = null;
+
+    public static final ActivePunishGuiManager ACTIVE_PUNISH_GUIS = new ActivePunishGuiManager();
 
     // Skript
     public SkriptAddon addon;
