@@ -113,7 +113,6 @@ public class SinglePunishButton {
         } );
     }
 
-    // TODO javadoc
     /**
      * Executes this punishment on the provided player as if
      * it was ran by the provided staff
@@ -126,7 +125,7 @@ public class SinglePunishButton {
     public void executePunish( Player staff, OfflinePlayer offlinePlayer, boolean silent ) {
         Netuno.SERVICE.getPlayer( offlinePlayer ).thenAcceptAsync( player -> {
             String reason = REASON_FORMAT.replace( "[REASON]", CyberColorUtils.deleteColor( CyberColorUtils.getColored( this.itemName ) ) );
-            reason = reason.replace( "[OFFENSE]", PrettyStringLibrary.getIntegerAsAmount( this.previousPunCount + 1 ) );
+            reason = reason.replace( "[NUMBER]", PrettyStringLibrary.getIntegerAsAmount( this.previousPunCount + 1 ) );
 
             ApiPunishment.PunType punType = ApiPunishment.PunType.valueOf( this.punGuiType.name() );
             long duration = ApiPunishment.PUNISHMENT_NO_LENGTH;
@@ -136,7 +135,7 @@ public class SinglePunishButton {
                 // If the amount of warns the player has had is greater then
                 //      or equal to the number of warns to start punishing
                 //      after, execute the higher tier punish on them
-                if ( this.previousPunCount < this.punishAfter ) {
+                if ( this.previousPunCount >= this.punishAfter ) {
                     punType = this.punishTypeAfter;
 
                     // If the punishment has a length, calculate the duration
