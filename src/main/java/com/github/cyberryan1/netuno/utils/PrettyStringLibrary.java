@@ -106,7 +106,7 @@ public class PrettyStringLibrary {
      */
     public static String getIntegerAsAmount( int i ) {
         String suffix = "th";
-        if ( i < 3 || i > 20 ) {
+        if ( i < 4 || i > 20 ) {
             if ( i % 10 == 1 ) suffix = "st";
             if ( i % 10 == 2 ) suffix = "nd";
             if ( i % 10 == 3 ) suffix = "rd";
