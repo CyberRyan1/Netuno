@@ -15,7 +15,12 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-// TODO javadoc
+/**
+ * A class that represents each of the different punishments'
+ * respective GUIs within the /punish GUI
+ *
+ * @author Ryan
+ */
 public class PunishmentSpecificGui {
 
     private final Gui gui;
@@ -25,6 +30,12 @@ public class PunishmentSpecificGui {
     private final MultiPunishButton punishButtons;
     private final int rowCount;
 
+    /**
+     * Creating a punishment's GUI
+     * @param type The type of punishment this GUI is for
+     * @param staff The staff executing the command
+     * @param target The target
+     */
     public PunishmentSpecificGui( GuiType type, Player staff, OfflinePlayer target ) {
         this.type = type;
         this.staff = staff;
@@ -50,6 +61,10 @@ public class PunishmentSpecificGui {
         insertItems();
     }
 
+    /**
+     * Inserting items that were defined in the config
+     * into this GUI
+     */
     public void insertItems() {
         final List<SinglePunishButton> buttonsList = this.punishButtons.getButtons();
         for ( SinglePunishButton button : buttonsList ) {
@@ -65,6 +80,9 @@ public class PunishmentSpecificGui {
         }
     }
 
+    /**
+     * Opens this GUI to the staff
+     */
     public void open() {
         Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
             gui.openInventory( this.staff );
