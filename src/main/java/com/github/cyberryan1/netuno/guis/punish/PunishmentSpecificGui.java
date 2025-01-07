@@ -4,9 +4,9 @@ import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.gui.Gui;
 import com.github.cyberryan1.cybercore.spigot.gui.GuiItem;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberGuiUtils;
-import com.github.cyberryan1.netuno.guis.punish.managers.ActiveGuiManager;
-import com.github.cyberryan1.netuno.guis.punish.models.GuiType;
+import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.guis.punish.models.MultiPunishButton;
+import com.github.cyberryan1.netuno.guis.punish.models.PunGuiType;
 import com.github.cyberryan1.netuno.guis.punish.models.PunishSettings;
 import com.github.cyberryan1.netuno.guis.punish.models.SinglePunishButton;
 import org.bukkit.Bukkit;
@@ -24,9 +24,10 @@ import java.util.List;
 public class PunishmentSpecificGui {
 
     private final Gui gui;
-    private final GuiType type;
+    private final PunGuiType type;
     private final Player staff;
     private final OfflinePlayer target;
+    private final boolean silent;
     private final MultiPunishButton punishButtons;
     private final int rowCount;
 
@@ -36,10 +37,11 @@ public class PunishmentSpecificGui {
      * @param staff The staff executing the command
      * @param target The target
      */
-    public PunishmentSpecificGui( GuiType type, Player staff, OfflinePlayer target ) {
+    public PunishmentSpecificGui( PunGuiType type, Player staff, OfflinePlayer target, boolean silent ) {
         this.type = type;
         this.staff = staff;
         this.target = target;
+        this.silent = silent;
         this.punishButtons = switch ( type ) {
             case WARN -> PunishSettings.WARN_BUTTONS.multiButton();
             case MUTE -> PunishSettings.MUTE_BUTTONS.multiButton();
@@ -87,9 +89,9 @@ public class PunishmentSpecificGui {
         Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
             gui.openInventory( this.staff );
             gui.setCloseEvent( ( inventory ) -> {
-                ActiveGuiManager.attemptRemoveActiveGui( this.staff );
+                Netuno.ACTIVE_PUNISH_GUIS.removeOpenGuiByStaff( this.staff );
             } );
-            ActiveGuiManager.addActiveGui( this.staff, this.target );
+            Netuno.ACTIVE_PUNISH_GUIS.addOpenGui( this );
         } );
     }
 
@@ -105,4 +107,14 @@ public class PunishmentSpecificGui {
         if ( highestIndex <= 25 ) { return 4; }
         return 5;
     }
+
+    public Gui getGui() { return gui; }
+
+    public PunGuiType getType() { return type; }
+
+    public Player getStaff() { return staff; }
+
+    public OfflinePlayer getTarget() { return target; }
+
+    public boolean isSilent() { return silent; }
 }
