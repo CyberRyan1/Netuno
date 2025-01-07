@@ -77,7 +77,10 @@ public class PunishmentSpecificGui {
                     button.executePunish( this.staff, this.target, this.silent );
                     staff.closeInventory();
                 } );
-                this.gui.addItem( item );
+                // ? Below is a bit of a weird fix, as it will not be instant
+                // ? This means that each button will populate the GUI at different times, which looks weird
+                // ? May want to fix this in the future
+                this.gui.updateItem( item );
             } );
         }
     }
