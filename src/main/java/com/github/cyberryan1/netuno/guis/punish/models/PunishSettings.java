@@ -12,6 +12,9 @@ public enum PunishSettings {
     // Main Inventory
     //
     MAIN_INVENTORY_NAME( "main-gui.inventory-name", "string", "main" ),
+    MAIN_INVALID_PERMS_MSG( "main-gui.invalid-perms.message", "string", "main" ),
+    MAIN_INVALID_PERMS_CHANGE_MATERIAL_ACTIVE( "main-gui.invalid-perms.change-material-active", "boolean", "main" ),
+    MAIN_INVALID_PERMS_CHANGE_MATERIAL( "main-gui.invalid-perms.change-material", "material", "main" ),
     MAIN_SKULL_BUTTON( "main-gui.skull", "mainbutton", "main" ),
     MAIN_HISTORY_BUTTON( "main-gui.history", "mainbutton", "main" ),
     MAIN_ALTS_BUTTON( "main-gui.alts", "mainbutton", "main" ),

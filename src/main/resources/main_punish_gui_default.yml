@@ -21,6 +21,18 @@ main-gui:
   # Name of the inventory
   inventory-name: "&7Punishing &6[TARGET]"
 
+  invalid-perms:
+    # What to display to users who cannot access a certain button within this GUI (i.e. they don't have permission)
+    # This will be added to the end of the item's lore
+    # Set this to an empty string to not add anything
+    message: "&cInsufficient permissions!"
+
+    # Whether we should change a button's material if a staff member cannot access that button
+    change-material-active: true
+    # If the above is true, what we should change the button's material to
+    # Setting this to AIR will remove the item from the GUI
+    change-material: BARRIER
+
   # Target skull
   skull:
     # Index in the gui
