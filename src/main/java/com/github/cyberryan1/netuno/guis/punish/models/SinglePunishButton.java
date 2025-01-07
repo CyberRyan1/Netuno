@@ -65,7 +65,7 @@ public class SinglePunishButton {
      */
     public SinglePunishButton( String pathKey, String ymlName ) {
         this.pathKey = pathKey;
-        this.punGuiType = PunGuiType.valueOf( pathKey.substring( 0, pathKey.indexOf( "-" ) ) );
+        this.punGuiType = PunGuiType.valueOf( pathKey.substring( 0, pathKey.indexOf( "-" ) ).toUpperCase() );
         this.buttonType = pathKey.substring( pathKey.indexOf( "." ) + 1 );
 
         final YmlReader YML_MANAGER = YMLUtils.fromName( ymlName );
@@ -83,7 +83,7 @@ public class SinglePunishButton {
         this.punishTypeAfter = null;
         if ( this.punGuiType == PunGuiType.WARN ) {
             this.punishAfter = YML_MANAGER.getInt( pathKey + ".punish-after" );
-            this.punishTypeAfter = ApiPunishment.PunType.valueOf( YML_MANAGER.getStr( pathKey + ".punishment" ) );
+            this.punishTypeAfter = ApiPunishment.PunType.valueOf( YML_MANAGER.getStr( pathKey + ".punishment" ).toUpperCase() );
         }
     }
 
