@@ -7,7 +7,6 @@ import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
-import com.github.cyberryan1.netuno.guis.punish.managers.ActiveGuiManager;
 import com.github.cyberryan1.netuno.models.Punishment;
 import com.github.cyberryan1.netuno.models.libraries.PunishmentLibrary;
 import com.github.cyberryan1.netuno.utils.PrettyStringLibrary;
@@ -40,7 +39,7 @@ public class SinglePunishButton {
     private static final String LENGTH_REMAINING_CONFIG_VARIABLE = "LENGTH_REMAINING";
 
     private String pathKey;
-    private GuiType guiType;
+    private PunGuiType punGuiType;
 
     private String buttonType;
     private int index;
@@ -66,7 +65,7 @@ public class SinglePunishButton {
      */
     public SinglePunishButton( String pathKey, String ymlName ) {
         this.pathKey = pathKey;
-        this.guiType = GuiType.valueOf( pathKey.substring( 0, pathKey.indexOf( "-" ) ) );
+        this.punGuiType = PunGuiType.valueOf( pathKey.substring( 0, pathKey.indexOf( "-" ) ) );
         this.buttonType = pathKey.substring( pathKey.indexOf( "." ) + 1 );
 
         final YmlReader YML_MANAGER = YMLUtils.fromName( ymlName );
@@ -82,7 +81,7 @@ public class SinglePunishButton {
         // Below variables only apply to warns
         this.punishAfter = -1;
         this.punishTypeAfter = null;
-        if ( this.guiType == GuiType.WARN ) {
+        if ( this.punGuiType == PunGuiType.WARN ) {
             this.punishAfter = YML_MANAGER.getInt( pathKey + ".punish-after" );
             this.punishTypeAfter = ApiPunishment.PunType.valueOf( YML_MANAGER.getStr( pathKey + ".punishment" ) );
         }
@@ -122,17 +121,18 @@ public class SinglePunishButton {
      *
      * @param staff The staff member
      * @param offlinePlayer The target player
+     * @param silent Whether to handle this punishment silently
      */
-    public void executePunish( Player staff, OfflinePlayer offlinePlayer ) {
+    public void executePunish( Player staff, OfflinePlayer offlinePlayer, boolean silent ) {
         Netuno.SERVICE.getPlayer( offlinePlayer ).thenAcceptAsync( player -> {
             String reason = REASON_FORMAT.replace( "[REASON]", CyberColorUtils.deleteColor( CyberColorUtils.getColored( this.itemName ) ) );
             reason = reason.replace( "[OFFENSE]", PrettyStringLibrary.getIntegerAsAmount( this.previousPunCount + 1 ) );
 
-            ApiPunishment.PunType punType = ApiPunishment.PunType.valueOf( this.guiType.name() );
+            ApiPunishment.PunType punType = ApiPunishment.PunType.valueOf( this.punGuiType.name() );
             long duration = ApiPunishment.PUNISHMENT_NO_LENGTH;
 
             // Handling warns
-            if ( this.guiType == GuiType.WARN ) {
+            if ( this.punGuiType == PunGuiType.WARN ) {
                 // If the amount of warns the player has had is greater then
                 //      or equal to the number of warns to start punishing
                 //      after, execute the higher tier punish on them
@@ -157,7 +157,7 @@ public class SinglePunishButton {
                 // Whether the length to punish this player for is the length remaining on the
                 //      highest punishment (true) or the original length of the highest
                 //      punishment (false)
-                boolean highestDurationIsRemaining = isHighestPunishDurationRemaining( this.guiType, this.punishTypeAfter );
+                boolean highestDurationIsRemaining = isHighestPunishDurationRemaining( this.punGuiType, this.punishTypeAfter );
 
                 // Getting all active punishments from all alts, provided
                 //      the punishment type is equal to this.punishTypeAfter
@@ -194,9 +194,6 @@ public class SinglePunishButton {
                 if ( this.autoscale ) duration = getScaledDuration();
             }
 
-            // Whether to handle the punishment silently or not
-            boolean silent = ActiveGuiManager.searchByStaff( staff ).get().isSilent();
-
             // Executing the punishment
             Netuno.PUNISHMENT_SERVICE.punishmentBuilder()
                     .setPlayer( player.getUuid() )
@@ -219,7 +216,7 @@ public class SinglePunishButton {
      * duration is specified to be the punishment of an alt with the
      * longest length
      */
-    private boolean isHighestPunishDurationRemaining( GuiType type, ApiPunishment.PunType punType ) {
+    private boolean isHighestPunishDurationRemaining( PunGuiType type, ApiPunishment.PunType punType ) {
         PunishSettings setting =  switch ( type ) {
             case IPMUTE -> punType == ApiPunishment.PunType.MUTE ? PunishSettings.IPMUTE_SETTING_HIGHEST_MUTE_LENGTH : PunishSettings.IPMUTE_SETTING_HIGHEST_BAN_LENGTH;
             case IPBAN -> punType == ApiPunishment.PunType.MUTE ? PunishSettings.IPBAN_SETTING_HIGHEST_MUTE_LENGTH : PunishSettings.IPBAN_SETTING_HIGHEST_BAN_LENGTH;
@@ -253,7 +250,7 @@ public class SinglePunishButton {
 
     public String getPathKey() { return this.pathKey; }
 
-    public GuiType getGuiType() { return this.guiType; }
+    public PunGuiType getGuiType() { return this.punGuiType; }
 
     public String getButtonType() { return this.buttonType; }
 

@@ -74,7 +74,7 @@ public class PunishmentSpecificGui {
 
             button.getItem( this.target ).thenAccept( itemstack -> {
                 GuiItem item = new GuiItem( itemstack, button.getIndex(), ( i ) -> {
-                    button.executePunish( this.staff, this.target );
+                    button.executePunish( this.staff, this.target, this.silent );
                     staff.closeInventory();
                 } );
                 this.gui.addItem( item );
