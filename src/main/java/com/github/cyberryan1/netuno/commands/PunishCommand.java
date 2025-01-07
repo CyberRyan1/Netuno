@@ -4,9 +4,11 @@ import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberCommandUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.time.Timestamp;
 import com.github.cyberryan1.netuno.guis.punish.MainPunishGui;
+import com.github.cyberryan1.netuno.guis.punish.PunishmentGuiExecutor;
 import com.github.cyberryan1.netuno.guis.punish.models.PunishSettings;
 import com.github.cyberryan1.netuno.guis.punish.models.SinglePunishButton;
 import com.github.cyberryan1.netuno.models.Punishment;
@@ -83,6 +85,7 @@ public class PunishCommand extends CyberCommand {
                     .filter( button -> button.getInstantKey().equalsIgnoreCase( command.getArg( 1 ) ) )
                     .findFirst()
                     .orElseThrow( IllegalArgumentException::new );
+            CyberMsgUtils.broadcast( "instantKeyParent.getButtonType() == " + instantKeyParent.getButtonType() );
 
             String permission = switch ( instantKeyParent.getGuiType() ) {
                 case WARN -> PunishSettings.WARN_PERMISSION.string();
@@ -106,7 +109,7 @@ public class PunishCommand extends CyberCommand {
             }
 
             instantPunishCooldowns.put( target.getUniqueId(), new Duplex<>( instantKeyParent.getInstantKey(), new Timestamp() ) );
-            instantKeyParent.executePunish( staff, target, false ); // for now, will assume all instant punishments are not silent
+            PunishmentGuiExecutor.executePunish( instantKeyParent, staff, target, false ); // for now, will assume all instant punishments are not silent
             return true;
         }
 

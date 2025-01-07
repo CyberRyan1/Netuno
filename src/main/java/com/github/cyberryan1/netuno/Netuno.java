@@ -91,7 +91,7 @@ Config:
 
 // TODO unpunishments don't work
 // TODO unpunishments require two args, not one
-// TODO quick punishments don't increment the # of punishments the player has properly, but it should
+// TODO silent GUI punishments don't work
 
 public final class Netuno extends JavaPlugin {
 
