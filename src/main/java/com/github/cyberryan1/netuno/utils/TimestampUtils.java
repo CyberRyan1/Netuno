@@ -138,14 +138,14 @@ public class TimestampUtils {
     /**
      * Scales a duration by a given scale (e.g. 2x, 3x, etc)
      * and the given count.
-     * @param start The duration to scale
+     * @param start The duration to scale, in milliseconds
      * @param scale The scale to use
      * @param count The count to use
-     * @return The scaled duration
+     * @return The scaled duration, in milliseconds
      */
     public static long getScaledDuration( long start, int scale, int count ) {
         if ( start == ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) return ApiPunishment.PERMANENT_PUNISHMENT_LENGTH;
-        return 1000L * ( long ) ( start * Math.pow( ( scale * 1F ), ( count - 1 ) ) );
+        return ( long ) ( start * Math.pow( ( scale * 1F ), ( count - 1 ) ) );
     }
 
     /**
