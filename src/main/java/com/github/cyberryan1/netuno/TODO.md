@@ -1,7 +1,7 @@
 # To-Do List
 
 ### Other
-- [ ] Update this TODO list (check things off)
+- [X] Update this TODO list (check things off)
 
 ### Bugs (unfixed)
 - [ ] Unpunishments aren't actually working
