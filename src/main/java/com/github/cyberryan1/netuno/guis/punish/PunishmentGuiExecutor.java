@@ -21,6 +21,14 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+/**
+ * A helper class to execute punishments that were selected
+ * via the <code>/punish</code> GUI. This is also used to help
+ * with executing quick punishments <i>(i.e. <code>/punish
+ * (player) (quick code)</code></i>
+ *
+ * @author Ryan
+ */
 public class PunishmentGuiExecutor {
 
     private static final String REASON_FORMAT = "[REASON] ([NUMBER] Offense)";
