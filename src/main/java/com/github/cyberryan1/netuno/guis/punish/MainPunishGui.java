@@ -116,6 +116,7 @@ public class MainPunishGui {
 
         // Generating the different punishment GUI buttons
         for ( PunGuiType type : PunGuiType.values() ) {
+            if ( type == PunGuiType.MAIN ) continue; // skip main GUI
             generatePunishmentSpecificButton( type );
         }
     }
@@ -127,6 +128,8 @@ public class MainPunishGui {
      * @param type The punishment GUI type
      */
     private void generatePunishmentSpecificButton( PunGuiType type ) {
+        if ( type == PunGuiType.MAIN ) throw new IllegalArgumentException( "Cannot generate main punishment specific button" );
+
         final MainButton button = getPunishmentButton( type );
         // If index of button is -1, don't add it to the GUI
         if ( button.getIndex() == -1 ) return;
@@ -243,6 +246,7 @@ public class MainPunishGui {
      */
     private MainButton getPunishmentButton( PunGuiType type ) {
         return switch ( type ) {
+            case MAIN -> throw new IllegalArgumentException( "Punishment buttons for the main GUI do not exist" );
             case WARN -> PunishSettings.MAIN_WARN_BUTTON.mainButton();
             case MUTE -> PunishSettings.MAIN_MUTE_BUTTON.mainButton();
             case BAN -> PunishSettings.MAIN_BAN_BUTTON.mainButton();
@@ -260,6 +264,7 @@ public class MainPunishGui {
      */
     private boolean staffCanAccessPunishmentGui( PunGuiType type ) {
         String perm = switch ( type ) {
+            case MAIN -> throw new IllegalArgumentException( "Main GUI does not have a permission" );
             case WARN -> PunishSettings.WARN_PERMISSION.string();
             case MUTE -> PunishSettings.MUTE_PERMISSION.string();
             case BAN -> PunishSettings.BAN_PERMISSION.string();

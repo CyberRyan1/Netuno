@@ -6,6 +6,7 @@ package com.github.cyberryan1.netuno.guis.punish.models;
  * @author Ryan
  */
 public enum PunGuiType {
+    MAIN,
     WARN,
     MUTE,
     BAN,

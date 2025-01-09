@@ -43,6 +43,7 @@ public class PunishmentSpecificGui {
         this.target = target;
         this.silent = silent;
         this.punishButtons = switch ( type ) {
+            case MAIN -> throw new IllegalArgumentException();
             case WARN -> PunishSettings.WARN_BUTTONS.multiButton();
             case MUTE -> PunishSettings.MUTE_BUTTONS.multiButton();
             case BAN -> PunishSettings.BAN_BUTTONS.multiButton();
@@ -53,6 +54,7 @@ public class PunishmentSpecificGui {
         this.rowCount = determineRowCount();
 
         String guiName = switch ( type ) {
+            case MAIN -> throw new IllegalArgumentException();
             case WARN -> PunishSettings.WARN_INVENTORY_NAME.coloredString();
             case MUTE -> PunishSettings.MUTE_INVENTORY_NAME.coloredString();
             case BAN -> PunishSettings.BAN_INVENTORY_NAME.coloredString();
