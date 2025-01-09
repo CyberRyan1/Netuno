@@ -6,7 +6,12 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
-// TODO javadoc
+/**
+ * Represents a button within the main punishment GUI
+ *
+ * @see com.github.cyberryan1.netuno.guis.punish.MainPunishGui
+ * @author Ryan
+ */
 public class MainButton {
 
     private String buttonName;
@@ -14,6 +19,10 @@ public class MainButton {
     private String name;
     private Material material;
 
+    /**
+     * @param buttonName What type of button this button represents
+     *                   within the GUI
+     */
     public MainButton( String buttonName ) {
         this.buttonName = buttonName;
 
