@@ -4,6 +4,7 @@ import com.github.cyberryan1.cybercore.spigot.config.YmlReader;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Material;
 
+// TODO javadoc
 public class PunishSettingsEntry {
 
     private String path;
