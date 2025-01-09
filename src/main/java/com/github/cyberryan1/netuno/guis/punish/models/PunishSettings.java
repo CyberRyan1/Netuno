@@ -98,14 +98,14 @@ public enum PunishSettings {
     private String path;
     private String valueType;
     private PunishSettingsEntry value;
-    PunishSettings( String path, String valueType, String ymlName ) {
+    PunishSettings( String path, String valueType, String guiType ) {
         this.path = path;
         this.valueType = valueType;
-        this.value = new PunishSettingsEntry( path, valueType, ymlName );
+        this.value = new PunishSettingsEntry( path, valueType, guiType );
     }
 
     public void reload() {
-        this.value = new PunishSettingsEntry( this.path, this.value.getValueType(), this.value.getYmlName() );
+        this.value = new PunishSettingsEntry( this.path, this.value.getValueType(), this.value.getGuiType() );
     }
 
     public String getPath() { return this.path; }

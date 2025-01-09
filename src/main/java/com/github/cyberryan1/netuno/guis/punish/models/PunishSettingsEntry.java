@@ -4,12 +4,17 @@ import com.github.cyberryan1.cybercore.spigot.config.YmlReader;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Material;
 
-// TODO javadoc
+/**
+ * Represents a setting that is used for the punishment GUI or
+ * any of its sub-GUIs
+ *
+ * @author Ryan
+ */
 public class PunishSettingsEntry {
 
     private String path;
     private String valueType;
-    private String ymlName;
+    private String guiType;
 
     private int i;
     private String str;
@@ -21,12 +26,18 @@ public class PunishSettingsEntry {
     private MainButton main;
     private MultiPunishButton multi;
 
-    public PunishSettingsEntry( String path, String valueType, String ymlName ) {
+    /**
+     *
+     * @param path The YML path to this setting in the config file
+     * @param valueType The type of value this setting represents
+     * @param guiType The type of GUI this setting is for
+     */
+    public PunishSettingsEntry( String path, String valueType, String guiType ) {
         this.path = path;
         this.valueType = valueType;
-        this.ymlName = ymlName;
+        this.guiType = guiType;
 
-        final YmlReader YML_MANAGER = YMLUtils.fromName( ymlName );
+        final YmlReader YML_MANAGER = YMLUtils.fromName( guiType );
 
         switch ( valueType.toLowerCase() ) {
             case "int" -> this.i = YML_MANAGER.getInt( path );
@@ -37,15 +48,24 @@ public class PunishSettingsEntry {
             case "boolean" -> this.b = YML_MANAGER.getBool( path );
             case "material" -> this.mat = Material.valueOf( YML_MANAGER.getStr( path ) );
             case "mainbutton" -> this.main = new MainButton( path.substring( path.indexOf( "." ) + 1 ) );
-            case "multi" -> this.multi = new MultiPunishButton( path, ymlName );
+            case "multi" -> this.multi = new MultiPunishButton( path, guiType );
         }
     }
 
+    /**
+     * @return The YML path to this setting in the config file
+     */
     public String getPath() { return this.path; }
 
+    /**
+     * @return The type of value this setting represents
+     */
     public String getValueType() { return this.valueType; }
 
-    public String getYmlName() { return this.ymlName; }
+    /**
+     * @return The type of GUI this setting is for
+     */
+    public String getGuiType() { return this.guiType; }
 
 
     public int integer() { return this.i; }
