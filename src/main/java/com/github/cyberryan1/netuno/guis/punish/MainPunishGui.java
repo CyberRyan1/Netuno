@@ -198,13 +198,13 @@ public class MainPunishGui {
             // Setting the item's new name
             final String name = PunishSettings.MAIN_IN_USE_NAME.coloredString()
                     .replace( "[STAFF]", otherOpenGui.getStaff().getName() )
-                    .replace( "[TYPE]", type.getPastTense() );
+                    .replace( "[TYPE]", getPastTense( type ) );
             if ( name.isEmpty() == false ) { CyberItemUtils.setItemName( item, name ); }
 
             // Setting the item's new lore
             final String lore = PunishSettings.MAIN_IN_USE_LORE.coloredString()
                     .replace( "[STAFF]", otherOpenGui.getStaff().getName() )
-                    .replace( "[TYPE]", type.getPastTense() );
+                    .replace( "[TYPE]", getPastTense( type ) );
             if ( lore.isEmpty() == false ) { CyberItemUtils.setItemLore( item, lore ); }
 
             // Setting the item's new material
@@ -268,5 +268,13 @@ public class MainPunishGui {
         };
 
         return perm.isBlank() || CyberVaultUtils.hasPerms( this.staff, perm );
+    }
+
+    /**
+     * @return The past tense form of a GUI type, in lowercase
+     */
+    private String getPastTense( PunGuiType type ) {
+        if ( type.name().toLowerCase().endsWith( "e" ) ) return type.name().toLowerCase() + "d";
+        else return type.name().toLowerCase() + "ed";
     }
 }
