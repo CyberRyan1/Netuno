@@ -220,26 +220,28 @@ public interface ApiPunishment {
      * @author Ryan
      */
     enum PunType {
-        WARN ( 0, true, false,false ),
-        KICK ( 1, true, false, false ),
-        MUTE ( 2, false, false, false ),
-        UNMUTE ( 3, true, true, false ),
-        BAN ( 4, false, false, false ),
-        UNBAN ( 5, true, true, false ),
-        IPMUTE ( 6, false, false, true ),
-        UNIPMUTE ( 7, true, true, true ),
-        IPBAN ( 8, false, false, true ),
-        UNIPBAN ( 9, true, true, true );
+        WARN ( 0, true, false,false, false ),
+        KICK ( 1, true, false, false, false ),
+        MUTE ( 2, false, false, false, false ),
+        UNMUTE ( 3, true, true, false, true ),
+        BAN ( 4, false, false, false, false ),
+        UNBAN ( 5, true, true, false, true ),
+        IPMUTE ( 6, false, false, true, false ),
+        UNIPMUTE ( 7, true, true, true, true ),
+        IPBAN ( 8, false, false, true, false ),
+        UNIPBAN ( 9, true, true, true, true );
 
         private final int index;
         private final boolean hasNoLength;
         private final boolean hasNoReason;
         private final boolean ipPunishment;
-        PunType( int index, boolean hasNoLength, boolean hasNoReason, boolean ipPunishment ) {
+        private final boolean isUnpunishment;
+        PunType( int index, boolean hasNoLength, boolean hasNoReason, boolean ipPunishment, boolean isUnpunishment ) {
             this.index = index;
             this.hasNoLength = hasNoLength;
             this.hasNoReason = hasNoReason;
             this.ipPunishment = ipPunishment;
+            this.isUnpunishment = isUnpunishment;
         }
 
         public int getIndex() { return index; }
@@ -269,6 +271,12 @@ public interface ApiPunishment {
         public boolean isIpPunishment() {
             return ipPunishment;
         }
+
+        /**
+         * @return True if this is an unpunishment, false
+         * otherwise
+         */
+        public boolean isUnpunishment() { return isUnpunishment; }
 
         //
         // Static Methods
