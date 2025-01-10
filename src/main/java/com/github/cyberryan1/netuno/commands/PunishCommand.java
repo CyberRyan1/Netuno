@@ -88,6 +88,7 @@ public class PunishCommand extends CyberCommand {
             CyberMsgUtils.broadcast( "instantKeyParent.getButtonType() == " + instantKeyParent.getButtonType() );
 
             String permission = switch ( instantKeyParent.getGuiType() ) {
+                case MAIN -> throw new IllegalArgumentException();
                 case WARN -> PunishSettings.WARN_PERMISSION.string();
                 case MUTE -> PunishSettings.MUTE_PERMISSION.string();
                 case BAN -> PunishSettings.BAN_PERMISSION.string();

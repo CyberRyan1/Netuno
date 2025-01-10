@@ -7,7 +7,7 @@
 - [ ] Unpunishments aren't actually working
 - [ ] Unpunishments require two args, when they should only require one
 - [ ] Silent punishments from the `/punish` GUI don't work
-- [ ] Punishment GUIs don't load their items all at the same time
+- [X] Punishment GUIs don't load their items all at the same time
 - - Want to synchronize them so the GUI updates with all items at the same time
 
 ### Backend

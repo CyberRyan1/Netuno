@@ -13,7 +13,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * A class that represents each of the different punishments'
@@ -62,29 +64,42 @@ public class PunishmentSpecificGui {
             case IPBAN -> PunishSettings.IPBAN_INVENTORY_NAME.coloredString();
         };
         this.gui = new Gui( guiName.replace( "[TARGET]", target.getName() ), this.rowCount, CyberGuiUtils.getBackgroundGlass() );
+
         insertItems();
     }
 
     /**
      * Inserting items that were defined in the config
-     * into this GUI
+     * into this GUI.
+     * <b>Note:</b> this is not done instantly, as we have
+     * to obtain how many punishments the player has of each
+     * specific punishment.
      */
     public void insertItems() {
         final List<SinglePunishButton> buttonsList = this.punishButtons.getButtons();
+        // Collecting all CompletableFutures from the button inserts
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
         for ( SinglePunishButton button : buttonsList ) {
             if ( button.getItemMaterial().isAir() ) { continue; }
 
-            button.getItem( this.target ).thenAccept( itemstack -> {
-                GuiItem item = new GuiItem( itemstack, button.getIndex(), ( i ) -> {
-                    PunishmentGuiExecutor.executePunish( button, this.staff, this.target, this.silent );
-                    staff.closeInventory();
-                } );
-                // ? Below is a bit of a weird fix, as it will not be instant
-                // ? This means that each button will populate the GUI at different times, which looks weird
-                // ? May want to fix this in the future
-                this.gui.updateItem( item );
-            } );
+            futures.add(
+                    button.getItem( this.target ).thenAccept( itemstack -> {
+                        GuiItem item = new GuiItem(itemstack, button.getIndex(), (i) -> {
+                            PunishmentGuiExecutor.executePunish(button, this.staff, this.target, this.silent);
+                            staff.closeInventory();
+                        });
+                        gui.addItem( item );
+                    } )
+            );
         }
+
+        // Wait for all futures to complete and then update the GUI
+        CompletableFuture.allOf( futures.toArray( new CompletableFuture[0] ) )
+                .thenRun( () -> {
+                    for ( int i = 0; i < this.gui.getSize() * 9; i++ ) {
+                        this.gui.updateItem( this.gui.getItem( i ) );
+                    }
+                } );
     }
 
     /**
