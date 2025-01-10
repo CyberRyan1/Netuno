@@ -190,7 +190,7 @@ public interface ApiPunishment {
      * @param silent True to execute this punishment silently,
      *               false otherwise
      */
-    void execute( boolean silent);
+    void execute( boolean silent );
 
     /**
      * Checks if the punishment is completely filled with the correct information
