@@ -4,7 +4,7 @@
 - [X] Update this TODO list (check things off)
 
 ### Bugs (unfixed)
-- [ ] Unpunishments aren't actually working
+- [X] Unpunishments aren't actually working
 - [X] Unpunishments require two args, when they should only require one
 - [ ] Silent punishments from the `/punish` GUI don't work
 - [X] Punishment GUIs don't load their items all at the same time
