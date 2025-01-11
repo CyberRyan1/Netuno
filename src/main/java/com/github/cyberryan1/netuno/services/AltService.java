@@ -96,15 +96,13 @@ public class AltService implements ApiAltService {
     /**
      * Searches for other accounts the provided player has joined
      * the server with. Note that this method is different from
-     * the other
-     * <code>getAlts()</code> methods as it will load the alt
-     * accounts into
-     * {@link
-     * com.github.cyberryan1.netuno.api.services.ApiNetunoService}'s
+     * the other <code>getAlts()</code> methods as it will load
+     * the alt accounts into
+     * {@link com.github.cyberryan1.netuno.api.services.ApiNetunoService}'s
      * cache and return the {@link ApiPlayer} associated with
      * each alt. <br><br>
      *
-     * <b>IMPORTANT</b> This may cause lag. Recommended to run
+     * <b>IMPORTANT!</b> This may cause lag. Recommended to run
      * this async
      *
      * @param player The player
