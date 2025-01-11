@@ -45,4 +45,12 @@ public interface ApiPlayer {
      * @return List of all active punishments of this player
      */
     List<ApiPunishment> getActivePunishments();
+
+    /**
+     * Updates the provided punishment for this player in both
+     * the cache and in the database. Should be ran async to
+     * avoid lag
+     * @param punishment The updated punishment
+     */
+    void updatePunishment( ApiPunishment punishment );
 }

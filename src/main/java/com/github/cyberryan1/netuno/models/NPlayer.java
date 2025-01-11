@@ -102,4 +102,24 @@ public class NPlayer implements ApiPlayer {
     public List<ApiPunishment> getActivePunishments() {
         return this.loadedPunishments.stream().filter( ApiPunishment::isActive ).collect( Collectors.toList() );
     }
+
+    /**
+     * Updates the provided punishment for this player in both
+     * the cache and in the database. Should be ran async to
+     * avoid lag
+     *
+     * @param punishment The updated punishment
+     */
+    @Override
+    public void updatePunishment( ApiPunishment punishment ) {
+        // Updating the provided punishment within this instance
+        for ( int index = 0; index < this.loadedPunishments.size(); index++ ) {
+            if ( this.loadedPunishments.get( index ).getId() == punishment.getId() ) {
+                this.loadedPunishments.set( index, punishment );
+            }
+        }
+
+        // Updating the provided punishment within the database
+        Netuno.PUNISHMENT_SERVICE.updatePunishment( punishment );
+    }
 }
