@@ -2,6 +2,7 @@
 
 ### Other
 - [X] Update this TODO list (check things off)
+- [ ] When a player's punishment expires, send a notification to online staff
 
 ### Bugs (unfixed)
 - [X] Unpunishments aren't actually working
@@ -10,6 +11,7 @@
 - - Want to synchronize them so the GUI updates with all items at the same time
 - [X] If the punishment has zero seconds remaining, the time remaining in the message is blank
 - [X] After a punishment expires, their active status in the database should be zero, but it remains at one
+- [ ] (MAYBE) For IP punishments, the alts of the targeted player may not be punished correctly (I think we are forgetting to update their punishments)
 
 ### Backend
 - [X] Better punishment model
