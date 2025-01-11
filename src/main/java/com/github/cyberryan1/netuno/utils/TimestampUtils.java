@@ -84,7 +84,7 @@ public class TimestampUtils {
         if ( minutes != 0 ) strings.add( minutes + " minute" + ( ( minutes == 1 ) ? "" : "s" ) );
 
         long seconds = duration / SECONDS;
-        if ( seconds != 0 ) strings.add( seconds + " second" + ( ( seconds == 1 ) ? "" : "s" ) );
+        if ( seconds != 0 || strings.size() == 0 ) strings.add( seconds + " second" + ( ( seconds == 1 ) ? "" : "s" ) );
 
         return PrettyStringLibrary.getNonOxfordCommaList( strings, maxUnits );
     }
