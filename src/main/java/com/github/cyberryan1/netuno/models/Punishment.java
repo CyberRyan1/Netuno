@@ -258,8 +258,9 @@ public class Punishment implements ApiPunishment {
      * This will check if the punishment is active or not. If the
      * punishment has been set to inactive, returns false. Otherwise,
      * this will check if the punishment has expired yet or not. If the
-     * punishment has expired, the punishment is set as inactive and false
-     * is returned. Otherwise returns true<br><br>
+     * punishment has expired, the punishment is set as inactive, the
+     * database is updated (asynchronously), and false is returned.
+     * Otherwise returns true<br><br>
      *
      * Note: if the punishment is not active, it can NOT be set back to active.
      *
@@ -271,6 +272,11 @@ public class Punishment implements ApiPunishment {
             if ( this.length == ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) return true;
             if ( TimestampUtils.timestampHasExpired( this.timestamp, this.length ) ) {
                 this.isActive = false;
+                // Updating the punishment in the database and in the cache
+                Netuno.SERVICE.getPlayer( this.playerUuid ).thenAccept( apiPlayer -> {
+                    apiPlayer.updatePunishment( this );
+                } );
+
                 return false;
             }
 
