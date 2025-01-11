@@ -104,6 +104,15 @@ public class NPlayer implements ApiPlayer {
     }
 
     /**
+     * @return True if this player has an active punishment,
+     * false otherwise
+     */
+    @Override
+    public boolean isPunished() {
+        return this.loadedPunishments.isEmpty() == false;
+    }
+
+    /**
      * Updates the provided punishment for this player in both
      * the cache and in the database. Should be ran async to
      * avoid lag

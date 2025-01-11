@@ -47,6 +47,12 @@ public interface ApiPlayer {
     List<ApiPunishment> getActivePunishments();
 
     /**
+     * @return True if this player has an active punishment,
+     * false otherwise
+     */
+    boolean isPunished();
+
+    /**
      * Updates the provided punishment for this player in both
      * the cache and in the database. Should be ran async to
      * avoid lag
