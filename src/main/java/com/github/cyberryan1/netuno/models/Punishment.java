@@ -286,8 +286,8 @@ public class Punishment implements ApiPunishment {
      */
     @Override
     public void setActive( boolean active ) {
-        if ( this.isActive && active == false ) throw new RuntimeException( "A punishment that is currently inactive cannot be set back as active" );
-        if ( active && this.punType.hasNoLength() ) throw new RuntimeException( "A punishment with no length cannot be set as active" );
+        if ( this.isActive == false && active == false ) throw new IllegalArgumentException( "A punishment that is currently inactive cannot be set back as active" );
+        if ( active && this.punType.hasNoLength() ) throw new IllegalArgumentException( "A punishment with no length cannot be set as active" );
         this.isActive = active;
     }
 
@@ -424,6 +424,33 @@ public class Punishment implements ApiPunishment {
                 getPlayer().getPlayer().sendMessage( comp );
                 playerMsgSound.sound().playSound( getPlayer().getPlayer() );
             }
+        }
+
+        // If this is an unpunishment, set all active punishments of
+        //      the corresponding type as unactive
+        if ( this.punType.isUnpunishment() ) {
+
+            // ? maybe want to run async with .thenAcceptAsync
+            // *    according to chatgpt, the stuff within the
+            // *    .thenAccept is ran async (relative to the
+            // *    main thread) as well
+            Netuno.SERVICE.getPlayer( this.playerUuid ).thenAccept( apiTarget -> {
+                final PunType type = switch ( this.punType ) {
+                    case UNMUTE -> PunType.MUTE;
+                    case UNBAN -> PunType.BAN;
+                    case UNIPMUTE -> PunType.IPMUTE;
+                    case UNIPBAN -> PunType.IPBAN;
+                    default -> null;
+                };
+
+                List<ApiPunishment> activePuns = apiTarget.getActivePunishments().stream()
+                        .filter( pun -> pun.getType() == type )
+                        .collect( Collectors.toList() );
+                for ( ApiPunishment pun : activePuns ) {
+                    pun.setActive( false );
+                    apiTarget.updatePunishment( pun );
+                }
+            } );
         }
 
         this.isActive = this.punType.hasNoLength() == false;

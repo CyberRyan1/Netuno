@@ -5,10 +5,12 @@
 
 ### Bugs (unfixed)
 - [ ] Unpunishments aren't actually working
-- [ ] Unpunishments require two args, when they should only require one
+- [X] Unpunishments require two args, when they should only require one
 - [ ] Silent punishments from the `/punish` GUI don't work
 - [X] Punishment GUIs don't load their items all at the same time
 - - Want to synchronize them so the GUI updates with all items at the same time
+- [ ] (I think) if the punishment has zero seconds remaining, the time remaining in the message is blank
+- [ ] After a punishment expires, their active status in the database should be zero, but it remains at one
 
 ### Backend
 - [X] Better punishment model
