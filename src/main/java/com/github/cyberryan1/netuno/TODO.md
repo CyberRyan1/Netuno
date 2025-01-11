@@ -6,7 +6,6 @@
 ### Bugs (unfixed)
 - [X] Unpunishments aren't actually working
 - [X] Unpunishments require two args, when they should only require one
-- [ ] Silent punishments from the `/punish` GUI don't work
 - [X] Punishment GUIs don't load their items all at the same time
 - - Want to synchronize them so the GUI updates with all items at the same time
 - [X] If the punishment has zero seconds remaining, the time remaining in the message is blank
@@ -25,7 +24,7 @@
 ### Commands
 - [X] Netuno command
 - [X] Punishment commands (i.e. /ban, /mute, etc.)
-- [ ] Punish command (and GUI)
+- [X] Punish command (and GUI)
 - [ ] Chat management commands
 - - [ ] Chatslow command
 - - [ ] Clearchat command
