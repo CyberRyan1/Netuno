@@ -37,7 +37,7 @@
 - - [ ] History reset subcommand
 - - [ ] A way to view the punishments that were executed by a certain staff member
 - - [ ] A way to rollback the punishments executed by a certain staff member
-- [ ] Ipinfo command
+- [X] Ipinfo command
 - - [ ] In alts GUI, add functionality to allow staff to view the account's punishment history
 - [ ] Report command
 - [ ] Reports command
