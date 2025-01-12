@@ -12,6 +12,10 @@
 - [X] In alts GUI, skulls' names are red, even though they shouldn't be (as they don't have any active punishments)
 - [X] In alts GUI, blinking is working, but it is in the wrong index
 - [ ] Need to ensure IP punishments work even if the target doesn't have any alts
+- [ ] Errors when console tries to execute punishment commands
+- [ ] Forgot to add support for hover text in punished alt notifications
+- [ ] IP punishments aren't working (or, at least, IP mutes aren't working)
+- - They work for the target, but none of their alts are properly punished
 
 ### Backend
 - [X] Better punishment model
@@ -44,7 +48,7 @@
 - [ ] Togglesigns command
 
 ### Alt Alerts
-- [ ] Warn staff when a player joins with punished alts
+- [X] Warn staff when a player joins with punished alts
 
 ### Sign Notifications
 - [ ] Send sign contents to all staff
