@@ -57,6 +57,7 @@ public class PreLoginListener implements Listener {
                     .map( pun -> ( Punishment ) pun )
                     .collect( Collectors.toList() );
 
+            // TODO I'm not sure if I am a fan of how this is done, may want to redo it
             // If the player has any alts with IP punishments and those
             //      punishments are not added to this player already,
             //      we add those punishments to this player
@@ -78,6 +79,7 @@ public class PreLoginListener implements Listener {
                 }
             }
 
+            // TODO ensure this is working properly
             for ( Punishment altIpPun : altIpPunishments ) {
                 if ( allPunishments.contains( altIpPun ) == false ) {
                     Punishment newPun = ( Punishment ) altIpPun.copy();
