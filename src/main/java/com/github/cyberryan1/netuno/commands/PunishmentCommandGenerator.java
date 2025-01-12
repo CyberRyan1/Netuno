@@ -33,8 +33,10 @@ public class PunishmentCommandGenerator {
      *
      * @param startingHelpOrder Where to start with the help
      *                          order
+     * @return The ending help order
      */
-    public static void generateCommands( int startingHelpOrder ) {
+    public static int generateCommands( int startingHelpOrder ) {
+        int toReturn = startingHelpOrder;
         for ( CommandSettings setting : CommandSettings.values() ) {
             final String label = setting.name().toLowerCase();
             final CommandSettings settings = CommandSettings.valueOf( label.toUpperCase() );
@@ -120,7 +122,10 @@ public class PunishmentCommandGenerator {
             new CommandHelpInfo( command, startingHelpOrder + settings.getHelpOrder() );
             // Register the command, in general, with tab completions enabled
             command.register( true );
+            if ( startingHelpOrder + settings.getHelpOrder() > toReturn ) { toReturn = startingHelpOrder + settings.getHelpOrder(); }
         }
+
+        return toReturn;
     }
 
     /**
