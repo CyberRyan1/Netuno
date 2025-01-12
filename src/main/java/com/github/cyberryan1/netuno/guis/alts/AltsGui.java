@@ -103,9 +103,7 @@ public class AltsGui {
 
         Netuno.SERVICE.getPlayer( this.target ).thenAccept( apiTarget -> {
             Netuno.ALT_SERVICE.getAlts( apiTarget ).thenAccept( apiAlts -> {
-                sortedAccounts = new ArrayList<>( apiAlts );
-                sortedAccounts.add( apiTarget ); // since apiAlts doesn't originally contain the target
-                sortedAccounts = getSortedAccounts( sortedAccounts );
+                sortedAccounts = getSortedAccounts( apiAlts );
 
                 // Alt skulls (or white glass)
                 int altIndex = 21 * ( page - 1 );
