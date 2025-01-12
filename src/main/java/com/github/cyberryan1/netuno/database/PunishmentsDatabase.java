@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class PunishmentsDatabase {
 
@@ -23,34 +24,39 @@ public class PunishmentsDatabase {
      * the punishment passed to this method is updated to have
      * the correct punishment ID
      * @param punishment The punishment to add
+     * @return A CompletableFuture of the generated ID for this
+     * punishment
      */
-    public static void addPunishment( Punishment punishment ) {
-        punishment.ensureValid( false );
+    public static CompletableFuture<Integer> addPunishment( Punishment punishment ) {
+        return CompletableFuture.supplyAsync( () -> {
+            punishment.ensureValid( false );
 
-        try {
-            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME +
-                    "(player, staff, type, length, timestamp, reason, active, guipun, reference, notif) " +
-                    "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);" );
+            try {
+                PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME +
+                        "(player, staff, type, length, timestamp, reason, active, guipun, reference, notif) " +
+                        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);" );
 
-            ps.setString( 1, punishment.getPlayerUuid().toString() ); // player
-            ps.setString( 2, punishment.getStaffUuid().toString() ); // staff
-            ps.setInt( 3, punishment.getType().getIndex() ); // type
-            ps.setLong( 4, punishment.getLength() / 1000L ); // length -- We store timestamp and length in seconds, but the class uses them in milliseconds
-            ps.setLong( 5, punishment.getTimestamp() / 1000L ); // timestamp
-            ps.setString( 6, punishment.getReason() ); // reason
-            ps.setInt( 7, punishment.isActive() ? 1 : 0 ); // active
-            ps.setInt( 8, punishment.isGuiPun() ? 1 : 0 ); // guipun
-            ps.setInt( 9, punishment.getReferenceId() ); // reference
-            ps.setInt( 10, punishment.isNotifSent() ? 1 : 0 ); // notif
+                ps.setString( 1, punishment.getPlayerUuid().toString() ); // player
+                ps.setString( 2, punishment.getStaffUuid().toString() ); // staff
+                ps.setInt( 3, punishment.getType().getIndex() ); // type
+                ps.setLong( 4, punishment.getLength() / 1000L ); // length -- We store timestamp and length in seconds, but the class uses them in milliseconds
+                ps.setLong( 5, punishment.getTimestamp() / 1000L ); // timestamp
+                ps.setString( 6, punishment.getReason() ); // reason
+                ps.setInt( 7, punishment.isActive() ? 1 : 0 ); // active
+                ps.setInt( 8, punishment.isGuiPun() ? 1 : 0 ); // guipun
+                ps.setInt( 9, punishment.getReferenceId() ); // reference
+                ps.setInt( 10, punishment.isNotifSent() ? 1 : 0 ); // notif
 
-            ps.addBatch();
-            ps.executeBatch();
-            ps.close();
-        } catch ( SQLException e ) {
-            throw new RuntimeException( e );
-        }
+                ps.addBatch();
+                ps.executeBatch();
+                ps.close();
+            } catch ( SQLException e ) {
+                throw new RuntimeException( e );
+            }
 
-        punishment.setId( getRecentlyInsertedId() );
+            punishment.setId( getRecentlyInsertedId() );
+            return punishment.getId();
+        } );
     }
 
     /**
