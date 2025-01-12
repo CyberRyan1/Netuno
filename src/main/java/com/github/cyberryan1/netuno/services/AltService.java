@@ -35,7 +35,7 @@ public class AltService implements ApiAltService {
     /**
      * @param uuid The player's UUID
      * @return A list of all other accounts the provided player
-     *         has joined the server with. This list will NOT
+     *         has joined the server with. This list will also
      *         contain the provided player
      */
     @Override
@@ -100,7 +100,8 @@ public class AltService implements ApiAltService {
      * the alt accounts into
      * {@link com.github.cyberryan1.netuno.api.services.ApiNetunoService}'s
      * cache and return the {@link ApiPlayer} associated with
-     * each alt. <br><br>
+     * each alt. Also note that the returned list will also
+     * include the provided player. <br><br>
      *
      * <b>IMPORTANT!</b> This may cause lag. Recommended to run
      * this async
@@ -112,13 +113,23 @@ public class AltService implements ApiAltService {
     public CompletableFuture<List<ApiPlayer>> getAlts( ApiPlayer player ) {
         return CompletableFuture.supplyAsync( () -> {
             final List<UUID> ALTS = getAlts( player.getUuid() );
-            List<ApiPlayer> toReturn = new ArrayList<>();
+            List<CompletableFuture<ApiPlayer>> futures = new ArrayList<>();
+
+            // Iterating through each UUID and adding their CompletableFuture<ApiPlayer>
+            //      to the futures list
             for ( UUID uuid : ALTS ) {
-                // Since this is already async, I think we can use
-                //      .thenAccept rather than .thenAcceptAsync
-                Netuno.SERVICE.getPlayer( uuid ).thenAccept( toReturn::add );
+                futures.add( Netuno.SERVICE.getPlayer( uuid ) );
             }
-            return toReturn;
+
+            // Combining all the futures into one future
+            return CompletableFuture.allOf( futures.toArray( new CompletableFuture[0] ) )
+                    // When the combined future completes, we iterate
+                    //      through the futures list and obtain
+                    //      their results
+                    .thenApply( v -> futures.stream()
+                            .map( CompletableFuture::join )
+                            .toList()
+                    ).join(); // Wait for this last future to complete
         } );
     }
 
