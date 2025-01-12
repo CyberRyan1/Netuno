@@ -9,7 +9,7 @@
 - [ ] See TODO comments in PreLoginListener class
 
 ### Bugs (unfixed)
-- [ ] Need to ensure IP punishments work even if the target doesn't have any alts
+- [X] Need to ensure IP punishments work even if the target doesn't have any alts
 - [ ] Errors when console tries to execute punishment commands
 - [ ] Forgot to add support for hover text in punished alt notifications
 - [X] IP punishments aren't working (or, at least, IP mutes aren't working)
