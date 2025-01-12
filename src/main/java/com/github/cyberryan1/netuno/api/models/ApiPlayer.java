@@ -47,6 +47,13 @@ public interface ApiPlayer {
     List<ApiPunishment> getActivePunishments();
 
     /**
+     * @param type The type of punishment to search by
+     * @return List of all active punishments of the provided
+     * type that this player has
+     */
+    List<ApiPunishment> getActivePunishments( ApiPunishment.PunType type );
+
+    /**
      * @return True if this player has an active punishment,
      * false otherwise
      */

@@ -104,6 +104,18 @@ public class NPlayer implements ApiPlayer {
     }
 
     /**
+     * @param type The type of punishment to search by
+     * @return List of all active punishments of the provided
+     * type that this player has
+     */
+    @Override
+    public List<ApiPunishment> getActivePunishments( ApiPunishment.PunType type ) {
+        return this.loadedPunishments.stream()
+                .filter( pun -> pun.isActive() && pun.getType() == type )
+                .collect( Collectors.toList() );
+    }
+
+    /**
      * @return True if this player has an active punishment,
      * false otherwise
      */
