@@ -109,7 +109,7 @@ public class NPlayer implements ApiPlayer {
      */
     @Override
     public boolean isPunished() {
-        return this.loadedPunishments.isEmpty() == false;
+        return this.getActivePunishments().isEmpty() == false;
     }
 
     /**

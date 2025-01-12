@@ -58,29 +58,30 @@ public class AltsGui {
         gui = new Gui( "&p" + target.getName() + "&s's Alts", 6, CyberGuiUtils.getBackgroundGlass() );
         insertItems();
 
-        // TODO blinking is working, but it is in the wrong index
-        blinkTask = Bukkit.getScheduler().runTaskTimer( CyberCore.getPlugin(), () -> {
-            for ( AltsGui g : openGuis ) {
-                if ( g.sortedAccounts == null ) continue;
+        if ( blinkTask == null ) {
+            blinkTask = Bukkit.getScheduler().runTaskTimer( CyberCore.getPlugin(), () -> {
+                for ( AltsGui g : openGuis ) {
+                    if ( g.sortedAccounts == null ) continue;
 
-                int altIndex = 0;
-                for ( int index : g.punishedSkullsIndex ) {
-                    GuiItem guiItem = g.gui.getItem( index );
-                    if ( blinkState ) {
-                        guiItem.getItem().setType( Material.REDSTONE_BLOCK );
-                    }
-                    else {
-                        ApiPlayer currentAccount = g.sortedAccounts.get( altIndex );
-                        guiItem.setItem( g.getAltSkull( currentAccount ) );
-                    }
+                    int altIndex = 0;
+                    for ( int index : g.punishedSkullsIndex ) {
+                        GuiItem guiItem = g.gui.getItem( index );
+                        if ( blinkState ) {
+                            guiItem.getItem().setType( Material.REDSTONE_BLOCK );
+                        }
+                        else {
+                            ApiPlayer currentAccount = g.sortedAccounts.get( altIndex );
+                            guiItem.setItem( g.getAltSkull( currentAccount ) );
+                        }
 
-                    g.gui.updateItem( guiItem );
-                    altIndex++;
+                        g.gui.updateItem( guiItem );
+                        altIndex++;
+                    }
                 }
-            }
 
-            blinkState = !blinkState;
-        }, 20L, 20L );
+                blinkState = !blinkState;
+            }, 20L, 20L );
+        }
     }
 
     /**
@@ -117,7 +118,7 @@ public class AltsGui {
                         }
                         else {
                             ApiPlayer currentAccount = sortedAccounts.get( altIndex );
-                            if ( currentAccount.isPunished() ) punishedSkullsIndex.add( altIndex );
+                            if ( currentAccount.isPunished() ) punishedSkullsIndex.add( guiIndex );
 
                             // TODO skulls' names are red, even though they shouldn't be (as they don't have any active punishments)
                             gui.updateItem( new GuiItem( getAltSkull( currentAccount ), guiIndex, ( item ) -> {
@@ -188,11 +189,11 @@ public class AltsGui {
     private ItemStack getAltSkull( ApiPlayer account ) {
         ItemStack skull = CyberItemUtils.getPlayerSkull( account.getPlayer() );
 
-        List<ApiPunishment> activePuns = account.getActivePunishments();
         if ( account.isPunished() ) {
             skull = CyberItemUtils.setItemName( skull, "&c" + account.getPlayer().getName() );
             ArrayList<String> lore = new ArrayList<>();
 
+            List<ApiPunishment> activePuns = account.getActivePunishments();
             for ( ApiPunishment pun : activePuns ) {
                 if ( pun.getType() == ApiPunishment.PunType.MUTE && lore.contains( CyberColorUtils.getColored( "&8- &sMuted" ) ) == false ) {
                     lore.add( CyberColorUtils.getColored( "&8- &sMuted" ) );
