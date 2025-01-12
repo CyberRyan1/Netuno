@@ -4,17 +4,13 @@
 - [X] Update this TODO list (check things off)
 - [ ] When a player's punishment expires, send a notification to online staff
 - [ ] Combine NetunoAPI and Netuno into a single Intellij project
+- [ ] Research information about velocity/bungee support (?)
+- [ ] Create an addon plugin for discord support (i.e. punishment logging, etc.) (?)
 
 ### Bugs (unfixed)
-- [X] Unpunishments aren't actually working
-- [X] Unpunishments require two args, when they should only require one
-- [X] Punishment GUIs don't load their items all at the same time
-- - Want to synchronize them so the GUI updates with all items at the same time
-- [X] If the punishment has zero seconds remaining, the time remaining in the message is blank
-- [X] After a punishment expires, their active status in the database should be zero, but it remains at one
 - [ ] (MAYBE) For IP punishments, the alts of the targeted player may not be punished correctly (I think we are forgetting to update their punishments)
-- [ ] In alts GUI, skulls' names are red, even though they shouldn't be (as they don't have any active punishments)
-- [ ] In alts GUI, blinking is working, but it is in the wrong index
+- [X] In alts GUI, skulls' names are red, even though they shouldn't be (as they don't have any active punishments)
+- [X] In alts GUI, blinking is working, but it is in the wrong index
 - [ ] Need to ensure IP punishments work even if the target doesn't have any alts
 
 ### Backend
@@ -42,6 +38,7 @@
 - - [ ] A way to view the punishments that were executed by a certain staff member
 - - [ ] A way to rollback the punishments executed by a certain staff member
 - [ ] Ipinfo command
+- - [ ] In alts GUI, add functionality to allow staff to view the account's punishment history
 - [ ] Report command
 - [ ] Reports command
 - [ ] Togglesigns command
@@ -72,6 +69,10 @@
 - [ ] Change config updater to a better one
 - - Want to use ConfigUpdater (maybe?)
 
-
 ### Fixed Bugs
-- (nothing here yet)
+- [X] Unpunishments aren't actually working
+- [X] Unpunishments require two args, when they should only require one
+- [X] Punishment GUIs don't load their items all at the same time
+- - Want to synchronize them so the GUI updates with all items at the same time
+- [X] If the punishment has zero seconds remaining, the time remaining in the message is blank
+- [X] After a punishment expires, their active status in the database should be zero, but it remains at one
