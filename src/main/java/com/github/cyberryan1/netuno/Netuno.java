@@ -4,6 +4,7 @@ import ch.njol.skript.SkriptAddon;
 import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
+import com.github.cyberryan1.netuno.commands.IpinfoCommand;
 import com.github.cyberryan1.netuno.commands.NetunoCommand;
 import com.github.cyberryan1.netuno.commands.PunishCommand;
 import com.github.cyberryan1.netuno.commands.PunishmentCommandGenerator;
@@ -160,7 +161,10 @@ public final class Netuno extends JavaPlugin {
         new NetunoCommand();
         new PunishCommand( 1 );
         // Generates all punishment commands
-        PunishmentCommandGenerator.generateCommands( 2 );
+        // This returns where the help order for these generated commands ended at
+        int helpOrder = PunishmentCommandGenerator.generateCommands( 2 );
+        // From here on, we need to use an increment by 1 from the previous help order
+        new IpinfoCommand( helpOrder + 1 );
     }
 
     private void registerListeners() {
