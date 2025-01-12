@@ -122,6 +122,7 @@ public enum Settings {
     IPINFO_NOTIFS( "ipinfo.notifs", "boolean" ),
     IPINFO_NOTIFS_MESSAGE( "ipinfo.notif-msg", "strlist" ),
     IPINFO_NOTIF_HOVER_MESSAGE( "ipinfo.notif-hover", "string" ),
+    IPINFO_NOTIF_IF_IPPUNISHED( "ipinfo.notif-if-ippunished", "boolean" ),
     IPINFO_NOTIFS_SOUND_ENABLED( "ipinfo.notif-sounds.enabled", "boolean" ),
     IPINFO_NOTIFS_SOUND_TRIGGERS( "ipinfo.notif-sounds.triggers", "string" ),
     IPINFO_STRICTNESS( "ipinfo.strictness", "string" ),

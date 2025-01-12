@@ -340,6 +340,12 @@ ipinfo:
   # Set to "" for no hover message
   # Supported variables: [TARGET]
   notif-hover: "&7Click to view &6[TARGET]&7's punished alts"
+  # Whether we should send a notification even if the player already has an IP punishment
+  # For example, if this is false, and player 1 joins with an alt account that is muted, but
+  #   they are already IP muted, then a notification will NOT be sent
+  # However, if player 2 joins with an alt account that is muted, but they are not IP muted,
+  #   then a notification will be sent
+  notif-if-ippunished: true
 
   # Sounds for punished alt notifications
   notif-sounds:
