@@ -2,7 +2,9 @@ package com.github.cyberryan1.netuno.models;
 
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
+import com.github.cyberryan1.netuno.database.PunishmentsDatabase;
 import com.github.cyberryan1.netuno.models.libraries.PunishmentLibrary;
 import com.github.cyberryan1.netuno.utils.PrettyStringLibrary;
 import com.github.cyberryan1.netuno.utils.TimestampUtils;
@@ -417,51 +419,148 @@ public class Punishment implements ApiPunishment {
 
             // If the punishment requires the player to be kicked
             if ( List.of( PunType.KICK, PunType.BAN, PunType.IPBAN ).contains( getType() ) ) {
-                Settings playerMsgSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.MESSAGE );
-                Component comp = fillSettingMessage( playerMsgSetting );
-                getPlayer().getPlayer().kick( comp );
+                execute_kickPlayer();
             }
 
             // If the punishment requires the player to receive a message
             else {
-                Settings playerMsgSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.MESSAGE );
-                Settings playerMsgSound = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.SOUND_TARGET );
-                Component comp = fillSettingMessage( playerMsgSetting );
-                getPlayer().getPlayer().sendMessage( comp );
-                playerMsgSound.sound().playSound( getPlayer().getPlayer() );
+                execute_notifyPlayer();
             }
         }
 
         // If this is an unpunishment, set all active punishments of
         //      the corresponding type as unactive
+        // Note that this only works for non-ip unpunishments, IP
+        //      unpunishments are handled below this
         if ( this.punType.isUnpunishment() ) {
-
-            // ? maybe want to run async with .thenAcceptAsync
-            // *    according to chatgpt, the stuff within the
-            // *    .thenAccept is ran async (relative to the
-            // *    main thread) as well
-            Netuno.SERVICE.getPlayer( this.playerUuid ).thenAccept( apiTarget -> {
-                final PunType type = switch ( this.punType ) {
-                    case UNMUTE -> PunType.MUTE;
-                    case UNBAN -> PunType.BAN;
-                    case UNIPMUTE -> PunType.IPMUTE;
-                    case UNIPBAN -> PunType.IPBAN;
-                    default -> null;
-                };
-
-                List<ApiPunishment> activePuns = apiTarget.getActivePunishments().stream()
-                        .filter( pun -> pun.getType() == type )
-                        .collect( Collectors.toList() );
-                for ( ApiPunishment pun : activePuns ) {
-                    pun.setActive( false );
-                    apiTarget.updatePunishment( pun );
-                }
-            } );
+            execute_handleUnpunishment();
         }
 
         this.isActive = this.punType.hasNoLength() == false;
         this.isExecuted = true;
-        Netuno.PUNISHMENT_SERVICE.createPunishment( this );
+        Netuno.PUNISHMENT_SERVICE.createPunishment( this )
+                // If this is an IP punishment, then we need to
+                //      apply it to all of the alt accounts as well
+                // Note that IP unpunishments are also handled here
+                .thenAccept( this::execute_handleIpPunishment );
+    }
+
+    /**
+     * Submethod for the {@link #execute(boolean)} method. Kicks
+     * the player for their punishment. Note that this only kicks
+     * <b>this</b> player <i>(i.e. if this is an IP punishment,
+     * it will not kick any online alts)</i>. Should only be ran
+     * for the kicks, bans, and IP bans. <br>
+     * <u>Assumes that the player for this punishment is online.</u>
+     */
+    private void execute_kickPlayer() {
+        Settings playerMsgSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.MESSAGE );
+        Component comp = fillSettingMessage( playerMsgSetting );
+        getPlayer().getPlayer().kick( comp );
+    }
+
+    /**
+     * Submethod for the {@link #execute(boolean)} method.
+     * Notifies the player for their punishment. Note that this
+     * only notifies <b>this</b> player <i>(i.e. if this is an
+     * IP punishment, it will not notify any online alts)</i>.
+     * Should only be ran for the mutes and IP mutes. <br>
+     * <u>Assumes that the player for this punishment is online.</u>
+     */
+    private void execute_notifyPlayer() {
+        Settings playerMsgSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.MESSAGE );
+        Settings playerMsgSound = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.SOUND_TARGET );
+        Component comp = fillSettingMessage( playerMsgSetting );
+        getPlayer().getPlayer().sendMessage( comp );
+        playerMsgSound.sound().playSound( getPlayer().getPlayer() );
+    }
+
+    /**
+     * Submethod for the {@link #execute(boolean)} method.
+     * Handles the execution of unpunishments, mainly by setting
+     * all previous punishments of the correct type to be inactive
+     * in the database and in the cache.
+     */
+    private void execute_handleUnpunishment() {
+        // ? maybe want to run async with .thenAcceptAsync
+        // *    according to chatgpt, the stuff within the
+        // *    .thenAccept is ran async (relative to the
+        // *    main thread) as well
+        Netuno.SERVICE.getPlayer( this.playerUuid ).thenAccept( apiTarget -> {
+            final PunType type = switch ( this.punType ) {
+                case UNMUTE -> PunType.MUTE;
+                case UNBAN -> PunType.BAN;
+                case UNIPMUTE -> PunType.IPMUTE;
+                case UNIPBAN -> PunType.IPBAN;
+                default -> null;
+            };
+
+            List<ApiPunishment> activePuns = apiTarget.getActivePunishments().stream()
+                    .filter( pun -> pun.getType() == type )
+                    .collect( Collectors.toList() );
+            for ( ApiPunishment pun : activePuns ) {
+                pun.setActive( false );
+                apiTarget.updatePunishment( pun );
+            }
+        } );
+    }
+
+    /**
+     * Submethod for the {@link #execute(boolean)} method.
+     * Handles the execution of IP punishments/unpunishments.
+     * For IP punishments, we need to apply it to the target's
+     * alt accounts as well.
+     *
+     * @param referenceId The ID generated for this punishment,
+     *                   which will be used as the reference ID
+     *                   for the punishments generated here
+     */
+    private void execute_handleIpPunishment( int referenceId ) {
+        // Getting the ApiPlayer of the target
+        Netuno.SERVICE.getPlayer( this.playerUuid ).thenAccept( apiPlayer -> {
+            // Getting the alts of the target
+            Netuno.ALT_SERVICE.getAlts( apiPlayer ).thenAccept( apiAlts -> {
+                // If the player has no alts (meaning apiAlts.size() == 1, as it
+                //      contains the player as well), then do nothing
+                if ( apiAlts.size() == 1 ) return;
+
+                // Applying the punishment to the player's alt accounts
+                for ( ApiPlayer account : apiAlts ) {
+                    // Skip the original player
+                    if ( account.getPlayer().getUniqueId().equals( apiPlayer.getPlayer().getUniqueId() ) ) continue;
+
+                    Punishment accountPun = ( Punishment ) this.copy();
+                    accountPun.setId( DEFAULT_ID );
+                    accountPun.setPlayer( account.getPlayer().getUniqueId() );
+                    accountPun.setReferenceId( referenceId );
+                    accountPun.isNotifSent = false;
+
+                    if ( accountPun.getPlayer().isOnline() ) {
+                        accountPun.isNotifSent = true;
+                        // If the punishment requires the player to be kicked
+                        if ( List.of( PunType.KICK, PunType.BAN, PunType.IPBAN ).contains( accountPun.getType() ) ) {
+                            accountPun.execute_kickPlayer();
+                        }
+
+                        // If the punishment requires the player to receive a message
+                        else {
+                            accountPun.execute_notifyPlayer();
+                        }
+                    }
+
+                    // Adding this punishment to the API player's punishments list
+                    account.getPunishments().add( accountPun );
+                    // Adding this punishment to the database
+                    PunishmentsDatabase.addPunishment( accountPun );
+
+                    // If this is an IP unpunishment, then we need to set all the
+                    //      previous IP punishments of the respective type to inactive
+                    if ( accountPun.getType().isUnpunishment() ) {
+                        accountPun.execute_handleUnpunishment();
+                    }
+                }
+            } );
+        } );
     }
 
     /**
