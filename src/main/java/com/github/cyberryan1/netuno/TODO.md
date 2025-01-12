@@ -40,6 +40,7 @@
 - - [ ] History edit subcommand
 - - [ ] History reset subcommand
 - - [ ] A way to view the punishments that were executed by a certain staff member
+- - [ ] A way to rollback the punishments executed by a certain staff member
 - [ ] Ipinfo command
 - [ ] Report command
 - [ ] Reports command
