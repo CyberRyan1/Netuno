@@ -1,5 +1,7 @@
 package com.github.cyberryan1.netuno.models;
 
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
@@ -83,7 +85,9 @@ public class Punishment implements ApiPunishment {
                        long timestamp, long length, String reason, boolean isActive,
                        int referenceId, boolean isGuiPun, boolean isNotifSent, boolean isExecuted ) {
         this(
-                id, UUID.fromString( playerUuid ), UUID.fromString( staffUuid ), punType, timestamp, length,
+                id, UUID.fromString( playerUuid ),
+                staffUuid.equals( ApiPunishment.CONSOLE_UUID_STRING ) ? ApiPunishment.CONSOLE_UUID : UUID.fromString( staffUuid ),
+                punType, timestamp, length,
                 reason, isActive, referenceId, isGuiPun, isNotifSent, isExecuted
         );
     }
@@ -101,7 +105,9 @@ public class Punishment implements ApiPunishment {
                        long timestamp, long length, String reason, boolean isActive,
                        int referenceId, boolean isGuiPun, boolean isNotifSent, boolean isExecuted ) {
         this(
-                DEFAULT_ID, UUID.fromString( playerUuid ), UUID.fromString( staffUuid ), punType, timestamp, length,
+                DEFAULT_ID, UUID.fromString( playerUuid ),
+                staffUuid.equals( ApiPunishment.CONSOLE_UUID_STRING ) ? ApiPunishment.CONSOLE_UUID : UUID.fromString( staffUuid ),
+                punType, timestamp, length,
                 reason, isActive, referenceId, isGuiPun, isNotifSent, isExecuted
         );
     }
@@ -155,7 +161,8 @@ public class Punishment implements ApiPunishment {
     }
 
     /**
-     * @return UUID of the staff who did this punishment. Null if executed by console
+     * @return UUID of the staff who did this punishment. Returns
+     * {@link ApiPunishment#CONSOLE_UUID} if executed by console
      */
     @Override
     public UUID getStaffUuid() {
@@ -167,7 +174,7 @@ public class Punishment implements ApiPunishment {
      * if executed by console.
      */
     public OfflinePlayer getStaff() {
-        if ( this.staffUuid == null ) return null;
+        if ( this.staffUuid == null || this.staffUuid == ApiPunishment.CONSOLE_UUID ) return null;
         return Bukkit.getOfflinePlayer( this.staffUuid );
     }
 
@@ -384,6 +391,7 @@ public class Punishment implements ApiPunishment {
      */
     @Override
     public void execute( boolean silent ) {
+        CyberMsgUtils.broadcast( "&aexecute()" ); // ! debug
         if ( this.isExecuted ) throw new RuntimeException( "This punishment has already been executed" );
         this.timestamp = TimestampUtils.getCurrentTimestamp();
 
@@ -401,6 +409,7 @@ public class Punishment implements ApiPunishment {
                 }
             }
         }
+        CyberMsgUtils.broadcast( "&a1" ); // ! debug
 
         // Staff broadcast
         Settings staffBroadcastSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.STAFF_BROADCAST );
@@ -412,6 +421,7 @@ public class Punishment implements ApiPunishment {
                 staffBroadcastSound.sound().playSound( p );
             }
         }
+        CyberMsgUtils.broadcast( "&a2" ); // ! debug
 
         this.isNotifSent = false;
         if ( getPlayer().isOnline() ) {
@@ -427,6 +437,7 @@ public class Punishment implements ApiPunishment {
                 execute_notifyPlayer();
             }
         }
+        CyberMsgUtils.broadcast( "&a3" ); // ! debug
 
         // If this is an unpunishment, set all active punishments of
         //      the corresponding type as unactive
@@ -435,14 +446,19 @@ public class Punishment implements ApiPunishment {
         if ( this.punType.isUnpunishment() ) {
             execute_handleUnpunishment();
         }
+        CyberMsgUtils.broadcast( "&a4" ); // ! debug
 
         this.isActive = this.punType.hasNoLength() == false;
         this.isExecuted = true;
+        CyberMsgUtils.broadcast( "&a5" ); // ! debug
         Netuno.PUNISHMENT_SERVICE.createPunishment( this )
                 // If this is an IP punishment, then we need to
                 //      apply it to all of the alt accounts as well
                 // Note that IP unpunishments are also handled here
-                .thenAccept( this::execute_handleIpPunishment );
+                .thenAccept( id -> {
+                    CyberMsgUtils.broadcast( "&a6" ); // ! debug
+                    if ( this.punType.isIpPunishment() ) this.execute_handleIpPunishment( id );
+                } );
     }
 
     /**
@@ -454,9 +470,12 @@ public class Punishment implements ApiPunishment {
      * <u>Assumes that the player for this punishment is online.</u>
      */
     private void execute_kickPlayer() {
-        Settings playerMsgSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.MESSAGE );
-        Component comp = fillSettingMessage( playerMsgSetting );
-        getPlayer().getPlayer().kick( comp );
+        // Needs to be ran synchronously
+        Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
+            Settings playerMsgSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.MESSAGE );
+            Component comp = fillSettingMessage( playerMsgSetting );
+            getPlayer().getPlayer().kick( comp );
+        } );
     }
 
     /**
@@ -619,9 +638,12 @@ public class Punishment implements ApiPunishment {
 
     private String executeReplacements( String msg ) {
         Map<String, String> replacements = new HashMap<>();
-        replacements.put( "[STAFF]", getStaff().getName() );
+        final String staffName = getStaffUuid() == ApiPunishment.CONSOLE_UUID ? "console" : getStaff().getName();
+        replacements.put( "[STAFF]", staffName );
         replacements.put( "[TARGET]", getPlayer().getName() );
         replacements.put( "[LENGTH]", TimestampUtils.durationToString( getLength() ) );
+        CyberMsgUtils.broadcast( "getDurationRemaining() == " + getDurationRemaining() ); // ! debug
+        CyberMsgUtils.broadcast( "TimestampUtils.durationToString( " + getDurationRemaining() + " ) == " + TimestampUtils.durationToString( getDurationRemaining() ) ); // ! debug
         replacements.put( "[REMAIN]", TimestampUtils.durationToString( getDurationRemaining() ) );
         replacements.put( "[REASON]", getReason() );
         for ( Map.Entry<String, String> entry : replacements.entrySet() ) {

@@ -18,6 +18,8 @@ public interface ApiPunishment {
     long PERMANENT_PUNISHMENT_LENGTH = Integer.MIN_VALUE;
     long PUNISHMENT_NO_LENGTH = -1;
     OfflinePlayer CONSOLE_IS_STAFF = null;
+    UUID CONSOLE_UUID = null;
+    String CONSOLE_UUID_STRING = "null";
 
     /**
      * @return the ID of the punishment
@@ -202,7 +204,7 @@ public interface ApiPunishment {
         if ( requireValidId == false && this.getId() > 0 && this.getId() != DEFAULT_ID ) { throw new ClassIncompleteException( "Punishment incomplete: Punishment ID must be less than or equal to zero" ); }
         if ( this.getType() == null ) { throw new ClassIncompleteException( "Punishment incomplete: Punishment type cannot be null" ); }
         if ( this.getPlayerUuid() == null ) { throw new ClassIncompleteException( "Punishment incomplete: Player UUID cannot be null" ); }
-        if ( this.getStaffUuid() == null ) { throw new ClassIncompleteException( "Punishment incomplete: Staff UUID cannot be null" ); }
+        if ( this.getStaffUuid() == null && this.getStaffUuid() != ApiPunishment.CONSOLE_UUID ) { throw new ClassIncompleteException( "Punishment incomplete: Staff UUID cannot be null" ); }
         if ( this.getLength() <= 0 && this.getType().hasNoLength() == false && this.getLength() != ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) { throw new ClassIncompleteException( "Punishment incomplete: Length must be greater than zero seconds" ); }
         if ( this.getTimestamp() <= 0 ) { throw new ClassIncompleteException( "Punishment incomplete: Timestamp must be greater than zero" ); }
         if ( this.getReason() == null ) { throw new ClassIncompleteException( "Punishment incomplete: Reason cannot be null" ); }
