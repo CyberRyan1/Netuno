@@ -1,6 +1,5 @@
 package com.github.cyberryan1.netuno.database;
 
-import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.models.Punishment;
 import org.bukkit.OfflinePlayer;
@@ -29,24 +28,17 @@ public class PunishmentsDatabase {
      * punishment
      */
     public static CompletableFuture<Integer> addPunishment( Punishment punishment ) {
-        CyberMsgUtils.broadcast( "&cPunishmentsDatabase#addPunishment()" ); // ! debug
         return CompletableFuture.supplyAsync( () -> {
-            CyberMsgUtils.broadcast( "&c1" ); // ! debug
             punishment.ensureValid( false );
-            CyberMsgUtils.broadcast( "&c2" ); // ! debug
 
             try {
                 PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME +
                         "(player, staff, type, length, timestamp, reason, active, guipun, reference, notif) " +
                         "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);" );
-                CyberMsgUtils.broadcast( "&c3" ); // ! debug
 
                 ps.setString( 1, punishment.getPlayerUuid().toString() ); // player
-                CyberMsgUtils.broadcast( "&c4" ); // ! debug
                 String staffUuid = punishment.getStaffUuid() == ApiPunishment.CONSOLE_UUID ? ApiPunishment.CONSOLE_UUID_STRING : punishment.getStaffUuid().toString();
-                CyberMsgUtils.broadcast( "&c5" ); // ! debug
                 ps.setString( 2, staffUuid ); // staff
-                CyberMsgUtils.broadcast( "&c6" ); // ! debug
                 ps.setInt( 3, punishment.getType().getIndex() ); // type
                 ps.setLong( 4, punishment.getLength() / 1000L ); // length -- We store timestamp and length in seconds, but the class uses them in milliseconds
                 ps.setLong( 5, punishment.getTimestamp() / 1000L ); // timestamp
@@ -55,22 +47,15 @@ public class PunishmentsDatabase {
                 ps.setInt( 8, punishment.isGuiPun() ? 1 : 0 ); // guipun
                 ps.setInt( 9, punishment.getReferenceId() ); // reference
                 ps.setInt( 10, punishment.isNotifSent() ? 1 : 0 ); // notif
-                CyberMsgUtils.broadcast( "&c7" ); // ! debug
 
                 ps.addBatch();
-                CyberMsgUtils.broadcast( "&c8" ); // ! debug
                 ps.executeBatch();
-                CyberMsgUtils.broadcast( "&c9" ); // ! debug
                 ps.close();
-                CyberMsgUtils.broadcast( "&c10" ); // ! debug
             } catch ( SQLException e ) {
-                CyberMsgUtils.broadcast( "&cERROR" ); // ! debug
                 throw new RuntimeException( e );
             }
 
-            CyberMsgUtils.broadcast( "&c11" ); // ! debug
             punishment.setId( getRecentlyInsertedId() );
-            CyberMsgUtils.broadcast( "&c12" ); // ! debug
             return punishment.getId();
         } );
     }

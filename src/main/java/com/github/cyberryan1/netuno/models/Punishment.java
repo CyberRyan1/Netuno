@@ -1,7 +1,6 @@
 package com.github.cyberryan1.netuno.models;
 
 import com.github.cyberryan1.cybercore.spigot.CyberCore;
-import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
@@ -391,7 +390,6 @@ public class Punishment implements ApiPunishment {
      */
     @Override
     public void execute( boolean silent ) {
-        CyberMsgUtils.broadcast( "&aexecute()" ); // ! debug
         if ( this.isExecuted ) throw new RuntimeException( "This punishment has already been executed" );
         this.timestamp = TimestampUtils.getCurrentTimestamp();
 
@@ -409,7 +407,6 @@ public class Punishment implements ApiPunishment {
                 }
             }
         }
-        CyberMsgUtils.broadcast( "&a1" ); // ! debug
 
         // Staff broadcast
         Settings staffBroadcastSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.STAFF_BROADCAST );
@@ -421,7 +418,6 @@ public class Punishment implements ApiPunishment {
                 staffBroadcastSound.sound().playSound( p );
             }
         }
-        CyberMsgUtils.broadcast( "&a2" ); // ! debug
 
         this.isNotifSent = false;
         if ( getPlayer().isOnline() ) {
@@ -437,7 +433,6 @@ public class Punishment implements ApiPunishment {
                 execute_notifyPlayer();
             }
         }
-        CyberMsgUtils.broadcast( "&a3" ); // ! debug
 
         // If this is an unpunishment, set all active punishments of
         //      the corresponding type as unactive
@@ -446,17 +441,14 @@ public class Punishment implements ApiPunishment {
         if ( this.punType.isUnpunishment() ) {
             execute_handleUnpunishment();
         }
-        CyberMsgUtils.broadcast( "&a4" ); // ! debug
 
         this.isActive = this.punType.hasNoLength() == false;
         this.isExecuted = true;
-        CyberMsgUtils.broadcast( "&a5" ); // ! debug
         Netuno.PUNISHMENT_SERVICE.createPunishment( this )
                 // If this is an IP punishment, then we need to
                 //      apply it to all of the alt accounts as well
                 // Note that IP unpunishments are also handled here
                 .thenAccept( id -> {
-                    CyberMsgUtils.broadcast( "&a6" ); // ! debug
                     if ( this.punType.isIpPunishment() ) this.execute_handleIpPunishment( id );
                 } );
     }
@@ -642,8 +634,6 @@ public class Punishment implements ApiPunishment {
         replacements.put( "[STAFF]", staffName );
         replacements.put( "[TARGET]", getPlayer().getName() );
         replacements.put( "[LENGTH]", TimestampUtils.durationToString( getLength() ) );
-        CyberMsgUtils.broadcast( "getDurationRemaining() == " + getDurationRemaining() ); // ! debug
-        CyberMsgUtils.broadcast( "TimestampUtils.durationToString( " + getDurationRemaining() + " ) == " + TimestampUtils.durationToString( getDurationRemaining() ) ); // ! debug
         replacements.put( "[REMAIN]", TimestampUtils.durationToString( getDurationRemaining() ) );
         replacements.put( "[REASON]", getReason() );
         for ( Map.Entry<String, String> entry : replacements.entrySet() ) {
