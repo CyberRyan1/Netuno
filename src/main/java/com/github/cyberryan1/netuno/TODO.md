@@ -11,12 +11,13 @@
 
 ### Bugs (unfixed)
 - [X] Need to ensure IP punishments work even if the target doesn't have any alts
-- [ ] Silent punishments executed through the punishment GUI are not actually silent
+- [X] Silent punishments executed through the punishment GUI are not actually silent
 - [X] Errors when console tries to execute punishment commands
 - [ ] Forgot to add support for hover text in punished alt notifications
 - [X] IP punishments aren't working (or, at least, IP mutes aren't working)
 - - They work for the target, but none of their alts are properly punished
 - [ ] In the database, for punishments that were executed by console, their active column remains at one even though the punishment has expired
+- [ ] Punishment GUIs take time to load and don't load at the same time- try and synchronize them
 
 ### Backend
 - [X] Better punishment model
