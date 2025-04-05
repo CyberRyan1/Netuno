@@ -10,6 +10,7 @@
 - [X] Add better exception handling for CompletableFutures, as they silently swallow any errors thrown within them
 - [ ] Add a staff chat (?)
 - [ ] Add a staff mode (?)
+- [ ] Add a vanish system (?)
 
 ### Bugs (unfixed)
 - [ ] Forgot to add support for hover text in punished alt notifications
