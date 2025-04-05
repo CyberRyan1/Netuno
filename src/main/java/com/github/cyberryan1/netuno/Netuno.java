@@ -93,9 +93,6 @@ Config:
 - Change config updater to better one (do research) <-- want to use ConfigUpdater
  */
 
-// TODO unpunishments don't work
-// TODO unpunishments require two args, not one
-// TODO silent GUI punishments don't work
 // TODO punishment GUIs take time to load and don't load at the same time- try and synchronize them
 
 public final class Netuno extends JavaPlugin {

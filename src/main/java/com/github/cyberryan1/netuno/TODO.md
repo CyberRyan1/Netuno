@@ -11,6 +11,7 @@
 
 ### Bugs (unfixed)
 - [X] Need to ensure IP punishments work even if the target doesn't have any alts
+- [ ] Silent punishments executed through the punishment GUI are not actually silent
 - [X] Errors when console tries to execute punishment commands
 - [ ] Forgot to add support for hover text in punished alt notifications
 - [X] IP punishments aren't working (or, at least, IP mutes aren't working)
