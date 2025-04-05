@@ -118,7 +118,6 @@ public class AltsGui {
                             ApiPlayer currentAccount = sortedAccounts.get( altIndex );
                             if ( currentAccount.isPunished() ) punishedSkullsIndex.add( guiIndex );
 
-                            // TODO skulls' names are red, even though they shouldn't be (as they don't have any active punishments)
                             gui.updateItem( new GuiItem( getAltSkull( currentAccount ), guiIndex, ( item ) -> {
                                 // * In previous versions, we only allowed the staff to click on this
                                 // *    account's skull to see their history if this account has an

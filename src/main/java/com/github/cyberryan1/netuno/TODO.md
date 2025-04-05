@@ -1,6 +1,6 @@
 # To-Do List
 
-### Other
+### Ideas/Other
 - [X] Update this TODO list (check things off)
 - [ ] When a player's punishment expires, send a notification to online staff
 - [ ] Combine NetunoAPI and Netuno into a single Intellij project
@@ -8,6 +8,8 @@
 - [ ] Create an addon plugin for discord support (i.e. punishment logging, etc.) (?)
 - [ ] See TODO comments in PreLoginListener class
 - [X] Add better exception handling for CompletableFutures, as they silently swallow any errors thrown within them
+- [ ] Add a staff chat (?)
+- [ ] Add a staff mode (?)
 
 ### Bugs (unfixed)
 - [ ] Forgot to add support for hover text in punished alt notifications
@@ -20,6 +22,7 @@
 - - [X] IP database
 - - [X] Punishment database
 - - [ ] Togglesigns database
+- - - [ ] Make the togglesigns database into a "staff settings" database
 - - [ ] Reports database
 
 ### Commands
