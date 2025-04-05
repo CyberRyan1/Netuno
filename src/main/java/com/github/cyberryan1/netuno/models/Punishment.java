@@ -451,7 +451,7 @@ public class Punishment implements ApiPunishment {
                 .thenAccept( id -> {
                     if ( this.punType.isIpPunishment() ) this.execute_handleIpPunishment( id );
                 } )
-                .exceptionally( Netuno.FUTURE_ERROR_HANDLING ); // TODO needs testing
+                .exceptionally( Netuno.FUTURE_ERROR_HANDLING );
     }
 
     /**
@@ -514,7 +514,7 @@ public class Punishment implements ApiPunishment {
                 pun.setActive( false );
                 apiTarget.updatePunishment( pun );
             }
-        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING ); // TODO needs testing
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
     }
 
     /**
@@ -571,8 +571,8 @@ public class Punishment implements ApiPunishment {
                         accountPun.execute_handleUnpunishment();
                     }
                 }
-            } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING ); // TODO needs testing
-        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING ); // TODO needs testing
+            } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
     }
 
     /**

@@ -136,7 +136,7 @@ public class PreLoginListener implements Listener {
             if ( Settings.IPINFO_NOTIFS.bool() ) {
                 handlePunishedAltNotification( apiPlayer );
             }
-        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING ).join(); // TODO needs testing
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING ).join();
     }
 
     /**
@@ -266,6 +266,6 @@ public class PreLoginListener implements Listener {
                     }
                 }, 8 );
             }, 5L );
-        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING ); // TODO needs testing
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
     }
 }
