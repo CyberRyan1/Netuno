@@ -37,7 +37,7 @@ public class PunishmentsDatabase {
                         "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);" );
 
                 ps.setString( 1, punishment.getPlayerUuid().toString() ); // player
-                String staffUuid = punishment.getStaffUuid() == ApiPunishment.CONSOLE_UUID ? ApiPunishment.CONSOLE_UUID_STRING : punishment.getStaffUuid().toString();
+                String staffUuid = getCorrectStaffUuid( punishment ); // punishment.getStaffUuid() == ApiPunishment.CONSOLE_UUID ? ApiPunishment.CONSOLE_UUID_STRING : punishment.getStaffUuid().toString();
                 ps.setString( 2, staffUuid ); // staff
                 ps.setInt( 3, punishment.getType().getIndex() ); // type
                 ps.setLong( 4, punishment.getLength() / 1000L ); // length -- We store timestamp and length in seconds, but the class uses them in milliseconds
@@ -269,7 +269,7 @@ public class PunishmentsDatabase {
                     " SET player = ?, staff = ?, length = ?, timestamp = ?, reason = ?, active = ?, " +
                     "guipun = ?, reference = ?, notif = ? WHERE id = ?;" );
             ps.setString( 1, newData.getPlayerUuid().toString() );
-            String staffUuid = newData.getStaffUuid().equals( ApiPunishment.CONSOLE_UUID ) ? ApiPunishment.CONSOLE_UUID_STRING : newData.getStaffUuid().toString();
+            String staffUuid = getCorrectStaffUuid( newData ); // ( newData.getStaffUuid() == null || newData.getStaffUuid().equals( ApiPunishment.CONSOLE_UUID ) ) ? ApiPunishment.CONSOLE_UUID_STRING : newData.getStaffUuid().toString();
             ps.setString( 2, staffUuid );
             ps.setLong( 3, newData.getLength() / 1000L );
             ps.setLong( 4, newData.getTimestamp() / 1000L );
@@ -384,5 +384,9 @@ public class PunishmentsDatabase {
                 rs.getInt( "notif" ) == 1,
                 true
         );
+    }
+
+    private static String getCorrectStaffUuid( ApiPunishment pun ) {
+        return ( pun.getStaffUuid() == null || pun.getStaffUuid().equals( ApiPunishment.CONSOLE_UUID ) ) ? ApiPunishment.CONSOLE_UUID_STRING : pun.getStaffUuid().toString();
     }
 }
