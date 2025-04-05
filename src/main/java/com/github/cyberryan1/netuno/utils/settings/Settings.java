@@ -112,6 +112,9 @@ public enum Settings {
     PUNISH_INSTANT_PERMISSION( "punish.instant.perm", "string" ),
     PUNISH_INSTANT_COOLDOWN( "punish.instant.cooldown", "int" ),
 
+    PUNISH_LOADING_ITEM_MATERIAL( "punish.loading-item.material", "material" ),
+    PUNISH_LOADING_ITEM_NAME( "punish.loading-item.name", "string" ),
+
     //
     // Alt Management
     //

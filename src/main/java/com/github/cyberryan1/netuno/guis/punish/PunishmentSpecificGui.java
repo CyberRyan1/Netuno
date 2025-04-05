@@ -4,14 +4,17 @@ import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.gui.Gui;
 import com.github.cyberryan1.cybercore.spigot.gui.GuiItem;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberGuiUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.guis.punish.models.MultiPunishButton;
 import com.github.cyberryan1.netuno.guis.punish.models.PunGuiType;
 import com.github.cyberryan1.netuno.guis.punish.models.PunishSettings;
 import com.github.cyberryan1.netuno.guis.punish.models.SinglePunishButton;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,12 +79,21 @@ public class PunishmentSpecificGui {
      * specific punishment.
      */
     public void insertItems() {
+        // Creating the loading placeholder item
+        final ItemStack loadingItem = CyberItemUtils.createItem(
+                Settings.PUNISH_LOADING_ITEM_MATERIAL.material(), Settings.PUNISH_LOADING_ITEM_NAME.coloredString() );
+
         final List<SinglePunishButton> buttonsList = this.punishButtons.getButtons();
         // Collecting all CompletableFutures from the button inserts
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         for ( SinglePunishButton button : buttonsList ) {
             if ( button.getItemMaterial().isAir() ) { continue; }
 
+            // temporarily setting the item slot to the loading item
+            GuiItem loadingGuiItem = new GuiItem( loadingItem, button.getIndex() );
+            gui.addItem( loadingGuiItem );
+
+            // loading the button
             futures.add(
                     button.getItem( this.target ).thenAccept( itemstack -> {
                         GuiItem item = new GuiItem(itemstack, button.getIndex(), (i) -> {
@@ -89,7 +101,7 @@ public class PunishmentSpecificGui {
                             staff.closeInventory();
                         });
                         gui.addItem( item );
-                    } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING ) // TODO test this to make sure it doesn't break anything
+                    } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING )
             );
         }
 
