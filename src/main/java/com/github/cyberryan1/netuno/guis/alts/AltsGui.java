@@ -162,8 +162,8 @@ public class AltsGui {
                         newGui.open();
                     } ) );
                 }
-            } );
-        } );
+            } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING ); // TODO needs testing
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING ); // TODO needs testing
     }
 
     public void open() {

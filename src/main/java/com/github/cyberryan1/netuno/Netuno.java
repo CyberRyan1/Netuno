@@ -3,6 +3,7 @@ package com.github.cyberryan1.netuno;
 import ch.njol.skript.SkriptAddon;
 import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.commands.IpinfoCommand;
 import com.github.cyberryan1.netuno.commands.NetunoCommand;
@@ -19,6 +20,8 @@ import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.function.Function;
 
 /*
 TODO List
@@ -114,6 +117,17 @@ public final class Netuno extends JavaPlugin {
     // bStats
     private static final int BSTATS_PLUGIN_ID = 21155;
     public static Metrics metrics;
+
+    // CompletableFuture error handling
+    // Should be used after the .thenAccept() method for futures
+    //      so that any errors are logged rather than being
+    //      silently swallowed
+    public static final Function<Throwable, ? extends Void> FUTURE_ERROR_HANDLING = throwable -> {
+        CyberLogUtils.logError( "Detected an error within a future! See stack trace below for details" );
+        if ( throwable.getCause() == null ) { throwable.printStackTrace(); }
+        else { throwable.getCause().printStackTrace(); }
+        return null;
+    };
 
     @Override
     public void onEnable() {

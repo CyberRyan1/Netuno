@@ -450,7 +450,8 @@ public class Punishment implements ApiPunishment {
                 // Note that IP unpunishments are also handled here
                 .thenAccept( id -> {
                     if ( this.punType.isIpPunishment() ) this.execute_handleIpPunishment( id );
-                } );
+                } )
+                .exceptionally( Netuno.FUTURE_ERROR_HANDLING ); // TODO needs testing
     }
 
     /**
@@ -513,7 +514,7 @@ public class Punishment implements ApiPunishment {
                 pun.setActive( false );
                 apiTarget.updatePunishment( pun );
             }
-        } );
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING ); // TODO needs testing
     }
 
     /**
@@ -570,8 +571,8 @@ public class Punishment implements ApiPunishment {
                         accountPun.execute_handleUnpunishment();
                     }
                 }
-            } );
-        } );
+            } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING ); // TODO needs testing
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING ); // TODO needs testing
     }
 
     /**

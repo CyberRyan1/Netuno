@@ -7,6 +7,7 @@
 - [ ] Research information about velocity/bungee support (?)
 - [ ] Create an addon plugin for discord support (i.e. punishment logging, etc.) (?)
 - [ ] See TODO comments in PreLoginListener class
+- [X] Add better exception handling for CompletableFutures, as they silently swallow any errors thrown within them
 
 ### Bugs (unfixed)
 - [X] Need to ensure IP punishments work even if the target doesn't have any alts

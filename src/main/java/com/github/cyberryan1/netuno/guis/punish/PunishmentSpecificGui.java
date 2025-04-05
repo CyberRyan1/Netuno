@@ -89,7 +89,7 @@ public class PunishmentSpecificGui {
                             staff.closeInventory();
                         });
                         gui.addItem( item );
-                    } )
+                    } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING ) // TODO test this to make sure it doesn't break anything
             );
         }
 
