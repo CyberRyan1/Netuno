@@ -4,7 +4,6 @@ import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberCommandUtils;
-import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.time.Timestamp;
 import com.github.cyberryan1.netuno.guis.punish.MainPunishGui;
@@ -17,6 +16,7 @@ import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Duplex;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -47,8 +47,8 @@ public class PunishCommand extends CyberCommand {
         new CommandHelpInfo( this, helpOrder );
 
         demandPermission( true );
-        demandPlayer( true ); // eventually want this to be able to work
-                              //    for console as well (only for instant punishments)
+//        demandPlayer( true ); // eventually want this to be able to work
+//                              //    for console as well (only for instant punishments)
         setMinArgLength( 1 );
         setArgType( 0, ArgType.OFFLINE_PLAYER );
 
@@ -71,9 +71,45 @@ public class PunishCommand extends CyberCommand {
 
     @Override
     public boolean execute( SentCommand command ) {
-        final Player staff = command.getPlayer();
         final OfflinePlayer target = command.getOfflinePlayerAtArg( 0 );
 
+        if ( command.getSender() instanceof ConsoleCommandSender ) {
+            if ( command.getArgs().length < 2 ) {
+                sendUsage( command.getSender() );
+                return true;
+            }
+
+            if ( instantKeys.contains( command.getArg( 1 ).toLowerCase() ) == false ) {
+                command.respond( "&sInvalid instant key" );
+                return true;
+            }
+
+            SinglePunishButton instantKeyParent = punishButtons.stream()
+                    .filter( button -> button.getInstantKey().equalsIgnoreCase( command.getArg( 1 ) ) )
+                    .findFirst()
+                    .orElseThrow( IllegalArgumentException::new );
+
+            // For sending console instant punishments, they can add the "-o" flag at the end
+            // If they do this, then it will override any cooldown
+            //CyberMsgUtils.broadcast( "command.getArgs().length == " + command.getArgs().length ); // ! debug
+            //CyberMsgUtils.broadcast( "command.getArg( 2 ) == " + command.getArg( 2 ) ); // ! debug
+            boolean override = command.getArgs().length >= 3 && command.getArg( 2 ).equalsIgnoreCase( "-o" );
+            //CyberMsgUtils.broadcast( "override == " + override ); // ! debug
+
+            if ( override == false ) {
+                if ( checkForCooldown( command, target, instantKeyParent ) ) {
+                    command.respond( "&p" + target.getName() + " &shas already been punished for this recently" );
+                    return true;
+                }
+            }
+
+            instantPunishCooldowns.put( target.getUniqueId(), new Duplex<>( instantKeyParent.getInstantKey(), new Timestamp() ) );
+            PunishmentGuiExecutor.executePunish( instantKeyParent, command.getSender(), target, false ); // for now, will assume all instant punishments are not silent
+
+            return true;
+        }
+
+        final Player staff = command.getPlayer();
         if ( Punishment.checkPlayerCanPunish( staff, target ) == false ) {
             CommandErrors.sendPlayerCannotBePunished( staff, target.getName() );
             return true;
@@ -85,7 +121,6 @@ public class PunishCommand extends CyberCommand {
                     .filter( button -> button.getInstantKey().equalsIgnoreCase( command.getArg( 1 ) ) )
                     .findFirst()
                     .orElseThrow( IllegalArgumentException::new );
-            CyberMsgUtils.broadcast( "instantKeyParent.getButtonType() == " + instantKeyParent.getButtonType() );
 
             String permission = switch ( instantKeyParent.getGuiType() ) {
                 case MAIN -> throw new IllegalArgumentException();
@@ -101,12 +136,9 @@ public class PunishCommand extends CyberCommand {
                 return true;
             }
 
-            if ( instantPunishCooldowns.containsKey( target.getUniqueId() )
-                    && instantPunishCooldowns.get( target.getUniqueId() ).getFirst().equalsIgnoreCase( command.getArg( 1 ) ) ) {
-                if ( new Timestamp().getTimestamp() - instantPunishCooldowns.get( target.getUniqueId() ).getSecond().getTimestamp() < Settings.PUNISH_INSTANT_COOLDOWN.integer() ) {
-                    command.respond( "&p" + target.getName() + " &shas already been punished for this recently" );
-                    return true;
-                }
+            if ( checkForCooldown( command, target, instantKeyParent ) ) {
+                command.respond( "&p" + target.getName() + " &shas already been punished for this recently" );
+                return true;
             }
 
             instantPunishCooldowns.put( target.getUniqueId(), new Duplex<>( instantKeyParent.getInstantKey(), new Timestamp() ) );
@@ -117,5 +149,13 @@ public class PunishCommand extends CyberCommand {
         MainPunishGui gui = new MainPunishGui( staff, target );
         gui.open();
         return true;
+    }
+
+    private boolean checkForCooldown( SentCommand command, OfflinePlayer target, SinglePunishButton instantKeyParent ) {
+        return ( instantPunishCooldowns.containsKey( target.getUniqueId() )
+                    && instantPunishCooldowns.get( target.getUniqueId() ).getFirst()
+                        .equalsIgnoreCase( command.getArg( 1 ) ) )
+                && ( new Timestamp().getTimestamp() - instantPunishCooldowns.get( target.getUniqueId() )
+                        .getSecond().getTimestamp() < Settings.PUNISH_INSTANT_COOLDOWN.integer() );
     }
 }

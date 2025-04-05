@@ -10,14 +10,7 @@
 - [X] Add better exception handling for CompletableFutures, as they silently swallow any errors thrown within them
 
 ### Bugs (unfixed)
-- [X] Need to ensure IP punishments work even if the target doesn't have any alts
-- [X] Silent punishments executed through the punishment GUI are not actually silent
-- [X] Errors when console tries to execute punishment commands
 - [ ] Forgot to add support for hover text in punished alt notifications
-- [X] IP punishments aren't working (or, at least, IP mutes aren't working)
-- - They work for the target, but none of their alts are properly punished
-- [X] In the database, for punishments that were executed by console, their active column remains at one even though the punishment has expired
-- [X] Punishment GUIs take time to load and don't load at the same time- try and synchronize them
 
 ### Backend
 - [X] Better punishment model
@@ -33,6 +26,8 @@
 - [X] Netuno command
 - [X] Punishment commands (i.e. /ban, /mute, etc.)
 - [X] Punish command (and GUI)
+- - [X] Instant punishments
+- - - [X] Instant punishments for console
 - [ ] Chat management commands
 - - [ ] Chatslow command
 - - [ ] Clearchat command
@@ -84,3 +79,10 @@
 - [X] After a punishment expires, their active status in the database should be zero, but it remains at one
 - [X] In alts GUI, skulls' names are red, even though they shouldn't be (as they don't have any active punishments)
 - [X] In alts GUI, blinking is working, but it is in the wrong index
+- [X] Need to ensure IP punishments work even if the target doesn't have any alts
+- [X] Silent punishments executed through the punishment GUI are not actually silent
+- [X] Errors when console tries to execute punishment commands
+- [X] IP punishments aren't working (or, at least, IP mutes aren't working)
+- - They work for the target, but none of their alts are properly punished
+- [X] In the database, for punishments that were executed by console, their active column remains at one even though the punishment has expired
+- [X] Punishment GUIs take time to load and don't load at the same time- try and synchronize them

@@ -14,10 +14,13 @@ import com.github.cyberryan1.netuno.utils.PrettyStringLibrary;
 import com.github.cyberryan1.netuno.utils.TimestampUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -41,11 +44,11 @@ public class PunishmentGuiExecutor {
      * it was ran by the provided staff
      * <b>Note</b> Everything ran by this method is done async
      *
-     * @param staff The staff member
+     * @param staffSender The staff member
      * @param offlinePlayer The target player
      * @param silent Whether to handle this punishment silently
      */
-    public static void executePunish( SinglePunishButton button, Player staff, OfflinePlayer offlinePlayer, boolean silent ) {
+    public static void executePunish( SinglePunishButton button, CommandSender staffSender, OfflinePlayer offlinePlayer, boolean silent ) {
         Netuno.SERVICE.getPlayer( offlinePlayer ).thenAcceptAsync( player -> {
             button.generatePreviousPunCount( offlinePlayer ).thenAccept( previousPunCount -> {
                 String reason = REASON_FORMAT.replace( "[REASON]", CyberColorUtils.deleteColor( CyberColorUtils.getColored( button.getItemName() ) ) );
@@ -102,7 +105,7 @@ public class PunishmentGuiExecutor {
                     // If the player has no alts with active
                     if ( activeAltPunishments.isEmpty() ) {
                         String punTypeString = button.getPunishTypeAfter().name().toLowerCase() + "s";
-                        CyberMsgUtils.sendMsg( staff, "&p" + player.getPlayer().getName() + " &shas no alts with active " + punTypeString );
+                        CyberMsgUtils.sendMsg( staffSender, "&p" + player.getPlayer().getName() + " &shas no alts with active " + punTypeString );
                         return;
                     }
 
@@ -120,16 +123,22 @@ public class PunishmentGuiExecutor {
                 }
 
                 // Executing the punishment
+                UUID staffUuid = ( staffSender instanceof ConsoleCommandSender )
+                        ? ( ApiPunishment.CONSOLE_UUID ) : ( ( ( Player ) staffSender ).getUniqueId() );
                 Netuno.PUNISHMENT_SERVICE.punishmentBuilder()
                         .setPlayer( player.getUuid() )
-                        .setStaff( staff )
+                        .setStaff( staffUuid )
                         .setType( punType )
                         .setLength( duration )
                         .setReason( reason )
                         .markAsGuiPunishment( true )
                         .build()
                         .execute( silent );
-                staff.playSound( staff.getLocation(), Sound.ENTITY_ENDER_EYE_DEATH, 10, 1 );
+
+                if ( staffSender instanceof Player ) {
+                    Player staff = ( Player ) staffSender;
+                    staff.playSound( staff.getLocation(), Sound.ENTITY_ENDER_EYE_DEATH, 10, 1 );
+                }
             } );
         } );
     }
