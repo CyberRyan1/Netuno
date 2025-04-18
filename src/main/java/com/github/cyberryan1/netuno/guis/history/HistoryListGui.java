@@ -9,7 +9,6 @@ import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.guis.utils.SortBy;
 import com.github.cyberryan1.netuno.guis.utils.Sorter;
-import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -68,12 +67,9 @@ public class HistoryListGui {
      * Inserts all items into the GUI
      */
     private void insertItems() {
-        final ItemStack loadingItem = CyberItemUtils.createItem(
-                Settings.PUNISH_LOADING_ITEM_MATERIAL.material(), Settings.PUNISH_LOADING_ITEM_NAME.coloredString() );
-
         // Filling all GUI punishment slots with the loading item
         for ( int index : getPunishmentSlots() ) {
-            GuiItem item = new GuiItem( loadingItem, index );
+            GuiItem item = new GuiItem( HistoryUtils.getLoadingItem(), index );
             gui.addItem( item );
         }
 

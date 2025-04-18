@@ -3,6 +3,7 @@ package com.github.cyberryan1.netuno.guis.history;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.utils.TimestampUtils;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -65,5 +66,13 @@ public class HistoryUtils {
         }
 
         return sign;
+    }
+
+    /**
+     * @return The item to use while loading data
+     */
+    public static ItemStack getLoadingItem() {
+        return CyberItemUtils.createItem( Settings.PUNISH_LOADING_ITEM_MATERIAL.material(),
+                                    Settings.PUNISH_LOADING_ITEM_NAME.coloredString() );
     }
 }
