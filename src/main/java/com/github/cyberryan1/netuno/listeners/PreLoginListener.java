@@ -2,7 +2,6 @@ package com.github.cyberryan1.netuno.listeners;
 
 import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
-import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
@@ -101,14 +100,10 @@ public class PreLoginListener implements Listener {
             final List<Punishment> activePunishments = player.getActivePunishments().stream()
                     .map( pun -> ( Punishment ) pun )
                     .collect( Collectors.toList() );
-            CyberMsgUtils.broadcast( "&dactivePunishments.size() == " + activePunishments.size() ); // ! debug
             if ( activePunishments.stream().anyMatch( pun -> pun.getType() == ApiPunishment.PunType.BAN
                     || pun.getType() == ApiPunishment.PunType.IPBAN ) ) {
-                CyberMsgUtils.broadcast( "&dfound a ban/ipban" ); // ! debug
                 final Punishment highestPunishment = PunishmentLibrary.getPunishmentWithHighestDurationRemaining( activePunishments );
-                CyberMsgUtils.broadcast( "&ddenying join..." ); // ! debug
                 denyJoin( event, highestPunishment );
-                CyberMsgUtils.broadcast( "&dsuccessfully denied join" ); // ! debug
                 return;
             }
 
@@ -146,13 +141,9 @@ public class PreLoginListener implements Listener {
      * @param punishment The punishment
      */
     private void denyJoin( AsyncPlayerPreLoginEvent event, Punishment punishment ) {
-        CyberMsgUtils.broadcast( "&edenyJoin()" ); // ! debug
         Settings settingToFill = PunishmentLibrary.getSettingForMessageType( punishment.getType(), PunishmentLibrary.MessageSetting.ATTEMPT );
-        CyberMsgUtils.broadcast( "&e1" ); // ! debug
         Component component = punishment.fillSettingMessage( settingToFill );
-        CyberMsgUtils.broadcast( "&e2" ); // ! debug
         event.disallow( AsyncPlayerPreLoginEvent.Result.KICK_BANNED, component );
-        CyberMsgUtils.broadcast( "&e3" ); // ! debug
     }
 
     /**
