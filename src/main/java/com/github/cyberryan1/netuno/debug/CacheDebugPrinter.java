@@ -2,7 +2,7 @@ package com.github.cyberryan1.netuno.debug;
 
 import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
-import com.github.cyberryan1.netunoapi.models.time.NDate;
+import com.github.cyberryan1.netuno.utils.TimestampUtils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -59,7 +59,8 @@ public class CacheDebugPrinter<A, B> {
         File debugFolder = new File( CyberCore.getPlugin().getDataFolder(), DEBUG_FOLDER_NAME + "/" );
         if ( debugFolder.exists() == false ) debugFolder.mkdir();
 
-        String debugFileName = DEBUG_FOLDER_NAME + "/debug_" + new NDate().getDateString().replace( " ", "_" ) + ".txt";
+        String dateString = new java.sql.Timestamp( TimestampUtils.getCurrentTimestamp() ).toGMTString();
+        String debugFileName = DEBUG_FOLDER_NAME + "/debug_" + dateString.replace( " ", "_" ) + ".txt";
         File filePrintingTo = new File( debugFolder, debugFileName );
         printToFile( filePrintingTo );
     }
