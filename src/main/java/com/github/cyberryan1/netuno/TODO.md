@@ -25,6 +25,10 @@
 - - [ ] Togglesigns database
 - - - [ ] Make the togglesigns database into a "staff settings" database
 - - [ ] Reports database
+- [ ] Update to latest version of spigot/paper
+- [ ] Update java version
+- [ ] Update CyberCore to latest version of spigot/paper
+- [ ] Update CyberCore's java version
 
 ### Commands
 - [X] Netuno command
@@ -36,8 +40,8 @@
 - - [ ] Chatslow command
 - - [ ] Clearchat command
 - - [ ] Mutechat command
-- [ ] History command
-- - [ ] History list subcommand
+- [X] History command
+- - [X] History list subcommand
 - - [ ] History edit subcommand
 - - [ ] History reset subcommand
 - - [ ] A way to view the punishments that were executed by a certain staff member
