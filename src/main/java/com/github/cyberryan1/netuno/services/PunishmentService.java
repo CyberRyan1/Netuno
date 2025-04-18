@@ -108,12 +108,20 @@ public class PunishmentService implements ApiPunishmentService {
 
     /**
      * Updates the provided punishment within the database with
-     * any new data
+     * the provided new data. Also updates the punishment in any
+     * players loaded in {@link NetunoService}, if it is present
      *
      * @param punishment The punishment
      */
     @Override
     public void updatePunishment( ApiPunishment punishment ) {
+        if ( Netuno.SERVICE.containsPlayer( punishment.getPlayerUuid() ) ) {
+            Netuno.SERVICE.getPlayer( punishment.getPlayerUuid() ).thenAccept( player -> {
+                player.getPunishments().removeIf( p -> p.getId() == punishment.getId() );
+                player.getPunishments().add( punishment );
+            } );
+        }
+
         PunishmentsDatabase.updatePunishment( ( Punishment ) punishment );
     }
 
