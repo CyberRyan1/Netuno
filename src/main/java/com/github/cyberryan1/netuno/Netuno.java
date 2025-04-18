@@ -5,10 +5,7 @@ import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
-import com.github.cyberryan1.netuno.commands.IpinfoCommand;
-import com.github.cyberryan1.netuno.commands.NetunoCommand;
-import com.github.cyberryan1.netuno.commands.PunishCommand;
-import com.github.cyberryan1.netuno.commands.PunishmentCommandGenerator;
+import com.github.cyberryan1.netuno.commands.*;
 import com.github.cyberryan1.netuno.database.ConnectionManager;
 import com.github.cyberryan1.netuno.guis.punish.managers.ActivePunishGuiManager;
 import com.github.cyberryan1.netuno.listeners.ChatListener;
@@ -174,6 +171,7 @@ public final class Netuno extends JavaPlugin {
         int helpOrder = PunishmentCommandGenerator.generateCommands( 2 );
         // From here on, we need to use an increment by 1 from the previous help order
         new IpinfoCommand( helpOrder + 1 );
+        new HistoryCommand( helpOrder + 2 );
     }
 
     private void registerListeners() {
