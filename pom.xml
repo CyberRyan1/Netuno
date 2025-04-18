@@ -135,11 +135,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.30</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.cyberryan1</groupId>
-            <artifactId>NetunoAPI</artifactId>
-            <version>0.1.2.2.DEV.22</version>
-        </dependency>
+        <!-- Disabled for now -->
+<!--        <dependency>-->
+<!--            <groupId>com.github.cyberryan1</groupId>-->
+<!--            <artifactId>NetunoAPI</artifactId>-->
+<!--            <version>0.1.2.2.DEV.22</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.github.cyberryan1.CyberCore.spigot</groupId>
             <artifactId>CyberCore-spigot</artifactId>
