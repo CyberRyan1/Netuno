@@ -7,6 +7,7 @@ import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.commands.*;
 import com.github.cyberryan1.netuno.database.ConnectionManager;
+import com.github.cyberryan1.netuno.guis.history.HistoryEditManager;
 import com.github.cyberryan1.netuno.guis.punish.managers.ActivePunishGuiManager;
 import com.github.cyberryan1.netuno.listeners.ChatListener;
 import com.github.cyberryan1.netuno.listeners.PreLoginListener;
@@ -177,5 +178,6 @@ public final class Netuno extends JavaPlugin {
     private void registerListeners() {
         this.getServer().getPluginManager().registerEvents( new PreLoginListener(), this );
         this.getServer().getPluginManager().registerEvents( new ChatListener(), this );
+        this.getServer().getPluginManager().registerEvents( new HistoryEditManager(), this );
     }
 }

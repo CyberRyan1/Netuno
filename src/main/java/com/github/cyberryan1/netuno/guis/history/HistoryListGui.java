@@ -75,6 +75,9 @@ public class HistoryListGui {
 
         // Querying the target's punishments and updating the
         //      GUI punishment slots as needed
+        // TODO there is a bug where when you open a player's history for the first time
+        // TODO     after the server starts, it doesn't fully show. this does not happen
+        // TODO     any time thereafter
         Netuno.SERVICE.getPlayer( target ).thenAccept( netunoTarget -> {
             history = Sorter.sortPuns( netunoTarget.getPunishments(), sort );
 
@@ -93,12 +96,13 @@ public class HistoryListGui {
                         item = new GuiItem( HistoryUtils.getPunishmentItem( history.get( punIndex ) ),
                                 guiIndex, ( i ) -> {
                             int punId = history.get( finalPunIndex ).getId();
-                            // TODO open history edit GUI for this punishment
+                            HistoryEditGui editGui = new HistoryEditGui( target, staff, punId );
+                            editGui.open();
                             staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
                         } );
                     }
 
-                    gui.updateItem( item );
+                    this.gui.updateItem( item );
                     guiIndex++;
                     punIndex++;
                 }
@@ -116,7 +120,7 @@ public class HistoryListGui {
                     staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
                 } ) );
             }
-        } );
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
 
         // Current page item
         ItemStack paper = CyberItemUtils.createItem( Material.PAPER, "&sPage &p#" + pageNumber );
