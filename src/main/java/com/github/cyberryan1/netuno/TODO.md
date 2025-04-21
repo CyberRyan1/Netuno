@@ -14,6 +14,11 @@
 
 ### Bugs (unfixed)
 - [ ] Forgot to add support for hover text in punished alt notifications
+- [ ] Error when trying to press the arrows in the /netuno help command
+- - [ ] Error when doing /netuno help 2
+- [ ] History list GUI does not work correctly when it is used for the first time after the server starts
+- - No clue how to fix this
+- [ ] There might be issues with sending punishment notifications, i.e. being sent them repeatedly
 
 ### Backend
 - [X] Better punishment model
@@ -25,10 +30,11 @@
 - - [ ] Togglesigns database
 - - - [ ] Make the togglesigns database into a "staff settings" database
 - - [ ] Reports database
-- [ ] Update to latest version of spigot/paper
-- [ ] Update java version
-- [ ] Update CyberCore to latest version of spigot/paper
-- [ ] Update CyberCore's java version
+- [X] Update to latest version of spigot/paper
+- [X] Update java version
+- [X] Update CyberCore to latest version of spigot/paper
+- [X] Update CyberCore's java version
+- [ ] Add event dispatching to the API
 
 ### Commands
 - [X] Netuno command

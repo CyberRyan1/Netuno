@@ -61,7 +61,7 @@ public class HistoryUtils {
         if ( pun.isActive() ) {
             ItemMeta meta = sign.getItemMeta();
             meta.addItemFlags( ItemFlag.HIDE_ENCHANTS );
-            meta.addEnchant( Enchantment.DURABILITY, 1, true );
+            meta.addEnchant( Enchantment.PROTECTION, 1, true );
             sign.setItemMeta( meta );
         }
 

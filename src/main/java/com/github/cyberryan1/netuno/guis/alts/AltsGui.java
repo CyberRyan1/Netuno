@@ -207,7 +207,7 @@ public class AltsGui {
             }
 
             skull = CyberItemUtils.setItemLore( skull, lore );
-            skull.addUnsafeEnchantment( Enchantment.PROTECTION_ENVIRONMENTAL, 1 );
+            skull.addUnsafeEnchantment( Enchantment.PROTECTION, 1 );
             SkullMeta meta = ( SkullMeta ) skull.getItemMeta();
             meta.addItemFlags( ItemFlag.HIDE_ENCHANTS );
             skull.setItemMeta( meta );

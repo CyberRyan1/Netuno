@@ -216,7 +216,7 @@ public class MainPunishGui {
 
             // Setting the item's new glow
             if ( PunishSettings.MAIN_IN_USE_GLOW.bool() ) {
-                item.addUnsafeEnchantment( Enchantment.DURABILITY, 1 );
+                item.addUnsafeEnchantment( Enchantment.PROTECTION, 1 );
                 ItemMeta meta = item.getItemMeta();
                 meta.addItemFlags( ItemFlag.HIDE_ENCHANTS );
                 item.setItemMeta( meta );
