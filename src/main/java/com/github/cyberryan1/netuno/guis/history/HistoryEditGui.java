@@ -27,7 +27,6 @@ import org.bukkit.entity.Player;
 public class HistoryEditGui {
 
     private final Gui gui;
-    private final OfflinePlayer target;
     private final Player staff;
     private final int punishmentId;
 
@@ -36,12 +35,10 @@ public class HistoryEditGui {
     private boolean editingReason = false;
 
     /**
-     * @param target The target player
      * @param staff The staff member
      * @param punId The punishment ID to edit
      */
-    public HistoryEditGui( OfflinePlayer target, Player staff, int punId ) {
-        this.target = target;
+    public HistoryEditGui( Player staff, int punId ) {
         this.staff = staff;
         this.punishmentId = punId;
 
@@ -120,7 +117,7 @@ public class HistoryEditGui {
             //ApiNetuno.getInstance().getEventDispatcher().dispatch( new NetunoHistoryEditEvent( oldPun, punishment, staff, HistoryEditAction.EDIT_REASON ) );
         }
 
-        HistoryEditGui newGui = new HistoryEditGui( target, staff, punishmentId );
+        HistoryEditGui newGui = new HistoryEditGui( staff, punishmentId );
         newGui.open();
     }
 
@@ -145,7 +142,7 @@ public class HistoryEditGui {
             }
         }
 
-        HistoryEditGui newGui = new HistoryEditGui( target, staff, punishmentId );
+        HistoryEditGui newGui = new HistoryEditGui( staff, punishmentId );
         newGui.open();
     }
 
@@ -190,7 +187,7 @@ public class HistoryEditGui {
     // Getters & Setters
     //
 
-    public OfflinePlayer getTarget() { return target; }
+    public OfflinePlayer getTarget() { return this.punishment.getPlayer(); }
 
     public Player getStaff() { return staff; }
 

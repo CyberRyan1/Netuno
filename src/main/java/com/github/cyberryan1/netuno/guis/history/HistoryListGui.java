@@ -96,7 +96,7 @@ public class HistoryListGui {
                         item = new GuiItem( HistoryUtils.getPunishmentItem( history.get( punIndex ) ),
                                 guiIndex, ( i ) -> {
                             int punId = history.get( finalPunIndex ).getId();
-                            HistoryEditGui editGui = new HistoryEditGui( target, staff, punId );
+                            HistoryEditGui editGui = new HistoryEditGui( staff, punId );
                             editGui.open();
                             staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
                         } );
