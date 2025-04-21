@@ -34,7 +34,7 @@
 - [X] Update java version
 - [X] Update CyberCore to latest version of spigot/paper
 - [X] Update CyberCore's java version
-- [ ] Add event dispatching to the API
+- [ ] Add API event dispatching (where needed)
 
 ### Commands
 - [X] Netuno command
@@ -47,11 +47,16 @@
 - - [ ] Clearchat command
 - - [ ] Mutechat command
 - [X] History command
+- - [X] History list GUI
 - - [X] History list subcommand
-- - [ ] History edit subcommand
+- - [X] History edit GUI
+- - [X] History edit subcommand
+- - [ ] History delete GUI
+- - [ ] History delete subcommand
 - - [ ] History reset subcommand
-- - [ ] A way to view the punishments that were executed by a certain staff member
-- - [ ] A way to rollback the punishments executed by a certain staff member
+- - [ ] History staff GUI
+- - [ ] History staff subcommand
+- - [ ] History rollback (staff) (time/all) subcommand
 - [X] Ipinfo command
 - - [ ] In alts GUI, add functionality to allow staff to view the account's punishment history
 - [ ] Report command
