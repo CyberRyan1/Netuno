@@ -17,6 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Allows a staff member to edit a certain punishment's
@@ -71,27 +72,28 @@ public class HistoryEditGui {
             this.punishment = pun.get();
 
             // Punishment Info
-            gui.updateItem( new GuiItem( HistoryUtils.getPunishmentItem( punishment ), 13 ) );
+            ItemStack punishmentItem = HistoryUtils.getPunishmentItem( punishment );
+            gui.addOrUpdateItem( new GuiItem( punishmentItem, 13 ) );
 
             if ( punishment.getType().hasNoReason() ) {
                 // Delete Punishment
-                gui.updateItem( getDeleteBarrier( 31 ) );
+                gui.addOrUpdateItem( getDeleteBarrier( 31 ) );
             }
 
             else if ( punishment.getType().hasNoLength() || punishment.isActive() == false ) {
                 // Edit Reason
-                gui.updateItem( getEditReasonPaper( 30 ) );
+                gui.addOrUpdateItem( getEditReasonPaper( 30 ) );
                 // Delete Punishment
-                gui.updateItem( getDeleteBarrier( 32 ) );
+                gui.addOrUpdateItem( getDeleteBarrier( 32 ) );
             }
 
             else {
                 // Edit Length
-                gui.updateItem( getEditLengthClock( 29 ) );
+                gui.addOrUpdateItem( getEditLengthClock( 29 ) );
                 // Edit Reason
-                gui.updateItem( getEditReasonPaper( 31 ) );
+                gui.addOrUpdateItem( getEditReasonPaper( 31 ) );
                 // Delete Punishment
-                gui.updateItem( getDeleteBarrier( 33 ) );
+                gui.addOrUpdateItem( getDeleteBarrier( 33 ) );
             }
         } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
     }
@@ -151,7 +153,8 @@ public class HistoryEditGui {
             staff.closeInventory();
 
             if ( CyberVaultUtils.hasPerms( staff, Settings.HISTORY_DELETE_PERMISSION.string() ) ) {
-                // TODO open history delete confirm GUI
+                HistoryConfirmDeleteGui confirmGui = new HistoryConfirmDeleteGui( staff, punishment );
+                confirmGui.open();
                 staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
             }
 

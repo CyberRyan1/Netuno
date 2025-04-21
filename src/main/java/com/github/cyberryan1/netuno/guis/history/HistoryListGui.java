@@ -102,7 +102,7 @@ public class HistoryListGui {
                         } );
                     }
 
-                    this.gui.updateItem( item );
+                    this.gui.addOrUpdateItem( item );
                     guiIndex++;
                     punIndex++;
                 }
