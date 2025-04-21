@@ -167,8 +167,7 @@ public class NetunoService implements ApiNetunoService {
     public List<NPlayer> getAll() {
         List<NPlayer> toReturn = new ArrayList<>();
         for ( UUID uuid : this.PLAYER_CACHE.getKeySet() ) {
-            getPlayer( uuid ).thenAccept( player -> toReturn.add( ( NPlayer ) player ) );
-            this.PLAYER_CACHE.refreshLastAccessTimestamp( uuid );
+            toReturn.add( this.PLAYER_CACHE.getData( uuid ).get() ); // since the uuid is in the cache, this will never be null
         }
 
         return toReturn;
@@ -186,12 +185,10 @@ public class NetunoService implements ApiNetunoService {
         List<NPlayer> toReturn = new ArrayList<>();
         this.PLAYER_CACHE.getKeySet()
                 .forEach( uuid -> {
-                    getPlayer( uuid ).thenAccept( player -> {
-                        if ( predicate.test( ( NPlayer ) player ) == false ) return;
-
-                        toReturn.add( ( NPlayer ) player );
-                        this.PLAYER_CACHE.refreshLastAccessTimestamp( uuid );
-                    } );
+                    NPlayer player = this.PLAYER_CACHE.getData( uuid ).get(); // since the uuid is in the cache, this will never be null
+                    if ( predicate.test( player ) == false ) return;
+                    toReturn.add( player );
+                    this.PLAYER_CACHE.refreshLastAccessTimestamp( uuid );
                 } );
         return toReturn;
     }
