@@ -51,7 +51,7 @@
 - - [X] History list subcommand
 - - [X] History edit GUI
 - - [X] History edit subcommand
-- - [ ] History delete GUI
+- - [X] History delete GUI
 - - [ ] History delete subcommand
 - - [ ] History reset subcommand
 - - [ ] History staff GUI
