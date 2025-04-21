@@ -40,7 +40,7 @@ public class HistoryUtils {
         if ( pun.getType().hasNoLength() == false ) {
             CyberItemUtils.addItemLore( sign, "&pDuration: &s" + TimestampUtils.durationToString( pun.getLength() ) );
             if ( pun.isActive() ) {
-                CyberItemUtils.addItemLore( sign, "&pRemaining: &s" + TimestampUtils.durationToString( pun.getLength(), 3 ) );
+                CyberItemUtils.addItemLore( sign, "&pRemaining: &s" + TimestampUtils.durationToString( pun.getDurationRemaining(), 3 ) );
             }
         }
 
