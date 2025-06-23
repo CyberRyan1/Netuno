@@ -231,6 +231,57 @@ public class PunishmentsDatabase {
     }
 
     /**
+     * Searches for all punishments in the database that have the given
+     * player as the staff member (i.e. the person who executed the
+     * punishment).
+     * @param player The {@link OfflinePlayer} to search for.
+     * @return A {@link List <Punishment>} of all punishments executed
+     * by the player.
+     */
+    public static List<Punishment> getPunishmentsExecutedByPlayer( OfflinePlayer player ) {
+        List<Punishment> toReturn = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE staff = ?;" );
+            ps.setString( 1, player.getUniqueId().toString() );
+
+            ResultSet rs = ps.executeQuery();
+            while ( rs.next() ) {
+                Punishment data = null;
+                final int referencePunId = rs.getInt( "reference" );
+
+                if ( referencePunId != ApiPunishment.DEFAULT_REFERENCE_ID ) {
+                    Punishment originalPun = getPunishment( referencePunId );
+
+                    // If the original punishment is null, remove this punishment
+                    //      from the database
+                    if ( originalPun == null ) {
+                        removePunishment( rs.getInt( "id" ) );
+                    }
+
+                    if ( originalPun != null ) {
+                        data = getPunishment( rs.getInt( "id" ) );
+                    }
+                }
+
+                else {
+                    data = processResultSetIntoPunishment( rs );
+                    data.setReferenceId( referencePunId );
+                }
+
+                if ( data != null ) { toReturn.add( data ); }
+            }
+
+            ps.close();
+            rs.close();
+        } catch ( SQLException e ) {
+            throw new RuntimeException( e );
+        }
+
+        return toReturn;
+    }
+
+    /**
      * Updates the given punishment in the database. If the given
      * punishment is an IP punishment, this also updates the other
      * punishments that reference it

@@ -41,6 +41,13 @@ public interface ApiPunishmentService {
     CompletableFuture<List<ApiPunishment>> getPunishmentsByReferenceId( int referenceId );
 
     /**
+     * @param player A player
+     * @return A list of punishments that were executed by the
+     *         given player
+     */
+    CompletableFuture<List<ApiPunishment>> getPunishmentsExecutedByPlayer( OfflinePlayer player );
+
+    /**
      * Updates the provided punishment within the database with
      * any new data
      *

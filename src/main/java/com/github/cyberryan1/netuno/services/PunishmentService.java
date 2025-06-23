@@ -86,6 +86,16 @@ public class PunishmentService implements ApiPunishmentService {
     }
 
     /**
+     * @param player A player
+     * @return A list of punishments that were executed by the
+     *         given player
+     */
+    public CompletableFuture<List<ApiPunishment>> getPunishmentsExecutedByPlayer( OfflinePlayer player ) {
+        return CompletableFuture.supplyAsync( () ->
+                convertPunishmentsToApiPunishments( PunishmentsDatabase.getPunishmentsExecutedByPlayer( player ) ) );
+    }
+
+    /**
      * Creates the provided punishment in the database. Also adds
      * the provided punishment to any players loaded in {@link NetunoService}.
      * After the punishment is created in the database, the ID
