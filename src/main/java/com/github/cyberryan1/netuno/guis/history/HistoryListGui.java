@@ -128,7 +128,7 @@ public class HistoryListGui {
         gui.addItem( new GuiItem( paper, 40 ) );
 
         // Sort Hopper Item
-        gui.addItem( new GuiItem( getSortHopper(), 49, ( item ) -> {
+        gui.addItem( new GuiItem(  HistoryUtils.getSortHopper( sort ), 49, ( item ) -> {
             SortBy next = SortBy.FIRST_DATE;
             if ( sort == SortBy.FIRST_DATE ) { next = SortBy.LAST_DATE; }
             else if ( sort == SortBy.LAST_DATE ) { next = SortBy.FIRST_ACTIVE; }
@@ -173,29 +173,5 @@ public class HistoryListGui {
         }
 
         return toReturn;
-    }
-
-    private ItemStack getSortHopper() {
-        if ( sort == SortBy.FIRST_DATE ) {
-            ItemStack hopper = CyberItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pOldest -> Newest" );
-            return CyberItemUtils.setItemLore( hopper, "&sNext Sort: &pNewest -> Oldest", "&sClick to change sort method" );
-        }
-
-        else if ( sort == SortBy.LAST_DATE ) {
-            ItemStack hopper = CyberItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pNewest -> Oldest" );
-            return CyberItemUtils.setItemLore( hopper, "&sNext Sort: &pActive -> Not Active", "&sClick to change sort method" );
-        }
-
-        else if ( sort == SortBy.FIRST_ACTIVE ) {
-            ItemStack hopper = CyberItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pActive -> Not Active" );
-            return CyberItemUtils.setItemLore( hopper, "&sNext Sort: &pNot Active -> Active", "&sClick to change sort method" );
-        }
-
-        else if ( sort == SortBy.LAST_ACTIVE ) {
-            ItemStack hopper = CyberItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pNot Active -> Active" );
-            return CyberItemUtils.setItemLore( hopper, "&sNext Sort: &pOldest -> Newest", "&sClick to change sort method" );
-        }
-
-        return null;
     }
 }

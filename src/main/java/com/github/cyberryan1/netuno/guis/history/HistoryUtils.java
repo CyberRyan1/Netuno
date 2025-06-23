@@ -2,6 +2,7 @@ package com.github.cyberryan1.netuno.guis.history;
 
 import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
+import com.github.cyberryan1.netuno.guis.utils.SortBy;
 import com.github.cyberryan1.netuno.utils.TimestampUtils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Material;
@@ -74,5 +75,33 @@ public class HistoryUtils {
     public static ItemStack getLoadingItem() {
         return CyberItemUtils.createItem( Settings.PUNISH_LOADING_ITEM_MATERIAL.material(),
                                     Settings.PUNISH_LOADING_ITEM_NAME.coloredString() );
+    }
+
+    /**
+     * @param sort The sorting used for a GUI
+     * @return The correct sort hopper to display in a GUI
+     */
+    public static ItemStack getSortHopper( SortBy sort ) {
+        if ( sort == SortBy.FIRST_DATE ) {
+            ItemStack hopper = CyberItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pOldest -> Newest" );
+            return CyberItemUtils.setItemLore( hopper, "&sNext Sort: &pNewest -> Oldest", "&sClick to change sort method" );
+        }
+
+        else if ( sort == SortBy.LAST_DATE ) {
+            ItemStack hopper = CyberItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pNewest -> Oldest" );
+            return CyberItemUtils.setItemLore( hopper, "&sNext Sort: &pActive -> Not Active", "&sClick to change sort method" );
+        }
+
+        else if ( sort == SortBy.FIRST_ACTIVE ) {
+            ItemStack hopper = CyberItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pActive -> Not Active" );
+            return CyberItemUtils.setItemLore( hopper, "&sNext Sort: &pNot Active -> Active", "&sClick to change sort method" );
+        }
+
+        else if ( sort == SortBy.LAST_ACTIVE ) {
+            ItemStack hopper = CyberItemUtils.createItem( Material.HOPPER, "&sCurrent Sort: &pNot Active -> Active" );
+            return CyberItemUtils.setItemLore( hopper, "&sNext Sort: &pOldest -> Newest", "&sClick to change sort method" );
+        }
+
+        return null;
     }
 }
