@@ -6,6 +6,7 @@ import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentSubCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.netuno.guis.history.HistoryConfirmDeleteGui;
 import com.github.cyberryan1.netuno.guis.history.HistoryEditGui;
 import com.github.cyberryan1.netuno.guis.history.HistoryListGui;
 import com.github.cyberryan1.netuno.guis.history.HistoryStaffGui;
@@ -35,10 +36,13 @@ public class HistoryCommand extends CyberSuperCommand {
         new CommandHelpInfo( edit, helpOrder + 2 );
         HistoryStaffSubcommand staff = new HistoryStaffSubcommand();
         new CommandHelpInfo( staff, helpOrder + 3 );
+        HistoryDeleteSubcommand delete = new HistoryDeleteSubcommand();
+        new CommandHelpInfo( delete, helpOrder + 4 );
 
         addSubCommand( list );
         addSubCommand( edit );
         addSubCommand( staff );
+        addSubCommand( delete );
 
         demandPermission( true );
         demandPlayer( true );
@@ -134,7 +138,7 @@ class HistoryStaffSubcommand extends CyberSubCommand {
     public HistoryStaffSubcommand() {
         super(
                 "staff",
-                Settings.HISTORY_PERMISSION.string(),
+                Settings.HISTORY_STAFF_LIST_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),
                 "&8/&shistory &pstaff (player)"
         );
@@ -157,6 +161,47 @@ class HistoryStaffSubcommand extends CyberSubCommand {
 
         HistoryStaffGui gui = new HistoryStaffGui( player, target );
         gui.open();
+        return true;
+    }
+}
+
+class HistoryDeleteSubcommand extends CyberSubCommand {
+
+    public HistoryDeleteSubcommand() {
+        super(
+                "delete",
+                Settings.HISTORY_DELETE_PERMISSION.string(),
+                Settings.PERM_DENIED_MSG.coloredString(),
+                "&8/&shistory &pdelete (pun ID)"
+        );
+        setDemandPermission( true );
+        setDemandPlayer( true );
+        setMinArgLength( 1 );
+        setArgType( 0, ArgType.INTEGER );
+
+    }
+
+    @Override
+    public List<String> tabComplete( SentCommand command, SentSubCommand subCommand ) {
+        return List.of();
+    }
+
+    @Override
+    public boolean execute( SentCommand command, SentSubCommand subCommand ) {
+        final Player player = subCommand.getPlayer();
+        final int punId = Integer.parseInt( subCommand.getArg( 0 ) );
+        subCommand.respond( "&sLoading punishment &p#" + punId + "&s..." );
+
+        Netuno.PUNISHMENT_SERVICE.getPunishment( punId ).thenAccept( optionalPunishment -> {
+            if ( optionalPunishment.isEmpty() ) {
+                CommandErrors.sendInvalidPunishmentID( command.getPlayer(), "" + punId );
+            }
+
+            else {
+                HistoryConfirmDeleteGui gui = new HistoryConfirmDeleteGui( player, optionalPunishment.get() );
+                gui.open();
+            }
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
         return true;
     }
 }
