@@ -166,6 +166,11 @@ public class HistoryEditGui {
 
     private GuiItem getEditReasonPaper( int slot ) {
         return new GuiItem( CyberItemUtils.createItem( Material.PAPER, "&sEdit Reason" ), slot, ( item ) -> {
+            if ( CyberVaultUtils.hasPerms( staff, Settings.HISTORY_REASON_PERMISSION.string() ) == false ) {
+                CyberMsgUtils.sendMsg( staff, Settings.PERM_DENIED_MSG.string() );
+                return;
+            }
+
             HistoryEditManager.addEditing( staff, this );
             staff.closeInventory();
             editingReason = true;
@@ -177,6 +182,11 @@ public class HistoryEditGui {
 
     private GuiItem getEditLengthClock( int slot ) {
         return new GuiItem( CyberItemUtils.createItem( Material.CLOCK, "&sEdit Length" ), slot, ( item ) -> {
+            if ( CyberVaultUtils.hasPerms( staff, Settings.HISTORY_TIME_PERMISSION.string() ) == false ) {
+                CyberMsgUtils.sendMsg( staff, Settings.PERM_DENIED_MSG.string() );
+                return;
+            }
+
             HistoryEditManager.addEditing( staff, this );
             staff.closeInventory();
             editingLength = true;
