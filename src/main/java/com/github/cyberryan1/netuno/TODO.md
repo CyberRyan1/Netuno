@@ -52,10 +52,10 @@
 - - [X] History edit GUI
 - - [X] History edit subcommand
 - - [X] History delete GUI
-- - [ ] History delete subcommand
+- - [X] History delete subcommand
 - - [ ] History reset subcommand
-- - [ ] History staff GUI
-- - [ ] History staff subcommand
+- - [X] History staff GUI
+- - [X] History staff subcommand
 - - [ ] History rollback (staff) (time/all) subcommand
 - [X] Ipinfo command
 - - [ ] In alts GUI, add functionality to allow staff to view the account's punishment history
