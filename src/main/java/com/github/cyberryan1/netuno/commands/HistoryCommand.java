@@ -13,6 +13,7 @@ import com.github.cyberryan1.netuno.guis.history.HistoryListGui;
 import com.github.cyberryan1.netuno.guis.history.HistoryStaffGui;
 import com.github.cyberryan1.netuno.models.commands.CommandHelpInfo;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
+import com.github.cyberryan1.netuno.utils.TimestampUtils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -41,12 +42,15 @@ public class HistoryCommand extends CyberSuperCommand {
         new CommandHelpInfo( delete, helpOrder + 4 );
         HistoryResetSubcommand reset = new HistoryResetSubcommand();
         new CommandHelpInfo( reset, helpOrder + 5 );
+        HistoryRollbackPlayerSubcommand rollbackPlayer = new HistoryRollbackPlayerSubcommand();
+        new CommandHelpInfo( rollbackPlayer, helpOrder + 6 );
 
         addSubCommand( list );
         addSubCommand( edit );
         addSubCommand( staff );
         addSubCommand( delete );
         addSubCommand( reset );
+        addSubCommand( rollbackPlayer );
 
         demandPermission( true );
         demandPlayer( true );
@@ -243,6 +247,62 @@ class HistoryResetSubcommand extends CyberSubCommand {
             }
 
             subCommand.respond( "&sSuccessfully deleted &p" + size + "&s punishments" );
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+
+        return true;
+    }
+}
+
+class HistoryRollbackPlayerSubcommand extends CyberSubCommand {
+
+    public HistoryRollbackPlayerSubcommand() {
+        super(
+                "rollbackplayer",
+                Settings.HISTORY_ROLLBACK_PLAYER_PERMISSION.string(),
+                Settings.PERM_DENIED_MSG.coloredString(),
+                "&8/&shistory &prollbackplayer (player) (time)"
+        );
+        setDemandPermission( true );
+        setDemandPlayer( true );
+        setMinArgLength( 2 );
+        setArgType( 0, ArgType.OFFLINE_PLAYER );
+    }
+
+    @Override
+    public List<String> tabComplete( SentCommand command, SentSubCommand subCommand ) {
+        return List.of();
+    }
+
+    @Override
+    public boolean execute( SentCommand command, SentSubCommand subCommand ) {
+        final OfflinePlayer target = subCommand.getOfflinePlayerAtArg( 0 );
+        final String timespanArg = subCommand.getArg( 1 );
+
+        if ( TimestampUtils.isAllowableLength( timespanArg ) == false ) {
+            CommandErrors.sendInvalidTimespan( command.getPlayer(), timespanArg );
+            return true;
+        }
+
+        final long duration = TimestampUtils.getTimestampFromUnformulatedLength( timespanArg );
+        final String durationString = TimestampUtils.timestampToFormulatedLength( duration, -1 );
+        subCommand.respond( "&sRolling back &p" + target.getName() + "&s's punishments by &p" + durationString + "&s..." );
+
+        final long now = TimestampUtils.getCurrentTimestamp();
+
+        Netuno.SERVICE.getPlayer( target ).thenAccept( apiPlayer -> {
+            final List<ApiPunishment> punishments = apiPlayer.getPunishments();
+            int deleted = 0;
+
+            for ( int index = punishments.size() - 1; index >= 0; index-- ) {
+                ApiPunishment current = punishments.get( index );
+                // if the timestamp has not expired, then that means it is within the provided duration since the current time
+                if ( TimestampUtils.timestampHasExpired( current.getTimestamp(), duration ) == false ) {
+                    Netuno.PUNISHMENT_SERVICE.deletePunishment( current );
+                    deleted++;
+                }
+            }
+
+            subCommand.respond( "&sSuccessfully deleted &p" +  deleted + "&s punishments" );
         } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
 
         return true;

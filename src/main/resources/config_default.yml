@@ -450,6 +450,13 @@ history:
   staff-list:
     perm: "netuno.history.staff-list"
 
+  # ability to rollback punishments
+  rollback:
+    # ability to rollback punishments for a player
+    player-perm: "netuno.history.rollback.player"
+    # ability to rollback punishments executed by a staff
+    staff-perm: "netuno.history.rollback.staff"
+
   # "/history reset" command
   reset:
     perm: "netuno.history.reset"

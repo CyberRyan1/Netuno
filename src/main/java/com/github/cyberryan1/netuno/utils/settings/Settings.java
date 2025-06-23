@@ -162,6 +162,8 @@ public enum Settings {
     HISTORY_TIME_PERMISSION( "history.time.perm", "string" ),
     HISTORY_DELETE_PERMISSION( "history.delete.perm", "string" ),
     HISTORY_STAFF_LIST_PERMISSION( "history.staff-list.perm", "string" ),
+    HISTORY_ROLLBACK_PLAYER_PERMISSION( "history.rollback.player-perm", "string" ),
+    HISTORT_ROLLBACK_STAFF_PERMISSION( "history.rollback.staff-perm",  "string" ),
     HISTORY_RESET_PERMISSION( "history.reset.perm", "string" ),
 
     //
