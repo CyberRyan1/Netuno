@@ -47,7 +47,7 @@ public class HistoryStaffGui {
         this.pageNumber = pageNumber;
         this.sort = sort;
 
-        this.gui = new Gui( "&p" + target.getName() + "&s's History", 6, CyberGuiUtils.getBackgroundGlass() );
+        this.gui = new Gui( "&p" + target.getName() + "&s's Punishments", 6, CyberGuiUtils.getBackgroundGlass() );
         insertItems();
     }
 
