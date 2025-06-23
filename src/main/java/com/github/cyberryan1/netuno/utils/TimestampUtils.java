@@ -179,65 +179,45 @@ public class TimestampUtils {
      */
     public static String timestampToFormulatedLength( long timestamp, int limit ) {
         if ( timestamp == ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) return "forever";
-        long seconds = timestamp / 1000;
-        long minutes = ( seconds / 60 ) % 60;
-        long hours = ( seconds / 3600 ) % 24;
-        long days = ( seconds / 86400 ) % 7;
-        long weeks = ( seconds / 604800 );
 
-        List<String> elements = new ArrayList<>();
-        if ( weeks > 0 ) {
-            String e = weeks + " week";
-            if ( weeks > 1 ) { e += "s"; }
-            elements.add( e );
-        }
+        final long SECOND = 1000;
+        final long MINUTE = 60 * SECOND;
+        final long HOUR = 60 * MINUTE;
+        final long DAY = 24 * HOUR;
 
-        if ( days > 0 ) {
-            String e = days + " day";
-            if ( days > 1 ) { e += "s"; }
-            elements.add( e );
-        }
+        // Time units and their names
+        long[] units = {DAY, HOUR, MINUTE, SECOND};
+        String[] unitNames = {"day", "hour", "minute", "second"};
 
-        if ( hours > 0 ) {
-            String e = hours + " hour";
-            if ( hours > 1 ) { e += "s"; }
-            elements.add( e );
-        }
+        List<String> parts = new ArrayList<>();
 
-        if ( minutes > 0 ) {
-            String e = minutes + " minute";
-            if ( minutes > 1 ) { e += "s"; }
-            elements.add( e );
-        }
+        for (int i = 0; i < units.length; i++) {
+            long unitValue = units[i];
+            if (timestamp >= unitValue) {
+                long amount = timestamp / unitValue;
+                timestamp %= unitValue;
 
-        if ( seconds > 0 ) {
-            String e = seconds + " second";
-            if ( seconds > 1 ) { e += "s"; }
-            elements.add( e );
-        }
-
-        final List<String> finalElements = new ArrayList<>();
-        if ( limit > 0 ) {
-            for ( int i = 0; i < limit; i++ ) {
-                if ( i >= elements.size() ) { break; }
-                finalElements.add( elements.get( i ) );
+                parts.add(amount + " " + unitNames[i] + (amount > 1 ? "s" : ""));
             }
         }
-        else {
-            finalElements.addAll( elements );
+
+        // Apply limit if specified
+        if (limit > 0 && parts.size() > limit) {
+            parts = parts.subList(0, limit);
         }
 
-        if ( finalElements.size() == 0 ) { return "0 seconds"; }
-        else if ( finalElements.size() == 1 ) { return finalElements.get( 0 ); }
-        else if ( finalElements.size() == 2 ) { return finalElements.get( 0 ) + " and " + finalElements.get( 1 ); }
-        else {
-            String toReturn = "";
-            for ( int i = 0; i < finalElements.size(); i++ ) {
-                if ( i == finalElements.size() - 1 ) { toReturn += " and "; }
-                else if ( i > 0 ) { toReturn += ", "; }
-                toReturn += finalElements.get( i );
+        // Format final string with commas and "and"
+        if (parts.size() == 1) {
+            return parts.get(0);
+        } else if (parts.size() == 2) {
+            return parts.get(0) + " and " + parts.get(1);
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < parts.size(); i++) {
+                if (i > 0) sb.append(i == parts.size() - 1 ? ", and " : ", ");
+                sb.append(parts.get(i));
             }
-            return toReturn;
+            return sb.toString();
         }
     }
 }
