@@ -445,6 +445,11 @@ history:
   delete:
     perm: "netuno.history.delete"
 
+  # ability to view other staffs' punishments via GUI
+  # i.e. being able to use /history staff (player)
+  staff-list:
+    perm: "netuno.history.staff-list"
+
   # "/history reset" command
   reset:
     perm: "netuno.history.reset"

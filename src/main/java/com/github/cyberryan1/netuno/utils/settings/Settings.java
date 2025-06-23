@@ -161,6 +161,7 @@ public enum Settings {
     HISTORY_REASON_PERMISSION( "history.reason.perm", "string" ),
     HISTORY_TIME_PERMISSION( "history.time.perm", "string" ),
     HISTORY_DELETE_PERMISSION( "history.delete.perm", "string" ),
+    HISTORY_STAFF_LIST_PERMISSION( "history.staff-list.perm", "string" ),
     HISTORY_RESET_PERMISSION( "history.reset.perm", "string" ),
 
     //

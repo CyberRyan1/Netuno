@@ -1,5 +1,24 @@
 package com.github.cyberryan1.netuno.guis.history;
 
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.gui.Gui;
+import com.github.cyberryan1.cybercore.spigot.gui.GuiItem;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberGuiUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
+import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.netuno.api.models.ApiPunishment;
+import com.github.cyberryan1.netuno.guis.utils.SortBy;
+import com.github.cyberryan1.netuno.guis.utils.Sorter;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Lists all punishments that have been executed by a player
  * to the provided staff member
@@ -7,5 +26,149 @@ package com.github.cyberryan1.netuno.guis.history;
  * @author Ryan
  */
 public class HistoryStaffGui {
-    // TODO
+
+    private final Gui gui;
+    private final Player staff;
+    private final OfflinePlayer target;
+    private final int pageNumber;
+    private final SortBy sort;
+
+    private List<ApiPunishment> history = null;
+
+    /**
+     * @param staff The staff member
+     * @param target The target player
+     * @param pageNumber The page number (starts at 1)
+     *
+     */
+    public HistoryStaffGui( Player staff, OfflinePlayer target, int pageNumber, SortBy sort ) {
+        this.staff = staff;
+        this.target = target;
+        this.pageNumber = pageNumber;
+        this.sort = sort;
+
+        this.gui = new Gui( "&p" + target.getName() + "&s's History", 6, CyberGuiUtils.getBackgroundGlass() );
+        insertItems();
+    }
+
+    /**
+     * Alias to {@link #HistoryStaffGui(Player, OfflinePlayer, int, SortBy)},
+     * but sets the page number to 1 (the starting page) and
+     * uses {@link SortBy#FIRST_DATE} for sorting
+     *
+     * @param staff The staff member
+     * @param target The target player
+     */
+    public HistoryStaffGui( Player staff, OfflinePlayer target ) {
+        this( staff, target, 1, SortBy.FIRST_DATE );
+    }
+
+    /**
+     * Inserts all items into the GUI
+     */
+    private void insertItems() {
+        // Filling all GUI punishment slots with the loading item
+        for ( int index : getPunishmentSlots() ) {
+            GuiItem item = new GuiItem( HistoryUtils.getLoadingItem(), index );
+            gui.addItem( item );
+        }
+
+        // Querying the target's executed punishments and
+        //      updating the GUI punishment slots as needed
+        Netuno.PUNISHMENT_SERVICE.getPunishmentsExecutedByPlayer( target ).thenAccept( punishments -> {
+            history = Sorter.sortPuns( punishments, sort );
+
+            int punIndex = 21 * ( pageNumber - 1 );
+            int guiIndex = 10;
+            for ( int row = 0; row < 3; row++ ) {
+                for ( int col = 0; col < 7; col++ ) {
+                    GuiItem item;
+
+                    if ( punIndex >= history.size() ) {
+                        item = new GuiItem( CyberItemUtils.createItem( Material.WHITE_STAINED_GLASS_PANE, "&f" ), guiIndex );
+                    }
+
+                    else {
+                        final int finalPunIndex = punIndex;
+                        item = new GuiItem( HistoryUtils.getPunishmentItem( history.get( punIndex ) ),
+                                guiIndex, ( i ) -> {
+                            int punId = history.get( finalPunIndex ).getId();
+                            HistoryEditGui editGui = new HistoryEditGui( staff, punId );
+                            editGui.open();
+                            staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
+                        } );
+                    }
+
+                    this.gui.addOrUpdateItem( item );
+                    guiIndex++;
+                    punIndex++;
+                }
+
+                guiIndex += 2;
+            }
+
+            // Next Page Item
+            // (must be done here because this needs access to the history variable)
+            int maxPages = ( int ) Math.ceil( history.size() / 21.0 );
+            if ( pageNumber < maxPages ) {
+                gui.updateItem( new GuiItem( Material.BOOK, "&pNext Page", 52, ( item ) -> {
+                    HistoryStaffGui listGui = new HistoryStaffGui( target.getPlayer(), staff, pageNumber + 1, sort );
+                    listGui.open();
+                    staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
+                } ) );
+            }
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+
+        // Current page item
+        ItemStack paper = CyberItemUtils.createItem( Material.PAPER, "&sPage &p#" + pageNumber );
+        CyberItemUtils.setItemLore( paper, "&sClick any item to edit the punishment!" );
+        gui.addItem( new GuiItem( paper, 40 ) );
+
+        // Sort Hopper Item
+        gui.addItem( new GuiItem( HistoryUtils.getSortHopper( sort ), 49, ( item ) -> {
+            SortBy next = SortBy.FIRST_DATE;
+            if ( sort == SortBy.FIRST_DATE ) { next = SortBy.LAST_DATE; }
+            else if ( sort == SortBy.LAST_DATE ) { next = SortBy.FIRST_ACTIVE; }
+            else if ( sort == SortBy.FIRST_ACTIVE ) { next = SortBy.LAST_ACTIVE; }
+            else if ( sort == SortBy.LAST_ACTIVE ) { next = SortBy.FIRST_DATE; }
+
+            HistoryStaffGui listGui = new HistoryStaffGui( target.getPlayer(), staff, pageNumber, next );
+            listGui.open();
+            staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
+        } ) );
+
+        // Previous Page Item
+        if ( pageNumber >= 2 ) {
+            gui.addItem( new GuiItem( Material.BOOK, "&pPrevious Page", 46, ( item ) -> {
+                HistoryStaffGui listGui = new HistoryStaffGui( target.getPlayer(), staff, pageNumber - 1, sort );
+                listGui.open();
+                staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
+            } ) );
+        }
+    }
+
+    /**
+     * Opens the GUI to the staff member
+     */
+    public void open() {
+        Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
+            gui.openInventory( this.staff );
+        } );
+    }
+
+    /**
+     * @return A list of all slots that will be used to display
+     *         punishments
+     */
+    private List<Integer> getPunishmentSlots() {
+        List<Integer> toReturn = new ArrayList<>();
+        // returning 10 -> 16, 19 -> 25, and 28 -> 34
+        for ( int i = 10; i <= 16; i++ ) {
+            toReturn.add( i );
+            toReturn.add( i + 9 );
+            toReturn.add( i + 18 );
+        }
+
+        return toReturn;
+    }
 }

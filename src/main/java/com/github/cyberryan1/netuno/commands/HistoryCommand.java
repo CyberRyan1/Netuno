@@ -8,6 +8,7 @@ import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.guis.history.HistoryEditGui;
 import com.github.cyberryan1.netuno.guis.history.HistoryListGui;
+import com.github.cyberryan1.netuno.guis.history.HistoryStaffGui;
 import com.github.cyberryan1.netuno.models.commands.CommandHelpInfo;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
@@ -32,9 +33,12 @@ public class HistoryCommand extends CyberSuperCommand {
         new CommandHelpInfo( list, helpOrder + 1 );
         HistoryEditSubcommand edit = new HistoryEditSubcommand();
         new CommandHelpInfo( edit, helpOrder + 2 );
+        HistoryStaffSubcommand staff = new HistoryStaffSubcommand();
+        new CommandHelpInfo( staff, helpOrder + 3 );
 
         addSubCommand( list );
         addSubCommand( edit );
+        addSubCommand( staff );
 
         demandPermission( true );
         demandPlayer( true );
@@ -121,6 +125,38 @@ class HistoryEditSubcommand extends CyberSubCommand {
                 gui.open();
             }
         } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+        return true;
+    }
+}
+
+class HistoryStaffSubcommand extends CyberSubCommand {
+
+    public HistoryStaffSubcommand() {
+        super(
+                "staff",
+                Settings.HISTORY_PERMISSION.string(),
+                Settings.PERM_DENIED_MSG.coloredString(),
+                "&8/&shistory &pstaff (player)"
+        );
+        setDemandPermission( true );
+        setDemandPlayer( true );
+        setMinArgLength( 1 );
+        setArgType( 0, ArgType.OFFLINE_PLAYER );
+
+    }
+
+    @Override
+    public List<String> tabComplete( SentCommand command, SentSubCommand subCommand ) {
+        return List.of();
+    }
+
+    @Override
+    public boolean execute( SentCommand command, SentSubCommand subCommand ) {
+        final Player player = subCommand.getPlayer();
+        final OfflinePlayer target = subCommand.getOfflinePlayerAtArg( 0 );
+
+        HistoryStaffGui gui = new HistoryStaffGui( player, target );
+        gui.open();
         return true;
     }
 }
