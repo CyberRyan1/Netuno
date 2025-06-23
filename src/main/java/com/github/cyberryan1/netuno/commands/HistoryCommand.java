@@ -6,6 +6,7 @@ import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentSubCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.ArgType;
 import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.guis.history.HistoryConfirmDeleteGui;
 import com.github.cyberryan1.netuno.guis.history.HistoryEditGui;
 import com.github.cyberryan1.netuno.guis.history.HistoryListGui;
@@ -38,11 +39,14 @@ public class HistoryCommand extends CyberSuperCommand {
         new CommandHelpInfo( staff, helpOrder + 3 );
         HistoryDeleteSubcommand delete = new HistoryDeleteSubcommand();
         new CommandHelpInfo( delete, helpOrder + 4 );
+        HistoryResetSubcommand reset = new HistoryResetSubcommand();
+        new CommandHelpInfo( reset, helpOrder + 5 );
 
         addSubCommand( list );
         addSubCommand( edit );
         addSubCommand( staff );
         addSubCommand( delete );
+        addSubCommand( reset );
 
         demandPermission( true );
         demandPlayer( true );
@@ -202,6 +206,45 @@ class HistoryDeleteSubcommand extends CyberSubCommand {
                 gui.open();
             }
         } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+        return true;
+    }
+}
+
+class HistoryResetSubcommand extends CyberSubCommand {
+
+    public HistoryResetSubcommand() {
+        super(
+                "reset",
+                Settings.HISTORY_RESET_PERMISSION.string(),
+                Settings.PERM_DENIED_MSG.coloredString(),
+                "&8/&shistory &preset (player)"
+        );
+        setDemandPermission( true );
+        setDemandPlayer( true );
+        setMinArgLength( 1 );
+        setArgType( 0, ArgType.OFFLINE_PLAYER );
+    }
+
+    @Override
+    public List<String> tabComplete( SentCommand command, SentSubCommand subCommand ) {
+        return List.of();
+    }
+
+    @Override
+    public boolean execute( SentCommand command, SentSubCommand subCommand ) {
+        final OfflinePlayer target = subCommand.getOfflinePlayerAtArg( 0 );
+        subCommand.respond( "&sDeleting all punishments for &p" +  target.getName() + "&s..." );
+
+        Netuno.SERVICE.getPlayer( target ).thenAccept( apiTarget -> {
+            int size = apiTarget.getPunishments().size();
+            List<ApiPunishment> punishments = apiTarget.getPunishments();
+            for ( int index = size - 1; index >= 0; index-- ) {
+                Netuno.PUNISHMENT_SERVICE.deletePunishment( punishments.get( index ) );
+            }
+
+            subCommand.respond( "&sSuccessfully deleted &p" + size + "&s punishments" );
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+
         return true;
     }
 }
