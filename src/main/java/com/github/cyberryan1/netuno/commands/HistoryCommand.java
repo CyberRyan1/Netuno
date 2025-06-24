@@ -44,6 +44,8 @@ public class HistoryCommand extends CyberSuperCommand {
         new CommandHelpInfo( reset, helpOrder + 5 );
         HistoryRollbackPlayerSubcommand rollbackPlayer = new HistoryRollbackPlayerSubcommand();
         new CommandHelpInfo( rollbackPlayer, helpOrder + 6 );
+        HistoryRollbackStaffSubcommand rollbackStaff = new HistoryRollbackStaffSubcommand();
+        new CommandHelpInfo( rollbackStaff, helpOrder + 7 );
 
         addSubCommand( list );
         addSubCommand( edit );
@@ -51,6 +53,7 @@ public class HistoryCommand extends CyberSuperCommand {
         addSubCommand( delete );
         addSubCommand( reset );
         addSubCommand( rollbackPlayer );
+        addSubCommand( rollbackStaff );
 
         demandPermission( true );
         demandPlayer( true );
@@ -291,6 +294,59 @@ class HistoryRollbackPlayerSubcommand extends CyberSubCommand {
 
         Netuno.SERVICE.getPlayer( target ).thenAccept( apiPlayer -> {
             final List<ApiPunishment> punishments = apiPlayer.getPunishments();
+            int deleted = 0;
+
+            for ( int index = punishments.size() - 1; index >= 0; index-- ) {
+                ApiPunishment current = punishments.get( index );
+                // if the timestamp has not expired, then that means it is within the provided duration since the current time
+                if ( TimestampUtils.timestampHasExpired( current.getTimestamp(), duration ) == false ) {
+                    Netuno.PUNISHMENT_SERVICE.deletePunishment( current );
+                    deleted++;
+                }
+            }
+
+            subCommand.respond( "&sSuccessfully deleted &p" +  deleted + "&s punishments" );
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+
+        return true;
+    }
+}
+
+class HistoryRollbackStaffSubcommand extends CyberSubCommand {
+
+    public HistoryRollbackStaffSubcommand() {
+        super(
+                "rollbackstaff",
+                Settings.HISTORY_ROLLBACK_STAFF_PERMISSION.string(),
+                Settings.PERM_DENIED_MSG.coloredString(),
+                "&8/&shistory &prollbackstaff (staff) (time)"
+        );
+        setDemandPermission( true );
+        setDemandPlayer( true );
+        setMinArgLength( 2 );
+        setArgType( 0, ArgType.OFFLINE_PLAYER );
+    }
+
+    @Override
+    public List<String> tabComplete( SentCommand command, SentSubCommand subCommand ) {
+        return List.of();
+    }
+
+    @Override
+    public boolean execute( SentCommand command, SentSubCommand subCommand ) {
+        final OfflinePlayer target = subCommand.getOfflinePlayerAtArg( 0 );
+        final String timespanArg = subCommand.getArg( 1 );
+
+        if ( TimestampUtils.isAllowableLength( timespanArg ) == false ) {
+            CommandErrors.sendInvalidTimespan( command.getPlayer(), timespanArg );
+            return true;
+        }
+
+        final long duration = TimestampUtils.getTimestampFromUnformulatedLength( timespanArg );
+        final String durationString = TimestampUtils.timestampToFormulatedLength( duration, -1 );
+        subCommand.respond( "&sRolling back &p" + target.getName() + "&s's executed punishments by &p" + durationString + "&s..." );
+
+        Netuno.PUNISHMENT_SERVICE.getPunishmentsExecutedByPlayer( target ).thenAccept( punishments -> {
             int deleted = 0;
 
             for ( int index = punishments.size() - 1; index >= 0; index-- ) {
