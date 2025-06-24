@@ -27,6 +27,7 @@
 - - [X] Punishment database
 - - [ ] Togglesigns database
 - - - [ ] Make the togglesigns database into a "staff settings" database
+- - - - Making the togglesigns database into a settings database will also allow us to save other settings, i.e. chat mute status, chat delay status, etc.
 - - [ ] Reports database
 - [X] Update to latest version of spigot/paper
 - [X] Update java version
