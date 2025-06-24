@@ -2,11 +2,11 @@ package com.github.cyberryan1.netuno.commands;
 
 import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.command.CyberCommand;
+import com.github.cyberryan1.cybercore.spigot.command.CyberSubCommand;
+import com.github.cyberryan1.cybercore.spigot.command.CyberSuperCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.BaseCommand;
-import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
-import com.github.cyberryan1.cybercore.spigot.utils.CyberCommandUtils;
-import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.*;
 import com.github.cyberryan1.netuno.models.commands.CommandHelpInfo;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import net.kyori.adventure.text.Component;
@@ -80,9 +80,39 @@ public class NetunoCommand extends CyberCommand {
                     if ( index >= registry.size() ) break;
 
                     final CommandHelpInfo com = registry.get( index );
+                    if ( com.getCommand().getUsage() == null ) continue;
                     String commandUsage = HELP_MESSAGE_COMMAND_USAGE_BASE_MSG + "\n";
-                    commandUsage = commandUsage.replace( "{COMMAND_NAME}", com.getCommand().getName() );
-                    commandUsage = commandUsage.replace( "{COMMAND_ARGS}", extractCommandHelpArgsOnly( com.getCommand() ) );
+
+                    // handling sub commands
+                    if ( com.getCommand() instanceof CyberSubCommand ) {
+                        CyberSubCommand subCommand = ( CyberSubCommand ) com.getCommand();
+                        CyberSuperCommand superCommand = null;
+
+                        // getting the super command of this sub command
+                        for ( int i = 0; i < registry.size(); i++ ) {
+                            final CommandHelpInfo currentHelpInfo =  registry.get( i );
+                            if ( currentHelpInfo.getCommand() instanceof CyberSuperCommand == false ) continue;
+                            CyberSuperCommand currentSuper = ( CyberSuperCommand ) currentHelpInfo.getCommand();
+                            if ( currentSuper.getSubCommandList().contains( subCommand ) ) {
+                                superCommand = currentSuper;
+                            }
+                            break;
+                        }
+
+                        if ( superCommand == null ) {
+                            CyberLogUtils.logError( "[!] [!] [!] Could not find super command for sub command" );
+                            throw new NullPointerException( "superCommand is null" );
+                        }
+
+                        commandUsage = commandUsage.replace( "{COMMAND_NAME}", superCommand.getName() );
+                        commandUsage = commandUsage.replace( "{COMMAND_ARGS}", extractCommandHelpArgsOnly( com.getCommand() ) );
+                    }
+
+                    else {
+                        commandUsage = commandUsage.replace( "{COMMAND_NAME}", com.getCommand().getName() );
+                        commandUsage = commandUsage.replace( "{COMMAND_ARGS}", extractCommandHelpArgsOnly( com.getCommand() ) );
+                    }
+
                     unparsedMsg += commandUsage;
                 }
 
@@ -132,6 +162,7 @@ public class NetunoCommand extends CyberCommand {
     }
 
     private String extractCommandHelpArgsOnly( BaseCommand command ) {
+        CyberMsgUtils.broadcast( "command.getName() == " + command.getName() + " || command.getUsage() == " + command.getUsage() ); // ! debug
         String usage = CyberColorUtils.reverseColor( command.getUsage() );
         int startIndex2 = usage.indexOf( " " ); // gets the index of the first space -- everything after that should be the args
         usage = usage.substring( startIndex2 + 1 );

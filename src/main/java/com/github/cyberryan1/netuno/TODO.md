@@ -14,8 +14,6 @@
 
 ### Bugs (unfixed)
 - [ ] Forgot to add support for hover text in punished alt notifications
-- [ ] Error when trying to press the arrows in the /netuno help command
-- - [ ] Error when doing /netuno help 2
 - [ ] History list GUI does not work correctly when it is used for the first time after the server starts
 - - No clue how to fix this
 - [ ] There might be issues with sending punishment notifications, i.e. being sent them repeatedly
@@ -106,3 +104,5 @@
 - - They work for the target, but none of their alts are properly punished
 - [X] In the database, for punishments that were executed by console, their active column remains at one even though the punishment has expired
 - [X] Punishment GUIs take time to load and don't load at the same time- try and synchronize them
+- [X] Error when trying to press the arrows in the /netuno help command
+- - [X] Error when doing /netuno help 2
