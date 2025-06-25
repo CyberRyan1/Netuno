@@ -1,6 +1,7 @@
 package com.github.cyberryan1.netuno.services;
 
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
+import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.api.models.ApiStaff;
@@ -80,7 +81,7 @@ public class NetunoService implements ApiNetunoService {
             getStaff( event.getPlayer() ).thenAccept( staff -> {
                 String settingName = SettingsDatabase.NAME_SIGN_NOTIF_STATUS.replace( "%uuid%", event.getPlayer().getUniqueId().toString() );
                 SettingsDatabase.saveSetting( settingName, staff.getSignNotificationStatus() + "" );
-            } );
+            } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
         } );
         this.ALT_SERVICE.initialize();
 
