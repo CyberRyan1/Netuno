@@ -77,7 +77,8 @@ public class NetunoStaff implements ApiStaff {
     public void setSignNotificationStatus( boolean status ) {
         this.signNotificationStatus = status;
         CompletableFuture.runAsync( () -> {
-            SettingsDatabase.saveSetting( uuid.toString() + "@sign", String.valueOf( status ) );
+            String settingName = SettingsDatabase.NAME_SIGN_NOTIF_STATUS.replace( "%uuid%", uuid.toString() );
+            SettingsDatabase.saveSetting( settingName, String.valueOf( status ) );
         } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
     }
 
