@@ -15,6 +15,13 @@ public class SettingsDatabase {
     private static final String TYPE_LIST = "(number, name, data)";
     private static final String UNKNOWN_LIST = "(?, ?, ?)";
 
+    /*
+    Settings names:
+    > %uuid%@sign   <--- sign notification status for the player with the UUID
+    > chat-slow     <--- chat slow, in seconds
+    > chat-disabled <--- chat disabled (true) or chat enabled (false)
+     */
+
     /**
      * Saves a setting to the database. If the setting already
      * exists, its data will be updated.
