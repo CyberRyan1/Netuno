@@ -11,6 +11,7 @@ import com.github.cyberryan1.netuno.guis.history.HistoryEditManager;
 import com.github.cyberryan1.netuno.guis.punish.managers.ActivePunishGuiManager;
 import com.github.cyberryan1.netuno.listeners.ChatListener;
 import com.github.cyberryan1.netuno.listeners.PreLoginListener;
+import com.github.cyberryan1.netuno.listeners.SignChangeListener;
 import com.github.cyberryan1.netuno.services.AltService;
 import com.github.cyberryan1.netuno.services.NetunoService;
 import com.github.cyberryan1.netuno.services.PunishmentService;
@@ -179,5 +180,6 @@ public final class Netuno extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents( new PreLoginListener(), this );
         this.getServer().getPluginManager().registerEvents( new ChatListener(), this );
         this.getServer().getPluginManager().registerEvents( new HistoryEditManager(), this );
+        this.getServer().getPluginManager().registerEvents( new SignChangeListener(), this );
     }
 }
