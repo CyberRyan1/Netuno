@@ -174,6 +174,7 @@ public final class Netuno extends JavaPlugin {
         // From here on, we need to use an increment by 1 from the previous help order
         new IpinfoCommand( helpOrder + 1 );
         new HistoryCommand( helpOrder + 2 );
+        new ToggleSignsCommand( helpOrder + 3 );
     }
 
     private void registerListeners() {
