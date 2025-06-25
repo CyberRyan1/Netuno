@@ -1,14 +1,19 @@
 package com.github.cyberryan1.netuno.services;
 
+import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
+import com.github.cyberryan1.netuno.api.models.ApiStaff;
 import com.github.cyberryan1.netuno.api.services.ApiAltService;
 import com.github.cyberryan1.netuno.api.services.ApiNetunoService;
 import com.github.cyberryan1.netuno.api.services.ApiPunishmentService;
+import com.github.cyberryan1.netuno.database.SettingsDatabase;
 import com.github.cyberryan1.netuno.debug.CacheDebugPrinter;
 import com.github.cyberryan1.netuno.models.NPlayer;
+import com.github.cyberryan1.netuno.models.NetunoStaff;
 import com.github.cyberryan1.netuno.models.Punishment;
 import com.github.cyberryan1.netuno.models.helpers.PlayerLoginLogoutCache;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -50,6 +55,7 @@ public class NetunoService implements ApiNetunoService {
     };
 
     private final PlayerLoginLogoutCache<NPlayer> PLAYER_CACHE = new PlayerLoginLogoutCache<>();
+    private final PlayerLoginLogoutCache<NetunoStaff> STAFF_CACHE = new PlayerLoginLogoutCache<>();
     private final PunishmentService PUNISHMENT_SERVICE;
     private final AltService ALT_SERVICE;
 
@@ -68,11 +74,22 @@ public class NetunoService implements ApiNetunoService {
      */
     public void initialize() {
         this.PLAYER_CACHE.setLoginScript( event -> Optional.of( new NPlayer( event.getUniqueId() ) ) );
+        this.STAFF_CACHE.setLoginScript( event -> Optional.of( new NetunoStaff( event.getUniqueId() ) ) );
+        this.STAFF_CACHE.setDataValidityScript( uuid -> CyberVaultUtils.hasPerms( Bukkit.getOfflinePlayer( uuid ), Settings.STAFF_PERMISSION.string() ) );
+        this.STAFF_CACHE.setLogoutScript( event -> {
+            getStaff( event.getPlayer() ).thenAccept( staff -> {
+                String settingName = SettingsDatabase.NAME_SIGN_NOTIF_STATUS.replace( "%uuid%", event.getPlayer().getUniqueId().toString() );
+                SettingsDatabase.saveSetting( settingName, staff.getSignNotificationStatus() + "" );
+            } );
+        } );
         this.ALT_SERVICE.initialize();
 
         // Loading all online players
         for ( Player p : Bukkit.getOnlinePlayers() ) {
             getPlayer( p );
+            if ( p.hasPermission( Settings.STAFF_PERMISSION.string() ) ) {
+                getStaff( p );
+            }
         }
     }
 
@@ -134,6 +151,62 @@ public class NetunoService implements ApiNetunoService {
                 this.PLAYER_CACHE.updateDataState( uuid );
                 // We change our to return to be what is currently in the cache
                 toReturn = this.PLAYER_CACHE.getData( uuid ).get();
+            }
+
+            return toReturn;
+        } );
+    }
+
+    /**
+     * Gets the provided player as an API player right now. This
+     * should only be ran if the player is online, as it should
+     * be guaranteed that the player is cached
+     * @param player A player
+     * @return The player and all of their Netuno data
+     */
+    @Override
+    public Optional<ApiPlayer> getPlayerNow( Player player ) {
+        if ( this.PLAYER_CACHE.containsPlayer( player.getUniqueId() ) ) {
+            return Optional.of( this.PLAYER_CACHE.getData( player.getUniqueId() ).get() );
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * @param player A staff member
+     * @return The staff member and all of their Netuno data
+     */
+    @Override
+    public CompletableFuture<ApiStaff> getStaff( OfflinePlayer player ) {
+        return getStaff( player.getUniqueId() );
+    }
+
+    /**
+     * @param uuid A staff member's uuid
+     * @return The staff member and all of their Netuno data
+     */
+    @Override
+    public CompletableFuture<ApiStaff> getStaff( UUID uuid ) {
+        return CompletableFuture.supplyAsync( () -> {
+            NetunoStaff toReturn = new NetunoStaff( uuid );
+            final boolean playerOnline = Bukkit.getPlayer( uuid ) != null;
+
+            if ( this.STAFF_CACHE.containsPlayer( uuid ) == false ) {
+                // If the cache doesn't contain the player but they are
+                //      online, add their data as active
+                if ( playerOnline )
+                    this.STAFF_CACHE.insertActiveData( uuid, toReturn );
+                    // If the cache doesn't contain the player and they are
+                    //      offline, add their data as inactive
+                else
+                    this.STAFF_CACHE.insertInactiveData( uuid, toReturn );
+            }
+            else {
+                // If the cache does contain the player, we just update
+                //      the state of their cached data
+                this.STAFF_CACHE.updateDataState( uuid );
+                // We change our to return to be what is currently in the cache
+                toReturn = this.STAFF_CACHE.getData( uuid ).get();
             }
 
             return toReturn;

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 /**
  * Used to manage cached data for players by loading the data for a player
@@ -43,6 +44,7 @@ public class PlayerLoginLogoutCache<T> {
     private LoginScriptExecutor<T> loginScript = null;
     private LogoutScriptExecutor logoutScript = null;
     private GenericScriptExecutor<T> updateScript = null;
+    private Predicate<UUID> dataValidityScript = null;
     private GenericScriptExecutor<T> removalScript = null;
 
     /**
@@ -113,6 +115,22 @@ public class PlayerLoginLogoutCache<T> {
 
     /**
      * @param script The script that runs when a piece of cached
+     *               data is iterated through. This means that
+     *               when we are iterating through the cache,
+     *               this script will be ran to ensure the data
+     *               is still valid. If this script returns true,
+     *               then the cached data will remain in the
+     *               cache. Otherwise, it will be removed. <br>
+     *               If you don't want a data validity script to
+     *               be ran, set this to null. Note that this
+     *               will NOT be ran async
+     */
+    public void setDataValidityScript( Predicate<UUID> script ) {
+        this.dataValidityScript = script;
+    }
+
+    /**
+     * @param script The script that runs when a piece of cached
      *               data is removed because it is both (a) marked
      *               as {@link CacheDataState#INACTIVE} and (b)
      *               was last accessed at a time greater than
@@ -152,6 +170,20 @@ public class PlayerLoginLogoutCache<T> {
      */
     GenericScriptExecutor<T> getUpdateScript() {
         return this.updateScript;
+    }
+
+    /**
+     * @return The script that runs when a piece of cached data
+     * is iterated through. This means that when we are iterating
+     * through the cache, this script will be ran to ensure the
+     * data is still valid. If this script returns true, then the
+     * cached data will remain in the cache. Otherwise, it will
+     * be removed. <br>
+     * If you don't want a data validity script to be ran, set
+     * this to null. Note that this will NOT be ran async
+     */
+    Predicate<UUID> getDataValidityScript() {
+        return this.dataValidityScript;
     }
 
     /**
@@ -317,12 +349,22 @@ public class PlayerLoginLogoutCache<T> {
     }
 
     /**
+     * Checks if a player has any data within this cache. Also
+     * runs the {@link #getDataValidityScript()} to ensure its
+     * data is still valid, provided a data validity script is
+     * provided. If the data is not valid, then it will be
+     * removed from the cache and false will be returned
+     *
      * @param uuid A player's UUID
      * @return True if any data for the player is within this
      * cache, false otherwise
      */
     public boolean containsPlayer( UUID uuid ) {
-        return this.CACHE.containsKey( uuid );
+        if ( this.CACHE.containsKey( uuid ) == false ) return false;
+        if ( this.dataValidityScript == null ) return true;
+        if ( this.dataValidityScript.test( uuid ) ) return true;
+        clearData( uuid );
+        return false;
     }
 
     /**
@@ -336,11 +378,17 @@ public class PlayerLoginLogoutCache<T> {
      * @param uuid A player's UUID
      * @return The data associated with the provided player
      * that is cached here. Returns an empty optional if the
-     * player is not contained within this cache
+     * player is not contained within this cache. If
+     * {@link #getDataValidityScript()} is not null, then it
+     * will be run first before retrieving any data.
      */
     public Optional<T> getData( UUID uuid ) {
         CacheData<T> data = this.CACHE.get( uuid );
         if ( data == null ) return Optional.empty();
+        if ( this.dataValidityScript != null && this.dataValidityScript.test( uuid ) == false ) {
+            clearData( uuid );
+            return Optional.empty();
+        }
         return Optional.of( data.accessData() );
     }
 
@@ -381,9 +429,11 @@ public class PlayerLoginLogoutCache<T> {
      * Goes through the cache and expires any data that is
      * (a) marked as {@link CacheDataState#INACTIVE}, and (b)
      * was last accessed more than the time specified by
-     * {@link #getRemovalDelay()} ago. Items that meat this
+     * {@link #getRemovalDelay()} ago. Items that meet this
      * criteria are removed via the {@link #clearData(UUID)}
-     * method. <br><br>
+     * method. Also expires any data that does not satisfy the
+     * data validity script, as given by
+     * {@link #getDataValidityScript()}<br><br>
      *
      * <b>Note:</b> this should typically never be used by
      * anything else except for the automatic removal task
@@ -392,6 +442,10 @@ public class PlayerLoginLogoutCache<T> {
         for ( UUID uuid : this.CACHE.keySet() ) {
             CacheData<T> data = this.CACHE.get( uuid );
             if ( data.getState() == CacheDataState.INACTIVE && data.getLastAccessTimestamp() <= System.currentTimeMillis() - removalDelay ) {
+                clearData( uuid );
+            }
+
+            else if ( this.dataValidityScript != null && this.dataValidityScript.test( uuid ) == false ) {
                 clearData( uuid );
             }
         }
