@@ -15,12 +15,11 @@ public class SettingsDatabase {
     private static final String TYPE_LIST = "(number, name, data)";
     private static final String UNKNOWN_LIST = "(?, ?, ?)";
 
-    /*
-    Settings names:
-    > %uuid%@sign   <--- sign notification status for the player with the UUID
-    > chat-slow     <--- chat slow, in seconds
-    > chat-disabled <--- chat disabled (true) or chat enabled (false)
-     */
+    // settings names
+    //                                           replace %uuid% with the player's uuid
+    public static final String NAME_SIGN_NOTIF_STATUS = "%uuid%@sign"; // sign notification status for the player with the UUID
+    public static final String NAME_CHAT_SLOW = "chat-slow"; // chat slow, in seconds
+    public static final String NAME_CHAT_DISABLED = "chat-disabled"; // chat disabled (true) or chat enabled (false)
 
     /**
      * Saves a setting to the database. If the setting already
@@ -70,5 +69,20 @@ public class SettingsDatabase {
         }
 
         return toReturn;
+    }
+
+    /**
+     * Deletes a setting from the database by its name
+     *
+     * @param name The name of the setting to delete
+     */
+    public static void deleteSetting( String name ) {
+        String sql = "DELETE FROM " + TABLE_NAME + " WHERE name = ?";
+        try ( java.sql.PreparedStatement stmt = ConnectionManager.CONN.prepareStatement( sql ) ) {
+            stmt.setString( 1, name );
+            stmt.executeUpdate();
+        } catch ( SQLException e ) {
+            throw new RuntimeException( e );
+        }
     }
 }
