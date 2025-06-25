@@ -25,8 +25,8 @@
 - [ ] Databases
 - - [X] IP database
 - - [X] Punishment database
-- - [ ] Togglesigns database
-- - - [ ] Make the togglesigns database into a "staff settings" database
+- - [X] Togglesigns database
+- - - [X] Make the togglesigns database into a "staff settings" database
 - - - - Making the togglesigns database into a settings database will also allow us to save other settings, i.e. chat mute status, chat delay status, etc.
 - - [ ] Reports database
 - [X] Update to latest version of spigot/paper
@@ -62,7 +62,7 @@
 - - [ ] In alts GUI, add functionality to allow staff to view the account's punishment history
 - [ ] Report command
 - [ ] Reports command
-- [ ] Togglesigns command
+- [X] Togglesigns command
 
 ### Alt Alerts
 - [X] Warn staff when a player joins with punished alts
