@@ -13,6 +13,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Helper class for working with the punishments database table
+ *
+ * @author Ryan
+ */
 public class PunishmentsDatabase {
 
     private static final String TABLE_NAME = "punishments";

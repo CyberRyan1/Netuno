@@ -7,6 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+/**
+ * Helper class for working with the IP list database table
+ *
+ * @author Ryan
+ */
 public class IpListDatabase {
 
     private static final String TABLE_NAME = "ip";
