@@ -29,10 +29,16 @@ public enum SQLiteTables {
             "`reason` STRING NOT NULL );"
     ),
 
-    RANDOM_TABLE( "CREATE TABLE IF NOT EXISTS random (" +
-            "inde INTEGER PRIMARY KEY AUTOINCREMENT," + // we ignore this column
-            "k TEXT NOT NULL," +
-            "v TEXT NOT NULL );"
+//    RANDOM_TABLE( "CREATE TABLE IF NOT EXISTS random (" +
+//            "inde INTEGER PRIMARY KEY AUTOINCREMENT," + // we ignore this column
+//            "k TEXT NOT NULL," +
+//            "v TEXT NOT NULL );"
+//    ),
+
+    SETTINGS_TABLE( "CREATE TABLE IF NOT EXISTS settings(" +
+                            "number INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            "name TEXT NOT NULL," +
+                            "data TEXT NOT NUll );"
     );
 
     private String sql;
