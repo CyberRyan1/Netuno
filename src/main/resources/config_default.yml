@@ -381,49 +381,103 @@ ipinfo:
 ########################################
 #                 Chat                 #
 ########################################
-mutechat:
-  perm: "netuno.mutechat"
-  # Players with the below permission and the general.staff-perm permission will bypass mutechat
-  bypass-perm: "netuno.mutechat.bypass"
-  enable-broadcast:
-    - ""
-    - "&7The chat has been &aenabled&7!"
-    - ""
-  disable-broadcast:
-    - ""
-    - "&7The chat has been &cdisabled&7!"
-    - ""
-  # What to send when a player attempts to chat while it's muted
-  attempt:
-    - ""
-    - "&7The chat is currently &6muted&7!"
-    - ""
+# /chat command
+chat:
+  perm: "netuno.chat"
 
-clearchat:
-  perm: "netuno.clearchat"
-  broadcast: "&7The chat has been cleared!"
-  # If enabled, staff's chat will not be cleared
-  staff-bypass: true
-  # What to send to staff when the chat is cleared
-  # If set to "", then the default broadcast will be sent
-  staff-broadcast: "&7The chat has been cleared by &6[STAFF]"
+  # Settings related to mute chat
+  mute:
+    # Permission to mute/unmute the chat
+    perm: "netuno.chat.mute"
+    # Players with the below permission and the general.staff-perm permission will bypass mutechat
+    bypass-perm: "netuno.mutechat.bypass"
+    enable-broadcast:
+      - ""
+      - "&7The chat has been &aenabled&7!"
+      - ""
+    disable-broadcast:
+      - ""
+      - "&7The chat has been &cdisabled&7!"
+      - ""
+    # What to send when a player attempts to chat while it's muted
+    attempt:
+      - ""
+      - "&7The chat is currently &6muted&7!"
+      - ""
 
-chatslow:
-  # Note: players with the netuno staff permission bypass the chatslow by default
-  perm: "netuno.chatslow"
-  # Permission to bypass the chatslow
-  bypass-perm: "netuno.chatslow.bypass"
-  # Default value to set the chatslow to (in seconds)
-  # Set to 0 for none
-  default-value: 0
-  # What to send to everyone when the chatslow amount is changed
-  # Set to "" for nothing to be sent
-  # All the messages in this (chatslow) section can ONLY use the variable [AMOUNT],
-          # which is the amount of time the chatslow is
-  broadcast: ""
-  # What to send when a player chats quicker then the chatslow allows
-  # Set to "" for nothing to be sent
-  msg: "&7You must wait &6[AMOUNT] seconds&7 before you can chat again"
+  # Settings related to clear chat
+  clear:
+    # Permission to clear the chat
+    perm: "netuno.chat.clear"
+    broadcast: "&7The chat has been cleared!"
+    # If enabled, staff's chat will not be cleared
+    staff-bypass: true
+    # What to send to staff when the chat is cleared
+    # If set to "", then the default broadcast will be sent
+    staff-broadcast: "&7The chat has been cleared by &6[STAFF]"
+
+  # Settings related to slow chat
+  slow:
+    # Permission to slow the chat
+    perm: "netuno.chat.slow"
+    # Permission to bypass the chatslow
+    bypass-perm: "netuno.chatslow.bypass"
+    # Default value to set the chatslow to (in seconds)
+    # Set to 0 for none
+    default-value: 0
+    # What to send to everyone when the chatslow amount is changed
+    # Set to "" for nothing to be sent
+    # All the messages in this (chatslow) section can ONLY use the variable [AMOUNT],
+    # which is the amount of time the chatslow is
+    broadcast: ""
+    # What to send when a player chats quicker then the chatslow allows
+    # Set to "" for nothing to be sent
+    msg: "&7You must wait &6[AMOUNT] seconds&7 before you can chat again"
+
+#
+#mutechat:
+#  perm: "netuno.mutechat"
+#  # Players with the below permission and the general.staff-perm permission will bypass mutechat
+#  bypass-perm: "netuno.mutechat.bypass"
+#  enable-broadcast:
+#    - ""
+#    - "&7The chat has been &aenabled&7!"
+#    - ""
+#  disable-broadcast:
+#    - ""
+#    - "&7The chat has been &cdisabled&7!"
+#    - ""
+#  # What to send when a player attempts to chat while it's muted
+#  attempt:
+#    - ""
+#    - "&7The chat is currently &6muted&7!"
+#    - ""
+#
+#clearchat:
+#  perm: "netuno.clearchat"
+#  broadcast: "&7The chat has been cleared!"
+#  # If enabled, staff's chat will not be cleared
+#  staff-bypass: true
+#  # What to send to staff when the chat is cleared
+#  # If set to "", then the default broadcast will be sent
+#  staff-broadcast: "&7The chat has been cleared by &6[STAFF]"
+#
+#chatslow:
+#  # Note: players with the netuno staff permission bypass the chatslow by default
+#  perm: "netuno.chatslow"
+#  # Permission to bypass the chatslow
+#  bypass-perm: "netuno.chatslow.bypass"
+#  # Default value to set the chatslow to (in seconds)
+#  # Set to 0 for none
+#  default-value: 0
+#  # What to send to everyone when the chatslow amount is changed
+#  # Set to "" for nothing to be sent
+#  # All the messages in this (chatslow) section can ONLY use the variable [AMOUNT],
+#          # which is the amount of time the chatslow is
+#  broadcast: ""
+#  # What to send when a player chats quicker then the chatslow allows
+#  # Set to "" for nothing to be sent
+#  msg: "&7You must wait &6[AMOUNT] seconds&7 before you can chat again"
 
 ########################################
 #                History               #

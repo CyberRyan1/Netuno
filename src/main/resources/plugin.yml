@@ -22,12 +22,13 @@ commands:
     aliases: [unbanip]
   history:
   togglesigns:
-  clearchat:
-  mutechat:
+  #clearchat:
+  #mutechat:
   reports:
   report:
   punish:
     aliases: [pun, p]
-  chatslow:
-    aliases: [slowchat]
+  #chatslow:
+  #  aliases: [slowchat]
   watchlist:
+  chat:

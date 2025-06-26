@@ -133,26 +133,27 @@ public enum Settings {
     //
     // Chat Management
     //
+    CHAT_COMMAND_PERMISSION( "chat.perm", "string" ),
 
     // Mutechat command
-    MUTECHAT_PERMISSION( "mutechat.perm", "string" ),
-    MUTECHAT_BYPASS_PERMISSION( "mutechat.bypass-perm", "string" ),
-    MUTECHAT_CHAT_ENABLE_BROADCAST( "mutechat.enable-broadcast", "strlist" ),
-    MUTECHAT_CHAT_DISABLE_BROADCAST( "mutechat.disable-broadcast", "strlist" ),
-    MUTECHAT_ATTEMPT( "mutechat.attempt", "strlist" ),
+    MUTECHAT_PERMISSION( "chat.mute.perm", "string" ),
+    MUTECHAT_BYPASS_PERMISSION( "chat.mute.bypass-perm", "string" ),
+    MUTECHAT_CHAT_ENABLE_BROADCAST( "chat.mute.enable-broadcast", "strlist" ),
+    MUTECHAT_CHAT_DISABLE_BROADCAST( "chat.mute.disable-broadcast", "strlist" ),
+    MUTECHAT_ATTEMPT( "chat.mute.attempt", "strlist" ),
 
     // Clearchat command
-    CLEARCHAT_PERMISSION( "clearchat.perm", "string" ),
-    CLEARCHAT_BROADCAST( "clearchat.broadcast", "string" ),
-    CLEARCHAT_STAFF_BYPASS( "clearchat.staff-bypass", "boolean" ),
-    CLEARCHAT_STAFF_BROADCAST( "clearchat.staff-broadcast", "string" ),
+    CLEARCHAT_PERMISSION( "chat.clear.perm", "string" ),
+    CLEARCHAT_BROADCAST( "chat.clear.broadcast", "string" ),
+    CLEARCHAT_STAFF_BYPASS( "chat.clear.staff-bypass", "boolean" ),
+    CLEARCHAT_STAFF_BROADCAST( "chat.clear.staff-broadcast", "string" ),
 
     // Chatslow command
-    CHATSLOW_PERMISSION( "chatslow.perm", "string" ),
-    CHATSLOW_BYPASS_PERMISSION( "chatslow.bypass-perm", "string" ),
-    CHATSLOW_DEFAULT_VALUE( "chatslow.default-value", "int" ),
-    CHATSLOW_BROADCAST( "chatslow.broadcast", "string" ),
-    CHATSLOW_MESSAGE( "chatslow.msg", "string" ),
+    CHATSLOW_PERMISSION( "chat.slow.perm", "string" ),
+    CHATSLOW_BYPASS_PERMISSION( "chat.slow.bypass-perm", "string" ),
+    CHATSLOW_DEFAULT_VALUE( "chat.slow.default-value", "int" ),
+    CHATSLOW_BROADCAST( "chat.slow.broadcast", "string" ),
+    CHATSLOW_MESSAGE( "chat.slow.msg", "string" ),
 
     //
     // History
