@@ -28,6 +28,11 @@ public interface ApiNetunoService {
     ApiAltService getAltService();
 
     /**
+     * @return The {@link ApiChatService} instance
+     */
+    ApiChatService getChatService();
+
+    /**
      * @param player A player
      * @return The player and all of their Netuno data
      */

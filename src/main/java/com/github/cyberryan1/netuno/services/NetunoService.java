@@ -6,6 +6,7 @@ import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.api.models.ApiStaff;
 import com.github.cyberryan1.netuno.api.services.ApiAltService;
+import com.github.cyberryan1.netuno.api.services.ApiChatService;
 import com.github.cyberryan1.netuno.api.services.ApiNetunoService;
 import com.github.cyberryan1.netuno.api.services.ApiPunishmentService;
 import com.github.cyberryan1.netuno.database.SettingsDatabase;
@@ -59,15 +60,17 @@ public class NetunoService implements ApiNetunoService {
     private final PlayerLoginLogoutCache<NetunoStaff> STAFF_CACHE = new PlayerLoginLogoutCache<>();
     private final PunishmentService PUNISHMENT_SERVICE;
     private final AltService ALT_SERVICE;
+    private final ChatService CHAT_SERVICE;
 
     /**
      * Note that almost nothing should be done in the
      * constructor, but instead be done in the
      * {@link #initialize()} method
      */
-    public NetunoService( PunishmentService punishmentService, AltService altService ) {
+    public NetunoService( PunishmentService punishmentService, AltService altService, ChatService chatService ) {
         this.PUNISHMENT_SERVICE = punishmentService;
         this.ALT_SERVICE = altService;
+        this.CHAT_SERVICE = chatService;
     }
 
     /**
@@ -114,6 +117,14 @@ public class NetunoService implements ApiNetunoService {
     @Override
     public ApiAltService getAltService() {
         return this.ALT_SERVICE;
+    }
+
+    /**
+     * @return The {@link ApiChatService} instance
+     */
+    @Override
+    public ApiChatService getChatService() {
+        return this.CHAT_SERVICE;
     }
 
     /**

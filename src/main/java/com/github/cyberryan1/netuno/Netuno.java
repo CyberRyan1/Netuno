@@ -13,6 +13,7 @@ import com.github.cyberryan1.netuno.listeners.ChatListener;
 import com.github.cyberryan1.netuno.listeners.PreLoginListener;
 import com.github.cyberryan1.netuno.listeners.SignChangeListener;
 import com.github.cyberryan1.netuno.services.AltService;
+import com.github.cyberryan1.netuno.services.ChatService;
 import com.github.cyberryan1.netuno.services.NetunoService;
 import com.github.cyberryan1.netuno.services.PunishmentService;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
@@ -100,6 +101,7 @@ public final class Netuno extends JavaPlugin {
     // API Things
     public static PunishmentService PUNISHMENT_SERVICE = null;
     public static AltService ALT_SERVICE = null;
+    public static ChatService CHAT_SERVICE = null;
     public static NetunoService SERVICE = null;
 
     public static final ActivePunishGuiManager ACTIVE_PUNISH_GUIS = new ActivePunishGuiManager();
@@ -145,7 +147,8 @@ public final class Netuno extends JavaPlugin {
         // Initializing the API services
         PUNISHMENT_SERVICE = new PunishmentService();
         ALT_SERVICE = new AltService();
-        SERVICE = new NetunoService( PUNISHMENT_SERVICE, ALT_SERVICE );
+        CHAT_SERVICE = new ChatService();
+        SERVICE = new NetunoService( PUNISHMENT_SERVICE, ALT_SERVICE, CHAT_SERVICE );
         SERVICE.initialize();
 
         // Registering commands
@@ -158,6 +161,7 @@ public final class Netuno extends JavaPlugin {
     @Override
     public void onDisable() {
         // Closing any API services
+        CHAT_SERVICE.save();
         SERVICE.close();
 
         // Closing database connections
@@ -174,7 +178,10 @@ public final class Netuno extends JavaPlugin {
         // From here on, we need to use an increment by 1 from the previous help order
         new IpinfoCommand( helpOrder + 1 );
         new HistoryCommand( helpOrder + 2 );
+        helpOrder += 7; // 7 history subcommands
         new ToggleSignsCommand( helpOrder + 3 );
+        new ChatCommand( helpOrder + 4 );
+        helpOrder += 5; // 5 history subcommands
     }
 
     private void registerListeners() {
