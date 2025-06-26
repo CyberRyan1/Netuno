@@ -43,9 +43,11 @@
 - - [X] Instant punishments
 - - - [X] Instant punishments for console
 - [ ] Chat management commands
-- - [ ] Chatslow command
-- - [ ] Clearchat command
-- - [ ] Mutechat command
+- - [X] Slow subcommand
+- - [X] Clear subcommand
+- - [X] Mute subcommand
+- - [X] Status subcommand
+- - [ ] Implement functionality for chatmute and chatslow
 - [X] History command
 - - [X] History list GUI
 - - [X] History list subcommand
@@ -63,6 +65,7 @@
 - [ ] Report command
 - [ ] Reports command
 - [X] Togglesigns command
+- [ ] Watchlist command
 
 ### Alt Alerts
 - [X] Warn staff when a player joins with punished alts
