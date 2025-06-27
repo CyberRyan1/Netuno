@@ -61,7 +61,7 @@
 - - [X] History rollbackplayer (player) (time) subcommand
 - - [X] History rollbackstaff (staff) (time/all) subcommand
 - [X] Ipinfo command
-- - [ ] In alts GUI, add functionality to allow staff to view the account's punishment history
+- - [X] In alts GUI, add functionality to allow staff to view the account's punishment history
 - [ ] Report command
 - [ ] Reports command
 - [X] Togglesigns command
