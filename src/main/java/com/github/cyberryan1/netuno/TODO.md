@@ -34,7 +34,7 @@
 - [X] Update CyberCore to latest version of spigot/paper
 - [X] Update CyberCore's java version
 - [ ] Add API event dispatching (where needed)
-- [ ] Rename NPlayer class to NetunoPlayer
+- [X] Rename NPlayer class to NetunoPlayer
 
 ### Commands
 - [X] Netuno command
