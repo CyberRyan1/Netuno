@@ -70,6 +70,9 @@
 ### Alt Alerts
 - [X] Warn staff when a player joins with punished alts
 
+### Punishment expiration alerts
+- [ ] Notify staff when a player joins/chats after their punishment expires
+
 ### Sign Notifications
 - [X] Send sign contents to all staff
 
