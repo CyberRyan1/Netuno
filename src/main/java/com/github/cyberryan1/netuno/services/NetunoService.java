@@ -78,6 +78,7 @@ public class NetunoService implements ApiNetunoService {
      */
     public void initialize() {
         this.PLAYER_CACHE.setLoginScript( event -> Optional.of( new NetunoPlayer( event.getUniqueId() ) ) );
+
         this.STAFF_CACHE.setLoginScript( event -> Optional.of( new NetunoStaff( event.getUniqueId() ) ) );
         this.STAFF_CACHE.setDataValidityScript( uuid -> CyberVaultUtils.hasPerms( Bukkit.getOfflinePlayer( uuid ), Settings.STAFF_PERMISSION.string() ) );
         this.STAFF_CACHE.setLogoutScript( event -> {
@@ -86,6 +87,7 @@ public class NetunoService implements ApiNetunoService {
                 SettingsDatabase.saveSetting( settingName, staff.getSignNotificationStatus() + "" );
             } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
         } );
+
         this.ALT_SERVICE.initialize();
 
         // Loading all online players
