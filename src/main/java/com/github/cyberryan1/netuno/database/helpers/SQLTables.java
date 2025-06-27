@@ -36,8 +36,7 @@ public enum SQLTables {
 //    );
 
     SETTINGS_TABLE( "CREATE TABLE IF NOT EXISTS settings (" +
-                          "number INTEGER PRIMARY KEY AUTO_INCREMENT," + // we ignore this column
-                          "name TEXT NOT NULL," +
+                          "name VARCHAR(50) PRIMARY KEY," + // max length = 50
                           "data TEXT NOT NULL );"
     );
 

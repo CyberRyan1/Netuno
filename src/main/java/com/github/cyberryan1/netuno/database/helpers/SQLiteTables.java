@@ -35,10 +35,9 @@ public enum SQLiteTables {
 //            "v TEXT NOT NULL );"
 //    ),
 
-    SETTINGS_TABLE( "CREATE TABLE IF NOT EXISTS settings(" +
-                            "number INTEGER PRIMARY KEY AUTOINCREMENT," +
-                            "name TEXT NOT NULL," +
-                            "data TEXT NOT NUll );"
+    SETTINGS_TABLE( "CREATE TABLE IF NOT EXISTS settings (" +
+                          "`name` TEXT PRIMARY KEY," +
+                          "`data` TEXT NOT NULL);"
     );
 
     private String sql;

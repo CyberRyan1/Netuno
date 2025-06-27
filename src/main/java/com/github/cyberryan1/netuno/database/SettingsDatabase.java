@@ -12,8 +12,8 @@ import java.util.Optional;
 public class SettingsDatabase {
 
     private static final String TABLE_NAME = "settings";
-    private static final String TYPE_LIST = "(number, name, data)";
-    private static final String UNKNOWN_LIST = "(?, ?, ?)";
+    private static final String TYPE_LIST = "(name, data)";
+    private static final String UNKNOWN_LIST = "(?, ?)";
 
     // settings names
     //                                           replace %uuid% with the player's uuid
@@ -34,10 +34,9 @@ public class SettingsDatabase {
         String sql = "INSERT INTO " + TABLE_NAME + " " + TYPE_LIST + " VALUES " + UNKNOWN_LIST +
                 " ON DUPLICATE KEY UPDATE data = ?";
         try ( PreparedStatement stmt = ConnectionManager.CONN.prepareStatement( sql ) ) {
-            stmt.setInt( 1, 0 );
-            stmt.setString( 2, name );
+            stmt.setString( 1, name );
+            stmt.setString( 2, data );
             stmt.setString( 3, data );
-            stmt.setString( 4, data );
             stmt.executeUpdate();
         } catch ( SQLException e ) {
             throw new RuntimeException( e );
