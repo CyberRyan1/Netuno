@@ -42,12 +42,12 @@
 - [X] Punish command (and GUI)
 - - [X] Instant punishments
 - - - [X] Instant punishments for console
-- [ ] Chat management commands
+- [X] Chat management commands
 - - [X] Slow subcommand
 - - [X] Clear subcommand
 - - [X] Mute subcommand
 - - [X] Status subcommand
-- - [ ] Implement functionality for chatmute and chatslow
+- - [X] Implement functionality for chatmute and chatslow
 - [X] History command
 - - [X] History list GUI
 - - [X] History list subcommand
@@ -71,7 +71,7 @@
 - [X] Warn staff when a player joins with punished alts
 
 ### Sign Notifications
-- [ ] Send sign contents to all staff
+- [X] Send sign contents to all staff
 
 ### Skript Support
 - [ ] Make Skript support a separate plugin
