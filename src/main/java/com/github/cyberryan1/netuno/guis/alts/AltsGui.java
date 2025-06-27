@@ -9,6 +9,7 @@ import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
+import com.github.cyberryan1.netuno.guis.history.HistoryListGui;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -118,6 +119,7 @@ public class AltsGui {
                             ApiPlayer currentAccount = sortedAccounts.get( altIndex );
                             if ( currentAccount.isPunished() ) punishedSkullsIndex.add( guiIndex );
 
+                            final int finalAltIndex = altIndex;
                             gui.updateItem( new GuiItem( getAltSkull( currentAccount ), guiIndex, ( item ) -> {
                                 // * In previous versions, we only allowed the staff to click on this
                                 // *    account's skull to see their history if this account has an
@@ -125,9 +127,8 @@ public class AltsGui {
                                 // * In this version, we should let them see their history no matter
                                 // *    if they are currently punished or not
 
-//                                HistoryListGUI listGui = new HistoryListGUI( alts.get( finalAltIndex ).getPlayer(), staff, 1 );
-//                                listGui.open();
-                                // TODO open history GUI for the selected account here
+                                HistoryListGui listGui = new HistoryListGui( staff, sortedAccounts.get( finalAltIndex ).getPlayer() );
+                                listGui.open();
                                 staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
                             } ) );
                         }
