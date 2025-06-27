@@ -4,7 +4,7 @@ import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.api.services.ApiPunishmentService;
 import com.github.cyberryan1.netuno.database.PunishmentsDatabase;
-import com.github.cyberryan1.netuno.models.NPlayer;
+import com.github.cyberryan1.netuno.models.NetunoPlayer;
 import com.github.cyberryan1.netuno.models.Punishment;
 import org.bukkit.OfflinePlayer;
 
@@ -160,7 +160,7 @@ public class PunishmentService implements ApiPunishmentService {
         PunishmentsDatabase.removePunishmentsWithReferenceId( id );
 
         // Removing the punishment from all cached players
-        for ( NPlayer player : Netuno.SERVICE.getAll() ) {
+        for ( NetunoPlayer player : Netuno.SERVICE.getAll() ) {
             for ( int index = player.getPunishments().size() - 1; index >= 0; index-- ) {
                 ApiPunishment current = player.getPunishments().get( index );
                 if ( current.getId() == id || current.getReferenceId() == id ) {
@@ -175,7 +175,7 @@ public class PunishmentService implements ApiPunishmentService {
      */
     public List<Punishment> getAllCachedPunishments() {
         List<Punishment> toReturn = new ArrayList<>();
-        for ( NPlayer player : Netuno.SERVICE.getAll() )
+        for ( NetunoPlayer player : Netuno.SERVICE.getAll() )
             toReturn.addAll( player.getPunishments().stream()
                     .map( pun -> ( Punishment ) pun )
                     .collect( Collectors.toList() ) );

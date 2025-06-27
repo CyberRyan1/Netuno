@@ -4,7 +4,7 @@ import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
-import com.github.cyberryan1.netuno.models.NPlayer;
+import com.github.cyberryan1.netuno.models.NetunoPlayer;
 import com.github.cyberryan1.netuno.models.Punishment;
 import com.github.cyberryan1.netuno.models.libraries.PunishmentLibrary;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
@@ -27,9 +27,9 @@ public class ChatListener implements Listener {
     @EventHandler
     public void onPlayerChat( AsyncChatEvent event ) {
         // Loading the player from NetunoService
-        final NPlayer player;
+        final NetunoPlayer player;
         try {
-            player = ( NPlayer ) Netuno.SERVICE.getPlayer( event.getPlayer().getUniqueId() ).get();
+            player = ( NetunoPlayer ) Netuno.SERVICE.getPlayer( event.getPlayer().getUniqueId() ).get();
         } catch ( ExecutionException | InterruptedException e ) {
             throw new RuntimeException( e );
         }

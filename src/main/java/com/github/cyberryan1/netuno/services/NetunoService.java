@@ -11,7 +11,7 @@ import com.github.cyberryan1.netuno.api.services.ApiNetunoService;
 import com.github.cyberryan1.netuno.api.services.ApiPunishmentService;
 import com.github.cyberryan1.netuno.database.SettingsDatabase;
 import com.github.cyberryan1.netuno.debug.CacheDebugPrinter;
-import com.github.cyberryan1.netuno.models.NPlayer;
+import com.github.cyberryan1.netuno.models.NetunoPlayer;
 import com.github.cyberryan1.netuno.models.NetunoStaff;
 import com.github.cyberryan1.netuno.models.Punishment;
 import com.github.cyberryan1.netuno.models.helpers.PlayerLoginLogoutCache;
@@ -34,7 +34,7 @@ import java.util.function.Predicate;
  */
 public class NetunoService implements ApiNetunoService {
 
-    public static final CacheDebugPrinter.PrintSpecifier<NPlayer> DEBUG_PRINTER_NPLAYER = player -> {
+    public static final CacheDebugPrinter.PrintSpecifier<NetunoPlayer> DEBUG_PRINTER_NPLAYER = player -> {
         String output = "\tPunishments (" + player.getPunishments().size() + " total):\n";
         for ( ApiPunishment aPun : player.getPunishments() ) {
             Punishment p = ( Punishment ) aPun;
@@ -56,7 +56,7 @@ public class NetunoService implements ApiNetunoService {
         return output;
     };
 
-    private final PlayerLoginLogoutCache<NPlayer> PLAYER_CACHE = new PlayerLoginLogoutCache<>();
+    private final PlayerLoginLogoutCache<NetunoPlayer> PLAYER_CACHE = new PlayerLoginLogoutCache<>();
     private final PlayerLoginLogoutCache<NetunoStaff> STAFF_CACHE = new PlayerLoginLogoutCache<>();
     private final PunishmentService PUNISHMENT_SERVICE;
     private final AltService ALT_SERVICE;
@@ -77,7 +77,7 @@ public class NetunoService implements ApiNetunoService {
      * Initializes this service
      */
     public void initialize() {
-        this.PLAYER_CACHE.setLoginScript( event -> Optional.of( new NPlayer( event.getUniqueId() ) ) );
+        this.PLAYER_CACHE.setLoginScript( event -> Optional.of( new NetunoPlayer( event.getUniqueId() ) ) );
         this.STAFF_CACHE.setLoginScript( event -> Optional.of( new NetunoStaff( event.getUniqueId() ) ) );
         this.STAFF_CACHE.setDataValidityScript( uuid -> CyberVaultUtils.hasPerms( Bukkit.getOfflinePlayer( uuid ), Settings.STAFF_PERMISSION.string() ) );
         this.STAFF_CACHE.setLogoutScript( event -> {
@@ -143,7 +143,7 @@ public class NetunoService implements ApiNetunoService {
     @Override
     public CompletableFuture<ApiPlayer> getPlayer( UUID uuid ) {
         return CompletableFuture.supplyAsync( () -> {
-            NPlayer toReturn = new NPlayer( uuid );
+            NetunoPlayer toReturn = new NetunoPlayer( uuid );
             final boolean playerOnline = Bukkit.getPlayer( uuid ) != null;
 
             if ( this.PLAYER_CACHE.containsPlayer( uuid ) == false ) {
@@ -240,17 +240,17 @@ public class NetunoService implements ApiNetunoService {
      * @deprecated Please use other methods provided within this
      * class
      */
-    public PlayerLoginLogoutCache<NPlayer> getPlayerCache() {
+    public PlayerLoginLogoutCache<NetunoPlayer> getPlayerCache() {
         return this.PLAYER_CACHE;
     }
 
     /**
-     * @return A list of type {@link NPlayer} of all the players
+     * @return A list of type {@link NetunoPlayer} of all the players
      * who are cached. Does NOT refresh the last access timestamp
      * for each of the returned players
      */
-    public List<NPlayer> getAll() {
-        List<NPlayer> toReturn = new ArrayList<>();
+    public List<NetunoPlayer> getAll() {
+        List<NetunoPlayer> toReturn = new ArrayList<>();
         for ( UUID uuid : this.PLAYER_CACHE.getKeySet() ) {
             toReturn.add( this.PLAYER_CACHE.getData( uuid ).get() ); // since the uuid is in the cache, this will never be null
         }
@@ -261,16 +261,16 @@ public class NetunoService implements ApiNetunoService {
     /**
      * @param predicate A predicate with the argument being of
      *                  type UUID
-     * @return A list of type {@link NPlayer} of all the players
+     * @return A list of type {@link NetunoPlayer} of all the players
      * who are cached and satisfy the given predicate. Also
      * refreshes the last access timestamp for each of the
      * returned players
      */
-    public List<NPlayer> getAllThatSatisfy( Predicate<? super NPlayer> predicate ) {
-        List<NPlayer> toReturn = new ArrayList<>();
+    public List<NetunoPlayer> getAllThatSatisfy( Predicate<? super NetunoPlayer> predicate ) {
+        List<NetunoPlayer> toReturn = new ArrayList<>();
         this.PLAYER_CACHE.getKeySet()
                 .forEach( uuid -> {
-                    NPlayer player = this.PLAYER_CACHE.getData( uuid ).get(); // since the uuid is in the cache, this will never be null
+                    NetunoPlayer player = this.PLAYER_CACHE.getData( uuid ).get(); // since the uuid is in the cache, this will never be null
                     if ( predicate.test( player ) == false ) return;
                     toReturn.add( player );
                     this.PLAYER_CACHE.refreshLastAccessTimestamp( uuid );

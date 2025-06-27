@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  *
  * @author Ryan
  */
-public class NPlayer implements ApiPlayer {
+public class NetunoPlayer implements ApiPlayer {
 
     private final UUID uuid;
 
@@ -30,7 +30,7 @@ public class NPlayer implements ApiPlayer {
      *
      * @param uuid The UUID of the player
      */
-    public NPlayer( UUID uuid ) {
+    public NetunoPlayer( UUID uuid ) {
         this.uuid = uuid;
 
         reloadData();
@@ -43,7 +43,7 @@ public class NPlayer implements ApiPlayer {
      *
      * @param player The player
      */
-    public NPlayer( OfflinePlayer player ) {
+    public NetunoPlayer( OfflinePlayer player ) {
         this( player.getUniqueId() );
     }
 

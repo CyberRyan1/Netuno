@@ -6,7 +6,7 @@ import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
-import com.github.cyberryan1.netuno.models.NPlayer;
+import com.github.cyberryan1.netuno.models.NetunoPlayer;
 import com.github.cyberryan1.netuno.models.PlayerIpsRecord;
 import com.github.cyberryan1.netuno.models.Punishment;
 import com.github.cyberryan1.netuno.models.libraries.PunishmentLibrary;
@@ -52,7 +52,7 @@ public class PreLoginListener implements Listener {
 
         // Secondly, we need to load the player from NetunoService
         Netuno.SERVICE.getPlayer( event.getUniqueId() ).thenAccept( apiPlayer -> {
-            final NPlayer player = ( NPlayer ) apiPlayer;
+            final NetunoPlayer player = ( NetunoPlayer ) apiPlayer;
             final List<Punishment> allPunishments = player.getPunishments().stream()
                     .map( pun -> ( Punishment ) pun )
                     .collect( Collectors.toList() );
@@ -65,7 +65,7 @@ public class PreLoginListener implements Listener {
             List<Punishment> altIpPunishments = new ArrayList<>();
             for ( UUID uuid : altUuids ) {
                 try {
-                    final NPlayer altPlayer = ( NPlayer ) Netuno.SERVICE.getPlayer( uuid ).get();
+                    final NetunoPlayer altPlayer = ( NetunoPlayer ) Netuno.SERVICE.getPlayer( uuid ).get();
                     if ( altPlayer == null ) throw new RuntimeException();
 
                     for ( ApiPunishment altPun : altPlayer.getPunishments() ) {
