@@ -184,7 +184,7 @@ public enum Settings {
     REPORT_CONFIRM_MESSAGE( "report.confirm-msg", "strlist" ),
     REPORT_STAFF_MESSAGE( "report.staff-msg", "strlist" ),
     REPORT_VIEW_PERMISSION( "reports.perm", "string" ),
-    REPORT_EXPIRE_TIME( "reports.delete-after", "int" ),
+    REPORT_EXPIRE_TIME_HOURS( "reports.delete-after", "int" ),
 
     //
     // Watchlist
