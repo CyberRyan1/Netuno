@@ -22,18 +22,12 @@ public enum SQLTables {
             "uuid VARCHAR(40) );" ),
 
     REPORTS_TABLE( "CREATE TABLE IF NOT EXISTS reports (" +
-            "id INTEGER PRIMARY KEY," +
+            "id INTEGER PRIMARY KEY AUTO_INCREMENT," +
             "player VARCHAR(42) NOT NULL," +
-            "reporter VARCHAR(42) NOT NULL," +
+            "author VARCHAR(42) NOT NULL," +
             "timestamp INTEGER NOT NULL," +
-            "reason TEXT NOT NULL );"
+            "reasons TEXT NOT NULL );"
     ),
-
-//    RANDOM_TABLE( "CREATE TABLE IF NOT EXISTS random (" +
-//            "inde INTEGER PRIMARY KEY AUTO_INCREMENT," + // we ignore this column
-//            "k TEXT NOT NULL," +
-//            "v TEXT NOT NULL );"
-//    );
 
     SETTINGS_TABLE( "CREATE TABLE IF NOT EXISTS settings (" +
                           "name VARCHAR(50) PRIMARY KEY," + // max length = 50

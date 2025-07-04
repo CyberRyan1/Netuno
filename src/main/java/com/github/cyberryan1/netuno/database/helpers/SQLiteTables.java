@@ -22,18 +22,12 @@ public enum SQLiteTables {
             "uuid VARCHAR(40) );" ),
 
     REPORTS_TABLE( "CREATE TABLE IF NOT EXISTS reports (" +
-            "`id` INTEGER PRIMARY KEY," +
+            "`id` INTEGER PRIMARY KEY AUTOINCREMENT," +
             "`player` STRING NOT NULL," +
-            "`reporter` STRING NOT NULL," +
+            "`author` STRING NOT NULL," +
             "`timestamp` INTEGER NOT NULL," +
-            "`reason` STRING NOT NULL );"
+            "`reasons` STRING NOT NULL );"
     ),
-
-//    RANDOM_TABLE( "CREATE TABLE IF NOT EXISTS random (" +
-//            "inde INTEGER PRIMARY KEY AUTOINCREMENT," + // we ignore this column
-//            "k TEXT NOT NULL," +
-//            "v TEXT NOT NULL );"
-//    ),
 
     SETTINGS_TABLE( "CREATE TABLE IF NOT EXISTS settings (" +
                           "`name` TEXT PRIMARY KEY," +
