@@ -5,10 +5,7 @@ import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.api.models.ApiStaff;
-import com.github.cyberryan1.netuno.api.services.ApiAltService;
-import com.github.cyberryan1.netuno.api.services.ApiChatService;
-import com.github.cyberryan1.netuno.api.services.ApiNetunoService;
-import com.github.cyberryan1.netuno.api.services.ApiPunishmentService;
+import com.github.cyberryan1.netuno.api.services.*;
 import com.github.cyberryan1.netuno.database.SettingsDatabase;
 import com.github.cyberryan1.netuno.debug.CacheDebugPrinter;
 import com.github.cyberryan1.netuno.models.NetunoPlayer;
@@ -58,19 +55,22 @@ public class NetunoService implements ApiNetunoService {
 
     private final PlayerLoginLogoutCache<NetunoPlayer> PLAYER_CACHE = new PlayerLoginLogoutCache<>();
     private final PlayerLoginLogoutCache<NetunoStaff> STAFF_CACHE = new PlayerLoginLogoutCache<>();
+
     private final PunishmentService PUNISHMENT_SERVICE;
     private final AltService ALT_SERVICE;
     private final ChatService CHAT_SERVICE;
+    private final ReportService REPORT_SERVICE;
 
     /**
      * Note that almost nothing should be done in the
      * constructor, but instead be done in the
      * {@link #initialize()} method
      */
-    public NetunoService( PunishmentService punishmentService, AltService altService, ChatService chatService ) {
+    public NetunoService( PunishmentService punishmentService, AltService altService, ChatService chatService, ReportService reportService ) {
         this.PUNISHMENT_SERVICE = punishmentService;
         this.ALT_SERVICE = altService;
         this.CHAT_SERVICE = chatService;
+        this.REPORT_SERVICE = reportService;
     }
 
     /**
@@ -89,6 +89,7 @@ public class NetunoService implements ApiNetunoService {
         } );
 
         this.ALT_SERVICE.initialize();
+        this.REPORT_SERVICE.initialize();
 
         // Loading all online players
         for ( Player p : Bukkit.getOnlinePlayers() ) {
@@ -127,6 +128,14 @@ public class NetunoService implements ApiNetunoService {
     @Override
     public ApiChatService getChatService() {
         return this.CHAT_SERVICE;
+    }
+
+    /**
+     * @return The {@link ApiReportService} instance
+     */
+    @Override
+    public ApiReportService getReportService() {
+        return this.REPORT_SERVICE;
     }
 
     /**

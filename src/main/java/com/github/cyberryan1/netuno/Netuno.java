@@ -12,10 +12,7 @@ import com.github.cyberryan1.netuno.guis.punish.managers.ActivePunishGuiManager;
 import com.github.cyberryan1.netuno.listeners.ChatListener;
 import com.github.cyberryan1.netuno.listeners.PreLoginListener;
 import com.github.cyberryan1.netuno.listeners.SignChangeListener;
-import com.github.cyberryan1.netuno.services.AltService;
-import com.github.cyberryan1.netuno.services.ChatService;
-import com.github.cyberryan1.netuno.services.NetunoService;
-import com.github.cyberryan1.netuno.services.PunishmentService;
+import com.github.cyberryan1.netuno.services.*;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bstats.bukkit.Metrics;
@@ -102,6 +99,7 @@ public final class Netuno extends JavaPlugin {
     public static PunishmentService PUNISHMENT_SERVICE = null;
     public static AltService ALT_SERVICE = null;
     public static ChatService CHAT_SERVICE = null;
+    public static ReportService REPORT_SERVICE = null;
     public static NetunoService SERVICE = null;
 
     public static final ActivePunishGuiManager ACTIVE_PUNISH_GUIS = new ActivePunishGuiManager();
@@ -148,7 +146,9 @@ public final class Netuno extends JavaPlugin {
         PUNISHMENT_SERVICE = new PunishmentService();
         ALT_SERVICE = new AltService();
         CHAT_SERVICE = new ChatService();
-        SERVICE = new NetunoService( PUNISHMENT_SERVICE, ALT_SERVICE, CHAT_SERVICE );
+        REPORT_SERVICE = new ReportService();
+
+        SERVICE = new NetunoService( PUNISHMENT_SERVICE, ALT_SERVICE, CHAT_SERVICE, REPORT_SERVICE );
         SERVICE.initialize();
 
         // Registering commands
