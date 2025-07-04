@@ -4,6 +4,7 @@ import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiReport;
 import com.github.cyberryan1.netuno.api.services.ApiReportService;
 import com.github.cyberryan1.netuno.database.ReportsDatabase;
+import com.github.cyberryan1.netuno.models.NetunoReport;
 import com.github.cyberryan1.netuno.models.helpers.PlayerLoginLogoutCache;
 import com.github.cyberryan1.netuno.utils.TimestampUtils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
@@ -73,6 +74,27 @@ public class ReportService implements ApiReportService {
                                 //                60 minutes per hour
                                 //          60 seconds per minute
                                 //  1000ms per second
+    }
+
+    /**
+     * Adds a new report to both the cache and database. The
+     * report is first validated to ensure it contains valid
+     * data. If the reported player exists in the cache, the
+     * report is added to their cached reports list. The report
+     * is then asynchronously added to the database.
+     *
+     * @param report The report to add. Must be a valid
+     *               {@link NetunoReport} instance <i>(meaning
+     *               that {@link NetunoReport#ensureValid(boolean)}
+     *               throws no errors)</i>
+     */
+    public void addReport( NetunoReport report ) {
+        report.ensureValid( false ); // ensuring the report contains valid data
+        
+        this.REPORT_CACHE.getDataSilently( report.getPlayer() ).ifPresent( reports -> {
+            reports.add( report );
+        } );
+        CompletableFuture.runAsync( () -> ReportsDatabase.addReport( report ) );
     }
 
     /**
