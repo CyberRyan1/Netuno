@@ -94,20 +94,6 @@ public class PunishmentsDatabase {
                     data = processResultSetIntoPunishment( rs );
                     data.setType( type );
                     data.setReferenceId( referencePunId );
-//                    data = new Punishment(
-//                            rs.getInt( "id" ),
-//                            rs.getString( "player" ),
-//                            rs.getString( "staff" ),
-//                            type,
-//                            rs.getLong( "timestamp" ),
-//                            rs.getLong( "length" ),
-//                            rs.getString( "reason" ),
-//                            rs.getInt( "active" ) == 1,
-//                            referencePunId,
-//                            rs.getInt( "guipun" ) == 1,
-//                            rs.getInt( "notif" ) == 1,
-//                            true
-//                    );
                 }
             }
 
@@ -159,30 +145,12 @@ public class PunishmentsDatabase {
 
                     if ( originalPun != null ) {
                         data = getPunishment( rs.getInt( "id" ) );
-//                        data = ( Punishment ) originalPun.copy();
-//                        data.setId( rs.getInt( "id" ) );
-//                        data.setReferenceId( referencePunId );
-//                        data.setPlayer( UUID.fromString( rs.getString( "player" ) ) );
                     }
                 }
 
                 else {
                     data = processResultSetIntoPunishment( rs );
                     data.setReferenceId( referencePunId );
-//                    data = new Punishment(
-//                            rs.getInt( "id" ),
-//                            rs.getString( "player" ),
-//                            rs.getString( "staff" ),
-//                            ApiPunishment.PunType.fromIndex( rs.getInt( "type" ) ),
-//                            rs.getLong( "timestamp" ),
-//                            rs.getLong( "length" ),
-//                            rs.getString( "reason" ),
-//                            rs.getInt( "active" ) == 1,
-//                            referencePunId,
-//                            rs.getInt( "guipun" ) == 1,
-//                            rs.getInt( "notif" ) == 1,
-//                            true
-//                    );
                 }
 
                 if ( data != null ) { toReturn.add( data ); }
@@ -207,7 +175,6 @@ public class PunishmentsDatabase {
     public static List<Punishment> getPunishmentsFromReference( int referenceId ) {
         List<Punishment> toReturn = new ArrayList<>();
         if ( referenceId < 0 ) { return toReturn; }
-//        final Punishment ORIGINAL_PUN = getPunishment( referenceId );
 
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE reference = ?;" );
@@ -217,12 +184,6 @@ public class PunishmentsDatabase {
             while ( rs.next() ) {
                 Punishment data = processResultSetIntoPunishment( rs );
                 data.setReferenceId( referenceId );
-
-//                Punishment data = ( Punishment ) ORIGINAL_PUN.copy();
-//                data.setId( rs.getInt( "id" ) );
-//                data.setReferenceId( referenceId );
-//                data.setPlayer( UUID.fromString( rs.getString( "player" ) ) );
-
                 toReturn.add( data );
             }
 
