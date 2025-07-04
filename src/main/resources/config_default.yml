@@ -565,6 +565,13 @@ report:
     - "Inappropriate Builds"
     - "Other"
 
+  # The materials used in the /report (player) GUI
+  gui:
+    submit-report: GREEN_CONCRETE # Material for item to submit report
+    reset-selections: RED_CONCRETE # Material for item to reset report reason selections
+    selected-reason: LIME_CONCRETE # Material for item when that reason is selected
+    unselected-reason: LIGHT_GRAY_CONCRETE # Material for item when that reason is not selected
+
   # What's sent to the player when they submit a report
   # Set to "" for no message to be sent
   # Use [REASON] for the reason(s) of the report and [TARGET] for the player reported

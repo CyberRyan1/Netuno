@@ -187,6 +187,14 @@ public enum Settings {
     REPORT_EXPIRE_TIME_HOURS( "reports.delete-after", "int" ),
 
     //
+    // Report GUI (for the /report (player) command)
+    //
+    REPORT_GUI_SUBMIT_REPORT( "report.gui.submit-report", "material" ),
+    REPORT_GUI_RESET_SELECTIONS( "report.gui.reset-selections", "material" ),
+    REPORT_GUI_SELECTED_REASON( "report.gui.selected-reason", "material" ),
+    REPORT_GUI_UNSELECTED_REASON( "report.gui.unselected-reason", "material" ),
+
+    //
     // Watchlist
     //
     WATCHLIST_VIEW_PERMISSION( "watchlist.view-perm", "string" ),
