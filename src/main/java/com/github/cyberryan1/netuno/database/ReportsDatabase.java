@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.database;
 
+import com.github.cyberryan1.netuno.api.models.ApiReport;
 import com.github.cyberryan1.netuno.models.NetunoReport;
 import org.bukkit.OfflinePlayer;
 
@@ -64,7 +65,7 @@ public class ReportsDatabase {
      * @return Optional containing the report if found, empty
      *         otherwise
      */
-    public static Optional<NetunoReport> getReport( int id ) {
+    public static Optional<ApiReport> getReport( int id ) {
         NetunoReport toReturn = null;
 
         try {
@@ -92,8 +93,8 @@ public class ReportsDatabase {
      * @return List of all reports made against the specified
      *         player
      */
-    public static List<NetunoReport> getReportsAgainst( UUID target ) {
-        List<NetunoReport> toReturn = new ArrayList<>();
+    public static List<ApiReport> getReportsAgainst( UUID target ) {
+        List<ApiReport> toReturn = new ArrayList<>();
 
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE player = ?;" );
@@ -120,7 +121,7 @@ public class ReportsDatabase {
      * @return List of all reports made against the specified
      *         player
      */
-    public static List<NetunoReport> getReportsAgainst( OfflinePlayer target ) {
+    public static List<ApiReport> getReportsAgainst( OfflinePlayer target ) {
         return getReportsAgainst( target.getUniqueId() );
     }
 
@@ -130,8 +131,8 @@ public class ReportsDatabase {
      * @param author UUID of the player who made the reports
      * @return List of all reports made by the specified player
      */
-    public static List<NetunoReport> getReportsBy( UUID author ) {
-        List<NetunoReport> toReturn = new ArrayList<>();
+    public static List<ApiReport> getReportsBy( UUID author ) {
+        List<ApiReport> toReturn = new ArrayList<>();
 
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE author = ?;" );
@@ -157,7 +158,7 @@ public class ReportsDatabase {
      * @param author Player who made the reports
      * @return List of all reports made by the specified player
      */
-    public static List<NetunoReport> getReportsBy( OfflinePlayer author ) {
+    public static List<ApiReport> getReportsBy( OfflinePlayer author ) {
         return getReportsBy( author.getUniqueId() );
     }
 
