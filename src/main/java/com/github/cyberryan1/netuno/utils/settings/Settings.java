@@ -185,6 +185,8 @@ public enum Settings {
     REPORT_STAFF_MESSAGE( "report.staff-msg", "strlist" ),
     REPORT_VIEW_PERMISSION( "reports.perm", "string" ),
     REPORT_EXPIRE_TIME_HOURS( "reports.delete-after", "int" ),
+    REPORT_SOUND_PLAYER( "reports.sounds.player", "sound" ),
+    REPORT_SOUND_STAFF( "reports.sounds.staff", "sound" ),
 
     //
     // Report GUI (for the /report (player) command)

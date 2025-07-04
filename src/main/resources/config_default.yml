@@ -587,6 +587,26 @@ report:
     - " &6[PLAYER]&7 has reported &6[TARGET]&7 for &6[REASON]"
     - ""
 
+  # Sounds to play, if desired
+  sounds:
+    # Sound sent to the player when they submit a report
+    player:
+      # Whether or not this sound is enabled or not
+      enabled: true
+      # What sound to play (see https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html for a list of sounds)
+      sound: "BLOCK_DISPENSER_FAIL"
+      # What volume to play the sound at
+      volume: 1.0
+      # What pitch to play the sound at
+      pitch: 2.0
+
+    # Sound sent to the staff when a report is submitted
+    staff:
+      enabled: true
+      sound: "BLOCK_NOTE_BLOCK_BELL"
+      volume: 1.0
+      pitch: 1.0
+
 # /reports command
 # Is what is used by staff to view all reports
 reports:
@@ -682,7 +702,7 @@ database:
 
 # We allow you to customize the sounds that can be played during different events, such as bans,
 #   mutes, etc., unless they have already been customized above. You can find a list of all the
-#   available sounds at https://helpch.at/docs/1.16.5/org/bukkit/Sound.html
+#   available sounds at https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
 sounds:
   punishments:
     # Warn punishment
@@ -691,7 +711,7 @@ sounds:
       staff-sound:
         # Whether or not this sound is enabled or not
         enabled: false
-        # What sound to play (see https://helpch.at/docs/1.16.5/org/bukkit/Sound.html for a list of sounds)
+        # What sound to play (see https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html for a list of sounds)
         sound: ""
         # What volume to play the sound at
         volume: 1.0
