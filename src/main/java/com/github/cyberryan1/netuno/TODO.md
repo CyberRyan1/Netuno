@@ -26,13 +26,13 @@
 - [X] Better punishment model
 - [X] Better alt searching algorithm
 - [X] Better player model
-- [ ] Databases
+- [X] Databases
 - - [X] IP database
 - - [X] Punishment database
 - - [X] Togglesigns database
 - - - [X] Make the togglesigns database into a "staff settings" database
 - - - - Making the togglesigns database into a settings database will also allow us to save other settings, i.e. chat mute status, chat delay status, etc.
-- - [ ] Reports database
+- - [X] Reports database
 - [X] Update to latest version of spigot/paper
 - [X] Update java version
 - [X] Update CyberCore to latest version of spigot/paper
