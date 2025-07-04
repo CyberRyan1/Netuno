@@ -15,6 +15,7 @@
 - [ ] Add debug printing for the staff cache (see NetunoService)
 - [ ] Add debug printing for the reports cache (see NetunoService)
 - [ ] Redo the NetunoService.getPlayer() and NetunoService.getStaff() methods to better utilize the cache (see ReportService.getReportsAgainst() method)
+- [ ] Ensure all sounds are working as intended (see sounds in the config.yml)
 
 ### Bugs (unfixed)
 - [ ] Forgot to add support for hover text in punished alt notifications
