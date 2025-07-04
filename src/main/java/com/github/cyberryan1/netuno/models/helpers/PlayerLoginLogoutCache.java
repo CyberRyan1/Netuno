@@ -393,6 +393,24 @@ public class PlayerLoginLogoutCache<T> {
     }
 
     /**
+     * @param uuid A player's UUID
+     * @return The data associated with the provided player that
+     * is cached here. Returns an empty optional if the player
+     * is not contained within this cache. <br>
+     * <b>WARNING:</b> This does <u>not</u> run
+     * {@link #getDataValidityScript()} nor does it update the
+     * data's last access timestamp. This should only be used to
+     * bypass those two systems
+     *
+     * @deprecated (see warning)
+     */
+    public Optional<T> getDataSilently( UUID uuid ) {
+        CacheData<T> data = this.CACHE.get( uuid );
+        if ( data == null ) return Optional.empty();
+        return Optional.of( data.accessDataWithoutUpdate() );
+    }
+
+    /**
      * Used to update the data associated with a player. If
      * {@link #getUpdateScript()} is not null, then it will
      * also be ran
