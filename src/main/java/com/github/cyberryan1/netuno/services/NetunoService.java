@@ -154,28 +154,26 @@ public class NetunoService implements ApiNetunoService {
      */
     @Override
     public CompletableFuture<ApiPlayer> getPlayer( UUID uuid ) {
+        if ( this.PLAYER_CACHE.containsPlayer( uuid ) ) {
+            this.PLAYER_CACHE.updateDataState( uuid );
+            return CompletableFuture.completedFuture( this.PLAYER_CACHE.getData( uuid ).get() );
+        }
+
         return CompletableFuture.supplyAsync( () -> {
             NetunoPlayer toReturn = new NetunoPlayer( uuid );
             final boolean playerOnline = Bukkit.getPlayer( uuid ) != null;
 
-            if ( this.PLAYER_CACHE.containsPlayer( uuid ) == false ) {
+            // We know the cache does not contain the player from the
+            //      check above
 
-                // If the cache doesn't contain the player but they are
-                //      online, add their data as active
-                if ( playerOnline )
-                    this.PLAYER_CACHE.insertActiveData( uuid, toReturn );
-                // If the cache doesn't contain the player and they are
-                //      offline, add their data as inactive
-                else
-                    this.PLAYER_CACHE.insertInactiveData( uuid, toReturn );
-            }
-            else {
-                // If the cache does contain the player, we just update
-                //      the state of their cached data
-                this.PLAYER_CACHE.updateDataState( uuid );
-                // We change our to return to be what is currently in the cache
-                toReturn = this.PLAYER_CACHE.getData( uuid ).get();
-            }
+            // If the cache doesn't contain the player but they are
+            //      online, add their data as active
+            if ( playerOnline )
+                this.PLAYER_CACHE.insertActiveData( uuid, toReturn );
+            // If the cache doesn't contain the player and they are
+            //      offline, add their data as inactive
+            else
+                this.PLAYER_CACHE.insertInactiveData( uuid, toReturn );
 
             return toReturn;
         } );
@@ -211,27 +209,26 @@ public class NetunoService implements ApiNetunoService {
      */
     @Override
     public CompletableFuture<ApiStaff> getStaff( UUID uuid ) {
+        if ( this.STAFF_CACHE.containsPlayer( uuid ) ) {
+            this.STAFF_CACHE.updateDataState( uuid );
+            return CompletableFuture.completedFuture( this.STAFF_CACHE.getData( uuid ).get() );
+        }
+
         return CompletableFuture.supplyAsync( () -> {
             NetunoStaff toReturn = new NetunoStaff( uuid );
             final boolean playerOnline = Bukkit.getPlayer( uuid ) != null;
 
-            if ( this.STAFF_CACHE.containsPlayer( uuid ) == false ) {
-                // If the cache doesn't contain the player but they are
-                //      online, add their data as active
-                if ( playerOnline )
-                    this.STAFF_CACHE.insertActiveData( uuid, toReturn );
-                    // If the cache doesn't contain the player and they are
-                    //      offline, add their data as inactive
-                else
-                    this.STAFF_CACHE.insertInactiveData( uuid, toReturn );
-            }
-            else {
-                // If the cache does contain the player, we just update
-                //      the state of their cached data
-                this.STAFF_CACHE.updateDataState( uuid );
-                // We change our to return to be what is currently in the cache
-                toReturn = this.STAFF_CACHE.getData( uuid ).get();
-            }
+            // We know the cache does not contain the player from the
+            //      check above
+
+            // If the cache doesn't contain the player but they are
+            //      online, add their data as active
+            if ( playerOnline )
+                this.STAFF_CACHE.insertActiveData( uuid, toReturn );
+                // If the cache doesn't contain the player and they are
+                //      offline, add their data as inactive
+            else
+                this.STAFF_CACHE.insertInactiveData( uuid, toReturn );
 
             return toReturn;
         } );
