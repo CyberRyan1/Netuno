@@ -2,6 +2,7 @@ package com.github.cyberryan1.netuno.database;
 
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.models.NetunoPunishment;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.sql.PreparedStatement;
@@ -33,6 +34,7 @@ public class PunishmentsDatabase {
      * punishment
      */
     public static CompletableFuture<Integer> addPunishment( NetunoPunishment punishment ) {
+        Bukkit.broadcastMessage( "\t\t\tpunishment.getReferenceId() == " + punishment.getReferenceId() ); // ! debug
         return CompletableFuture.supplyAsync( () -> {
             punishment.ensureValid( false );
 
@@ -258,22 +260,18 @@ public class PunishmentsDatabase {
 
         if ( newData.getType().isIpPunishment() ) {
             final List<NetunoPunishment> allReferences = getPunishmentsFromReference( newData.getReferenceId() );
-            final NetunoPunishment original = getPunishment( newData.getId() );
-            allReferences.add( original );
 
-            for ( NetunoPunishment ref : allReferences ) {
-                NetunoPunishment newPun = ( NetunoPunishment ) newData.copy();
-                newPun.setId( ref.getId() );
-                newPun.setPlayer( ref.getPlayerUuid() );
-                if ( original.getId() == ref.getId() ) { newPun.setReferenceId( ApiPunishment.DEFAULT_REFERENCE_ID ); }
-
-                updatePunishmentSingularly( newPun );
+            for ( NetunoPunishment reference : allReferences ) {
+                if ( reference.getId() == newData.getId() ) continue;
+                NetunoPunishment updatedReference = ( NetunoPunishment ) newData.copy();
+                updatedReference.setId( reference.getId() );
+                updatedReference.setPlayer( reference.getPlayerUuid() );
+                updatedReference.setReferenceId( reference.getReferenceId() );
+                updatePunishmentSingularly( updatedReference );
             }
         }
 
-        else {
-            updatePunishmentSingularly( newData );
-        }
+        updatePunishmentSingularly( newData );
     }
 
     /**

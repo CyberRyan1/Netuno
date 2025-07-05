@@ -57,15 +57,16 @@ public class PreLoginListener implements Listener {
             final NetunoPlayer player = ( NetunoPlayer ) apiPlayer;
             final List<NetunoPunishment> allPunishments = player.getPunishments().stream()
                     .map( pun -> ( NetunoPunishment ) pun )
-                    .collect( Collectors.toList() );
+                    .toList();
 
-            // TODO I'm not sure if I am a fan of how this is done, may want to redo it
             // If the player has any alts with IP punishments and those
             //      punishments are not added to this player already,
             //      we add those punishments to this player
+            // Getting all alts' IP punishments
             List<UUID> altUuids = player.getAlts();
             List<NetunoPunishment> altIpPunishments = new ArrayList<>();
             for ( UUID uuid : altUuids ) {
+                if ( uuid.equals( player.getUuid() ) ) continue;
                 try {
                     final NetunoPlayer altPlayer = ( NetunoPlayer ) Netuno.SERVICE.getPlayer( uuid ).get();
                     if ( altPlayer == null ) throw new RuntimeException();
@@ -81,19 +82,29 @@ public class PreLoginListener implements Listener {
                 }
             }
 
-            // TODO ensure this is working properly
-            for ( NetunoPunishment altIpPun : altIpPunishments ) {
-                if ( allPunishments.contains( altIpPun ) == false ) {
-                    NetunoPunishment newPun = ( NetunoPunishment ) altIpPun.copy();
+            // Adding any alts' IP punishments to the player, if needed
+            for ( NetunoPunishment altIpPunishment : altIpPunishments ) {
+                if ( altIpPunishment.isOriginalPunishment() == false ) continue;
+
+                boolean playerHasPunishment = false;
+                for ( NetunoPunishment playerPunishment : allPunishments ) {
+                    if ( altIpPunishment.getId() != playerPunishment.getReferenceId() ) continue;
+                    playerHasPunishment = true;
+                    break;
+                }
+
+                if ( playerHasPunishment == false ) {
+                    NetunoPunishment newPun = ( NetunoPunishment ) altIpPunishment.copy();
+                    newPun.setId( ApiPunishment.DEFAULT_ID );
                     newPun.setPlayer( player.getUuid() );
 
                     // Setting the reference ID for the new punishment to
                     //      the correct one
-                    if ( altIpPun.isOriginalPunishment() ) newPun.setReferenceId( altIpPun.getId() );
-                    else newPun.setReferenceId( altIpPun.getReferenceId() );
+                    if ( altIpPunishment.isOriginalPunishment() ) newPun.setReferenceId( altIpPunishment.getId() );
+                    else newPun.setReferenceId( altIpPunishment.getReferenceId() );
 
                     // Officially create this punishment
-                    Netuno.PUNISHMENT_SERVICE.createPunishment( newPun );
+                    Netuno.PUNISHMENT_SERVICE.createPunishment( newPun ).join();
                 }
             }
 
