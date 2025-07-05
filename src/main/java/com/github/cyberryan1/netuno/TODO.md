@@ -21,7 +21,6 @@
 - - [X] Make replacing config variables into an actual class
 
 ### Bugs (unfixed)
-- [ ] Forgot to add support for hover text in punished alt notifications
 - [ ] History list GUI does not work correctly when it is used for the first time after the server starts
 - - No clue how to fix this
 - [ ] There might be issues with sending punishment notifications, i.e. being sent them repeatedly
@@ -126,3 +125,4 @@
 - [X] Punishment GUIs take time to load and don't load at the same time- try and synchronize them
 - [X] Error when trying to press the arrows in the /netuno help command
 - - [X] Error when doing /netuno help 2
+- [X] Forgot to add support for hover text in punished alt notifications
