@@ -56,11 +56,11 @@ public class CacheDebugPrinter<A, B> {
      * Generates a file and begins printing to that
      */
     public void printToFile() {
-        File debugFolder = new File( CyberCore.getPlugin().getDataFolder(), DEBUG_FOLDER_NAME + "/" );
-        if ( debugFolder.exists() == false ) debugFolder.mkdir();
+        File debugFolder = new File( CyberCore.getPlugin().getDataFolder(), DEBUG_FOLDER_NAME );
+        if ( debugFolder.exists() == false ) debugFolder.mkdirs();
 
         String dateString = new java.sql.Timestamp( TimestampUtils.getCurrentTimestamp() ).toGMTString();
-        String debugFileName = DEBUG_FOLDER_NAME + "/debug_" + dateString.replace( " ", "_" ) + ".txt";
+        String debugFileName = "debug_" + dateString.replace( " ", "_" ) + ".txt";
         File filePrintingTo = new File( debugFolder, debugFileName );
         printToFile( filePrintingTo );
     }
@@ -71,11 +71,17 @@ public class CacheDebugPrinter<A, B> {
     public void printToFile( File file ) {
         CyberLogUtils.logWarn( "Starting debug output to a file..." );
 
-        if ( file.exists() == false ) {
+        // Make sure all parent directories exist
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists()) {
+            parent.mkdirs();
+        }
+
+        if (!file.exists()) {
             try {
                 file.createNewFile();
-            } catch ( IOException e ) {
-                e.printStackTrace();
+            } catch (IOException e) {
+                throw new RuntimeException("An error occurred while creating the debug file: ", e);
             }
         }
 
