@@ -12,7 +12,7 @@
 - [ ] Add a staff mode (?)
 - [ ] Add a vanish system (?)
 - [X] Rename Punishment to NetunoPunishment
-- [ ] Rename NetunoService.DEBUG_PRINTER_NPLAYER variable to NetunoService.DEBUG_PRINTER_NETUNOPLAYER
+- [X] Rename NetunoService.DEBUG_PRINTER_NPLAYER variable to NetunoService.DEBUG_PRINTER_NETUNOPLAYER
 - [ ] Add debug printing for the staff cache (see NetunoService)
 - [ ] Add debug printing for the reports cache (see NetunoService)
 - [ ] Redo the NetunoService.getPlayer() and NetunoService.getStaff() methods to better utilize the cache (see ReportService.getReportsAgainst() method)
