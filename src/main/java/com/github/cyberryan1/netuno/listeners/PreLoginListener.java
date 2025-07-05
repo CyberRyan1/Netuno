@@ -120,9 +120,11 @@ public class PreLoginListener implements Listener {
                             pun.getType() == ApiPunishment.PunType.IPBAN
                                     && ( ( NetunoPunishment ) pun ).isActive_silent()
                     );
-            final List<NetunoPunishment> activePunishments = player.getActivePunishments().stream()
-                    .map( pun -> ( NetunoPunishment ) pun )
-                    .collect( Collectors.toList() );
+
+            final List<NetunoPunishment> activePunishments = new ArrayList<>();
+            for ( int index = player.getActivePunishments().size() - 1; index >= 0; index-- ) {
+                activePunishments.add( ( NetunoPunishment ) player.getActivePunishments().get( index ) );
+            }
             if ( activePunishments.stream().anyMatch( pun -> pun.getType() == ApiPunishment.PunType.BAN
                     || pun.getType() == ApiPunishment.PunType.IPBAN ) ) {
                 final NetunoPunishment highestPunishment = PunishmentLibrary.getPunishmentWithHighestDurationRemaining( activePunishments );
