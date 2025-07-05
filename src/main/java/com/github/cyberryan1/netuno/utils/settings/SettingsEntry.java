@@ -4,13 +4,25 @@ import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Material;
 
 public class SettingsEntry {
+    
+    public enum EntryType {
+        INT,
+        STRING,
+        FLOAT,
+        DOUBLE,
+        LONG,
+        BOOLEAN,
+        MATERIAL,
+        STRING_LIST,
+        SOUND
+    }
 
     //
     // Class methods
     //
 
     private String path;
-    private String valueType;
+    private EntryType valueType;
     private int i;
     private String str;
     private float f;
@@ -22,26 +34,35 @@ public class SettingsEntry {
     private SoundSettingEntry sound;
 
 
-    public SettingsEntry( String path, String valueType ) {
+    public SettingsEntry( String path, EntryType valueType ) {
         this.path = path;
         this.valueType = valueType;
 
-        switch ( valueType.toLowerCase() ) {
-            case "int" -> this.i = YMLUtils.getConfig().getInt( path );
-            case "string" -> this.str = YMLUtils.getConfig().getStr( path );
-            case "float" -> this.f = YMLUtils.getConfig().getFloat( path );
-            case "double" -> this.d = YMLUtils.getConfig().getDouble( path );
-            case "long" -> this.l = YMLUtils.getConfig().getLong( path );
-            case "boolean" -> this.b = YMLUtils.getConfig().getBool( path );
-            case "material" -> this.mat = Material.valueOf( YMLUtils.getConfig().getStr( path ) );
-            case "strlist" -> this.strList = YMLUtils.getConfig().getStrList( path );
-            case "sound" -> this.sound = new SoundSettingEntry( path );
+        switch ( valueType ) {
+            case INT ->
+                    this.i = YMLUtils.getConfig().getInt( path );
+            case STRING ->
+                    this.str = YMLUtils.getConfig().getStr( path );
+            case FLOAT ->
+                    this.f = YMLUtils.getConfig().getFloat( path );
+            case DOUBLE ->
+                    this.d = YMLUtils.getConfig().getDouble( path );
+            case LONG ->
+                    this.l = YMLUtils.getConfig().getLong( path );
+            case BOOLEAN ->
+                    this.b = YMLUtils.getConfig().getBool( path );
+            case MATERIAL ->
+                    this.mat = Material.valueOf( YMLUtils.getConfig().getStr( path ) );
+            case STRING_LIST ->
+                    this.strList = YMLUtils.getConfig().getStrList( path );
+            case SOUND ->
+                    this.sound = new SoundSettingEntry( path );
         }
     }
 
     public String getPath() { return this.path; }
 
-    public String getValueType() { return this.valueType; }
+    public EntryType getValueType() { return this.valueType; }
 
     public int integer() { return this.i; }
 
