@@ -16,6 +16,7 @@ import com.github.cyberryan1.netuno.utils.settings.SettingsVariableFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
@@ -242,7 +243,12 @@ public class PreLoginListener implements Listener {
             final OfflinePlayer target = apiPlayer.getPlayer();
             TextComponent message = TextComponentUtils.toTextComponent( NOTIF_MSG.replace( "[TARGET]", target.getName() ) );
             message = message.clickEvent( ClickEvent.clickEvent( ClickEvent.Action.RUN_COMMAND, "/ipinfo " + target.getName() ) );
-            // TODO need to add the hover text to the component
+            TextComponent hoverMsg = TextComponentUtils.toTextComponent(
+                    new SettingsVariableFactory( Settings.IPINFO_NOTIF_HOVER_MESSAGE )
+                            .target( target.getName() )
+                            .getColoredMsg()
+            );
+            message = message.hoverEvent( HoverEvent.showText( hoverMsg ) );
 
             // Figuring out if a sound will be played for the alt alert or not
             boolean sendSound = false;
