@@ -10,6 +10,7 @@ import com.github.cyberryan1.netuno.models.libraries.PunishmentLibrary;
 import com.github.cyberryan1.netuno.utils.PrettyStringLibrary;
 import com.github.cyberryan1.netuno.utils.TimestampUtils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import com.github.cyberryan1.netuno.utils.settings.SettingsEntry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -403,13 +405,83 @@ public class NetunoPunishment implements ApiPunishment {
         if ( this.isExecuted ) throw new RuntimeException( "This punishment has already been executed" );
         this.timestamp = TimestampUtils.getCurrentTimestamp();
 
+        CompletableFuture.runAsync( () -> {
+            // First we want to create the punishment and add it to the database
+            this.isActive = this.punType.hasNoLength() == false;
+            this.isExecuted = true;
+            this.isNotifSent = getPlayer().isOnline();
+            Netuno.PUNISHMENT_SERVICE.createPunishment( this )
+                    // If this is an IP punishment, then we need to
+                    //      apply it to all of the alt accounts as well
+                    // Note that IP unpunishments are also handled here
+                    .thenAccept( id -> {
+                        if ( this.punType.isIpPunishment() ) this.execute_handleIpPunishment( id );
+                    } )
+                    .exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+            //        .join(); // We join this to the outer completable future's
+            //                 // thread so that everything happens in order
+
+            // If the player is online, we need to either notify them
+            //      or kick them from the server, depending on the
+            //      punishment type
+            if ( getPlayer().isOnline() ) {
+                // We kick the player if the punishment type is a
+                //      kick, ban, or ipban
+                if ( List.of( PunType.KICK, PunType.BAN, PunType.IPBAN ).contains( getType() ) ) execute_kickPlayer();
+
+                // Otherwise we notify them
+                else execute_notifyPlayer();
+            }
+
+            // If this is an unpunishment, we need to set all active
+            //      punishments of the correspending type as inactive
+            if ( this.punType.isUnpunishment() ) execute_handleUnpunishment();
+
+            // Sending a staff broadcast
+            execute_staffBroadcast( silent );
+
+            // Sending a global broadcast
+            execute_globalBroadcast( silent );
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+    }
+
+    /**
+     * Submethod for the {@link #execute(boolean)} method. Sends
+     * a global broadcast saying that this punishment was executed
+     * @param silent True to execute this punishment silently,
+     *               false otherwise
+     */
+    private void execute_globalBroadcast( boolean silent ) {
         // Only sending the public broadcast if the punishment
         //      is NOT silent
-        if ( silent == false ) {
-            Settings publicBroadcastSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.BROADCAST );
-            Settings publicBroadcastSound = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.SOUND_GLOBAL );
-            Component component = fillSettingMessage( publicBroadcastSetting );
+        if ( silent ) return;
+        Settings publicBroadcastSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.BROADCAST );
+        Settings publicBroadcastSound = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.SOUND_GLOBAL );
+        Component component = fillSettingMessage( publicBroadcastSetting );
 
+        // not sending a message if the message is blank
+        if ( messageIsBlank( publicBroadcastSetting ) ) return;
+
+        // if this is an IP mute or IP unmute, we don't want to send multiple messages
+        //      to the player's online alts, if any
+        if ( this.punType == PunType.IPMUTE || this.punType == PunType.UNIPMUTE ) {
+            Netuno.SERVICE.getPlayer( getPlayerUuid() ).thenAccept( apiPlayer -> {
+                List<UUID> alts = apiPlayer.getAlts();
+                for ( Player p : Bukkit.getOnlinePlayers() ) {
+                    // dont want to send this to staff members
+                    if ( CyberVaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) ) continue;
+                    // dont want to send this to the player's alts
+                    if ( alts.contains( p.getUniqueId() ) ) continue;
+                    // dont want to send this to the player
+                    if ( p.getUniqueId().equals( getPlayerUuid() ) ) continue;
+
+                    p.sendMessage( component );
+                    publicBroadcastSound.sound().playSound( p );
+                }
+            } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+        }
+
+        else {
             for ( Player p : Bukkit.getOnlinePlayers() ) {
                 if ( CyberVaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) == false && p.getUniqueId().equals( getPlayerUuid() ) == false ) {
                     p.sendMessage( component );
@@ -417,51 +489,29 @@ public class NetunoPunishment implements ApiPunishment {
                 }
             }
         }
+    }
 
-        // Staff broadcast
+    /**
+     * Submethod for the {@link #execute(boolean)} method. Sends
+     * a broadcast to online staff members that this punishment
+     * was executed
+     * @param silent True to execute this punishment silently,
+     *               false otherwise
+     */
+    private void execute_staffBroadcast( boolean silent ) {
         Settings staffBroadcastSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.STAFF_BROADCAST );
         Settings staffBroadcastSound = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.SOUND_STAFF );
         Component component = fillSettingMessage( staffBroadcastSetting, silent );
+
+        // not sending a message if its blank
+        if ( messageIsBlank( staffBroadcastSetting ) ) return;
+
         for ( Player p : Bukkit.getOnlinePlayers() ) {
             if ( CyberVaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) && p.getUniqueId().equals( getPlayerUuid() ) == false ) {
                 p.sendMessage( component );
                 staffBroadcastSound.sound().playSound( p );
             }
         }
-
-        this.isNotifSent = false;
-        if ( getPlayer().isOnline() ) {
-            this.isNotifSent = true;
-
-            // If the punishment requires the player to be kicked
-            if ( List.of( PunType.KICK, PunType.BAN, PunType.IPBAN ).contains( getType() ) ) {
-                execute_kickPlayer();
-            }
-
-            // If the punishment requires the player to receive a message
-            else {
-                execute_notifyPlayer();
-            }
-        }
-
-        // If this is an unpunishment, set all active punishments of
-        //      the corresponding type as unactive
-        // Note that this only works for non-ip unpunishments, IP
-        //      unpunishments are handled below this
-        if ( this.punType.isUnpunishment() ) {
-            execute_handleUnpunishment();
-        }
-
-        this.isActive = this.punType.hasNoLength() == false;
-        this.isExecuted = true;
-        Netuno.PUNISHMENT_SERVICE.createPunishment( this )
-                // If this is an IP punishment, then we need to
-                //      apply it to all of the alt accounts as well
-                // Note that IP unpunishments are also handled here
-                .thenAccept( id -> {
-                    if ( this.punType.isIpPunishment() ) this.execute_handleIpPunishment( id );
-                } )
-                .exceptionally( Netuno.FUTURE_ERROR_HANDLING );
     }
 
     /**
@@ -493,6 +543,7 @@ public class NetunoPunishment implements ApiPunishment {
         Settings playerMsgSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.MESSAGE );
         Settings playerMsgSound = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.SOUND_TARGET );
         Component comp = fillSettingMessage( playerMsgSetting );
+        if ( messageIsBlank( playerMsgSetting ) ) return;
         getPlayer().getPlayer().sendMessage( comp );
         playerMsgSound.sound().playSound( getPlayer().getPlayer() );
     }
@@ -583,6 +634,22 @@ public class NetunoPunishment implements ApiPunishment {
                 }
             } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
         } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+    }
+
+    /**
+     * Checks if a provided setting's string/stringlist (depending
+     * on the entry type of setting) is all blank
+     * @param setting The setting to check
+     * @return True if the setting is all blank, false otherwise
+     */
+    private boolean messageIsBlank( Settings setting ) {
+        if ( setting.getValueType() == SettingsEntry.EntryType.STRING ) return setting.string().isBlank();
+        else {
+            for ( String str : setting.stringlist() ) {
+                if ( str.isBlank() == false ) return false;
+            }
+            return true;
+        }
     }
 
     /**

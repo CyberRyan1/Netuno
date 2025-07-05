@@ -125,6 +125,7 @@ public class PunishmentGuiExecutor {
                 // Executing the punishment
                 UUID staffUuid = ( staffSender instanceof ConsoleCommandSender )
                         ? ( ApiPunishment.CONSOLE_UUID ) : ( ( ( Player ) staffSender ).getUniqueId() );
+                CyberMsgUtils.sendMsg( staffSender, "&sExecuting punishment..." );
                 Netuno.PUNISHMENT_SERVICE.punishmentBuilder()
                         .setPlayer( player.getUuid() )
                         .setStaff( staffUuid )

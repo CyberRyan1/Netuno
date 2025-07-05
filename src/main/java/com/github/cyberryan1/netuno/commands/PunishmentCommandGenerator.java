@@ -152,6 +152,7 @@ public class PunishmentCommandGenerator {
         boolean silent = reason.contains( "-s" ) && CyberVaultUtils.hasPerms( command.getSender(), Settings.SILENT_PERMISSION.string() );
         if ( silent ) reason = reason.replaceAll( "-s", "" );
 
+        command.respond( "&sExecuting punishment..." );
         Netuno.PUNISHMENT_SERVICE.punishmentBuilder()
                 .setPlayer( target )
                 .setStaff( staff )
