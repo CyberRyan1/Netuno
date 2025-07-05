@@ -2,7 +2,6 @@ package com.github.cyberryan1.netuno.database;
 
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.models.NetunoPunishment;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.sql.PreparedStatement;
@@ -34,7 +33,6 @@ public class PunishmentsDatabase {
      * punishment
      */
     public static CompletableFuture<Integer> addPunishment( NetunoPunishment punishment ) {
-        Bukkit.broadcastMessage( "\t\t\tpunishment.getReferenceId() == " + punishment.getReferenceId() ); // ! debug
         return CompletableFuture.supplyAsync( () -> {
             punishment.ensureValid( false );
 
