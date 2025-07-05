@@ -19,6 +19,7 @@
 - [ ] Ensure all sounds are working as intended (see sounds in the config.yml)
 - [ ] Ensure all config variables are correctly implemented (and add better notes in the config for what variables they can use where)
 - - [X] Make replacing config variables into an actual class
+- [ ] Add command prevention when a player is muted/ipmuted
 
 ### Bugs (unfixed)
 - [ ] History list GUI does not work correctly when it is used for the first time after the server starts
