@@ -612,6 +612,13 @@ report:
 view-reports:
   perm: "netuno.reports"
 
+  # The materials used in the /viewreports (player) GUI
+  gui:
+    zero-reports: LIGHT_GRAY_CONCRETE # Material for when the player has zero reports for the current reason
+    one-report: LIME_CONCRETE # Material for when the player has one report for the current reason
+    two-reports: YELLOW_CONCRETE # Material for when the player has two reports for the current reason
+    three-reports: RED_CONCRETE # Material for when the player has three or more reports for the current reason
+
   # How long (in hours) to wait before a report is automatically deleted
   # Set to -1 to never delete (not recommended)
   delete-after: 48

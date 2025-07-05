@@ -186,9 +186,7 @@ public enum Settings {
     REPORT_SOUND_PLAYER( "report.sounds.player", SettingsEntry.EntryType.SOUND ),
     REPORT_SOUND_STAFF( "report.sounds.staff", SettingsEntry.EntryType.SOUND ),
 
-    //
     // Report GUI (for the /report (player) command)
-    //
     REPORT_GUI_SUBMIT_REPORT( "report.gui.submit-report", SettingsEntry.EntryType.MATERIAL ),
     REPORT_GUI_RESET_SELECTIONS( "report.gui.reset-selections", SettingsEntry.EntryType.MATERIAL ),
     REPORT_GUI_SELECTED_REASON( "report.gui.selected-reason", SettingsEntry.EntryType.MATERIAL ),
@@ -199,6 +197,12 @@ public enum Settings {
     //
     VIEW_REPORT_PERMISSION( "view-reports.perm", SettingsEntry.EntryType.STRING ),
     VIEW_REPORT_EXPIRE_TIME_HOURS( "view-reports.delete-after", SettingsEntry.EntryType.INT ),
+
+    // View Reports GUI
+    VIEW_REPORT_GUI_ZERO_REPORTS( "view-reports.gui.zero-reports", SettingsEntry.EntryType.MATERIAL ),
+    VIEW_REPORT_GUI_ONE_REPORT( "view-reports.gui.one-report", SettingsEntry.EntryType.MATERIAL ),
+    VIEW_REPORT_GUI_TWO_REPORTS( "view-reports.gui.two-reports", SettingsEntry.EntryType.MATERIAL ),
+    VIEW_REPORT_GUI_THREE_REPORTS( "view-reports.gui.three-reports", SettingsEntry.EntryType.MATERIAL ),
 
     //
     // Watchlist
