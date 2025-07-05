@@ -128,7 +128,6 @@ public enum Settings {
     IPINFO_NOTIF_IF_IPPUNISHED( "ipinfo.notif-if-ippunished", SettingsEntry.EntryType.BOOLEAN ),
     IPINFO_NOTIFS_SOUND_ENABLED( "ipinfo.notif-sounds.enabled", SettingsEntry.EntryType.BOOLEAN ),
     IPINFO_NOTIFS_SOUND_TRIGGERS( "ipinfo.notif-sounds.triggers", SettingsEntry.EntryType.STRING ),
-    IPINFO_STRICTNESS( "ipinfo.strictness", SettingsEntry.EntryType.STRING ),
 
     //
     // Chat Management
@@ -225,10 +224,6 @@ public enum Settings {
     DATABASE_SQL_DATABASE( "database.sql.database", SettingsEntry.EntryType.STRING ),
     DATABASE_SQL_USERNAME( "database.sql.username", SettingsEntry.EntryType.STRING ),
     DATABASE_SQL_PASSWORD( "database.sql.password", SettingsEntry.EntryType.STRING ),
-
-
-    CACHE_ALTS_SAVE_EVERY( "database.cache.alts.save-every", SettingsEntry.EntryType.INT ),
-    CACHE_REPORTS_SAVE_EVERY( "database.cache.reports.save-every", SettingsEntry.EntryType.INT ),
 
     //
     // Sounds

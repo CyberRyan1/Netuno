@@ -294,6 +294,16 @@ public class NetunoPunishment implements ApiPunishment {
     }
 
     /**
+     * Doesn't check if this punishment should be marked as inactive
+     * or not, just returns the current value of isActive
+     * @return True if the punishment is currently active,
+     * false otherwise
+     */
+    public boolean isActive_silent() {
+        return this.isActive;
+    }
+
+    /**
      * Note: if the punishment is not active, it can NOT be set back to active.
      *
      * @param active True if this punishment is active, false otherwise

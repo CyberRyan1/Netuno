@@ -12,6 +12,7 @@ import com.github.cyberryan1.netuno.models.PlayerIpsRecord;
 import com.github.cyberryan1.netuno.models.libraries.PunishmentLibrary;
 import com.github.cyberryan1.netuno.utils.TextComponentUtils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import com.github.cyberryan1.netuno.utils.settings.SettingsVariableFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -97,6 +98,16 @@ public class PreLoginListener implements Listener {
 
             // If the player has any active IP ban or regular ban punishments,
             //      we disallow them from joining
+            boolean hadActiveBanPunishment = player.getPunishments().stream()
+                    .anyMatch( pun ->
+                            pun.getType() == ApiPunishment.PunType.BAN
+                                    && ( ( NetunoPunishment ) pun ).isActive_silent()
+                    );
+            boolean hadActiveIpbanPunishment = player.getPunishments().stream()
+                    .anyMatch( pun ->
+                            pun.getType() == ApiPunishment.PunType.IPBAN
+                                    && ( ( NetunoPunishment ) pun ).isActive_silent()
+                    );
             final List<NetunoPunishment> activePunishments = player.getActivePunishments().stream()
                     .map( pun -> ( NetunoPunishment ) pun )
                     .collect( Collectors.toList() );
@@ -105,6 +116,35 @@ public class PreLoginListener implements Listener {
                 final NetunoPunishment highestPunishment = PunishmentLibrary.getPunishmentWithHighestDurationRemaining( activePunishments );
                 denyJoin( event, highestPunishment );
                 return;
+            }
+            else {
+                // if this is true, then the player's ban has just expired
+                if ( hadActiveBanPunishment ) {
+                    // sending a message to the player
+                    Bukkit.getScheduler().runTaskLater( CyberCore.getPlugin(), () -> {
+                        if ( apiPlayer.getPlayer().isOnline() == false ) return;
+                        new SettingsVariableFactory( Settings.BAN_EXPIRE ).sendMsg( apiPlayer.getPlayer().getPlayer() );
+                    }, 20L * 3 );
+
+                    // sending a message to online staff
+                    new SettingsVariableFactory( Settings.BAN_EXPIRE_STAFF )
+                            .target( apiPlayer.getPlayer() )
+                            .sendMsg( p -> CyberVaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) );
+                }
+
+                // if this is true, then the player's IP ban has just expired
+                if ( hadActiveIpbanPunishment ) {
+                    // sending a message to the player
+                    Bukkit.getScheduler().runTaskLater( CyberCore.getPlugin(), () -> {
+                        if ( apiPlayer.getPlayer().isOnline() == false ) return;
+                        new SettingsVariableFactory( Settings.IPBAN_EXPIRE ).sendMsg( apiPlayer.getPlayer().getPlayer() );
+                    }, 10L );
+
+                    // sending a message to online staff
+                    new SettingsVariableFactory( Settings.IPBAN_EXPIRE_STAFF )
+                            .target( apiPlayer.getPlayer() )
+                            .sendMsg( p -> CyberVaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) );
+                }
             }
 
             // Send any punishments with notifications needing to be sent

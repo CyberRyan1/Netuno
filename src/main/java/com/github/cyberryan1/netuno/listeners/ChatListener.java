@@ -8,6 +8,7 @@ import com.github.cyberryan1.netuno.models.NetunoPlayer;
 import com.github.cyberryan1.netuno.models.NetunoPunishment;
 import com.github.cyberryan1.netuno.models.libraries.PunishmentLibrary;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import com.github.cyberryan1.netuno.utils.settings.SettingsVariableFactory;
 import com.github.cyberryan1.netuno.utils.settings.SoundSettingEntry;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.audience.Audience;
@@ -42,6 +43,16 @@ public class ChatListener implements Listener {
 
         // If the player has any mute or IP mute punishments,
         //      we disallow them from chatting
+        boolean hadActiveMutePunishment = player.getPunishments().stream()
+                .anyMatch( pun ->
+                        pun.getType() == ApiPunishment.PunType.MUTE
+                                && ( ( NetunoPunishment ) pun ).isActive_silent()
+                );
+        boolean hadActiveIpmutePunishment = player.getPunishments().stream()
+                .anyMatch( pun ->
+                        pun.getType() == ApiPunishment.PunType.IPMUTE
+                                && ( ( NetunoPunishment ) pun ).isActive_silent()
+                );
         final List<NetunoPunishment> activePunishments = player.getActivePunishments().stream()
                 .map( pun -> ( NetunoPunishment ) pun )
                 .collect( Collectors.toList() );
@@ -50,6 +61,29 @@ public class ChatListener implements Listener {
             final NetunoPunishment highestPunishment = PunishmentLibrary.getPunishmentWithHighestDurationRemaining( activePunishments );
             denyChat_becausePunished( event, highestPunishment );
             return;
+        }
+        else {
+            // if this is true, then the player's mute has just expired
+            if ( hadActiveMutePunishment ) {
+                // sending a message to the player
+                new SettingsVariableFactory( Settings.MUTE_EXPIRE ).sendMsg( event.getPlayer() );
+
+                // sending a message to online staff
+                new SettingsVariableFactory( Settings.MUTE_EXPIRE_STAFF )
+                        .target( event.getPlayer() )
+                        .sendMsg( p -> CyberVaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) );
+            }
+
+            // if this is true, then the player's IP mute has just expired
+            if ( hadActiveIpmutePunishment ) {
+                // sending a message to the player
+                new SettingsVariableFactory( Settings.IPMUTE_EXPIRE ).sendMsg( event.getPlayer() );
+
+                // sending a message to online staff
+                new SettingsVariableFactory( Settings.IPMUTE_EXPIRE_STAFF )
+                        .target( event.getPlayer() )
+                        .sendMsg( p -> CyberVaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) );
+            }
         }
 
         // checking if chat is muted
