@@ -644,7 +644,7 @@ sounds:
       # What sound the target hears
       target-sound:
         enabled: false
-        sound: 'ITEM_MACE_SMASH_AIR'
+        sound: 'item.mace.smash_air'
         volume: 1.0
         pitch: 1.0
       # What sound everyone else hears when another player is warned. This will not be sent
