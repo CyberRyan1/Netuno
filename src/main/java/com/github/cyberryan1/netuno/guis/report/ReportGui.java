@@ -4,7 +4,6 @@ import com.github.cyberryan1.cybercore.spigot.gui.Gui;
 import com.github.cyberryan1.cybercore.spigot.gui.GuiItem;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberGuiUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
-import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.models.NetunoReport;
@@ -30,15 +29,6 @@ import java.util.function.Predicate;
  */
 public class ReportGui {
 
-    private static final int MAX_REASONS_SIZE = 18;
-    private static final List<String> AVAILABLE_REASONS = new ArrayList<>();
-
-    public static void updateAvailableReasons() {
-        AVAILABLE_REASONS.clear();
-        AVAILABLE_REASONS.addAll( Settings.REPORT_REASONS_LIST.arraylist() );
-        checkAndLogErrors();
-    }
-
     private final Gui gui;
     private final Player player;
     private final OfflinePlayer target;
@@ -47,9 +37,9 @@ public class ReportGui {
     public ReportGui( Player player, OfflinePlayer target ) {
         this.player = player;
         this.target = target;
-        updateAvailableReasons();
+        ReportUtils.updateAvailableReasons();
 
-        int rowSize = 3 + ( AVAILABLE_REASONS.size() / 6 );
+        int rowSize = 3 + ( ReportUtils.AVAILABLE_REASONS.size() / 6 );
         this.gui = new Gui( "&sReporting &p" + target.getName(), rowSize, CyberGuiUtils.getBackgroundGlass() );
         insertItems();
     }
@@ -102,27 +92,27 @@ public class ReportGui {
         // Report reasons
         int guiIndex = 19;
         int reasonsIndex = 0;
-        for ( int row = 0; row < ( 1 + ( AVAILABLE_REASONS.size() / 6 ) ); row++ ) {
+        for ( int row = 0; row < ( 1 + ( ReportUtils.AVAILABLE_REASONS.size() / 6 ) ); row++ ) {
             for ( int col = 0; col < 6; col++ ) {
-                if ( reasonsIndex >= AVAILABLE_REASONS.size() ) { break; }
+                if ( reasonsIndex >= ReportUtils.AVAILABLE_REASONS.size() ) { break; }
 
                 final Material unselectedMaterial = Settings.REPORT_GUI_UNSELECTED_REASON.material();
                 final Material selectedMaterial = Settings.REPORT_GUI_SELECTED_REASON.material();
                 final int finalReasonIndex = reasonsIndex;
                 gui.addItem( new GuiItem( unselectedMaterial,
-                        "&7" + AVAILABLE_REASONS.get( reasonsIndex ), guiIndex, ( item ) -> {
+                        "&7" + ReportUtils.AVAILABLE_REASONS.get( reasonsIndex ), guiIndex, ( item ) -> {
                     GuiItem guiItem = gui.getItem( item.getSlot() );
                     player.playSound( player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 10, 2 );
 
                     if ( guiItem.getItem().getType() == unselectedMaterial ) {
-                        reasonSelections.add( AVAILABLE_REASONS.get( finalReasonIndex ) );
-                        guiItem.setItem( CyberItemUtils.createItem( selectedMaterial, "&a" + AVAILABLE_REASONS.get( finalReasonIndex ) ) );
+                        reasonSelections.add( ReportUtils.AVAILABLE_REASONS.get( finalReasonIndex ) );
+                        guiItem.setItem( CyberItemUtils.createItem( selectedMaterial, "&a" + ReportUtils.AVAILABLE_REASONS.get( finalReasonIndex ) ) );
                         gui.updateItem( guiItem );
                     }
 
                     else if ( guiItem.getItem().getType() == selectedMaterial ) {
-                        reasonSelections.remove( AVAILABLE_REASONS.get( finalReasonIndex ) );
-                        guiItem.setItem( CyberItemUtils.createItem( unselectedMaterial, "&7" + AVAILABLE_REASONS.get( finalReasonIndex ) ) );
+                        reasonSelections.remove( ReportUtils.AVAILABLE_REASONS.get( finalReasonIndex ) );
+                        guiItem.setItem( CyberItemUtils.createItem( unselectedMaterial, "&7" + ReportUtils.AVAILABLE_REASONS.get( finalReasonIndex ) ) );
                         gui.updateItem( guiItem );
                     }
                 } ) );
@@ -137,28 +127,10 @@ public class ReportGui {
     }
 
     public void open() {
-        if ( checkAndLogErrors() ) {
+        if ( ReportUtils.checkAndLogErrors() ) {
             CommandErrors.sendConfigError( player );
             return;
         }
         gui.openInventory( player );
     }
-
-    /**
-     * Checks for any errors and logs them in console
-     * @return true if errors were found, false otherwise
-     */
-    private static boolean checkAndLogErrors() {
-        if ( AVAILABLE_REASONS.isEmpty() ) {
-            CyberLogUtils.logError( "CONFIG ERROR >> No reasons have been configured for reports!" );
-            return true;
-        }
-        else if ( AVAILABLE_REASONS.size() > MAX_REASONS_SIZE ) {
-            CyberLogUtils.logError( "CONFIG ERROR >> The list \"" + Settings.REPORT_REASONS_LIST.getPath()
-                    + "\" is greater than the limit of " + MAX_REASONS_SIZE + ". Reports will not work until this is fixed." );
-            return true;
-        }
-        return false;
-    }
-
 }
