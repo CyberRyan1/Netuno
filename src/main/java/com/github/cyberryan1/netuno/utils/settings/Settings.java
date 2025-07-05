@@ -48,7 +48,7 @@ public enum Settings {
     MUTE_EXPIRE( "mute.expire", SettingsEntry.EntryType.STRING_LIST ),
     MUTE_EXPIRE_STAFF( "mute.expire-staff", SettingsEntry.EntryType.STRING_LIST ),
     MUTE_BLOCKED_COMMANDS( "mute.blocked-cmds", SettingsEntry.EntryType.STRING_LIST ),
-    MUTE_BLOCKED_COMMAND_MESSAGE( "mute.blocked-cmd-message", SettingsEntry.EntryType.STRING ),
+    MUTE_BLOCKED_COMMAND_MESSAGE( "mute.blocked-cmd-msg", SettingsEntry.EntryType.STRING ),
 
     // Unmute command
     UNMUTE_PERMISSION( "unmute.perm", SettingsEntry.EntryType.STRING ),
