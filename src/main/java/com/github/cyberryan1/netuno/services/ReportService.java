@@ -66,11 +66,11 @@ public class ReportService implements ApiReportService {
 
     /**
      * Updates the {@link #REPORT_EXPIRE_TIME_MILLIS} to match
-     * the value given by {@link Settings#REPORT_EXPIRE_TIME_HOURS}
+     * the value given by {@link Settings#VIEW_REPORT_EXPIRE_TIME_HOURS}
      */
     public void updateReportExpireTimeMillis() {
         // note: Settings.REPORT_EXPIRE_TIME is given in hours
-        REPORT_EXPIRE_TIME_MILLIS = 1000L * 60L * 60L * Settings.REPORT_EXPIRE_TIME_HOURS.integer();
+        REPORT_EXPIRE_TIME_MILLIS = 1000L * 60L * 60L * Settings.VIEW_REPORT_EXPIRE_TIME_HOURS.integer();
                                 //                60 minutes per hour
                                 //          60 seconds per minute
                                 //  1000ms per second
