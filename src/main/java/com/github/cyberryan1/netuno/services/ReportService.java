@@ -212,6 +212,26 @@ public class ReportService implements ApiReportService {
     }
 
     /**
+     * Gets all reports that are currently in the cache
+     *
+     * @return List of all reports in the cache
+     */
+    public List<ApiReport> getAllReports() {
+        List<ApiReport> toReturn = new ArrayList<>();
+        for ( List<ApiReport> reports : CACHE.values() ) {
+            toReturn.addAll( reports );
+        }
+        return toReturn;
+    }
+
+    /**
+     * @return The cache
+     */
+    public Map<UUID, List<ApiReport>> getCache() {
+        return CACHE;
+    }
+    
+    /**
      * Iterates through all reports and deletes the ones
      * that are expired (meaning they were made more than
      * {@link #REPORT_EXPIRE_TIME_MILLIS} milliseconds ago)
