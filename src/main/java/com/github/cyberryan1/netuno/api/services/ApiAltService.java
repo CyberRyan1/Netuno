@@ -19,7 +19,7 @@ public interface ApiAltService {
     /**
      * @param uuid The player's UUID
      * @return A list of all other accounts the provided player
-     *         has joined the server with. This list will NOT
+     *         has joined the server with. This list will also
      *         contain the provided player
      */
     List<UUID> getAlts( UUID uuid );
@@ -27,7 +27,7 @@ public interface ApiAltService {
     /**
      * @param player The player
      * @return A list of all other accounts the provided player
-     *         has joined the server with. This list will NOT
+     *         has joined the server with. This list will also
      *         contain the provided player
      */
     List<UUID> getAlts( OfflinePlayer player );
