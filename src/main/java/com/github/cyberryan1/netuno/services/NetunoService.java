@@ -237,6 +237,17 @@ public class NetunoService implements ApiNetunoService {
     }
 
     /**
+     * @return All {@link NetunoStaff} instances stored
+     */
+    public List<NetunoStaff> getAllStaff() {
+        List<NetunoStaff> toReturn = new ArrayList<>();
+        for ( UUID uuid : STAFF_CACHE.getKeySet() ) {
+            toReturn.add( STAFF_CACHE.getData( uuid ).get() );
+        }
+        return toReturn;
+    }
+
+    /**
      * @param uuid A player's UUID
      * @return True if the provided UUID is cached, false otherwise
      */
