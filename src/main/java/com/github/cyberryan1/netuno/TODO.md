@@ -17,7 +17,7 @@
 - [ ] Redo the NetunoService.getPlayer() and NetunoService.getStaff() methods to better utilize the cache (see ReportService.getReportsAgainst() method)
 - [ ] Ensure all sounds are working as intended (see sounds in the config.yml)
 - [ ] Ensure all config variables are correctly implemented (and add better notes in the config for what variables they can use where)
-- - [ ] Make replacing config variables into an actual class
+- - [X] Make replacing config variables into an actual class
 
 ### Bugs (unfixed)
 - [ ] Forgot to add support for hover text in punished alt notifications
@@ -69,7 +69,7 @@
 - - [X] History rollbackstaff (staff) (time/all) subcommand
 - [X] Ipinfo command
 - - [X] In alts GUI, add functionality to allow staff to view the account's punishment history
-- [ ] Report command
+- [X] Report command
 - [ ] Viewreports command
 - - Renamed /reports to /viewreports
 - [X] Togglesigns command
