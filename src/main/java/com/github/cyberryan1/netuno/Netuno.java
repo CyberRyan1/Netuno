@@ -116,6 +116,11 @@ public final class Netuno extends JavaPlugin {
     // Should be used after the .thenAccept() method for futures
     //      so that any errors are logged rather than being
     //      silently swallowed
+    // Note: you do NOT need to add error handling when you are
+    //      supplying the completable future, i.e. with
+    //      CompletableFuture.supplyAsync() - however; if you are
+    //      directly running it, i.e. with CompletableFuture.runAsync(),
+    //      then you do have to
     public static final Function<Throwable, ? extends Void> FUTURE_ERROR_HANDLING = throwable -> {
         CyberLogUtils.logError( "Detected an error within a future! See stack trace below for details" );
         if ( throwable.getCause() == null ) { throwable.printStackTrace(); }

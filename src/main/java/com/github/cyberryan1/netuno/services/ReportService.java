@@ -90,11 +90,11 @@ public class ReportService implements ApiReportService {
      */
     public void addReport( NetunoReport report ) {
         report.ensureValid( false ); // ensuring the report contains valid data
-        
+
         this.REPORT_CACHE.getDataSilently( report.getPlayer() ).ifPresent( reports -> {
             reports.add( report );
         } );
-        CompletableFuture.runAsync( () -> ReportsDatabase.addReport( report ) );
+        CompletableFuture.runAsync( () -> ReportsDatabase.addReport( report ) ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
     }
 
     /**
