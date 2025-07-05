@@ -203,6 +203,7 @@ public enum Settings {
     VIEW_REPORT_GUI_ONE_REPORT( "view-reports.gui.one-report", SettingsEntry.EntryType.MATERIAL ),
     VIEW_REPORT_GUI_TWO_REPORTS( "view-reports.gui.two-reports", SettingsEntry.EntryType.MATERIAL ),
     VIEW_REPORT_GUI_THREE_REPORTS( "view-reports.gui.three-reports", SettingsEntry.EntryType.MATERIAL ),
+    VIEW_REPORT_GUI_DELETE_REPORTS( "view-reports.gui.delete-reports", SettingsEntry.EntryType.MATERIAL ),
 
     //
     // Watchlist
