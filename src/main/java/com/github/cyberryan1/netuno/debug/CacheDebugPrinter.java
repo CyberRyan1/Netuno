@@ -66,6 +66,21 @@ public class CacheDebugPrinter<A, B> {
     }
 
     /**
+     * Generates a file that starts with the provided prefix and
+     * begins printing to that
+     * @param prefix The prefix of the file
+     */
+    public void printToFileWithPrefix( String prefix ) {
+        File debugFolder = new File( CyberCore.getPlugin().getDataFolder(), DEBUG_FOLDER_NAME );
+        if ( debugFolder.exists() == false ) debugFolder.mkdirs();
+
+        String dateString = new java.sql.Timestamp( TimestampUtils.getCurrentTimestamp() ).toGMTString();
+        String debugFileName = prefix + "-debug_" + dateString.replace( " ", "_" ) + ".txt";
+        File filePrintingTo = new File( debugFolder, debugFileName );
+        printToFile( filePrintingTo );
+    }
+
+    /**
      * @param file A file to begin printing to
      */
     public void printToFile( File file ) {
