@@ -217,11 +217,11 @@ public class PunishmentLibrary {
                     case EXPIRE -> null;
                     case EXPIRE_STAFF -> null;
                     case SOUND_TARGET ->
-                            Settings.SOUND_PUNISHMENT_IPMUTE_TARGET;
+                            Settings.SOUND_PUNISHMENT_UNIPMUTE_TARGET;
                     case SOUND_GLOBAL ->
-                            Settings.SOUND_PUNISHMENT_IPMUTE_GLOBAL;
+                            Settings.SOUND_PUNISHMENT_UNIPMUTE_GLOBAL;
                     case SOUND_STAFF ->
-                            Settings.SOUND_PUNISHMENT_IPMUTE_STAFF;
+                            Settings.SOUND_PUNISHMENT_UNIPMUTE_STAFF;
                 };
             }
 
