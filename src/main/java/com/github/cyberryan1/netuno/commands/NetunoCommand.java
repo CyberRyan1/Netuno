@@ -8,15 +8,19 @@ import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.BaseCommand;
 import com.github.cyberryan1.cybercore.spigot.utils.*;
 import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.netuno.api.models.ApiReport;
 import com.github.cyberryan1.netuno.debug.CacheDebugPrinter;
 import com.github.cyberryan1.netuno.guis.punish.models.PunishSettings;
 import com.github.cyberryan1.netuno.models.NetunoPlayer;
+import com.github.cyberryan1.netuno.models.NetunoReport;
+import com.github.cyberryan1.netuno.models.NetunoStaff;
 import com.github.cyberryan1.netuno.models.commands.CommandHelpInfo;
 import com.github.cyberryan1.netuno.services.NetunoService;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
 
 import java.util.List;
 import java.util.UUID;
@@ -75,14 +79,75 @@ public class NetunoCommand extends CyberCommand {
                 CyberLogUtils.logInfo( "Printing debug information..." );
                 command.respond( "&sPrinting debug information..." );
 
-                CacheDebugPrinter<UUID, NetunoPlayer> netunoPlayerPrinter = new CacheDebugPrinter<>();
-                netunoPlayerPrinter.setPrinterA( UUID::toString );
-                netunoPlayerPrinter.setPrinterB( NetunoService.DEBUG_PRINTER_NETUNOPLAYER );
+                // Netuno player printer
+                CyberLogUtils.logInfo( "Printing player debug information..." );
+                CacheDebugPrinter<UUID, NetunoPlayer> playerPrinter = new CacheDebugPrinter<>();
+                playerPrinter.setPrinterA( UUID::toString );
+                playerPrinter.setPrinterB( NetunoService.DEBUG_PRINTER_NETUNOPLAYER );
                 for ( NetunoPlayer player : Netuno.SERVICE.getAll() ) {
-                    netunoPlayerPrinter.getCache().put( player.getUuid(), player );
+                    playerPrinter.getCache().put( player.getUuid(), player );
                 }
-                netunoPlayerPrinter.printToFile();
+                playerPrinter.printToFileWithPrefix( "players" );
                 CyberLogUtils.logInfo( "Successfully printed debug information for NetunoPlayer" );
+
+                // Netuno staff printer
+                CyberLogUtils.logInfo( "Printing staff debug information..." );
+                CacheDebugPrinter<UUID, NetunoStaff> staffPrinter = new CacheDebugPrinter<>();
+                staffPrinter.setPrinterA( UUID::toString );
+                staffPrinter.setPrinterB( staff -> "\tSign Notif. Status = " + ( staff.getSignNotificationStatus() ? "TRUE" : "FALSE" ) + "\n" );
+                for ( NetunoStaff staff : Netuno.SERVICE.getAllStaff() ) {
+                    staffPrinter.getCache().put( staff.getUuid(), staff );
+                }
+                staffPrinter.printToFileWithPrefix( "staff" );
+                CyberLogUtils.logInfo( "Successfully printed debug information for NetunoStaff" );
+
+                // Netuno report printer
+                CyberLogUtils.logInfo( "Printing report debug information..." );
+                CacheDebugPrinter<UUID, List<ApiReport>> reportPrinter = new CacheDebugPrinter<>();
+                reportPrinter.setPrinterA( UUID::toString );
+                reportPrinter.setPrinterB( reports -> {
+                    String output = "\tReports (" + reports.size() + " total):\n";
+                    for ( ApiReport report : reports ) {
+                        output += "\tReport #" + report.getId() + "\n";
+                        output += "\t\tPlayer = " + Bukkit.getOfflinePlayer( report.getPlayer() ).getName() + " (UUID \"" + report.getPlayer().toString() + "\")\n";
+                        output += "\t\tAuthor = " + Bukkit.getOfflinePlayer( report.getReportAuthor() ).getName() + " (UUID \"" + report.getReportAuthor().toString() + "\")\n";
+                        output += "\t\tReport Date = " + report.getReportDate() + "\n";
+                        output += "\t\tReasons = " + String.join( NetunoReport.REASON_DELIMITER, report.getReasons() ) + "\n";
+                    }
+                    return output;
+                } );
+                reportPrinter.getCache().putAll( Netuno.REPORT_SERVICE.getCache() );
+                reportPrinter.printToFileWithPrefix( "reports" );
+                CyberLogUtils.logInfo( "Successfully printed debug information for NetunoReport" );
+
+                // IP record printer
+                CyberLogUtils.logInfo( "Printing IP record debug information..." );
+                CacheDebugPrinter<UUID, List<String>> ipRecordPrinter = new CacheDebugPrinter<>();
+                ipRecordPrinter.setPrinterA( UUID::toString );
+                ipRecordPrinter.setPrinterB( list -> {
+                    String output = "";
+                    for ( String str : list ) output += "\t- " + str + "\n";
+                    return output;
+                } );
+                ipRecordPrinter.getCache().putAll( Netuno.ALT_SERVICE.getAllPlayersJoinedIps() );
+                ipRecordPrinter.printToFileWithPrefix( "ip_records" );
+                CyberLogUtils.logInfo( "Successfully printed debug information for IP Records" );
+
+                // Alt printer
+                CyberLogUtils.logInfo( "Printing alt debug information..." );
+                CacheDebugPrinter<UUID, List<UUID>> altPrinter = new CacheDebugPrinter<>();
+                altPrinter.setPrinterA( UUID::toString );
+                altPrinter.setPrinterB( list -> {
+                    String output = "";
+                    for ( UUID uuid : list ) output += "\t- " + Bukkit.getOfflinePlayer( uuid ).getName() + " (UUID \"" + uuid.toString() + "\")\n";
+                    return output;
+                } );
+                for ( UUID uuid : Netuno.ALT_SERVICE.getAllPlayersJoinedIps().keySet() ) {
+                    altPrinter.getCache().put( uuid, Netuno.ALT_SERVICE.getAlts( uuid ) );
+                }
+                altPrinter.printToFileWithPrefix( "alts" );
+                CyberLogUtils.logInfo( "Successfully printed debug information for alts" );
+
 
                 CyberLogUtils.logInfo( "Successfully printed all debug information" );
                 command.respond( "&sSuccessfully printed debug information" );

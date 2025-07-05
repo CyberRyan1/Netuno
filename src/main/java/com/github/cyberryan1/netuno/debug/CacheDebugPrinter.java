@@ -106,7 +106,7 @@ public class CacheDebugPrinter<A, B> {
         List<String> list = new ArrayList<>();
         for ( Map.Entry<A, B> entry : cache.entrySet() ) {
             String output = "\"" + printerA.print( entry.getKey() ) + "\" [\n";
-            output += "\t" + printerB.print( entry.getValue() ) + "\n";
+            output += printerB.print( entry.getValue() ) + "\n";
             output += "],";
 
             list.add( output );
