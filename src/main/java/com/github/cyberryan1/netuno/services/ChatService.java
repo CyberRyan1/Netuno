@@ -4,6 +4,8 @@ import com.github.cyberryan1.netuno.api.services.ApiChatService;
 import com.github.cyberryan1.netuno.database.SettingsDatabase;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -18,6 +20,7 @@ public class ChatService implements ApiChatService {
     
     private boolean chatDisabled = false;
     private int chatSlowdown = 0;
+    private List<String> watchlist = new ArrayList<>();
 
     /**
      * Constructs a new ChatService and loads the current
@@ -33,6 +36,9 @@ public class ChatService implements ApiChatService {
         opt = SettingsDatabase.getSetting( SettingsDatabase.NAME_CHAT_SLOW );
         if ( opt.isPresent() ) chatSlowdown = Integer.parseInt( opt.get() );
         else chatSlowdown = Settings.CHATSLOW_DEFAULT_VALUE.integer();
+
+        opt = SettingsDatabase.getSetting( SettingsDatabase.WATCHLIST );
+        if ( opt.isPresent() ) watchlist.addAll( List.of( opt.get().split( SettingsDatabase.WATCHLIST_DELIMITER ) ) );
     }
 
     /**
@@ -42,6 +48,7 @@ public class ChatService implements ApiChatService {
     public void save() {
         SettingsDatabase.saveSetting( SettingsDatabase.NAME_CHAT_DISABLED, String.valueOf( chatDisabled ) );
         SettingsDatabase.saveSetting( SettingsDatabase.NAME_CHAT_SLOW, String.valueOf( chatSlowdown ) );
+        SettingsDatabase.saveSetting( SettingsDatabase.WATCHLIST, String.join( SettingsDatabase.WATCHLIST_DELIMITER, watchlist ) );
     }
     
     /**
@@ -75,5 +82,13 @@ public class ChatService implements ApiChatService {
     @Override
     public void setChatSlowdown( int chatSlowdown ) {
         this.chatSlowdown = chatSlowdown;
+    }
+
+    /**
+     * @return The watchlist
+     */
+    @Override
+    public List<String> getWatchlist() {
+        return this.watchlist;
     }
 }

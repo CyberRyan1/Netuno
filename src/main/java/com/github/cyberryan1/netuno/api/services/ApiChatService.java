@@ -1,5 +1,7 @@
 package com.github.cyberryan1.netuno.api.services;
 
+import java.util.List;
+
 /**
  * Used for the settings related to chat, i.e. if chat is
  * disabled or the chat slow duration
@@ -28,4 +30,9 @@ public interface ApiChatService {
      * @param chatSlowdown The chat slowdown, in seconds
      */
     void setChatSlowdown( int chatSlowdown );
+
+    /**
+     * @return The watchlist
+     */
+    List<String> getWatchlist();
 }

@@ -647,7 +647,7 @@ watchlist:
     # What sound to play
     sound:
       # If true, then a sound will play, otherwise no sound will be played
-      enabled: false
+      enabled: true
       sound: "BLOCK_NOTE_BLOCK_IRON_XYLOPHONE"
       volume: 10.0
       pitch: 0.1

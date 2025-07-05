@@ -20,6 +20,8 @@ public class SettingsDatabase {
     public static final String NAME_SIGN_NOTIF_STATUS = "%uuid%@sign"; // sign notification status for the player with the UUID
     public static final String NAME_CHAT_SLOW = "chat-slow"; // chat slow, in seconds
     public static final String NAME_CHAT_DISABLED = "chat-disabled"; // chat disabled (true) or chat enabled (false)
+    public static final String WATCHLIST = "watchlist"; // watchlist entries
+    public static final String WATCHLIST_DELIMITER = "@@@@"; // watchlist delimiter between entries
 
     /**
      * Saves a setting to the database. If the setting already

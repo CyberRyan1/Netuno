@@ -10,10 +10,16 @@ import com.github.cyberryan1.netuno.models.libraries.PunishmentLibrary;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.settings.SoundSettingEntry;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -77,6 +83,51 @@ public class ChatListener implements Listener {
 
                 // Update the last time the player chatted
                 chatSlowdown.put( event.getPlayer().getUniqueId(), System.currentTimeMillis() );
+            }
+        }
+
+        // checking if the player's message meets any of the watchlist items
+        if ( Netuno.CHAT_SERVICE.getWatchlist().isEmpty() == false ) {
+            List<String> sentMessageSplit = Arrays.asList(
+                    PlainTextComponentSerializer.plainText().serialize( event.originalMessage() )
+                            .split( " " ) );
+
+            boolean matchesWatchlist = false;
+            outer:
+            for ( String str : sentMessageSplit ) {
+                for ( String watchlistItem : Netuno.CHAT_SERVICE.getWatchlist() ) {
+                    if ( str.matches( watchlistItem ) ) {
+                        matchesWatchlist = true;
+                        break outer;
+                    }
+                }
+            }
+
+            if ( matchesWatchlist ) {
+                // we will have two audiences: one of the staff members and one of the regular players
+                // the regular players will be sent the original message, and the staff members will be sent a different message
+
+                // removing all online staff from the original message
+                event.viewers().removeIf( audience -> {
+                    if ( audience instanceof Player == false ) return false;
+                    return CyberVaultUtils.hasPerms( ( Player ) audience, Settings.WATCHLIST_NOTIFS_VIEW_PERMISSION.string() );
+                } );
+
+                // creating a new message for online staff
+                Audience staffAudience = Audience.audience( Bukkit.getOnlinePlayers().stream()
+                        .filter( p -> CyberVaultUtils.hasPerms( p, Settings.WATCHLIST_NOTIFS_VIEW_PERMISSION.string() ) )
+                        .toList() );
+                Component prefix = LegacyComponentSerializer.legacyAmpersand().deserialize( Settings.WATCHLIST_NOTIFS_PREFIX.coloredString() );
+                Component playerDisplayName = event.getPlayer().displayName();
+                Component sentMsg = event.renderer().render(
+                        event.getPlayer(),
+                        playerDisplayName,
+                        event.message(),
+                        staffAudience
+                );
+                Component staffMsg = prefix.append( sentMsg );
+                staffAudience.sendMessage( staffMsg );
+                Settings.WATCHLIST_NOTIFS_SOUND.sound().playSoundMany( pl -> CyberVaultUtils.hasPerms( pl, Settings.WATCHLIST_NOTIFS_VIEW_PERMISSION.string() ) );
             }
         }
     }

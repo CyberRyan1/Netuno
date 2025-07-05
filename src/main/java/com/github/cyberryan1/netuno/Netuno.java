@@ -189,6 +189,8 @@ public final class Netuno extends JavaPlugin {
         helpOrder += 5; // 5 chat subcommands
         new ReportCommand( helpOrder + 1 );
         new ViewReportsCommand( helpOrder + 2 );
+        new WatchlistCommand( helpOrder + 3 );
+        helpOrder += 3; // 3 watchlist subcommands
     }
 
     private void registerListeners() {
