@@ -25,6 +25,11 @@
 - [ ] History list GUI does not work correctly when it is used for the first time after the server starts
 - - No clue how to fix this
 - [ ] There might be issues with sending punishment notifications, i.e. being sent them repeatedly
+- [X] Unipmute sounds don't work correctly
+- [X] Target does not receive sounds when they are punished
+- [X] IP punishment broadcasts are sent to player's alts twice, one being the global broadcast and another being the target broadcast
+- [ ] Chatting is extremely laggy (I think it happens when you have many punishments or some IP mutes)
+- [ ] (maybe) Want to cache the last punishment ID so that NetunoPunishment#execute can be a bit faster
 
 ### Backend
 - [X] Better punishment model
