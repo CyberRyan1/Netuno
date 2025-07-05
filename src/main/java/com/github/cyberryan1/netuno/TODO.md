@@ -77,7 +77,7 @@
 - [X] Viewreports command
 - - Renamed /reports to /viewreports
 - [X] Togglesigns command
-- [ ] Watchlist command
+- [X] Watchlist command
 
 ### Alt Alerts
 - [X] Warn staff when a player joins with punished alts
