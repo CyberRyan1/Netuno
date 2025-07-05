@@ -6,7 +6,7 @@
 - [ ] Combine NetunoAPI and Netuno into a single Intellij project
 - [ ] Research information about velocity/bungee support (?)
 - [ ] Create an addon plugin for discord support (i.e. punishment logging, etc.) (?)
-- [ ] See TODO comments in PreLoginListener class
+- [X] See TODO comments in PreLoginListener class
 - [X] Add better exception handling for CompletableFutures, as they silently swallow any errors thrown within them
 - [ ] Add a staff chat (?)
 - [ ] Add a staff mode (?)
