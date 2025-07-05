@@ -16,10 +16,10 @@
 - [X] Add debug printing for the staff cache (see NetunoService)
 - [X] Add debug printing for the reports cache (see NetunoService)
 - [X] Redo the NetunoService.getPlayer() and NetunoService.getStaff() methods to better utilize the cache (see ReportService.getReportsAgainst() method)
-- [ ] Ensure all sounds are working as intended (see sounds in the config.yml)
+- [X] Ensure all sounds are working as intended (see sounds in the config.yml)
 - - [X] Staff sounds
 - - [X] Target sounds
-- - [ ] Global sounds
+- - [X] Global sounds
 - [ ] Ensure all config variables are correctly implemented (and add better notes in the config for what variables they can use where)
 - - [X] Make replacing config variables into an actual class
 - [ ] Add command prevention when a player is muted/ipmuted
@@ -33,6 +33,7 @@
 - [X] IP punishment broadcasts are sent to player's alts twice, one being the global broadcast and another being the target broadcast
 - [X] Chatting is extremely laggy (I think it happens when you have many punishments or some IP mutes)
 - [ ] (maybe) Want to cache the last punishment ID so that NetunoPunishment#execute can be a bit faster
+- [ ] IP punishments don't work if the player doesn't have a stored IP, even though they should
 
 ### Backend
 - [X] Better punishment model
