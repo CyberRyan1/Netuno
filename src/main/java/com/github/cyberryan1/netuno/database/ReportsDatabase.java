@@ -53,6 +53,29 @@ public class ReportsDatabase {
     }
 
     /**
+     * @return All reports in the database
+     */
+    public static List<ApiReport> getAllReports() {
+        List<ApiReport> toReturn = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + ";" );
+
+            ResultSet rs = ps.executeQuery();
+            while ( rs.next() ) {
+                toReturn.add( processResultSetIntoReport( rs ) );
+            }
+
+            rs.close();
+            ps.close();
+        } catch ( SQLException e ) {
+            throw new RuntimeException( e );
+        }
+
+        return toReturn;
+    }
+
+    /**
      * Gets a report from the database by its ID
      *
      * @param id The ID of the report to get

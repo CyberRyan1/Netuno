@@ -1,21 +1,20 @@
 package com.github.cyberryan1.netuno.services;
 
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiReport;
 import com.github.cyberryan1.netuno.api.services.ApiReportService;
 import com.github.cyberryan1.netuno.database.ReportsDatabase;
 import com.github.cyberryan1.netuno.models.NetunoReport;
-import com.github.cyberryan1.netuno.models.helpers.PlayerLoginLogoutCache;
 import com.github.cyberryan1.netuno.utils.TimestampUtils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -28,11 +27,14 @@ import java.util.concurrent.CompletableFuture;
  */
 public class ReportService implements ApiReportService {
 
-    private final PlayerLoginLogoutCache<List<ApiReport>> REPORT_CACHE = new PlayerLoginLogoutCache<>();
-
+    // how long before a report expires
     public static long REPORT_EXPIRE_TIME_MILLIS;
 
-    public ReportService() {}
+    private final Map<UUID, List<ApiReport>> CACHE = new HashMap<>();
+    // how often to check for expired reports
+    private final long CHECK_INTERVAL_TICKS = 20L * 60 * 5; // 5 minutes
+    
+    private BukkitTask task = null;
 
     /**
      * Initializes the report service
@@ -40,28 +42,29 @@ public class ReportService implements ApiReportService {
     public void initialize() {
         updateReportExpireTimeMillis();
 
-        this.REPORT_CACHE.setLoginScript( event -> Optional.of( ReportsDatabase.getReportsAgainst( event.getUniqueId() ) ) );
-        this.REPORT_CACHE.setDataValidityScript( uuid -> {
-            // in this, we are going to iterate through all of the reports of the provided player and delete any that are expired
-            // a report is expired if it was created more than ReportService.REPORT_EXPIRE_TIME_MILLIS milliseconds ago
-            this.REPORT_CACHE.getDataSilently( uuid ).ifPresent( reports -> {
-                for ( int index = reports.size() - 1; index >= 0; index-- ) {
-                    ApiReport report = reports.get( index );
-                    if ( TimestampUtils.timestampHasExpired( report.getReportDate(), ReportService.REPORT_EXPIRE_TIME_MILLIS ) ) {
-                        ReportsDatabase.deleteReport( report.getId() );
-                        reports.remove( index );
-                    }
-                }
-            } );
-
-            // we are only using this for the above, we will always return true
-            return true;
-        } );
+        CyberLogUtils.logWarn( "Attempting to query all entries in the reports database" );
+        CyberLogUtils.logWarn( "Lag may occur!" );
+        List<ApiReport> reports = ReportsDatabase.getAllReports();
+        CyberLogUtils.logWarn( "Successfully queried " + reports.size() + " entries from the reports database" );
+        
+        // Loading all reports from the database into the cache
+        for ( ApiReport report : reports ) {
+            if ( CACHE.containsKey( report.getPlayer() ) ) {
+                CACHE.get( report.getPlayer() ).add( report );
+            }
+            else {
+                List<ApiReport> toAdd = new ArrayList<>();
+                toAdd.add( report );
+                CACHE.put( report.getPlayer(), toAdd );
+            }
+        }
 
         // Loading all online players
         for ( Player p : Bukkit.getOnlinePlayers() ) {
             getReportsAgainst( p );
         }
+
+        task = Bukkit.getScheduler().runTaskTimerAsynchronously( CyberCore.getPlugin(), this::deleteAllExpiredReports, CHECK_INTERVAL_TICKS, CHECK_INTERVAL_TICKS );
     }
 
     /**
@@ -77,159 +80,150 @@ public class ReportService implements ApiReportService {
     }
 
     /**
-     * Adds a new report to both the cache and database. The
-     * report is first validated to ensure it contains valid
-     * data. If the reported player exists in the cache, the
-     * report is added to their cached reports list. The report
-     * is then asynchronously added to the database.
-     *
-     * @param report The report to add. Must be a valid
-     *               {@link NetunoReport} instance <i>(meaning
-     *               that {@link NetunoReport#ensureValid(boolean)}
-     *               throws no errors)</i>
+     * Adds the provided report to the database and the cache,
+     * if needed
+     * @param report The report
      */
     public void addReport( NetunoReport report ) {
-        report.ensureValid( false ); // ensuring the report contains valid data
+        report.ensureValid( false );
+        if ( CACHE.containsKey( report.getPlayer() ) ) {
+            CACHE.get( report.getPlayer() ).add( report );
+        }
+        else if ( Bukkit.getOfflinePlayer( report.getPlayer() ).isOnline() ) {
+            List<ApiReport> toAdd = new ArrayList<>();
+            toAdd.add( report );
+            CACHE.put( report.getPlayer(), toAdd );
+        }
 
-        this.REPORT_CACHE.getDataSilently( report.getPlayer() ).ifPresent( reports -> {
-            reports.add( report );
-        } );
         CompletableFuture.runAsync( () -> ReportsDatabase.addReport( report ) ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
     }
 
     /**
-     * Gets a report by its unique identifier. Any results are
-     * <b>not</b> added to the cache. <br>
-     * Searches through a cache of reports first. If nothing is
-     * found, then queries the database.
+     * Gets a report by its unique identifier
      *
      * @param id The ID of the report to get
      * @return The report with the specified ID
      */
     @Override
-    public CompletableFuture<Optional<ApiReport>> getReport( int id ) {
-        for ( ApiReport report : getAllCachedReports() ) {
-            if ( report.getId() == id ) {
-                return CompletableFuture.completedFuture( Optional.of( report ) );
+    public Optional<ApiReport> getReport( int id ) {
+        for ( List<ApiReport> reports : CACHE.values() ) {
+            for ( ApiReport report : reports ) {
+                if ( report.getId() == id ) {
+                    return Optional.of( report );
+                }
             }
         }
-        return CompletableFuture.supplyAsync( () -> ReportsDatabase.getReport( id ) );
+        return Optional.empty();
     }
 
     /**
      * Gets all reports that have been made against the specified
-     * player and adds their data to the cache, as needed. <br>
-     * Searches through a cache of reports first. If nothing is
-     * found, then queries the database.
+     * player
      *
      * @param player The player to get reports against
      * @return List of reports that have been made against the
      *         player
      */
     @Override
-    public CompletableFuture<List<ApiReport>> getReportsAgainst( OfflinePlayer player ) {
+    public List<ApiReport> getReportsAgainst( OfflinePlayer player ) {
         return getReportsAgainst( player.getUniqueId() );
     }
 
     /**
      * Gets all reports that have been made against the specified
-     * player and adds their data to the cache, if needed. <br>
-     * Searches through a cache of reports first. If nothing is
-     * found, then queries the database.
+     * player
      *
      * @param uuid UUID of the player to get reports against
      * @return List of reports that have been made against the
      *         player
      */
     @Override
-    public CompletableFuture<List<ApiReport>> getReportsAgainst( UUID uuid ) {
-        if ( this.REPORT_CACHE.containsPlayer( uuid ) ) {
-            return CompletableFuture.completedFuture( this.REPORT_CACHE.getData( uuid ).get() ); // since their uuid is in the cache, this will never be null
-        }
-
-        return CompletableFuture.supplyAsync( () -> {
-            List<ApiReport> toReturn = ReportsDatabase.getReportsAgainst( uuid );
-            // from above check, we know the player is not in the cache
-            // therefore, we add their data as inactive
-            this.REPORT_CACHE.insertInactiveData( uuid, toReturn );
-            return toReturn;
-        } );
+    public List<ApiReport> getReportsAgainst( UUID uuid ) {
+        return CACHE.getOrDefault( uuid, new ArrayList<>() );
     }
 
     /**
      * Gets all reports that have been made by the specified
-     * player. Any results are <b>not</b> added to the cache. <br>
-     * This <b>always</b> queries the database, as not all
-     * reports authored by the provided player may not be in
-     * the cache at once.
+     * player
      *
      * @param player The player to get reports by
      * @return List of reports that have been made by the player
      */
     @Override
-    public CompletableFuture<List<ApiReport>> getReportsBy( OfflinePlayer player ) {
+    public List<ApiReport> getReportsBy( OfflinePlayer player ) {
         return getReportsBy( player.getUniqueId() );
     }
 
     /**
      * Gets all reports that have been made by the specified
-     * player. Any results are <b>not</b> added to the cache. <br>
-     * This <b>always</b> queries the database, as not all
-     * reports authored by the provided player may not be in
-     * the cache at once.
+     * player
      *
      * @param uuid UUID of the player to get reports by
      * @return List of reports that have been made by the player
      */
     @Override
-    public CompletableFuture<List<ApiReport>> getReportsBy( UUID uuid ) {
-        return CompletableFuture.supplyAsync( () -> ReportsDatabase.getReportsBy( uuid ) );
+    public List<ApiReport> getReportsBy( UUID uuid ) {
+        List<ApiReport> toReturn = new ArrayList<>();
+        for ( List<ApiReport> reports : CACHE.values() ) {
+            for ( ApiReport report : reports ) {
+                if ( report.getReportAuthor().equals( uuid ) ) {
+                    toReturn.add( report );
+                }
+            }
+        }
+        return toReturn;
     }
 
     /**
-     * Deletes the specified report from the database and the
-     * cache.
+     * Deletes the specified report
      *
      * @param report The report to delete
      */
     @Override
     public void deleteReport( ApiReport report ) {
-        this.REPORT_CACHE.getDataSilently( report.getPlayer() ).ifPresent( reports -> {
+        for ( List<ApiReport> reports : CACHE.values() ) {
             for ( ApiReport r : reports ) {
                 if ( report.getId() == r.getId() ) {
                     reports.remove( r );
+
+                    // checking if the player this report was against now has zero reports
+                    // if so, we can remove them from the cache
+                    if ( CACHE.get( r.getPlayer() ).isEmpty() ) {
+                        CACHE.remove( r.getPlayer() );
+                    }
+
                     return;
                 }
             }
-        } );
+        }
 
         CompletableFuture.runAsync( () -> ReportsDatabase.deleteReport( report.getId() ) ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
     }
 
     /**
-     * Deletes the report with the specified ID from the database
-     * and the cache.
+     * Deletes the report with the specified ID
      *
      * @param id The ID of the report to delete
      */
     @Override
     public void deleteReport( int id ) {
-        getReport( id ).thenAccept( report -> {
-            report.ifPresent( this::deleteReport );
-        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+        Optional<ApiReport> report = getReport( id );
+        report.ifPresent( this::deleteReport );
     }
 
     /**
-     * @return A list of {@link ApiReport} of all the reports
-     *         that are cached. Does NOT refresh the last access
-     *         timestamp for each of the returned reports
+     * Iterates through all reports and deletes the ones
+     * that are expired (meaning they were made more than
+     * {@link #REPORT_EXPIRE_TIME_MILLIS} milliseconds ago)
      */
-    public List<ApiReport> getAllCachedReports() {
-        List<ApiReport> toReturn = new ArrayList<>();
-        for ( UUID uuid : this.REPORT_CACHE.getKeySet() ) {
-            toReturn.addAll( this.REPORT_CACHE.getDataSilently( uuid ).get() ); // since the uuid is in the cache, this will never be null
+    private void deleteAllExpiredReports() {
+        for ( List<ApiReport> reports : CACHE.values() ) {
+            for ( int i = reports.size() - 1; i >= 0; i-- ) {
+                ApiReport r = reports.get( i );
+                if ( TimestampUtils.timestampHasExpired( r.getReportDate(), REPORT_EXPIRE_TIME_MILLIS ) ) {
+                    reports.remove( i );
+                }
+            }
         }
-
-        return toReturn;
     }
 }

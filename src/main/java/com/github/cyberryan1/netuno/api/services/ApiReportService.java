@@ -6,7 +6,6 @@ import org.bukkit.OfflinePlayer;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Used to get information about reports and to delete them.
@@ -23,7 +22,7 @@ public interface ApiReportService {
      * @param id The ID of the report to get
      * @return The report with the specified ID
      */
-    CompletableFuture<Optional<ApiReport>> getReport( int id );
+    Optional<ApiReport> getReport( int id );
     
     /**
      * Gets all reports that have been made against the specified
@@ -33,7 +32,7 @@ public interface ApiReportService {
      * @return List of reports that have been made against the
      *         player
      */
-    CompletableFuture<List<ApiReport>> getReportsAgainst( OfflinePlayer player );
+    List<ApiReport> getReportsAgainst( OfflinePlayer player );
 
     /**
      * Gets all reports that have been made against the specified
@@ -43,7 +42,7 @@ public interface ApiReportService {
      * @return List of reports that have been made against the
      *         player
      */
-    CompletableFuture<List<ApiReport>> getReportsAgainst( UUID uuid );
+    List<ApiReport> getReportsAgainst( UUID uuid );
 
     /**
      * Gets all reports that have been made by the specified
@@ -52,7 +51,7 @@ public interface ApiReportService {
      * @param player The player to get reports by
      * @return List of reports that have been made by the player
      */
-    CompletableFuture<List<ApiReport>> getReportsBy( OfflinePlayer player );
+    List<ApiReport> getReportsBy( OfflinePlayer player );
 
     /**
      * Gets all reports that have been made by the specified
@@ -61,7 +60,7 @@ public interface ApiReportService {
      * @param uuid UUID of the player to get reports by
      * @return List of reports that have been made by the player
      */
-    CompletableFuture<List<ApiReport>> getReportsBy( UUID uuid );
+    List<ApiReport> getReportsBy( UUID uuid );
 
     /**
      * Deletes the specified report
