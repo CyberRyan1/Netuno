@@ -45,7 +45,10 @@
 - [X] Rename NPlayer class to NetunoPlayer
 
 ### Commands
-- [X] Netuno command
+- [ ] Netuno command
+- - [X] Help subcommand
+- - [ ] Debug subcommand
+- - [ ] Reload subcommand
 - [X] Punishment commands (i.e. /ban, /mute, etc.)
 - [X] Punish command (and GUI)
 - - [X] Instant punishments
