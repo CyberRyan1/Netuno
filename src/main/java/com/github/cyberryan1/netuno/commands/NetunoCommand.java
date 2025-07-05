@@ -7,14 +7,19 @@ import com.github.cyberryan1.cybercore.spigot.command.CyberSuperCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.BaseCommand;
 import com.github.cyberryan1.cybercore.spigot.utils.*;
+import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.netuno.debug.CacheDebugPrinter;
 import com.github.cyberryan1.netuno.guis.punish.models.PunishSettings;
+import com.github.cyberryan1.netuno.models.NetunoPlayer;
 import com.github.cyberryan1.netuno.models.commands.CommandHelpInfo;
+import com.github.cyberryan1.netuno.services.NetunoService;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.util.List;
+import java.util.UUID;
 
 public class NetunoCommand extends CyberCommand {
 
@@ -62,7 +67,25 @@ public class NetunoCommand extends CyberCommand {
 
         if ( command.getArgs().length > 0 ) {
             if ( command.getArg( 0 ).equalsIgnoreCase( "debug" ) ) {
-                // TODO
+                if ( CyberVaultUtils.hasPerms( command.getSender(), Settings.RELOAD_PERMISSION.string() ) == false ) {
+                    command.respond( Settings.PERM_DENIED_MSG.coloredString() );
+                    return true;
+                }
+
+                CyberLogUtils.logInfo( "Printing debug information..." );
+                command.respond( "&sPrinting debug information..." );
+
+                CacheDebugPrinter<UUID, NetunoPlayer> netunoPlayerPrinter = new CacheDebugPrinter<>();
+                netunoPlayerPrinter.setPrinterA( UUID::toString );
+                netunoPlayerPrinter.setPrinterB( NetunoService.DEBUG_PRINTER_NETUNOPLAYER );
+                for ( NetunoPlayer player : Netuno.SERVICE.getAll() ) {
+                    netunoPlayerPrinter.getCache().put( player.getUuid(), player );
+                }
+                netunoPlayerPrinter.printToFile();
+                CyberLogUtils.logInfo( "Successfully printed debug information for NetunoPlayer" );
+
+                CyberLogUtils.logInfo( "Successfully printed all debug information" );
+                command.respond( "&sSuccessfully printed debug information" );
                 return true;
             }
 
@@ -124,6 +147,11 @@ public class NetunoCommand extends CyberCommand {
             }
 
             else if ( command.getArg( 0 ).equalsIgnoreCase( "reload" ) ) {
+                if ( CyberVaultUtils.hasPerms( command.getSender(), Settings.RELOAD_PERMISSION.string() ) == false ) {
+                    command.respond( Settings.PERM_DENIED_MSG.coloredString() );
+                    return true;
+                }
+
                 CyberLogUtils.logInfo( "Reloading Netuno..." );
                 command.respond( "&sReloading Netuno..." );
 

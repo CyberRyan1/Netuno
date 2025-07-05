@@ -39,7 +39,7 @@ public class NetunoService implements ApiNetunoService {
             output += "\t\tPunishment #" + p.getId() + "\n";
             output += "\t\t\tPlayer = " + p.getPlayer().getName() + " (UUID \"" + p.getPlayerUuid().toString() + "\")\n";
             final String staffName = p.getStaffUuid() == ApiPunishment.CONSOLE_UUID ? "console" : p.getStaff().getName();
-            output += "\t\t\tStaff =" + staffName + " (UUID \"" + p.getStaffUuid().toString() + "\")\n";
+            output += "\t\t\tStaff = " + staffName + " (UUID \"" + p.getStaffUuid().toString() + "\")\n";
             output += "\t\t\tPunishment Type = " + p.getType().name().toUpperCase() + "\n";
             output += "\t\t\tTimestamp = " + p.getTimestamp() + "\n";
             output += "\t\t\tReason = \"" + p.getReason() + "\"\n";
