@@ -70,7 +70,7 @@
 - [X] Ipinfo command
 - - [X] In alts GUI, add functionality to allow staff to view the account's punishment history
 - [X] Report command
-- [ ] Viewreports command
+- [X] Viewreports command
 - - Renamed /reports to /viewreports
 - [X] Togglesigns command
 - [ ] Watchlist command
