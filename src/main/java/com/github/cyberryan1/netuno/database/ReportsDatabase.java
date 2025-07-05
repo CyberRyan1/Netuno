@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Helper class for working with the reports database table
@@ -29,33 +28,28 @@ public class ReportsDatabase {
      * Adds a new report to the database
      *
      * @param report The report to add to the database
-     * @return CompletableFuture containing the ID of the newly
-     *         added report
      */
-    public static CompletableFuture<Integer> addReport( NetunoReport report ) {
-        return CompletableFuture.supplyAsync( () -> {
-            report.ensureValid( false );
+    public static void addReport( NetunoReport report ) {
+        report.ensureValid( false );
 
-            try {
-                PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME +
-                        "(player, author, timestamp, reasons) " +
-                        "VALUES(?, ?, ?, ?)" );
+        try {
+            PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "INSERT INTO " + TABLE_NAME +
+                    "(player, author, timestamp, reasons) " +
+                    "VALUES(?, ?, ?, ?)" );
 
-                ps.setString( 1, report.getPlayer().toString() );
-                ps.setString( 2, report.getReportAuthor().toString() );
-                ps.setLong( 3, toDatabaseTimestamp( report.getReportDate() ) );
-                ps.setString( 4, report.getReasonsString() );
+            ps.setString( 1, report.getPlayer().toString() );
+            ps.setString( 2, report.getReportAuthor().toString() );
+            ps.setLong( 3, toDatabaseTimestamp( report.getReportDate() ) );
+            ps.setString( 4, report.getReasonsString() );
 
-                ps.addBatch();
-                ps.executeBatch();
-                ps.close();
-            } catch ( SQLException e ) {
-                throw new RuntimeException( e );
-            }
+            ps.addBatch();
+            ps.executeBatch();
+            ps.close();
+        } catch ( SQLException e ) {
+            throw new RuntimeException( e );
+        }
 
-            report.setId( getRecentlyInsertedId() );
-            return report.getId();
-        } );
+        report.setId( getRecentlyInsertedId() );
     }
 
     /**
