@@ -188,7 +188,7 @@ public class PunishmentService implements ApiPunishmentService {
      * file
      */
     public void startCacheDebugPrinter() {
-        Netuno.SERVICE.getPlayerCache().printDebugInfo( NetunoService.DEBUG_PRINTER_NPLAYER );
+        Netuno.SERVICE.getPlayerCache().printDebugInfo( NetunoService.DEBUG_PRINTER_NETUNOPLAYER );
     }
 
     @Override

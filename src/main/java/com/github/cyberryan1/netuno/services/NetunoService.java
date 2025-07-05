@@ -31,7 +31,7 @@ import java.util.function.Predicate;
  */
 public class NetunoService implements ApiNetunoService {
 
-    public static final CacheDebugPrinter.PrintSpecifier<NetunoPlayer> DEBUG_PRINTER_NPLAYER = player -> {
+    public static final CacheDebugPrinter.PrintSpecifier<NetunoPlayer> DEBUG_PRINTER_NETUNOPLAYER = player -> {
         String output = "\tPunishments (" + player.getPunishments().size() + " total):\n";
         for ( ApiPunishment aPun : player.getPunishments() ) {
             NetunoPunishment p = ( NetunoPunishment ) aPun;
