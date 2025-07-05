@@ -1,7 +1,7 @@
 package com.github.cyberryan1.netuno.models.libraries;
 
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
-import com.github.cyberryan1.netuno.models.Punishment;
+import com.github.cyberryan1.netuno.models.NetunoPunishment;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 
 import java.util.List;
@@ -18,8 +18,8 @@ public class PunishmentLibrary {
      * @return The punishment with the highest duration remaining
      *         from the provided list
      */
-    public static Punishment getPunishmentWithHighestDurationRemaining( List<Punishment> list ) {
-        Punishment highest = list.get( 0 );
+    public static NetunoPunishment getPunishmentWithHighestDurationRemaining( List<NetunoPunishment> list ) {
+        NetunoPunishment highest = list.get( 0 );
         for ( int index = 1; index < list.size() && highest.getDurationRemaining() != ApiPunishment.PERMANENT_PUNISHMENT_LENGTH; index++ ) {
             if ( list.get( index ).getDurationRemaining() == ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) return list.get( index );
             if ( highest.getDurationRemaining() < list.get( index ).getDurationRemaining() ) {
@@ -34,8 +34,8 @@ public class PunishmentLibrary {
      * @return The punishment with the highest length from the
      *         provided list
      */
-    public static Punishment getPunishmentWithHighestOriginalLength( List<Punishment> list ) {
-        Punishment highest = list.get( 0 );
+    public static NetunoPunishment getPunishmentWithHighestOriginalLength( List<NetunoPunishment> list ) {
+        NetunoPunishment highest = list.get( 0 );
         for ( int index = 1; index < list.size() && highest.getLength() != ApiPunishment.PERMANENT_PUNISHMENT_LENGTH; index++ ) {
             if ( list.get( index ).getLength() == ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) return list.get( index );
             if ( highest.getLength() < list.get( index ).getLength() ) {

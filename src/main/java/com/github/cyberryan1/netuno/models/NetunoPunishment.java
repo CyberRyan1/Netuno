@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  *
  * @author Ryan
  */
-public class Punishment implements ApiPunishment {
+public class NetunoPunishment implements ApiPunishment {
 
     /**
      * @param staff The staff trying to use a punishment
@@ -63,9 +63,9 @@ public class Punishment implements ApiPunishment {
     // Other data
     private boolean isExecuted;
 
-    public Punishment( int id, UUID playerUuid, UUID staffUuid, PunType punType,
-                       long timestamp, long length, String reason, boolean isActive,
-                       int referenceId, boolean isGuiPun, boolean isNotifSent, boolean isExecuted ) {
+    public NetunoPunishment( int id, UUID playerUuid, UUID staffUuid, PunType punType,
+                             long timestamp, long length, String reason, boolean isActive,
+                             int referenceId, boolean isGuiPun, boolean isNotifSent, boolean isExecuted ) {
         this.id = id;
         this.playerUuid = playerUuid;
         this.staffUuid = staffUuid;
@@ -80,9 +80,9 @@ public class Punishment implements ApiPunishment {
         this.isExecuted = isExecuted;
     }
 
-    public Punishment( int id, String playerUuid, String staffUuid, PunType punType,
-                       long timestamp, long length, String reason, boolean isActive,
-                       int referenceId, boolean isGuiPun, boolean isNotifSent, boolean isExecuted ) {
+    public NetunoPunishment( int id, String playerUuid, String staffUuid, PunType punType,
+                             long timestamp, long length, String reason, boolean isActive,
+                             int referenceId, boolean isGuiPun, boolean isNotifSent, boolean isExecuted ) {
         this(
                 id, UUID.fromString( playerUuid ),
                 staffUuid.equals( ApiPunishment.CONSOLE_UUID_STRING ) ? ApiPunishment.CONSOLE_UUID : UUID.fromString( staffUuid ),
@@ -91,18 +91,18 @@ public class Punishment implements ApiPunishment {
         );
     }
 
-    public Punishment( UUID playerUuid, UUID staffUuid, PunType punType,
-                       long timestamp, long length, String reason, boolean isActive,
-                       int referenceId, boolean isGuiPun, boolean isNotifSent, boolean isExecuted ) {
+    public NetunoPunishment( UUID playerUuid, UUID staffUuid, PunType punType,
+                             long timestamp, long length, String reason, boolean isActive,
+                             int referenceId, boolean isGuiPun, boolean isNotifSent, boolean isExecuted ) {
         this(
                 DEFAULT_ID, playerUuid, staffUuid, punType, timestamp, length, reason, isActive,
                 referenceId, isGuiPun, isNotifSent, isExecuted
         );
     }
 
-    public Punishment( String playerUuid, String staffUuid, PunType punType,
-                       long timestamp, long length, String reason, boolean isActive,
-                       int referenceId, boolean isGuiPun, boolean isNotifSent, boolean isExecuted ) {
+    public NetunoPunishment( String playerUuid, String staffUuid, PunType punType,
+                             long timestamp, long length, String reason, boolean isActive,
+                             int referenceId, boolean isGuiPun, boolean isNotifSent, boolean isExecuted ) {
         this(
                 DEFAULT_ID, UUID.fromString( playerUuid ),
                 staffUuid.equals( ApiPunishment.CONSOLE_UUID_STRING ) ? ApiPunishment.CONSOLE_UUID : UUID.fromString( staffUuid ),
@@ -111,7 +111,7 @@ public class Punishment implements ApiPunishment {
         );
     }
 
-    public Punishment() {
+    public NetunoPunishment() {
         this(
                 DEFAULT_ID, ( UUID ) null, null, null,
                 -1L, -1L, null, false, DEFAULT_REFERENCE_ID,
@@ -541,7 +541,7 @@ public class Punishment implements ApiPunishment {
                     // Skip the original player
                     if ( account.getPlayer().getUniqueId().equals( apiPlayer.getPlayer().getUniqueId() ) ) continue;
 
-                    Punishment accountPun = ( Punishment ) this.copy();
+                    NetunoPunishment accountPun = ( NetunoPunishment ) this.copy();
                     accountPun.setId( DEFAULT_ID );
                     accountPun.setPlayer( account.getPlayer().getUniqueId() );
                     accountPun.setReferenceId( referenceId );
@@ -659,7 +659,7 @@ public class Punishment implements ApiPunishment {
      * @return A copy of this punishment
      */
     public ApiPunishment copy() {
-        return new Punishment(
+        return new NetunoPunishment(
                 this.id,
                 this.playerUuid,
                 this.staffUuid,

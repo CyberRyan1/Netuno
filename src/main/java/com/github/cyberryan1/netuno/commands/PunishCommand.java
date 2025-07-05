@@ -10,7 +10,7 @@ import com.github.cyberryan1.netuno.guis.punish.MainPunishGui;
 import com.github.cyberryan1.netuno.guis.punish.PunishmentGuiExecutor;
 import com.github.cyberryan1.netuno.guis.punish.models.PunishSettings;
 import com.github.cyberryan1.netuno.guis.punish.models.SinglePunishButton;
-import com.github.cyberryan1.netuno.models.Punishment;
+import com.github.cyberryan1.netuno.models.NetunoPunishment;
 import com.github.cyberryan1.netuno.models.commands.CommandHelpInfo;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.Duplex;
@@ -110,7 +110,7 @@ public class PunishCommand extends CyberCommand {
         }
 
         final Player staff = command.getPlayer();
-        if ( Punishment.checkPlayerCanPunish( staff, target ) == false ) {
+        if ( NetunoPunishment.checkPlayerCanPunish( staff, target ) == false ) {
             CommandErrors.sendPlayerCannotBePunished( staff, target.getName() );
             return true;
         }

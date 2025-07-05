@@ -1,7 +1,7 @@
 package com.github.cyberryan1.netuno.database;
 
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
-import com.github.cyberryan1.netuno.models.Punishment;
+import com.github.cyberryan1.netuno.models.NetunoPunishment;
 import org.bukkit.OfflinePlayer;
 
 import java.sql.PreparedStatement;
@@ -32,7 +32,7 @@ public class PunishmentsDatabase {
      * @return A CompletableFuture of the generated ID for this
      * punishment
      */
-    public static CompletableFuture<Integer> addPunishment( Punishment punishment ) {
+    public static CompletableFuture<Integer> addPunishment( NetunoPunishment punishment ) {
         return CompletableFuture.supplyAsync( () -> {
             punishment.ensureValid( false );
 
@@ -70,8 +70,8 @@ public class PunishmentsDatabase {
      * @param punId The ID of the punishment to search for.
      * @return The punishment with the ID, or null if not found.
      */
-    public static Punishment getPunishment( int punId ) {
-        Punishment data = null;
+    public static NetunoPunishment getPunishment( int punId ) {
+        NetunoPunishment data = null;
 
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE id = ?;" );
@@ -82,8 +82,8 @@ public class PunishmentsDatabase {
                 final int referencePunId = rs.getInt( "reference" );
 
                 if ( referencePunId != ApiPunishment.DEFAULT_REFERENCE_ID ) {
-                    Punishment originalPun = getPunishment( referencePunId );
-                    data = ( Punishment ) originalPun.copy();
+                    NetunoPunishment originalPun = getPunishment( referencePunId );
+                    data = ( NetunoPunishment ) originalPun.copy();
                     data.setId( rs.getInt( "id" ) );
                     data.setReferenceId( referencePunId );
                     data.setPlayer( UUID.fromString( rs.getString( "player" ) ) );
@@ -112,7 +112,7 @@ public class PunishmentsDatabase {
      * @param player The {@link OfflinePlayer} to search for.
      * @return A {@link List <Punishment>} of all punishments for the player.
      */
-    public static List<Punishment> getPunishments( OfflinePlayer player ) {
+    public static List<NetunoPunishment> getPunishments( OfflinePlayer player ) {
         return getPunishments( player.getUniqueId().toString() );
     }
 
@@ -120,10 +120,10 @@ public class PunishmentsDatabase {
      * Searches for all punishments in just the database that have the
      * given player UUID as the player's UUID. <br>
      * @param playerUuid The player UUID to search for.
-     * @return A {@link List<Punishment>} of all punishments for the player.
+     * @return A {@link List< NetunoPunishment >} of all punishments for the player.
      */
-    public static List<Punishment> getPunishments( String playerUuid ) {
-        List<Punishment> toReturn = new ArrayList<>();
+    public static List<NetunoPunishment> getPunishments( String playerUuid ) {
+        List<NetunoPunishment> toReturn = new ArrayList<>();
 
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE player = ?;" );
@@ -131,11 +131,11 @@ public class PunishmentsDatabase {
 
             ResultSet rs = ps.executeQuery();
             while ( rs.next() ) {
-                Punishment data = null;
+                NetunoPunishment data = null;
                 final int referencePunId = rs.getInt( "reference" );
 
                 if ( referencePunId != ApiPunishment.DEFAULT_REFERENCE_ID ) {
-                    Punishment originalPun = getPunishment( referencePunId );
+                    NetunoPunishment originalPun = getPunishment( referencePunId );
 
                     // If the original punishment is null, remove this punishment
                     //      from the database
@@ -170,10 +170,10 @@ public class PunishmentsDatabase {
      * reference ID as the reference ID. Note that the list returned by
      * this method will NOT include the original punishment
      * @param referenceId The reference ID to search for
-     * @return A {@link List<Punishment>} of all punishments for the reference ID.
+     * @return A {@link List< NetunoPunishment >} of all punishments for the reference ID.
      */
-    public static List<Punishment> getPunishmentsFromReference( int referenceId ) {
-        List<Punishment> toReturn = new ArrayList<>();
+    public static List<NetunoPunishment> getPunishmentsFromReference( int referenceId ) {
+        List<NetunoPunishment> toReturn = new ArrayList<>();
         if ( referenceId < 0 ) { return toReturn; }
 
         try {
@@ -182,7 +182,7 @@ public class PunishmentsDatabase {
 
             ResultSet rs = ps.executeQuery();
             while ( rs.next() ) {
-                Punishment data = processResultSetIntoPunishment( rs );
+                NetunoPunishment data = processResultSetIntoPunishment( rs );
                 data.setReferenceId( referenceId );
                 toReturn.add( data );
             }
@@ -204,8 +204,8 @@ public class PunishmentsDatabase {
      * @return A {@link List <Punishment>} of all punishments executed
      * by the player.
      */
-    public static List<Punishment> getPunishmentsExecutedByPlayer( OfflinePlayer player ) {
-        List<Punishment> toReturn = new ArrayList<>();
+    public static List<NetunoPunishment> getPunishmentsExecutedByPlayer( OfflinePlayer player ) {
+        List<NetunoPunishment> toReturn = new ArrayList<>();
 
         try {
             PreparedStatement ps = ConnectionManager.CONN.prepareStatement( "SELECT * FROM " + TABLE_NAME + " WHERE staff = ?;" );
@@ -213,11 +213,11 @@ public class PunishmentsDatabase {
 
             ResultSet rs = ps.executeQuery();
             while ( rs.next() ) {
-                Punishment data = null;
+                NetunoPunishment data = null;
                 final int referencePunId = rs.getInt( "reference" );
 
                 if ( referencePunId != ApiPunishment.DEFAULT_REFERENCE_ID ) {
-                    Punishment originalPun = getPunishment( referencePunId );
+                    NetunoPunishment originalPun = getPunishment( referencePunId );
 
                     // If the original punishment is null, remove this punishment
                     //      from the database
@@ -253,16 +253,16 @@ public class PunishmentsDatabase {
      * punishments that reference it
      * @param newData The updated punishment data
      */
-    public static void updatePunishment( Punishment newData ) {
+    public static void updatePunishment( NetunoPunishment newData ) {
         newData.ensureValid( true );
 
         if ( newData.getType().isIpPunishment() ) {
-            final List<Punishment> allReferences = getPunishmentsFromReference( newData.getReferenceId() );
-            final Punishment original = getPunishment( newData.getId() );
+            final List<NetunoPunishment> allReferences = getPunishmentsFromReference( newData.getReferenceId() );
+            final NetunoPunishment original = getPunishment( newData.getId() );
             allReferences.add( original );
 
-            for ( Punishment ref : allReferences ) {
-                Punishment newPun = ( Punishment ) newData.copy();
+            for ( NetunoPunishment ref : allReferences ) {
+                NetunoPunishment newPun = ( NetunoPunishment ) newData.copy();
                 newPun.setId( ref.getId() );
                 newPun.setPlayer( ref.getPlayerUuid() );
                 if ( original.getId() == ref.getId() ) { newPun.setReferenceId( ApiPunishment.DEFAULT_REFERENCE_ID ); }
@@ -386,8 +386,8 @@ public class PunishmentsDatabase {
         return toReturn;
     }
 
-    private static Punishment processResultSetIntoPunishment( ResultSet rs ) throws SQLException {
-        return new Punishment(
+    private static NetunoPunishment processResultSetIntoPunishment( ResultSet rs ) throws SQLException {
+        return new NetunoPunishment(
                 rs.getInt( "id" ),
                 rs.getString( "player" ),
                 rs.getString( "staff" ),

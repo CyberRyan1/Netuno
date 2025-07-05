@@ -7,8 +7,8 @@ import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.models.NetunoPlayer;
+import com.github.cyberryan1.netuno.models.NetunoPunishment;
 import com.github.cyberryan1.netuno.models.PlayerIpsRecord;
-import com.github.cyberryan1.netuno.models.Punishment;
 import com.github.cyberryan1.netuno.models.libraries.PunishmentLibrary;
 import com.github.cyberryan1.netuno.utils.TextComponentUtils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
@@ -53,8 +53,8 @@ public class PreLoginListener implements Listener {
         // Secondly, we need to load the player from NetunoService
         Netuno.SERVICE.getPlayer( event.getUniqueId() ).thenAccept( apiPlayer -> {
             final NetunoPlayer player = ( NetunoPlayer ) apiPlayer;
-            final List<Punishment> allPunishments = player.getPunishments().stream()
-                    .map( pun -> ( Punishment ) pun )
+            final List<NetunoPunishment> allPunishments = player.getPunishments().stream()
+                    .map( pun -> ( NetunoPunishment ) pun )
                     .collect( Collectors.toList() );
 
             // TODO I'm not sure if I am a fan of how this is done, may want to redo it
@@ -62,7 +62,7 @@ public class PreLoginListener implements Listener {
             //      punishments are not added to this player already,
             //      we add those punishments to this player
             List<UUID> altUuids = player.getAlts();
-            List<Punishment> altIpPunishments = new ArrayList<>();
+            List<NetunoPunishment> altIpPunishments = new ArrayList<>();
             for ( UUID uuid : altUuids ) {
                 try {
                     final NetunoPlayer altPlayer = ( NetunoPlayer ) Netuno.SERVICE.getPlayer( uuid ).get();
@@ -71,8 +71,8 @@ public class PreLoginListener implements Listener {
                     for ( ApiPunishment altPun : altPlayer.getPunishments() ) {
                         if ( altPun.getType().isIpPunishment() == false ) continue;
                         // Don't add duplicates to the list
-                        if ( altIpPunishments.contains( ( Punishment ) altPun ) ) continue;
-                        altIpPunishments.add( ( Punishment ) altPun );
+                        if ( altIpPunishments.contains( ( NetunoPunishment ) altPun ) ) continue;
+                        altIpPunishments.add( ( NetunoPunishment ) altPun );
                     }
                 } catch ( InterruptedException | ExecutionException e ) {
                     throw new RuntimeException( e );
@@ -80,9 +80,9 @@ public class PreLoginListener implements Listener {
             }
 
             // TODO ensure this is working properly
-            for ( Punishment altIpPun : altIpPunishments ) {
+            for ( NetunoPunishment altIpPun : altIpPunishments ) {
                 if ( allPunishments.contains( altIpPun ) == false ) {
-                    Punishment newPun = ( Punishment ) altIpPun.copy();
+                    NetunoPunishment newPun = ( NetunoPunishment ) altIpPun.copy();
                     newPun.setPlayer( player.getUuid() );
 
                     // Setting the reference ID for the new punishment to
@@ -97,27 +97,27 @@ public class PreLoginListener implements Listener {
 
             // If the player has any active IP ban or regular ban punishments,
             //      we disallow them from joining
-            final List<Punishment> activePunishments = player.getActivePunishments().stream()
-                    .map( pun -> ( Punishment ) pun )
+            final List<NetunoPunishment> activePunishments = player.getActivePunishments().stream()
+                    .map( pun -> ( NetunoPunishment ) pun )
                     .collect( Collectors.toList() );
             if ( activePunishments.stream().anyMatch( pun -> pun.getType() == ApiPunishment.PunType.BAN
                     || pun.getType() == ApiPunishment.PunType.IPBAN ) ) {
-                final Punishment highestPunishment = PunishmentLibrary.getPunishmentWithHighestDurationRemaining( activePunishments );
+                final NetunoPunishment highestPunishment = PunishmentLibrary.getPunishmentWithHighestDurationRemaining( activePunishments );
                 denyJoin( event, highestPunishment );
                 return;
             }
 
             // Send any punishments with notifications needing to be sent
-            final List<Punishment> punishmentsNeedingNotifSent = player.getPunishments().stream()
+            final List<NetunoPunishment> punishmentsNeedingNotifSent = player.getPunishments().stream()
                     .filter( pun -> pun.isNotifSent() == false )
-                    .map( pun -> ( Punishment ) pun )
+                    .map( pun -> ( NetunoPunishment ) pun )
                     .collect( Collectors.toList() );
             // Delay the message by at least three seconds
             Bukkit.getScheduler().runTaskLaterAsynchronously( CyberCore.getPlugin(), () -> {
                 // If the player logs off, don't send anything
                 if ( player.getPlayer().isOnline() == false ) return;
 
-                for ( Punishment pun : punishmentsNeedingNotifSent ) {
+                for ( NetunoPunishment pun : punishmentsNeedingNotifSent ) {
                     // Send the notification
                     pun.sendNotification();
                     // Update the notification in the database
@@ -140,7 +140,7 @@ public class PreLoginListener implements Listener {
      * @param event      The event
      * @param punishment The punishment
      */
-    private void denyJoin( AsyncPlayerPreLoginEvent event, Punishment punishment ) {
+    private void denyJoin( AsyncPlayerPreLoginEvent event, NetunoPunishment punishment ) {
         Settings settingToFill = PunishmentLibrary.getSettingForMessageType( punishment.getType(), PunishmentLibrary.MessageSetting.ATTEMPT );
         Component component = punishment.fillSettingMessage( settingToFill );
         event.disallow( AsyncPlayerPreLoginEvent.Result.KICK_BANNED, component );

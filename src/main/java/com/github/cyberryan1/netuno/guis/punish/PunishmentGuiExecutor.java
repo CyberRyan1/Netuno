@@ -8,7 +8,7 @@ import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.guis.punish.models.PunGuiType;
 import com.github.cyberryan1.netuno.guis.punish.models.PunishSettings;
 import com.github.cyberryan1.netuno.guis.punish.models.SinglePunishButton;
-import com.github.cyberryan1.netuno.models.Punishment;
+import com.github.cyberryan1.netuno.models.NetunoPunishment;
 import com.github.cyberryan1.netuno.models.libraries.PunishmentLibrary;
 import com.github.cyberryan1.netuno.utils.PrettyStringLibrary;
 import com.github.cyberryan1.netuno.utils.TimestampUtils;
@@ -88,13 +88,13 @@ public class PunishmentGuiExecutor {
 
                     // Getting all active punishments from all alts, provided
                     //      the punishment type is equal to this.punishTypeAfter
-                    List<Punishment> activeAltPunishments = new ArrayList<>();
+                    List<NetunoPunishment> activeAltPunishments = new ArrayList<>();
                     try {
                         List<ApiPlayer> altsList = Netuno.ALT_SERVICE.getAlts( ( ApiPlayer ) player ).get();
                         for ( ApiPlayer alt : altsList ) {
                             activeAltPunishments.addAll( alt.getActivePunishments().stream()
                                     .filter( pun -> pun.getType() == button.getPunishTypeAfter() )
-                                    .map( pun -> ( Punishment ) pun )
+                                    .map( pun -> ( NetunoPunishment ) pun )
                                     .collect( Collectors.toList() ) );
                         }
                     } catch ( InterruptedException |
@@ -109,7 +109,7 @@ public class PunishmentGuiExecutor {
                         return;
                     }
 
-                    Punishment highestPunishment = highestDurationIsRemaining
+                    NetunoPunishment highestPunishment = highestDurationIsRemaining
                             ? PunishmentLibrary.getPunishmentWithHighestDurationRemaining( activeAltPunishments )
                             : PunishmentLibrary.getPunishmentWithHighestOriginalLength( activeAltPunishments );
                     duration = highestPunishment.getDurationRemaining();

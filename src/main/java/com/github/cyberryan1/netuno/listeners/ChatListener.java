@@ -5,7 +5,7 @@ import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.models.NetunoPlayer;
-import com.github.cyberryan1.netuno.models.Punishment;
+import com.github.cyberryan1.netuno.models.NetunoPunishment;
 import com.github.cyberryan1.netuno.models.libraries.PunishmentLibrary;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.settings.SoundSettingEntry;
@@ -36,12 +36,12 @@ public class ChatListener implements Listener {
 
         // If the player has any mute or IP mute punishments,
         //      we disallow them from chatting
-        final List<Punishment> activePunishments = player.getActivePunishments().stream()
-                .map( pun -> ( Punishment ) pun )
+        final List<NetunoPunishment> activePunishments = player.getActivePunishments().stream()
+                .map( pun -> ( NetunoPunishment ) pun )
                 .collect( Collectors.toList() );
         if ( activePunishments.stream().anyMatch( pun -> pun.getType() == ApiPunishment.PunType.MUTE
                 || pun.getType() == ApiPunishment.PunType.IPMUTE ) ) {
-            final Punishment highestPunishment = PunishmentLibrary.getPunishmentWithHighestDurationRemaining( activePunishments );
+            final NetunoPunishment highestPunishment = PunishmentLibrary.getPunishmentWithHighestDurationRemaining( activePunishments );
             denyChat_becausePunished( event, highestPunishment );
             return;
         }
@@ -81,7 +81,7 @@ public class ChatListener implements Listener {
         }
     }
 
-    private void denyChat_becausePunished( AsyncChatEvent event, Punishment pun ) {
+    private void denyChat_becausePunished( AsyncChatEvent event, NetunoPunishment pun ) {
         event.setCancelled( true );
 
         // Sending the attempt message to the player

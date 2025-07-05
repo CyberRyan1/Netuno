@@ -9,8 +9,8 @@ import com.github.cyberryan1.netuno.api.services.*;
 import com.github.cyberryan1.netuno.database.SettingsDatabase;
 import com.github.cyberryan1.netuno.debug.CacheDebugPrinter;
 import com.github.cyberryan1.netuno.models.NetunoPlayer;
+import com.github.cyberryan1.netuno.models.NetunoPunishment;
 import com.github.cyberryan1.netuno.models.NetunoStaff;
-import com.github.cyberryan1.netuno.models.Punishment;
 import com.github.cyberryan1.netuno.models.helpers.PlayerLoginLogoutCache;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
@@ -34,7 +34,7 @@ public class NetunoService implements ApiNetunoService {
     public static final CacheDebugPrinter.PrintSpecifier<NetunoPlayer> DEBUG_PRINTER_NPLAYER = player -> {
         String output = "\tPunishments (" + player.getPunishments().size() + " total):\n";
         for ( ApiPunishment aPun : player.getPunishments() ) {
-            Punishment p = ( Punishment ) aPun;
+            NetunoPunishment p = ( NetunoPunishment ) aPun;
 
             output += "\t\tPunishment #" + p.getId() + "\n";
             output += "\t\t\tPlayer = " + p.getPlayer().getName() + " (UUID \"" + p.getPlayerUuid().toString() + "\")\n";
