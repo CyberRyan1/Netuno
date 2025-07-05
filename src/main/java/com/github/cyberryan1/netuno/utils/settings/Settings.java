@@ -282,7 +282,7 @@ public enum Settings {
     }
 
     public void reload() {
-        this.value = new SettingsEntry( this.path, this.value.getValueType() );
+        this.value = new SettingsEntry( this.path, this.type );
     }
 
     public String getPath() { return this.path; }

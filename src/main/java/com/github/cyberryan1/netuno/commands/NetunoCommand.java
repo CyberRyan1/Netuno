@@ -7,8 +7,10 @@ import com.github.cyberryan1.cybercore.spigot.command.CyberSuperCommand;
 import com.github.cyberryan1.cybercore.spigot.command.sent.SentCommand;
 import com.github.cyberryan1.cybercore.spigot.command.settings.BaseCommand;
 import com.github.cyberryan1.cybercore.spigot.utils.*;
+import com.github.cyberryan1.netuno.guis.punish.models.PunishSettings;
 import com.github.cyberryan1.netuno.models.commands.CommandHelpInfo;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
@@ -122,7 +124,20 @@ public class NetunoCommand extends CyberCommand {
             }
 
             else if ( command.getArg( 0 ).equalsIgnoreCase( "reload" ) ) {
-                // TODO
+                CyberLogUtils.logInfo( "Reloading Netuno..." );
+                command.respond( "&sReloading Netuno..." );
+
+                YMLUtils.initializeConfigs();
+
+                for ( Settings setting : Settings.values() ) {
+                    setting.reload();
+                }
+                for ( PunishSettings ps : PunishSettings.values() ) {
+                    ps.reload();
+                }
+
+                CyberLogUtils.logInfo( "Netuno reloaded!" );
+                command.respond( "&sNetuno reloaded!" );
                 return true;
             }
         }
