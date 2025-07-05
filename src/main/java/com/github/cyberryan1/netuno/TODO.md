@@ -15,7 +15,7 @@
 - [X] Rename NetunoService.DEBUG_PRINTER_NPLAYER variable to NetunoService.DEBUG_PRINTER_NETUNOPLAYER
 - [X] Add debug printing for the staff cache (see NetunoService)
 - [X] Add debug printing for the reports cache (see NetunoService)
-- [ ] Redo the NetunoService.getPlayer() and NetunoService.getStaff() methods to better utilize the cache (see ReportService.getReportsAgainst() method)
+- [X] Redo the NetunoService.getPlayer() and NetunoService.getStaff() methods to better utilize the cache (see ReportService.getReportsAgainst() method)
 - [ ] Ensure all sounds are working as intended (see sounds in the config.yml)
 - [ ] Ensure all config variables are correctly implemented (and add better notes in the config for what variables they can use where)
 - - [X] Make replacing config variables into an actual class
