@@ -6,6 +6,7 @@ import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiReport;
 import com.github.cyberryan1.netuno.api.services.ApiReportService;
 import com.github.cyberryan1.netuno.database.ReportsDatabase;
+import com.github.cyberryan1.netuno.guis.report.ReportUtils;
 import com.github.cyberryan1.netuno.models.NetunoReport;
 import com.github.cyberryan1.netuno.utils.TimestampUtils;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
@@ -65,6 +66,7 @@ public class ReportService implements ApiReportService {
         }
 
         task = Bukkit.getScheduler().runTaskTimerAsynchronously( CyberCore.getPlugin(), this::deleteAllExpiredReports, CHECK_INTERVAL_TICKS, CHECK_INTERVAL_TICKS );
+        ReportUtils.updateAvailableReasons();
     }
 
     /**
@@ -181,6 +183,8 @@ public class ReportService implements ApiReportService {
      */
     @Override
     public void deleteReport( ApiReport report ) {
+        CompletableFuture.runAsync( () -> ReportsDatabase.deleteReport( report.getId() ) ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+
         for ( List<ApiReport> reports : CACHE.values() ) {
             for ( ApiReport r : reports ) {
                 if ( report.getId() == r.getId() ) {
@@ -196,8 +200,6 @@ public class ReportService implements ApiReportService {
                 }
             }
         }
-
-        CompletableFuture.runAsync( () -> ReportsDatabase.deleteReport( report.getId() ) ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
     }
 
     /**

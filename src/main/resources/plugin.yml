@@ -24,7 +24,7 @@ commands:
   togglesigns:
   #clearchat:
   #mutechat:
-  reports:
+  viewreports:
   report:
   punish:
     aliases: [pun, p]
