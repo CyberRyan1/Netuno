@@ -534,8 +534,8 @@ report:
     player:
       # Whether or not this sound is enabled or not
       enabled: true
-      # What sound to play (see https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html for a list of sounds)
-      sound: "BLOCK_DISPENSER_FAIL"
+      # What sound to play
+      sound: "block.dispenser.fail"
       # What volume to play the sound at
       volume: 1.0
       # What pitch to play the sound at
@@ -544,7 +544,7 @@ report:
     # Sound sent to the staff when a report is submitted
     staff:
       enabled: true
-      sound: "BLOCK_NOTE_BLOCK_BELL"
+      sound: "block.note_block.bell"
       volume: 1.0
       pitch: 1.0
 
@@ -589,7 +589,7 @@ watchlist:
     sound:
       # If true, then a sound will play, otherwise no sound will be played
       enabled: true
-      sound: "BLOCK_NOTE_BLOCK_IRON_XYLOPHONE"
+      sound: "block.note_block.iron_xylophone"
       volume: 10.0
       pitch: 0.1
 
@@ -626,8 +626,7 @@ database:
 #########################
 
 # We allow you to customize the sounds that can be played during different events, such as bans,
-#   mutes, etc., unless they have already been customized above. You can find a list of all the
-#   available sounds at https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+#   mutes, etc., unless they have already been customized above.
 sounds:
   punishments:
     # Warn punishment
@@ -636,8 +635,8 @@ sounds:
       staff-sound:
         # Whether or not this sound is enabled or not
         enabled: false
-        # What sound to play (see https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html for a list of sounds)
-        sound: 'BLOCK_NOTE_BLOCK_BANJO'
+        # What sound to play.
+        sound: 'block.note_block.banjo'
         # What volume to play the sound at
         volume: 1.0
         # What pitch to play the sound at
@@ -645,143 +644,143 @@ sounds:
       # What sound the target hears
       target-sound:
         enabled: false
-        sound: ''
+        sound: 'ITEM_MACE_SMASH_AIR'
         volume: 1.0
         pitch: 1.0
       # What sound everyone else hears when another player is warned. This will not be sent
       #   if the punishment is silent
       global-sound:
         enabled: false
-        sound: 'ENTITY_SHULKER_HURT_CLOSED'
+        sound: 'entity.shulker.hurt_closed'
         volume: 1.0
         pitch: 0.1
 
     kick:
       staff-sound:
         enabled: false
-        sound: 'BLOCK_NOTE_BLOCK_BANJO'
+        sound: 'block.note_block.banjo'
         volume: 1.0
         pitch: 0.1
       # Note: kick, ban, and ipban do not have a target-sound, as they are being removed from the server (duh)
       global-sound:
         enabled: false
-        sound: 'ENTITY_SHULKER_HURT_CLOSED'
+        sound: 'entity.shulker.hurt_closed'
         volume: 1.0
         pitch: 0.1
 
     mute:
       staff-sound:
         enabled: false
-        sound: 'BLOCK_NOTE_BLOCK_BANJO'
+        sound: 'block.note_block.banjo'
         volume: 1.0
         pitch: 0.1
       target-sound:
         enabled: false
-        sound: 'BLOCK_ANVIL_LAND'
+        sound: 'block.anvil.land'
         volume: 1.0
         pitch: 0.5
       global-sound:
         enabled: false
-        sound: 'ENTITY_SHULKER_HURT_CLOSED'
+        sound: 'entity.shulker.hurt_closed'
         volume: 1.0
         pitch: 0.1
 
     unmute:
       staff-sound:
         enabled: false
-        sound: 'BLOCK_NOTE_BLOCK_BELL'
+        sound: 'block.note_block.bell'
         volume: 1.0
         pitch: 0.1
       target-sound:
         enabled: false
-        sound: 'BLOCK_NOTE_BLOCK_BELL'
+        sound: 'block.note_block.bell'
         volume: 1.0
         pitch: 0.1
       global-sound:
         enabled: false
-        sound: 'BLOCK_NOTE_BLOCK_BELL'
+        sound: 'block.note_block.bell'
         volume: 1.0
         pitch: 0.1
 
     ban:
       staff-sound:
         enabled: false
-        sound: 'BLOCK_NOTE_BLOCK_BANJO'
+        sound: 'block.note_block.banjo'
         volume: 1.0
         pitch: 0.1
       global-sound:
         enabled: false
-        sound: 'ENTITY_SHULKER_HURT_CLOSED'
+        sound: 'entity.shulker.hurt_closed'
         volume: 1.0
         pitch: 0.1
 
     unban:
       staff-sound:
         enabled: false
-        sound: 'BLOCK_NOTE_BLOCK_BELL'
+        sound: 'block.note_block.bell'
         volume: 1.0
         pitch: 0.1
       global-sound:
         enabled: false
-        sound: 'BLOCK_NOTE_BLOCK_BELL'
+        sound: 'block.note_block.bell'
         volume: 1.0
         pitch: 0.1
 
     ipmute:
       staff-sound:
         enabled: false
-        sound: 'BLOCK_NOTE_BLOCK_BANJO'
+        sound: 'block.note_block.banjo'
         volume: 1.0
         pitch: 0.1
       target-sound:
         enabled: false
-        sound: 'BLOCK_ANVIL_LAND'
+        sound: 'block.anvil.land'
         volume: 1.0
         pitch: 0.5
       global-sound:
         enabled: false
-        sound: 'ENTITY_SHULKER_HURT_CLOSED'
+        sound: 'entity.shulker.hurt_closed'
         volume: 1.0
         pitch: 0.1
 
     unipmute:
       staff-sound:
         enabled: false
-        sound: 'BLOCK_NOTE_BLOCK_BELL'
+        sound: 'block.note_block.bell'
         volume: 1.0
         pitch: 0.1
       target-sound:
         enabled: false
-        sound: 'BLOCK_NOTE_BLOCK_BELL'
+        sound: 'block.note_block.bell'
         volume: 1.0
         pitch: 0.1
       global-sound:
         enabled: false
-        sound: 'BLOCK_NOTE_BLOCK_BELL'
+        sound: 'block.note_block.bell'
         volume: 1.0
         pitch: 0.1
 
     ipban:
       staff-sound:
         enabled: false
-        sound: 'BLOCK_NOTE_BLOCK_BANJO'
+        sound: 'block.note_block.banjo'
         volume: 1.0
         pitch: 0.1
       global-sound:
         enabled: false
-        sound: 'ENTITY_SHULKER_HURT_CLOSED'
+        sound: 'entity.shulker.hurt_closed'
         volume: 1.0
         pitch: 0.1
 
     unipban:
       staff-sound:
         enabled: false
-        sound: 'BLOCK_NOTE_BLOCK_BELL'
+        sound: 'block.note_block.bell'
         volume: 1.0
         pitch: 0.1
       global-sound:
         enabled: false
-        sound: 'BLOCK_NOTE_BLOCK_BELL'
+        sound: 'block.note_block.bell'
         volume: 1.0
         pitch: 0.1
 
@@ -789,12 +788,12 @@ sounds:
   punished-attempt:
     muted:
       enabled: false
-      sound: 'BLOCK_NOTE_BLOCK_BASS'
+      sound: 'block.note_block.bass'
       volume: 1.0
       pitch: 0.1
 
     ipmuted:
       enabled: false
-      sound: 'BLOCK_NOTE_BLOCK_BASS'
+      sound: 'block.note_block.bass'
       volume: 1.0
       pitch: 0.1

@@ -1,7 +1,11 @@
 package com.github.cyberryan1.netuno.utils.settings;
 
+import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
+import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
+import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -10,8 +14,8 @@ import java.util.function.Predicate;
 public class SoundSettingEntry {
 
     private final String startingPath;
-    private final boolean enabled;
-    private final Sound sound;
+    private boolean enabled;
+    private Sound sound;
     private final float volume;
     private final float pitch;
 
@@ -20,9 +24,30 @@ public class SoundSettingEntry {
         this.startingPath = startingPath;
         this.enabled = YMLUtils.getConfig().getBool( startingPath + "enabled" );
         if ( this.enabled == false ) { this.sound = null; }
-        else { this.sound = Sound.valueOf( YMLUtils.getConfig().getStr( startingPath + "sound" ) ); }
+        else {
+            String soundName = YMLUtils.getConfig().getStr( startingPath + "sound" ).toLowerCase();
+
+            // Converting input to Key
+            Key soundKey = null;
+            try { soundKey = Key.key( soundName ); }
+            catch ( IllegalArgumentException e ) {
+                this.enabled = false;
+                this.sound = null;
+                CyberLogUtils.logError( "Sound setting \"" + startingPath + "\" has an invalid sound name: \"" + soundName + "\"" );
+            }
+
+            if ( soundKey != null ) {
+                // Looking up key in SOUND_EVENT registry
+                this.sound = Registry.SOUNDS.get( soundKey );
+            }
+        }
+
         this.volume = YMLUtils.getConfig().getFloat( startingPath + "volume" );
         this.pitch = YMLUtils.getConfig().getFloat( startingPath + "pitch" );
+    }
+
+    private void debug( String msg ) {
+        Bukkit.broadcastMessage( CyberColorUtils.getColored( msg ) );
     }
 
     /**
