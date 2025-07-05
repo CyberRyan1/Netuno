@@ -211,7 +211,6 @@ public class PreLoginListener implements Listener {
         }
 
         // Getting the player's alt accounts
-        // TODO it seems that notifications are being sent even if they don't have any alts, needs further testing
         Netuno.ALT_SERVICE.getAlts( apiPlayer ).thenAccept( apiAlts -> {
             boolean sendNotif; // Whether we should send the notif or not
 
