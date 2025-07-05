@@ -105,8 +105,8 @@
 - [X] Better alt searching
 
 ### Config
-- [ ] Change config updater to a better one
-- - Want to use ConfigUpdater (maybe?)
+- [X] Change config updater to a better one
+- - Want to use ConfigUpdater
 
 ### Fixed Bugs
 - [X] Unpunishments aren't actually working
