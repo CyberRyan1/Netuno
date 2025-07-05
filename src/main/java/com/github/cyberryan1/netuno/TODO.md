@@ -2,7 +2,7 @@
 
 ### Ideas/Other
 - [X] Update this TODO list (check things off)
-- [ ] When a player's punishment expires, send a notification to online staff
+- [X] When a player's punishment expires, send a notification to online staff
 - [ ] Combine NetunoAPI and Netuno into a single Intellij project
 - [ ] Research information about velocity/bungee support (?)
 - [ ] Create an addon plugin for discord support (i.e. punishment logging, etc.) (?)
@@ -83,7 +83,7 @@
 - [X] Warn staff when a player joins with punished alts
 
 ### Punishment expiration alerts
-- [ ] Notify staff when a player joins/chats after their punishment expires
+- [X] Notify staff when a player joins/chats after their punishment expires
 
 ### Sign Notifications
 - [X] Send sign contents to all staff
