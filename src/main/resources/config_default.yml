@@ -607,9 +607,9 @@ report:
       volume: 1.0
       pitch: 1.0
 
-# /reports command
+# /viewreports command
 # Is what is used by staff to view all reports
-reports:
+view-reports:
   perm: "netuno.reports"
 
   # How long (in hours) to wait before a report is automatically deleted
