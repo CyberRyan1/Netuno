@@ -49,7 +49,7 @@ public class ReportGui {
         this.target = target;
         updateAvailableReasons();
 
-        int rowSize = 4 + ( AVAILABLE_REASONS.size() / 6 );
+        int rowSize = 3 + ( AVAILABLE_REASONS.size() / 6 );
         this.gui = new Gui( "&sReporting &p" + target.getName(), rowSize, CyberGuiUtils.getBackgroundGlass() );
         insertItems();
     }
