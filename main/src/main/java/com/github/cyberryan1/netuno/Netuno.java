@@ -1,6 +1,5 @@
 package com.github.cyberryan1.netuno;
 
-import ch.njol.skript.SkriptAddon;
 import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
@@ -104,10 +103,6 @@ public final class Netuno extends JavaPlugin {
     public static NetunoService SERVICE = null;
 
     public static final ActivePunishGuiManager ACTIVE_PUNISH_GUIS = new ActivePunishGuiManager();
-
-    // Skript
-    public SkriptAddon addon;
-    public boolean enabled = true;
 
     // bStats
     private static final int BSTATS_PLUGIN_ID = 21155;
