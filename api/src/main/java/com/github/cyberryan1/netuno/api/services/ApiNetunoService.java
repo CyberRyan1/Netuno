@@ -1,5 +1,6 @@
 package com.github.cyberryan1.netuno.api.services;
 
+import com.github.cyberryan1.netuno.api.events.NetunoEventDispatcher;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiStaff;
 import org.bukkit.OfflinePlayer;
@@ -36,6 +37,11 @@ public interface ApiNetunoService {
      * @return The {@link ApiReportService} instance
      */
     ApiReportService getReportService();
+
+    /**
+     * @return The {@link NetunoEventDispatcher} instance
+     */
+    NetunoEventDispatcher getEventDispatcher();
 
     /**
      * @param player A player

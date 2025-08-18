@@ -2,6 +2,7 @@ package com.github.cyberryan1.netuno.services;
 
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.netuno.api.events.NetunoEventDispatcher;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.api.models.ApiStaff;
@@ -61,6 +62,7 @@ public class NetunoService implements ApiNetunoService {
     private final AltService ALT_SERVICE;
     private final ChatService CHAT_SERVICE;
     private final ReportService REPORT_SERVICE;
+    private final NetunoEventDispatcher EVENT_DISPATCHER = new NetunoEventDispatcher();
 
     /**
      * Note that almost nothing should be done in the
@@ -137,6 +139,14 @@ public class NetunoService implements ApiNetunoService {
     @Override
     public ApiReportService getReportService() {
         return this.REPORT_SERVICE;
+    }
+
+    /**
+     * @return The {@link NetunoEventDispatcher} instance
+     */
+    @Override
+    public NetunoEventDispatcher getEventDispatcher() {
+        return this.EVENT_DISPATCHER;
     }
 
     /**
