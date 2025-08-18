@@ -59,13 +59,23 @@
     </build>
 
     <repositories>
+        <repository> <!-- Skript -->
+            <id>skript-releases</id>
+            <name>Skript Repository</name>
+            <url>https://repo.skriptlang.org/releases</url>
+        </repository>
+        <repository> <!-- Skript -->
+            <id>destroystokyo-repo</id>
+            <url>https://repo.destroystokyo.com/content/repositories/snapshots/</url>
+        </repository>
     </repositories>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>mysql</groupId>-->
-<!--            <artifactId>mysql-connector-java</artifactId>-->
-<!--            <version>8.0.30</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.github.SkriptLang</groupId>
+            <artifactId>Skript</artifactId>
+            <version>dev37c</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>
