@@ -3,7 +3,7 @@
 ### Ideas/Other
 - [X] Update this TODO list (check things off)
 - [X] When a player's punishment expires, send a notification to online staff
-- [ ] Combine NetunoAPI and Netuno into a single Intellij project
+- [X] Combine NetunoAPI and Netuno into a single Intellij project
 - [ ] Research information about velocity/bungee support (?)
 - [ ] Create an addon plugin for discord support (i.e. punishment logging, etc.) (?)
 - [X] See TODO comments in PreLoginListener class
@@ -50,7 +50,7 @@
 - [X] Update java version
 - [X] Update CyberCore to latest version of spigot/paper
 - [X] Update CyberCore's java version
-- [ ] Add API event dispatching (where needed)
+- [X] Add API event dispatching (where needed)
 - [X] Rename NPlayer class to NetunoPlayer
 
 ### Commands
