@@ -125,6 +125,24 @@ public class NetunoPlayer implements ApiPlayer {
     }
 
     /**
+     * Checks if the player currently has any active punishments
+     * matching any of the specified types.
+     *
+     * @param types The punishment types to check for
+     * @return true if the player has an active punishment of at
+     * least one of the specified types, false otherwise
+     */
+    @Override
+    public boolean isPunished( ApiPunishment.PunType ... types ) {
+        for ( ApiPunishment.PunType type : types ) {
+            if ( this.getActivePunishments( type ).isEmpty() == false ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Updates the provided punishment for this player in both
      * the cache and in the database. Should be ran async to
      * avoid lag

@@ -60,6 +60,16 @@ public interface ApiPlayer {
     boolean isPunished();
 
     /**
+     * Checks if the player currently has any active punishments
+     * matching any of the specified types.
+     *
+     * @param types The punishment types to check for
+     * @return true if the player has an active punishment of at
+     * least one of the specified types, false otherwise
+     */
+    boolean isPunished( ApiPunishment.PunType ... types );
+
+    /**
      * Updates the provided punishment for this player in both
      * the cache and in the database. Should be ran async to
      * avoid lag
