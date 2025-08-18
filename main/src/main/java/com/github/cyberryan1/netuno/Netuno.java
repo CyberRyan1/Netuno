@@ -16,6 +16,7 @@ import com.github.cyberryan1.netuno.services.*;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bstats.bukkit.Metrics;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.function.Function;
@@ -151,6 +152,7 @@ public final class Netuno extends JavaPlugin {
 
         SERVICE = new NetunoService( PUNISHMENT_SERVICE, ALT_SERVICE, CHAT_SERVICE, REPORT_SERVICE );
         SERVICE.initialize();
+        this.getServer().getServicesManager().register( NetunoService.class, SERVICE, this, ServicePriority.Normal );
 
         // Registering commands
         registerCommands();
