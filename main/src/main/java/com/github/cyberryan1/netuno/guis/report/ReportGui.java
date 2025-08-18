@@ -6,6 +6,7 @@ import com.github.cyberryan1.cybercore.spigot.utils.CyberGuiUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.netuno.api.events.report.ReportEvent;
 import com.github.cyberryan1.netuno.models.NetunoReport;
 import com.github.cyberryan1.netuno.utils.CommandErrors;
 import com.github.cyberryan1.netuno.utils.PrettyStringLibrary;
@@ -87,6 +88,9 @@ public class ReportGui {
             // Adding the report
             NetunoReport report = new NetunoReport( target.getUniqueId(), reasonSelections, player.getUniqueId(), TimestampUtils.getCurrentTimestamp() );
             Netuno.REPORT_SERVICE.addReport( report );
+
+            // Dispatching a Netuno event
+            Netuno.SERVICE.getEventDispatcher().dispatch( new ReportEvent( report ) );
         } ) );
 
         // Report reasons

@@ -3,6 +3,7 @@ package com.github.cyberryan1.netuno.models;
 import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.netuno.api.events.punish.PunishmentEvent;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.database.PunishmentsDatabase;
@@ -442,6 +443,9 @@ public class NetunoPunishment implements ApiPunishment {
 
             // Sending a global broadcast
             execute_globalBroadcast( silent );
+
+            // Dispatching a Netuno event
+            Netuno.SERVICE.getEventDispatcher().dispatch( new PunishmentEvent( this ) );
         } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
     }
 

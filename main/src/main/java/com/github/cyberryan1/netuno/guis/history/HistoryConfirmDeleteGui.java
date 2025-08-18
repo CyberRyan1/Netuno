@@ -6,6 +6,7 @@ import com.github.cyberryan1.cybercore.spigot.gui.GuiItem;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberGuiUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.netuno.api.events.history.HistoryDeleteEvent;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -62,8 +63,7 @@ public class HistoryConfirmDeleteGui {
             CyberMsgUtils.sendMsg( staff, "&sSuccessfully deleted punishment &p#" + punishment.getId() );
             staff.playSound( staff.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 1, 2 );
 
-            // TODO dispatch history delete event
-            //ApiNetuno.getInstance().getEventDispatcher().dispatch( new NetunoHistoryDeleteEvent( punishment, staff ) );
+            Netuno.SERVICE.getEventDispatcher().dispatch( new HistoryDeleteEvent( punishment, staff ) );
         } ) );
 
         // Red Wool Cancel
