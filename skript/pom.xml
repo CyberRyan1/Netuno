@@ -6,13 +6,13 @@
 
     <groupId>com.github.cyberryan1.netuno.skript</groupId>
     <artifactId>skNetuno</artifactId>
-    <version>1.0</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <parent>
         <artifactId>NetunoProject</artifactId>
         <groupId>com.github.cyberryan1</groupId>
-        <version>1.0</version>
+        <version>1.0.0</version>
     </parent>
 
     <name>skript</name>
