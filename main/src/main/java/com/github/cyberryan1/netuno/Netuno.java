@@ -4,6 +4,7 @@ import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
+import com.github.cyberryan1.netuno.api.services.ApiNetunoService;
 import com.github.cyberryan1.netuno.commands.*;
 import com.github.cyberryan1.netuno.database.ConnectionManager;
 import com.github.cyberryan1.netuno.guis.history.HistoryEditManager;
@@ -152,7 +153,7 @@ public final class Netuno extends JavaPlugin {
 
         SERVICE = new NetunoService( PUNISHMENT_SERVICE, ALT_SERVICE, CHAT_SERVICE, REPORT_SERVICE );
         SERVICE.initialize();
-        this.getServer().getServicesManager().register( NetunoService.class, SERVICE, this, ServicePriority.Normal );
+        this.getServer().getServicesManager().register( ApiNetunoService.class, SERVICE, this, ServicePriority.Normal );
 
         // Registering commands
         registerCommands();
