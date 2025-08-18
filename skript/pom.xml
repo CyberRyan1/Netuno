@@ -71,7 +71,12 @@
     </repositories>
 
     <dependencies>
-        <dependency>
+        <dependency> <!-- Netuno API -->
+            <groupId>com.github.cyberryan1.netuno.api</groupId>
+            <artifactId>NetunoApi</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency> <!-- Skript -->
             <groupId>com.github.SkriptLang</groupId>
             <artifactId>Skript</artifactId>
             <version>dev37c</version>
