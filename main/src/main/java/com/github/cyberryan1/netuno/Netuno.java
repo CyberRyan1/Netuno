@@ -167,6 +167,7 @@ public final class Netuno extends JavaPlugin {
         // Closing any API services
         CHAT_SERVICE.save();
         SERVICE.close();
+        this.getServer().getServicesManager().unregister( ApiNetunoService.class, SERVICE );
 
         // Closing database connections
         // This should be one of the last things done
