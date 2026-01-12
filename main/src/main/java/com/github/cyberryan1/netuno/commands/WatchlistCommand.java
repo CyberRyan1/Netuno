@@ -86,7 +86,7 @@ class WatchlistRemoveSubcommand extends CyberSubCommand {
 
     public WatchlistRemoveSubcommand() {
         super(
-                "add",
+                "remove",
                 Settings.WATCHLIST_EDIT_PERMISSION.string(),
                 Settings.PERM_DENIED_MSG.coloredString(),
                 "&8/&swatchlist &premove (word/regex)"
