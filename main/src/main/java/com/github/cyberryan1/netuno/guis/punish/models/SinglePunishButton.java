@@ -3,6 +3,7 @@ package com.github.cyberryan1.netuno.guis.punish.models;
 import com.github.cyberryan1.cybercore.spigot.config.YmlReader;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.guis.punish.PunishmentGuiExecutor;
@@ -100,8 +101,13 @@ public class SinglePunishButton {
                     // ? in below, .lastIndexOf( " (" ) is kind of bad, as REASON_FORMAT may change
                     // ?        to not include a " (" at the end. I don't know how to fix this,
                     // ?        so it's going to stay like this for now
-                    String reason = pun.getReason().substring( 0, pun.getReason().lastIndexOf( " (" ) );
+                    // ensuring index is still valid-- staff could have edited the reason
+                    int index = pun.getReason().lastIndexOf( " (" );
+                    if ( index < 0 ) return false;
+
+                    String reason = pun.getReason().substring( 0, index );
                     String reasonForThis = CyberColorUtils.deleteColor( CyberColorUtils.getColored( this.itemName ) );
+                    CyberMsgUtils.broadcast( "&3reason.equalsIgnoreCase( reasonForThis ) == " + ( reason.equalsIgnoreCase( reasonForThis ) ? "true" : "false" ) ); // ! debug
                     return reason.equalsIgnoreCase( reasonForThis );
                 } )
                 .count();
