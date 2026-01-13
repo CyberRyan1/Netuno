@@ -8,6 +8,8 @@ import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.netuno.guis.alts.AltsGui;
+import com.github.cyberryan1.netuno.guis.history.HistoryListGui;
 import com.github.cyberryan1.netuno.guis.punish.models.MainButton;
 import com.github.cyberryan1.netuno.guis.punish.models.PunGuiType;
 import com.github.cyberryan1.netuno.guis.punish.models.PunishSettings;
@@ -67,9 +69,8 @@ public class MainPunishGui {
                     return;
                 }
 
-                // TODO open the history list GUI
-                //HistoryListGUI historyList = new HistoryListGUI( this.target, this.staff, 1 );
-                //historyList.open();
+                HistoryListGui historyList = new HistoryListGui( this.staff, this.target );
+                historyList.open();
             } ) );
         }
 
@@ -84,9 +85,8 @@ public class MainPunishGui {
                     return;
                 }
 
-                // TODO open the alts list GUI
-//                AltsListGUI altsList = new AltsListGUI( this.staff, this.target, 1 );
-//                altsList.open();
+                AltsGui altsGui = new AltsGui( this.staff, this.target );
+                altsGui.open();
             } ) );
         }
 
