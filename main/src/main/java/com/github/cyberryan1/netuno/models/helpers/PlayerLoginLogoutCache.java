@@ -1,6 +1,7 @@
 package com.github.cyberryan1.netuno.models.helpers;
 
 import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.netuno.debug.CacheDebugPrinter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -249,6 +250,10 @@ public class PlayerLoginLogoutCache<T> {
         }
 
         CacheData<T> cacheData = this.CACHE.get( event.getPlayer().getUniqueId() );
+        if ( cacheData == null ) {
+            CyberLogUtils.logWarn( "PlayerLoginLogoutCache :: executeLogout() :: cacheData is null" );
+            return;
+        }
         // Setting the recently accessed timestamp to the current time
         cacheData.recentlyAccessedUpdate();
         // Setting the state of the cached data as inactive

@@ -253,6 +253,10 @@ public class PreLoginListener implements Listener {
 
             final String NOTIF_MSG = String.join( "\n", Settings.IPINFO_NOTIFS_MESSAGE.stringlist() );
             final OfflinePlayer target = apiPlayer.getPlayer();
+            String name = target.getName();
+            // ! below debug msgs are used for active debugging
+            if ( name == null ) { CyberLogUtils.logError( "handlePunishedAltNotification :: name is null" ); } // ! debug
+            if ( NOTIF_MSG == null ) { CyberLogUtils.logError( "handlePunishedAltNotification :: NOTIF_MSG is null" ); } // ! debug
             TextComponent message = TextComponentUtils.toTextComponent( NOTIF_MSG.replace( "[TARGET]", target.getName() ) );
             message = message.clickEvent( ClickEvent.clickEvent( ClickEvent.Action.RUN_COMMAND, "/ipinfo " + target.getName() ) );
             TextComponent hoverMsg = TextComponentUtils.toTextComponent(
