@@ -35,8 +35,15 @@ public class SettingsVariableFactory {
     public SettingsVariableFactory( Settings setting ) {
         type = setting.getValueType();
 
-        if ( type == SettingsEntry.EntryType.STRING ) message = setting.string();
-        else if ( type == SettingsEntry.EntryType.STRING_LIST ) messageList = setting.stringlist();
+        if ( type == SettingsEntry.EntryType.STRING ) {
+            message = setting.string();
+        }
+        else if ( type == SettingsEntry.EntryType.STRING_LIST ) {
+            this.messageList = new String[setting.stringlist().length];
+            for ( int j = 0; j < setting.stringlist().length; j++ ) {
+                messageList[j] = setting.stringlist()[j];
+            }
+        }
         else throw new IllegalArgumentException( "Settings variable type must have a value type of " +
                     "SettingsEntry.EntryType.STRING or SettingsEntry.EntryType.STRING_LIST" );
     }
