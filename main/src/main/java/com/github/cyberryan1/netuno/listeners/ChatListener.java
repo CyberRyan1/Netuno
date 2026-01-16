@@ -20,7 +20,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -122,22 +121,31 @@ public class ChatListener implements Listener {
 
         // checking if the player's message meets any of the watchlist items
         if ( Netuno.CHAT_SERVICE.getWatchlist().isEmpty() == false ) {
-            List<String> sentMessageSplit = Arrays.asList(
-                    PlainTextComponentSerializer.plainText().serialize( event.originalMessage() )
-                            .split( " " ) );
+//            List<String> sentMessageSplit = Arrays.asList(
+//                    PlainTextComponentSerializer.plainText().serialize( event.originalMessage() )
+//                            .split( " " ) );
+//
+//            boolean matchesWatchlist = false;
+//            outer:
+//            for ( String str : sentMessageSplit ) {
+//                for ( String watchlistItem : Netuno.CHAT_SERVICE.getWatchlist() ) {
+//                    if ( str.matches( watchlistItem ) ) {
+//                        matchesWatchlist = true;
+//                        break outer;
+//                    }
+//                }
+//            }
 
-            boolean matchesWatchlist = false;
-            outer:
-            for ( String str : sentMessageSplit ) {
-                for ( String watchlistItem : Netuno.CHAT_SERVICE.getWatchlist() ) {
-                    if ( str.matches( watchlistItem ) ) {
-                        matchesWatchlist = true;
-                        break outer;
-                    }
+            String originalMsg = PlainTextComponentSerializer.plainText().serialize( event.originalMessage() );
+            boolean match = false;
+            for ( String item : Netuno.CHAT_SERVICE.getWatchlist() ) {
+                if ( originalMsg.matches( item ) ) {
+                    match = true;
+                    break;
                 }
             }
 
-            if ( matchesWatchlist ) {
+            if ( match ) {
                 // we will have two audiences: one of the staff members and one of the regular players
                 // the regular players will be sent the original message, and the staff members will be sent a different message
 
