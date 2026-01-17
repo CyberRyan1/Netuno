@@ -220,6 +220,12 @@ public class NetunoCommand extends CyberCommand {
                     return true;
                 }
 
+                // Temporarily disabling /netuno reload command until I figure out how to reload the config files correctly
+                if ( 1 == 1 ) {
+                    command.respond( "&cTemporarily disabled due to bugs. Please restart the server instead" );
+                    return true;
+                }
+
                 CyberLogUtils.logInfo( "Reloading Netuno..." );
                 command.respond( "&sReloading Netuno..." );
 
