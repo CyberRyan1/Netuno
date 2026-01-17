@@ -169,7 +169,8 @@ public class PunishmentGuiExecutor {
      */
     private static long getScaledDuration( SinglePunishButton button, int previousPunCount ) {
         long originalDuration = TimestampUtils.getTimestampFromUnformulatedLength( button.getStartingTime() );
-        return TimestampUtils.getScaledDuration( originalDuration, 2, previousPunCount - button.getPunishAfter() + 1 );
+        int punishAfter = ( button.getPunishAfter() == SinglePunishButton.DEFAULT_PUNISH_AFTER ) ? 0 : button.getPunishAfter();
+        return TimestampUtils.getScaledDuration( originalDuration, 2, previousPunCount - punishAfter + 1 );
     }
 
     /**

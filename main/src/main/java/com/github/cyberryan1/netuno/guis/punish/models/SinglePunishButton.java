@@ -27,6 +27,8 @@ public class SinglePunishButton {
 //    private static final String HIGHEST_BANNED_ALT_CONFIG_VARIABLE = "HIGHEST_BANNED_ALT";
 //    private static final String LENGTH_REMAINING_CONFIG_VARIABLE = "LENGTH_REMAINING";
 
+    public static final int DEFAULT_PUNISH_AFTER = -1;
+
     private String pathKey;
     private PunGuiType punGuiType;
 
@@ -68,7 +70,7 @@ public class SinglePunishButton {
         this.instantKey = YML_MANAGER.getStr( pathKey + ".instant-key" );
 
         // Below variables only apply to warns
-        this.punishAfter = -1;
+        this.punishAfter = DEFAULT_PUNISH_AFTER;
         this.punishTypeAfter = null;
         if ( this.punGuiType == PunGuiType.WARN ) {
             this.punishAfter = YML_MANAGER.getInt( pathKey + ".punish-after" );
