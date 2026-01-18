@@ -57,7 +57,7 @@ public class AltsGui {
         this.page = page;
 
         gui = new Gui( "&p" + target.getName() + "&s's Alts", 6, CyberGuiUtils.getBackgroundGlass() );
-        insertItems();
+        //insertItems();
 
         if ( blinkTask == null ) {
             blinkTask = Bukkit.getScheduler().runTaskTimer( CyberCore.getPlugin(), () -> {
@@ -169,6 +169,9 @@ public class AltsGui {
     public void open() {
         Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
             gui.openInventory( this.staff );
+
+            insertItems(); // needs to be done after the inventory is opened
+
             gui.setCloseEvent( ( inv ) -> {
                 openGuis.remove( this );
             } );
