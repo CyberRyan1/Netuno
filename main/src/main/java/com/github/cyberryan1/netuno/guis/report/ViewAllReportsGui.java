@@ -52,7 +52,7 @@ public class ViewAllReportsGui {
 
     public void insertItems() {
         // reports: 10-16, 19-25, 28-34 (meaning 21 reports per page)
-        // back book: 47 || next book: 51
+        // back book: 38 || next book: 42
 
         // Reports
         int reportIndex = 21 * ( pageNumber - 1 );
@@ -82,7 +82,7 @@ public class ViewAllReportsGui {
 
         // Previous Page
         if ( pageNumber >= 2 ) {
-            gui.addItem( new GuiItem( Material.BOOK, "&pPrevious Page", 47, ( item ) -> {
+            gui.addItem( new GuiItem( Material.BOOK, "&pPrevious Page", 38, ( item ) -> {
                 staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
                 ViewAllReportsGui newGUI = new ViewAllReportsGui( staff, this.pageNumber - 1 );
                 newGUI.open();
@@ -92,7 +92,7 @@ public class ViewAllReportsGui {
         // Next Page
         int maxPage = ( int ) Math.ceil( sortedCondensedReports.size() / 21.0 );
         if ( pageNumber < maxPage ) {
-            gui.addItem( new GuiItem( Material.BOOK, "&pNext Page", 51, ( item ) -> {
+            gui.addItem( new GuiItem( Material.BOOK, "&pNext Page", 42, ( item ) -> {
                 staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
                 ViewAllReportsGui newGUI = new ViewAllReportsGui( staff, this.pageNumber + 1 );
                 newGUI.open();
