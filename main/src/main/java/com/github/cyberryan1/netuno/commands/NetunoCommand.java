@@ -280,6 +280,7 @@ public class NetunoCommand extends CyberCommand {
     private String extractCommandHelpArgsOnly( BaseCommand command ) {
         String usage = CyberColorUtils.reverseColor( command.getUsage() );
         int startIndex2 = usage.indexOf( " " ); // gets the index of the first space -- everything after that should be the args
+        if ( startIndex2 == -1 ) return "";
         usage = usage.substring( startIndex2 + 1 );
         return CyberColorUtils.deleteColor( CyberColorUtils.getColored( usage ) );
     }
