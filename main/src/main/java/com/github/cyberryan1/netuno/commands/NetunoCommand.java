@@ -188,12 +188,11 @@ public class NetunoCommand extends CyberCommand {
                             CyberSuperCommand currentSuper = ( CyberSuperCommand ) currentHelpInfo.getCommand();
                             if ( currentSuper.getSubCommandList().contains( subCommand ) ) {
                                 superCommand = currentSuper;
+                                break;
                             }
-                            break;
                         }
-
                         if ( superCommand == null ) {
-                            CyberLogUtils.logError( "[!] [!] [!] Could not find super command for sub command" );
+                            CyberLogUtils.logWarn( "[!] [!] [!] Could not find super command for sub command \"" + com.getCommand().getName() + "\"" );
                             throw new NullPointerException( "superCommand is null" );
                         }
 

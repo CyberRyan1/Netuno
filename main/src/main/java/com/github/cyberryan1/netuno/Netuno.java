@@ -187,6 +187,7 @@ public final class Netuno extends JavaPlugin {
         new ToggleSignsCommand( helpOrder + 3 );
         new ChatCommand( helpOrder + 4 );
         helpOrder += 5; // 5 chat subcommands
+        helpOrder += 20; // idk why this is needed but it is
         new ReportCommand( helpOrder + 1 );
         new ViewReportsCommand( helpOrder + 2 );
         new WatchlistCommand( helpOrder + 3 );
