@@ -407,10 +407,12 @@ public class NetunoPunishment implements ApiPunishment {
         this.timestamp = TimestampUtils.getCurrentTimestamp();
 
         CompletableFuture.runAsync( () -> {
-            // First we want to create the punishment and add it to the database
+            // We only send notifications if (a) the player is offline AND (b) the punishment is a warn, mute, or ipmute
+            this.isNotifSent = getPlayer().isOnline() && List.of( PunType.WARN, PunType.MUTE, PunType.IPMUTE ).contains( getType() );
+
+            // Create the punishment and add it to the database
             this.isActive = this.punType.hasNoLength() == false;
             this.isExecuted = true;
-            this.isNotifSent = getPlayer().isOnline();
             Netuno.PUNISHMENT_SERVICE.createPunishment( this )
                     // If this is an IP punishment, then we need to
                     //      apply it to all of the alt accounts as well
