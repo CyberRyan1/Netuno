@@ -112,7 +112,7 @@ public class HistoryStaffGui {
             int maxPages = ( int ) Math.ceil( history.size() / 21.0 );
             if ( pageNumber < maxPages ) {
                 gui.updateItem( new GuiItem( Material.BOOK, "&pNext Page", 52, ( item ) -> {
-                    HistoryStaffGui listGui = new HistoryStaffGui( target.getPlayer(), staff, pageNumber + 1, sort );
+                    HistoryStaffGui listGui = new HistoryStaffGui( staff, target, pageNumber + 1, sort );
                     listGui.open();
                     staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
                 } ) );
@@ -132,7 +132,7 @@ public class HistoryStaffGui {
             else if ( sort == SortBy.FIRST_ACTIVE ) { next = SortBy.LAST_ACTIVE; }
             else if ( sort == SortBy.LAST_ACTIVE ) { next = SortBy.FIRST_DATE; }
 
-            HistoryStaffGui listGui = new HistoryStaffGui( target.getPlayer(), staff, pageNumber, next );
+            HistoryStaffGui listGui = new HistoryStaffGui( staff, target, pageNumber, next );
             listGui.open();
             staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
         } ) );
@@ -140,7 +140,7 @@ public class HistoryStaffGui {
         // Previous Page Item
         if ( pageNumber >= 2 ) {
             gui.addItem( new GuiItem( Material.BOOK, "&pPrevious Page", 46, ( item ) -> {
-                HistoryStaffGui listGui = new HistoryStaffGui( target.getPlayer(), staff, pageNumber - 1, sort );
+                HistoryStaffGui listGui = new HistoryStaffGui( staff, target.getPlayer(), pageNumber - 1, sort );
                 listGui.open();
                 staff.playSound( staff.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 10, 1 );
             } ) );
