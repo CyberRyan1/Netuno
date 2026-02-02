@@ -21,8 +21,9 @@ import java.util.function.Predicate;
 /**
  * Used to manage cached data for players by loading the data for a player
  * when they log in (active data) and marking the data as inactive when the
- * player quits the server. After a customizable period of time, inactive
- * data is removed from the cache.
+ * player quits the server. After a customizable period of time (determined
+ * via {@link #getRemovalDelay()}, inactive data is removed from the cache
+ * (this is checked every {@link #AUTOMATIC_REMOVAL_DELAY} milliseconds).
  *
  * @param <T> The type of data to cache
  * @author Ryan
@@ -30,7 +31,10 @@ import java.util.function.Predicate;
 public class PlayerLoginLogoutCache<T> {
 
     // Settings
+    // The default amount of time to wait before a cache data
+    //      that is marked as inactive will be removed
     private static final long DEFAULT_REMOVAL_DELAY = 1000L * 60 * 15; // 15 minutes, expressed in milliseconds
+    // How often cached data is checked for removal
     private static final long AUTOMATIC_REMOVAL_DELAY = 1000L * 60; // 1 minute, expressed in milliseconds
 
     // Static variables
