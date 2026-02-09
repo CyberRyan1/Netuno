@@ -24,7 +24,7 @@ public class TeleportToSignCommand extends CyberCommand {
         demandPermission( true );
         demandPlayer( true );
         setMinArgLength(4);
-        setArgType(0, ArgType.STRING);
+//        setArgType(0, ArgType.STRING);
         setArgType(1, ArgType.DOUBLE);
         setArgType(2, ArgType.DOUBLE);
         setArgType(3, ArgType.DOUBLE);
