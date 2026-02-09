@@ -479,6 +479,9 @@ signs:
     - "&62) &7[LINE_2]"
     - "&63) &7[LINE_3]"
     - "&64) &7[LINE_4]"
+  # The message that is seen when a player hovers over the notif-msg (above)
+  # Supported variables: NONE
+  notif-hover: "&7Click to teleport to sign"
 
 ########################################
 #                Reports               #

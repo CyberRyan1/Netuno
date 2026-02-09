@@ -1,11 +1,16 @@
 package com.github.cyberryan1.netuno.listeners;
 
+import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -55,14 +60,19 @@ public class SignChangeListener implements Listener {
                 String loc = sign.getX() + ", " + sign.getY() + ", " + sign.getZ();
                 msg = msg.replace( "[LOC]", loc );
             }
+            HoverEvent<Component> HOVER_EVENT = HoverEvent.showText(
+                    CyberColorUtils.getColoredComponent(Settings.SIGN_NOTIF_HOVER.string())
+            );
+            TextComponent TEXT = CyberColorUtils.getColoredComponent( msg )
+                    .hoverEvent(HOVER_EVENT)
+                    .clickEvent(ClickEvent.runCommand("/tptosign " + event.getBlock().getWorld().getName() + " " + event.getBlock().getLocation().getBlockX() + " " + event.getBlock().getLocation().getBlockY() + " " + event.getBlock().getLocation().getBlockZ()));
 
-            final String finalMsg = msg;
             for ( Player p : Bukkit.getOnlinePlayers() ) {
                 if ( CyberVaultUtils.hasPerms( p, Settings.SIGN_NOTIFS_PERMISSION.string() ) == false ) continue;
 
                 Netuno.SERVICE.getStaff( p ).thenAccept( apiStaff -> {
                     if ( apiStaff.getSignNotificationStatus() == false ) return;
-                    p.sendMessage( finalMsg );
+                    p.sendMessage( TEXT );
                 } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
             }
         }

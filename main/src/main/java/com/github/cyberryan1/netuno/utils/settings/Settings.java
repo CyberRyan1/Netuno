@@ -174,6 +174,7 @@ public enum Settings {
     SIGN_NOTIFS_ENABLED( "signs.notifs", SettingsEntry.EntryType.BOOLEAN ),
     SIGN_NOTIFS_PERMISSION( "signs.notifs-perm", SettingsEntry.EntryType.STRING ),
     SIGN_NOTIFS_MESSAGE( "signs.notifs-msg", SettingsEntry.EntryType.STRING_LIST ),
+    SIGN_NOTIF_HOVER( "signs.notif-hover", SettingsEntry.EntryType.STRING),
 
     //
     // Reports
