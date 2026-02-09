@@ -60,7 +60,7 @@ public class SignChangeListener implements Listener {
             }
 
             TextComponent TEXT = CyberColorUtils.getColoredComponent( msg )
-                    .clickEvent(ClickEvent.runCommand("/tpsign " + event.getBlock().getLocation().getBlockX() + " " + event.getBlock().getLocation().getBlockY() + " " + event.getBlock().getLocation().getBlockZ()));
+                    .clickEvent(ClickEvent.runCommand("/tptosign " + event.getBlock().getLocation().getBlockX() + " " + event.getBlock().getLocation().getBlockY() + " " + event.getBlock().getLocation().getBlockZ()));
 
             for ( Player p : Bukkit.getOnlinePlayers() ) {
                 if ( CyberVaultUtils.hasPerms( p, Settings.SIGN_NOTIFS_PERMISSION.string() ) == false ) continue;
