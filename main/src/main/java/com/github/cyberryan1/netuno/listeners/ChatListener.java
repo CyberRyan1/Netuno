@@ -32,9 +32,6 @@ public class ChatListener implements Listener {
 
     @EventHandler
     public void onPlayerChat( AsyncChatEvent event ) {
-        // Don't do anything if the event is cancelled
-        if ( event.isCancelled() ) return;
-
         // Loading the player from NetunoService
         final NetunoPlayer player;
         try {
