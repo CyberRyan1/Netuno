@@ -7,8 +7,10 @@ import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -58,8 +60,11 @@ public class SignChangeListener implements Listener {
                 String loc = sign.getX() + ", " + sign.getY() + ", " + sign.getZ();
                 msg = msg.replace( "[LOC]", loc );
             }
-
+            HoverEvent<Component> HOVER_EVENT = HoverEvent.showText(
+                    CyberColorUtils.getColoredComponent(Settings.SIGN_NOTIF_HOVER.string())
+            );
             TextComponent TEXT = CyberColorUtils.getColoredComponent( msg )
+                    .hoverEvent(HOVER_EVENT)
                     .clickEvent(ClickEvent.runCommand("/tptosign " + event.getBlock().getWorld().getName() + " " + event.getBlock().getLocation().getBlockX() + " " + event.getBlock().getLocation().getBlockY() + " " + event.getBlock().getLocation().getBlockZ()));
 
             for ( Player p : Bukkit.getOnlinePlayers() ) {
