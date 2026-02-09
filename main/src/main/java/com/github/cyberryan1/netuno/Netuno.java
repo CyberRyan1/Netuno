@@ -192,6 +192,7 @@ public final class Netuno extends JavaPlugin {
         new ViewReportsCommand( helpOrder + 2 );
         new WatchlistCommand( helpOrder + 3 );
         helpOrder += 3; // 3 watchlist subcommands
+        new TeleportToSignCommand();
     }
 
     private void registerListeners() {

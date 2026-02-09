@@ -1,11 +1,14 @@
 package com.github.cyberryan1.netuno.listeners;
 
+import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberLogUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -56,13 +59,15 @@ public class SignChangeListener implements Listener {
                 msg = msg.replace( "[LOC]", loc );
             }
 
-            final String finalMsg = msg;
+            TextComponent TEXT = CyberColorUtils.getColoredComponent( msg )
+                    .clickEvent(ClickEvent.runCommand("/tpsign " + event.getBlock().getLocation().getBlockX() + " " + event.getBlock().getLocation().getBlockY() + " " + event.getBlock().getLocation().getBlockZ()));
+
             for ( Player p : Bukkit.getOnlinePlayers() ) {
                 if ( CyberVaultUtils.hasPerms( p, Settings.SIGN_NOTIFS_PERMISSION.string() ) == false ) continue;
 
                 Netuno.SERVICE.getStaff( p ).thenAccept( apiStaff -> {
                     if ( apiStaff.getSignNotificationStatus() == false ) return;
-                    p.sendMessage( finalMsg );
+                    p.sendMessage( TEXT );
                 } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
             }
         }
