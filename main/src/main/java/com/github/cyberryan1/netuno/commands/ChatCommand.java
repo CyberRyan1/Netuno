@@ -9,6 +9,7 @@ import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.models.commands.CommandHelpInfo;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 
 import java.util.Arrays;
@@ -208,6 +209,11 @@ class ChatClearSubcommand extends CyberSubCommand {
 
         CyberMsgUtils.broadcast(staffMsg,
                 player -> player.hasPermission(Settings.STAFF_PERMISSION.toString()));
+
+
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            Bukkit.broadcastMessage(player.getName() + " has perm: " + player.hasPermission(Settings.STAFF_PERMISSION.string()));
+        });
 
         return true;
     }
