@@ -175,29 +175,32 @@ class ChatClearSubcommand extends CyberSubCommand {
     }
 
     @Override
-    public boolean execute( SentCommand command, SentSubCommand subcommand ) {
-        String staffName = (command.getSender() instanceof ConsoleCommandSender) ? "Console" : command.getSender().getName();
+    public boolean execute(SentCommand command, SentSubCommand subcommand) {
+        String staffName = (command.getSender() instanceof ConsoleCommandSender)
+                ? "CONSOLE"
+                : command.getPlayer().getName();
 
         String playerMsg = Settings.CLEARCHAT_BROADCAST.coloredString();
-
         String staffMsg = Settings.CLEARCHAT_STAFF_BROADCAST
                 .coloredString()
-                .replace("STAFF", staffName);
+                .replace("[STAFF]", staffName);
 
-        // Send individually
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            boolean isStaff = p.hasPermission(Settings.STAFF_PERMISSION.string());
+        String staffPerm = Settings.STAFF_PERMISSION.string();
+        boolean bypass = Settings.CLEARCHAT_STAFF_BYPASS.bool();
 
-            if (!isStaff || !Settings.CLEARCHAT_STAFF_BYPASS.bool()) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            boolean isStaff = player.hasPermission(staffPerm);
+
+            if (!isStaff || !bypass) {
                 for (int i = 0; i < 300; i++) {
-                    CyberMsgUtils.broadcast("");
+                    player.sendMessage(" ");
                 }
             }
 
             if (isStaff) {
-                CyberMsgUtils.broadcast(staffMsg);
+                player.sendMessage(staffMsg);
             } else {
-                CyberMsgUtils.broadcast(playerMsg);
+                player.sendMessage(playerMsg);
             }
         }
 
