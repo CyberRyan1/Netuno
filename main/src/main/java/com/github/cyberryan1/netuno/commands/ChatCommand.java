@@ -189,19 +189,16 @@ class ChatClearSubcommand extends CyberSubCommand {
         boolean bypass = Settings.CLEARCHAT_STAFF_BYPASS.bool();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
+
             boolean isStaff = player.hasPermission(staffPerm);
 
             if (!isStaff || !bypass) {
                 for (int i = 0; i < 300; i++) {
-                    player.sendMessage(" ");
+                    CyberMsgUtils.sendMsg(player, "&r");
                 }
             }
 
-            if (isStaff) {
-                player.sendMessage(staffMsg);
-            } else {
-                player.sendMessage(playerMsg);
-            }
+            CyberMsgUtils.sendMsg(player, isStaff ? staffMsg : playerMsg);
         }
 
         return true;
