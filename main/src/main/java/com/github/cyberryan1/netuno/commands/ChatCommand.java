@@ -11,6 +11,7 @@ import com.github.cyberryan1.netuno.models.commands.CommandHelpInfo;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.List;
@@ -175,46 +176,30 @@ class ChatClearSubcommand extends CyberSubCommand {
 
     @Override
     public boolean execute( SentCommand command, SentSubCommand subcommand ) {
-        StringBuilder builder = new StringBuilder();
-        for ( int i = 0; i < 300; i++ ) {
-            builder.append( "\n" );
+        String staffName = (command.getSender() instanceof ConsoleCommandSender) ? "Console" : command.getSender().getName();
+
+        String playerMsg = Settings.CLEARCHAT_BROADCAST.coloredString();
+
+        String staffMsg = Settings.CLEARCHAT_STAFF_BROADCAST
+                .coloredString()
+                .replace("STAFF", staffName);
+
+        // Send individually
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            boolean isStaff = p.hasPermission(Settings.STAFF_PERMISSION.string());
+
+            if (!isStaff || !Settings.CLEARCHAT_STAFF_BYPASS.bool()) {
+                for (int i = 0; i < 300; i++) {
+                    CyberMsgUtils.broadcast("");
+                }
+            }
+
+            if (isStaff) {
+                CyberMsgUtils.broadcast(staffMsg);
+            } else {
+                CyberMsgUtils.broadcast(playerMsg);
+            }
         }
-
-        String clearMsg = builder.toString();
-
-        // Player message
-
-        String playerMsg = clearMsg + Settings.CLEARCHAT_BROADCAST.coloredString();
-
-        // Get senders name
-        String staffName = (command.getSender() instanceof ConsoleCommandSender)
-                ? "Console" : command.getSender().getName();
-
-        // Staff message
-        StringBuilder staffBuilder = new StringBuilder();
-
-        if (!Settings.CLEARCHAT_STAFF_BYPASS.bool()) {
-            staffBuilder.append(clearMsg);
-        }
-
-        staffBuilder.append(
-                Settings.CLEARCHAT_STAFF_BROADCAST.coloredString().replace("[STAFF]", staffName)
-        );
-
-        String staffMsg = staffBuilder.toString();
-
-        // Broadcast
-        CyberMsgUtils.broadcast( playerMsg,
-                player -> !player.hasPermission(Settings.STAFF_PERMISSION.toString()) );
-
-        CyberMsgUtils.broadcast(staffMsg,
-                player -> player.hasPermission(Settings.STAFF_PERMISSION.toString()) );
-
-
-        Bukkit.getOnlinePlayers().forEach(player -> {
-            Bukkit.broadcastMessage(player.getName() + " has perm: " + player.hasPermission(Settings.STAFF_PERMISSION.string()));
-            CyberMsgUtils.broadcast("TEST NON STAFF", p -> true);
-        });
 
         return true;
     }
