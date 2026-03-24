@@ -9,7 +9,9 @@ import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.models.commands.CommandHelpInfo;
 import com.github.cyberryan1.netuno.utils.settings.Settings;
+import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.List;
@@ -173,23 +175,32 @@ class ChatClearSubcommand extends CyberSubCommand {
     }
 
     @Override
-    public boolean execute( SentCommand command, SentSubCommand subcommand ) {
-        StringBuilder clearMsg = new StringBuilder();
-        for ( int i = 0; i < 300; i++ ) {
-            clearMsg.append( "\n" );
+    public boolean execute(SentCommand command, SentSubCommand subcommand) {
+        String staffName = (command.getSender() instanceof ConsoleCommandSender)
+                ? "CONSOLE"
+                : command.getPlayer().getName();
+
+        String playerMsg = Settings.CLEARCHAT_BROADCAST.coloredString();
+        String staffMsg = Settings.CLEARCHAT_STAFF_BROADCAST
+                .coloredString()
+                .replace("[STAFF]", staffName);
+
+        String staffPerm = Settings.STAFF_PERMISSION.string();
+        boolean bypass = Settings.CLEARCHAT_STAFF_BYPASS.bool();
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+
+            boolean isStaff = player.hasPermission(staffPerm);
+
+            if (!isStaff || !bypass) {
+                for (int i = 0; i < 300; i++) {
+                    CyberMsgUtils.sendMsg(player, "&r");
+                }
+            }
+
+            CyberMsgUtils.sendMsg(player, isStaff ? staffMsg : playerMsg);
         }
-        
-        String playerMsg = clearMsg.toString() + Settings.CLEARCHAT_BROADCAST.coloredString();
-        
-        String staffMsg = "";
-        if ( Settings.CLEARCHAT_STAFF_BYPASS.bool() == false ) {
-            staffMsg += clearMsg.toString();
-        }
-        String staffName = ( command.getSender() instanceof ConsoleCommandSender ) ? ( "CONSOLE" ) : command.getPlayer().getName();
-        staffMsg += Settings.CLEARCHAT_STAFF_BROADCAST.coloredString().replace( "[STAFF]", staffName );
-        
-        CyberMsgUtils.broadcast( playerMsg, player -> player.hasPermission( Settings.STAFF_PERMISSION.string() ) == false );
-        CyberMsgUtils.broadcast( staffMsg, player -> player.hasPermission( Settings.STAFF_PERMISSION.string() ) );
+
         return true;
     }
 }
