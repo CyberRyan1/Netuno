@@ -174,22 +174,41 @@ class ChatClearSubcommand extends CyberSubCommand {
 
     @Override
     public boolean execute( SentCommand command, SentSubCommand subcommand ) {
-        StringBuilder clearMsg = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
         for ( int i = 0; i < 300; i++ ) {
-            clearMsg.append( " \n" );
+            builder.append( "\n" );
         }
-        
-        String playerMsg = clearMsg.toString() + Settings.CLEARCHAT_BROADCAST.coloredString();
-        
-        String staffMsg = "";
-        if ( Settings.CLEARCHAT_STAFF_BYPASS.bool() == false ) {
-            staffMsg += clearMsg.toString();
+
+        String clearMsg = builder.toString();
+
+        // Player message
+
+        String playerMsg = clearMsg + Settings.CLEARCHAT_BROADCAST.coloredString();
+
+        // Get senders name
+        String staffName = (command.getSender() instanceof ConsoleCommandSender)
+                ? "Console" : command.getSender().getName();
+
+        // Staff message
+        StringBuilder staffBuilder = new StringBuilder();
+
+        if (!Settings.CLEARCHAT_STAFF_BYPASS.bool()) {
+            staffBuilder.append(clearMsg);
         }
-        String staffName = ( command.getSender() instanceof ConsoleCommandSender ) ? ( "CONSOLE" ) : command.getPlayer().getName();
-        staffMsg += Settings.CLEARCHAT_STAFF_BROADCAST.coloredString().replace( "[STAFF]", staffName );
-        
-        CyberMsgUtils.broadcast( playerMsg, player -> player.hasPermission( Settings.STAFF_PERMISSION.string() ) == false );
-        CyberMsgUtils.broadcast( staffMsg, player -> player.hasPermission( Settings.STAFF_PERMISSION.string() ) );
+
+        staffBuilder.append(
+                Settings.CLEARCHAT_STAFF_BROADCAST.coloredString().replace("[STAFF]", staffName)
+        );
+
+        String staffMsg = staffBuilder.toString();
+
+        // Broadcast
+        CyberMsgUtils.broadcast( playerMsg,
+                player -> !player.hasPermission(Settings.STAFF_PERMISSION.toString()));
+
+        CyberMsgUtils.broadcast(staffMsg,
+                player -> player.hasPermission(Settings.STAFF_PERMISSION.toString()));
+
         return true;
     }
 }
