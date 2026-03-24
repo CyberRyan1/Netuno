@@ -176,7 +176,7 @@ class ChatClearSubcommand extends CyberSubCommand {
     public boolean execute( SentCommand command, SentSubCommand subcommand ) {
         StringBuilder clearMsg = new StringBuilder();
         for ( int i = 0; i < 300; i++ ) {
-            clearMsg.append( "\n" );
+            clearMsg.append( " \n" );
         }
         
         String playerMsg = clearMsg.toString() + Settings.CLEARCHAT_BROADCAST.coloredString();
