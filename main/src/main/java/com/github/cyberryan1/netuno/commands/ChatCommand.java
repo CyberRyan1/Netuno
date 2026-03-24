@@ -205,14 +205,15 @@ class ChatClearSubcommand extends CyberSubCommand {
 
         // Broadcast
         CyberMsgUtils.broadcast( playerMsg,
-                player -> !player.hasPermission(Settings.STAFF_PERMISSION.toString()));
+                player -> !player.hasPermission(Settings.STAFF_PERMISSION.toString()) );
 
         CyberMsgUtils.broadcast(staffMsg,
-                player -> player.hasPermission(Settings.STAFF_PERMISSION.toString()));
+                player -> player.hasPermission(Settings.STAFF_PERMISSION.toString()) );
 
 
         Bukkit.getOnlinePlayers().forEach(player -> {
             Bukkit.broadcastMessage(player.getName() + " has perm: " + player.hasPermission(Settings.STAFF_PERMISSION.string()));
+            CyberMsgUtils.broadcast("TEST NON STAFF", p -> true);
         });
 
         return true;
