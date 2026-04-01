@@ -701,11 +701,20 @@ public class NetunoPunishment implements ApiPunishment {
     public Component fillSettingMessage( Settings setting, boolean silent ) {
         String msg = "";
         final String SILENT_PREFIX = Settings.SILENT_PREFIX.string();
-        for ( String str : setting.stringlist() ) {
-            if ( str.isBlank() ) msg += str;
-            else if ( silent ) msg += SILENT_PREFIX + str;
-            else msg += str;
-            msg += "\n";
+
+        if ( setting.getValueType() == SettingsEntry.EntryType.STRING ) {
+            msg += ( silent ? SILENT_PREFIX : "" ) + setting.string();
+        }
+        else if ( setting.getValueType() == SettingsEntry.EntryType.STRING_LIST ){
+            for ( String str : setting.stringlist() ) {
+                if ( str.isBlank() ) msg += str;
+                else if ( silent ) msg += SILENT_PREFIX + str;
+                else msg += str;
+                msg += "\n";
+            }
+        }
+        else {
+            throw new IllegalArgumentException( "Invalid setting type" );
         }
 
         msg = msg.substring( 0, msg.lastIndexOf( "\n" ) ); // Removing the last \n
