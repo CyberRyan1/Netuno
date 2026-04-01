@@ -1,5 +1,7 @@
 package com.github.cyberryan1.netuno.database;
 
+import com.github.cyberryan1.netuno.utils.settings.Settings;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -33,9 +35,12 @@ public class SettingsDatabase {
      *                          saving the setting
      */
     public static void saveSetting( String name, String data ) {
+        String sqlite = "INSERT INTO " + TABLE_NAME + " " + TYPE_LIST + " VALUES " + UNKNOWN_LIST +
+                " ON CONFLICT(name) DO UPDATE SET data = ?;";
         String sql = "INSERT INTO " + TABLE_NAME + " " + TYPE_LIST + " VALUES " + UNKNOWN_LIST +
                 " ON DUPLICATE KEY UPDATE data = ?";
-        try ( PreparedStatement stmt = ConnectionManager.CONN.prepareStatement( sql ) ) {
+        String instructions = Settings.DATABASE_USE_SQLITE.bool() ? sqlite : sql;
+        try ( PreparedStatement stmt = ConnectionManager.CONN.prepareStatement( instructions ) ) {
             stmt.setString( 1, name );
             stmt.setString( 2, data );
             stmt.setString( 3, data );
