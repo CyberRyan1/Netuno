@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 /**
  * A helper class to execute punishments that were selected
@@ -76,7 +75,6 @@ public class PunishmentGuiExecutor {
                     }
                 }
 
-                // Handling everything else
                 // Else if the punishment type is an IP punishment and contains
                 //      an IP punishment related config variable, handle that
                 else if ( punType.isIpPunishment() && ( button.getStartingTime().equalsIgnoreCase( HIGHEST_MUTED_ALT_CONFIG_VARIABLE )
@@ -90,19 +88,25 @@ public class PunishmentGuiExecutor {
                     //      the punishment type is equal to this.punishTypeAfter
                     List<NetunoPunishment> activeAltPunishments = new ArrayList<>();
                     try {
-                        List<ApiPlayer> altsList = Netuno.ALT_SERVICE.getAlts( ( ApiPlayer ) player ).get();
+                        ApiPunishment.PunType searchingFor = switch ( button.getGuiType() ) {
+                            case IPMUTE -> ApiPunishment.PunType.MUTE;
+                            case IPBAN -> ApiPunishment.PunType.BAN;
+                            default -> throw new RuntimeException();
+                        };
+
+                        List<ApiPlayer> altsList = Netuno.ALT_SERVICE.getAlts( player ).get();
                         for ( ApiPlayer alt : altsList ) {
                             activeAltPunishments.addAll( alt.getActivePunishments().stream()
-                                    .filter( pun -> pun.getType() == button.getPunishTypeAfter() )
+                                    .filter( pun -> pun.getType() == searchingFor )
                                     .map( pun -> ( NetunoPunishment ) pun )
-                                    .collect( Collectors.toList() ) );
+                                    .toList() );
                         }
                     } catch ( InterruptedException |
                               ExecutionException e ) {
                         throw new RuntimeException( e );
                     }
 
-                    // If the player has no alts with active
+                    // If the player has no alts with active punishments, do nothing
                     if ( activeAltPunishments.isEmpty() ) {
                         String punTypeString = button.getPunishTypeAfter().name().toLowerCase() + "s";
                         CyberMsgUtils.sendMsg( staffSender, "&p" + player.getPlayer().getName() + " &shas no alts with active " + punTypeString );
@@ -141,7 +145,7 @@ public class PunishmentGuiExecutor {
                     staff.playSound( staff.getLocation(), Sound.ENTITY_ENDER_EYE_DEATH, 10, 1 );
                 }
             } );
-        } );
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
     }
 
     /**
