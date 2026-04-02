@@ -189,6 +189,7 @@ public class ReportService implements ApiReportService {
             for ( ApiReport r : reports ) {
                 if ( report.getId() == r.getId() ) {
                     reports.remove( r );
+                    ReportsDatabase.deleteReport( r.getId() );
 
                     // checking if the player this report was against now has zero reports
                     // if so, we can remove them from the cache
@@ -240,13 +241,21 @@ public class ReportService implements ApiReportService {
      */
     private void deleteAllExpiredReports() {
         int count = 0;
-        for ( List<ApiReport> reports : CACHE.values() ) {
+        for ( int index = CACHE.size() - 1; index >= 0; index-- ) {
+            final UUID target = CACHE.keySet().toArray( new UUID[0] )[index];
+
+            final List<ApiReport> reports = CACHE.get( target );
             for ( int i = reports.size() - 1; i >= 0; i-- ) {
                 ApiReport r = reports.get( i );
                 if ( TimestampUtils.timestampHasExpired( r.getReportDate(), REPORT_EXPIRE_TIME_MILLIS ) ) {
                     reports.remove( i );
+                    ReportsDatabase.deleteReport( r.getId() );
                     count++;
                 }
+            }
+
+            if ( reports.isEmpty() ) {
+                CACHE.remove( target );
             }
         }
         CyberLogUtils.logInfo( "Successfully deleted " + count + " expired reports" );
