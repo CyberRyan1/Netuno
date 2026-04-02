@@ -65,7 +65,7 @@ public class ReportService implements ApiReportService {
             getReportsAgainst( p );
         }
 
-        task = Bukkit.getScheduler().runTaskTimerAsynchronously( CyberCore.getPlugin(), this::deleteAllExpiredReports, CHECK_INTERVAL_TICKS, CHECK_INTERVAL_TICKS );
+        task = Bukkit.getScheduler().runTaskTimerAsynchronously( CyberCore.getPlugin(), this::deleteAllExpiredReports, 100L, CHECK_INTERVAL_TICKS );
         ReportUtils.updateAvailableReasons();
     }
 
@@ -239,13 +239,16 @@ public class ReportService implements ApiReportService {
      * {@link #REPORT_EXPIRE_TIME_MILLIS} milliseconds ago)
      */
     private void deleteAllExpiredReports() {
+        int count = 0;
         for ( List<ApiReport> reports : CACHE.values() ) {
             for ( int i = reports.size() - 1; i >= 0; i-- ) {
                 ApiReport r = reports.get( i );
                 if ( TimestampUtils.timestampHasExpired( r.getReportDate(), REPORT_EXPIRE_TIME_MILLIS ) ) {
                     reports.remove( i );
+                    count++;
                 }
             }
         }
+        CyberLogUtils.logInfo( "Successfully deleted " + count + " expired reports" );
     }
 }
