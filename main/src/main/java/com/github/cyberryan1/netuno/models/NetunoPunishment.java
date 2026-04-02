@@ -382,7 +382,6 @@ public class NetunoPunishment implements ApiPunishment {
         OfflinePlayer player = getPlayer();
         if ( player.isOnline() == false )
             throw new RuntimeException( "Player " + player.getName() + " (uuid " + player.getUniqueId().toString() + ") is not online" );
-        Bukkit.broadcastMessage( "getType() == " + getType() ); // ! debug
         Settings settingToFill = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.JOIN_NOTIFICATION );
         Component message = fillSettingMessage( settingToFill );
         player.getPlayer().sendMessage( message );
