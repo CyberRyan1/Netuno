@@ -100,7 +100,11 @@ public class NetunoPlayer implements ApiPlayer {
      */
     @Override
     public List<ApiPunishment> getActivePunishments() {
-        return this.loadedPunishments.stream().filter( ApiPunishment::isActive ).collect( Collectors.toList() );
+        List<ApiPunishment> activePunishments = new ArrayList<>();
+        for ( ApiPunishment pun : this.loadedPunishments ) {
+            if ( pun.isActive() ) activePunishments.add( pun );
+        }
+        return activePunishments;
     }
 
     /**
