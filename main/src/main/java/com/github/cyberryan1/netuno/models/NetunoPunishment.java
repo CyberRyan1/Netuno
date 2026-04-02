@@ -382,6 +382,7 @@ public class NetunoPunishment implements ApiPunishment {
         OfflinePlayer player = getPlayer();
         if ( player.isOnline() == false )
             throw new RuntimeException( "Player " + player.getName() + " (uuid " + player.getUniqueId().toString() + ") is not online" );
+        Bukkit.broadcastMessage( "getType() == " + getType() ); // ! debug
         Settings settingToFill = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.JOIN_NOTIFICATION );
         Component message = fillSettingMessage( settingToFill );
         player.getPlayer().sendMessage( message );
@@ -408,7 +409,9 @@ public class NetunoPunishment implements ApiPunishment {
 
         CompletableFuture.runAsync( () -> {
             // We only send notifications if (a) the player is offline AND (b) the punishment is a warn, mute, or ipmute
-            this.isNotifSent = getPlayer().isOnline() && List.of( PunType.WARN, PunType.MUTE, PunType.IPMUTE ).contains( getType() );
+            if ( getPlayer().isOnline() ) this.isNotifSent = true;
+            else if ( List.of( PunType.WARN, PunType.MUTE, PunType.IPMUTE ).contains( getType() ) ) this.isNotifSent = false;
+            else this.isNotifSent = true;
 
             // Create the punishment and add it to the database
             this.isActive = this.punType.hasNoLength() == false;
