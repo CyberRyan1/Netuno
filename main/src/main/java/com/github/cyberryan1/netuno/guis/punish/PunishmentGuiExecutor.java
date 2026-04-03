@@ -2,6 +2,7 @@ package com.github.cyberryan1.netuno.guis.punish;
 
 import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPlayer;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
@@ -12,6 +13,7 @@ import com.github.cyberryan1.netuno.models.NetunoPunishment;
 import com.github.cyberryan1.netuno.models.libraries.PunishmentLibrary;
 import com.github.cyberryan1.netuno.utils.PrettyStringLibrary;
 import com.github.cyberryan1.netuno.utils.TimestampUtils;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
@@ -56,6 +58,12 @@ public class PunishmentGuiExecutor {
                 final PunGuiType punGuiType = button.getGuiType();
                 ApiPunishment.PunType punType = ApiPunishment.PunType.valueOf( punGuiType.name() );
                 long duration = ApiPunishment.PUNISHMENT_NO_LENGTH;
+
+                // Ensuring the staff member has permission to execute this punishment type
+                if ( CyberVaultUtils.hasPerms( staffSender, PunishmentLibrary.getSettingForMessageType( punType, PunishmentLibrary.MessageSetting.PERMISSION ).string() ) == false ) {
+                    CyberMsgUtils.sendMsg( staffSender, Settings.PERM_DENIED_MSG.string() );
+                    return;
+                }
 
                 // Handling warns
                 if ( punGuiType == PunGuiType.WARN ) {
@@ -124,6 +132,17 @@ public class PunishmentGuiExecutor {
                     // Setting the duration
                     duration = TimestampUtils.getTimestampFromUnformulatedLength( button.getStartingTime() );
                     if ( button.isAutoscaleEnabled() ) duration = getScaledDuration( button, previousPunCount );
+
+                    // If the punishment type is a ban and the staff cannot ban for longer than
+                    //      the specified timespan in the config, prevent the punishment
+                    if ( punType == ApiPunishment.PunType.BAN && CyberVaultUtils.hasPerms( staffSender, Settings.BAN_MAX_TIME_BYPASS_PERMISSION.string() ) == false ) {
+                        long maxDuration = TimestampUtils.getTimestampFromUnformulatedLength( Settings.BAN_MAX_TIME_LENGTH.string() );
+                        if ( duration > maxDuration ) {
+                            String maxDurationTime = TimestampUtils.durationToString( maxDuration );
+                            CyberMsgUtils.sendMsg( staffSender, "&7You cannot ban for longer than &p" + maxDurationTime );
+                            return;
+                        }
+                    }
                 }
 
                 // Executing the punishment
