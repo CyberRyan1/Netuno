@@ -160,6 +160,8 @@ public final class Netuno extends JavaPlugin {
 
         // Registering listeners
         registerListeners();
+
+        CyberLogUtils.logInfo( "Netuno has been enabled!" );
     }
 
     @Override
