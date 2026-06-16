@@ -54,6 +54,7 @@ warn-gui:
     item-name: "&eSpam"
     # Lore of the item
     # Set to "" for no lore
+    # Use \n for a new line
     item-lore: "&7Offenses: &6[PREVIOUS]"
     # Material of the item
     material: YELLOW_WOOL

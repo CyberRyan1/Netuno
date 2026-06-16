@@ -11,6 +11,8 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -35,7 +37,7 @@ public class SinglePunishButton {
     private String buttonType;
     private int index;
     private String itemName;
-    private String itemLore;
+    private List<String> itemLore;
     private Material itemMaterial;
     private String startingTime;
     private boolean autoscale;
@@ -63,7 +65,7 @@ public class SinglePunishButton {
 
         this.index = Integer.parseInt( this.buttonType );
         this.itemName = YML_MANAGER.getStr( pathKey + ".item-name" );
-        this.itemLore = YML_MANAGER.getStr( pathKey + ".item-lore" );
+        this.itemLore = List.of( YML_MANAGER.getStr( pathKey + ".item-lore" ).split( "\\\\n" ) );
         this.itemMaterial = Material.valueOf( YML_MANAGER.getStr( pathKey + ".material" ) );
         this.startingTime = YML_MANAGER.getStr( pathKey + ".starting-time" );
         this.autoscale = YML_MANAGER.getBool( pathKey + ".autoscale" );
@@ -89,7 +91,12 @@ public class SinglePunishButton {
         return generatePreviousPunCount( offlinePlayer ).thenApply( count -> {
             this.previousPunCount = count;
             ItemStack toReturn = CyberItemUtils.createItem( this.itemMaterial, PunishmentGuiExecutor.replaceVariables( this.itemName, offlinePlayer, this.previousPunCount ) );
-            toReturn = CyberItemUtils.setItemLore( toReturn, PunishmentGuiExecutor.replaceVariables( this.itemLore, offlinePlayer, this.previousPunCount ) );
+
+            List<String> lore = new ArrayList<>();
+            for ( String str : this.itemLore ) {
+                lore.add( PunishmentGuiExecutor.replaceVariables( str, offlinePlayer, this.previousPunCount ) );
+            }
+            toReturn = CyberItemUtils.setItemLore( toReturn, CyberColorUtils.getColored( lore ) );
             return toReturn;
         } );
     }
@@ -125,7 +132,7 @@ public class SinglePunishButton {
 
     public String getItemName() { return this.itemName; }
 
-    public String getItemLore() { return this.itemLore; }
+    public List<String> getItemLore() { return this.itemLore; }
 
     public Material getItemMaterial() { return this.itemMaterial; }
 
