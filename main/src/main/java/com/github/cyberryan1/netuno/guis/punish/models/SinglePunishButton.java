@@ -1,14 +1,21 @@
 package com.github.cyberryan1.netuno.guis.punish.models;
 
 import com.github.cyberryan1.cybercore.spigot.config.YmlReader;
+import com.github.cyberryan1.cybercore.spigot.gui.Gui;
+import com.github.cyberryan1.cybercore.spigot.gui.GuiItem;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberColorUtils;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberMsgUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.api.models.ApiPunishment;
+import com.github.cyberryan1.netuno.guis.punish.ChangeDurationGui;
 import com.github.cyberryan1.netuno.guis.punish.PunishmentGuiExecutor;
+import com.github.cyberryan1.netuno.guis.punish.PunishmentSpecificGui;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
 import com.github.cyberryan1.netuno.utils.yml.YMLUtils;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -24,25 +31,30 @@ import java.util.concurrent.CompletableFuture;
  */
 public class SinglePunishButton {
 
-//    private static final String REASON_FORMAT = "[REASON] ([NUMBER] Offense)";
-//    private static final String HIGHEST_MUTED_ALT_CONFIG_VARIABLE = "HIGHEST_MUTED_ALT";
-//    private static final String HIGHEST_BANNED_ALT_CONFIG_VARIABLE = "HIGHEST_BANNED_ALT";
-//    private static final String LENGTH_REMAINING_CONFIG_VARIABLE = "LENGTH_REMAINING";
-
     public static final int DEFAULT_PUNISH_AFTER = -1;
 
-    private String pathKey;
-    private PunGuiType punGuiType;
+    /**
+     * @return The item to display while a punishment button is loading
+     */
+    public static ItemStack getLoadingPlaceholderItem() {
+        return CyberItemUtils.createItem(
+                Settings.PUNISH_LOADING_ITEM_MATERIAL.material(), Settings.PUNISH_LOADING_ITEM_NAME.coloredString() );
+    }
 
-    private String buttonType;
-    private int index;
-    private String itemName;
-    private List<String> itemLore;
-    private Material itemMaterial;
-    private String startingTime;
-    private boolean autoscale;
-    private String instantKey;
-    private int previousPunCount;
+
+
+    private final String pathKey;
+    private PunGuiType punGuiType;
+    private final String buttonType;
+    private final int index;
+    private final String itemName;
+    private final List<String> itemLore;
+    private final Material itemMaterial;
+    private final String startingTime;
+    private final boolean autoscale;
+    private final String instantKey;
+
+    private int previousPunCount = -1;
 
     // Below variables only apply to warns
     //      Will be -1 or null if not applicable
@@ -119,6 +131,57 @@ public class SinglePunishButton {
                 } )
                 .count();
             return this.previousPunCount;
+        } );
+    }
+
+    /**
+     * Loads this punishment button into the provided GUI at the
+     * selected slot. Sets the slot to the loading placeholder
+     * item (see {@link #getLoadingPlaceholderItem()}) while the
+     * punishment button is being loaded.
+     *
+     * @param gui                   The GUI to load this
+     *                              punishment button into
+     * @param index                 The index of the slot to load*
+     * @param punishmentSpecificGui The punishment GUI this is
+     *                              being executed from
+     * @param loadWithClickAction   Whether or not the slot will
+     *                              have a click action
+     */
+    public void loadIntoInventory( final Gui gui, final int index, PunishmentSpecificGui punishmentSpecificGui, boolean loadWithClickAction ) {
+        // temporarily setting the item slot to the loading item
+        gui.addItem( new GuiItem( getLoadingPlaceholderItem(), index ) );
+
+        // loading the button
+        CompletableFuture<Void> future = this.getItem( punishmentSpecificGui.getTarget() ).thenAccept( itemstack -> {
+            GuiItem item = new GuiItem( itemstack, index, i -> {
+                if ( i.getEvent().getAction() == InventoryAction.PICKUP_HALF ) { // left click
+                    // * pretty sure we can safely assume that this.previousPunCount has been loaded by this point
+
+                    // if the punishment GUI's type is for warns and the target hasn't met the punish after count, then we
+                    //      dont open the gui
+                    if ( this.punGuiType == PunGuiType.WARN && this.previousPunCount < this.punishAfter ) {
+                        CyberMsgUtils.sendMsg( punishmentSpecificGui.getStaff(), "&p" + punishmentSpecificGui.getTarget().getName()
+                                + " &sdoes not have enough warns to warrant a mute yet!" );
+                        return;
+                    }
+
+                    ChangeDurationGui changeDurationGui = new ChangeDurationGui( punishmentSpecificGui, this, this.previousPunCount );
+                    changeDurationGui.open();
+                }
+                else {
+                    PunishmentGuiExecutor.executePunish( this, punishmentSpecificGui.getStaff(), punishmentSpecificGui.getTarget(), 1.0f, punishmentSpecificGui.isSilent() );
+                    punishmentSpecificGui.getStaff().closeInventory();
+                }
+            } );
+
+            if ( loadWithClickAction == false ) item.setExecuteOnClick( i -> {} ); // do nothing
+            gui.addItem( item );
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+
+        // wait for the future to complete and then update the GUI
+        future.thenRun( () -> {
+            gui.updateItem( gui.getItem( index ) );
         } );
     }
 
