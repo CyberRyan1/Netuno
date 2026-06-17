@@ -41,15 +41,19 @@ public class PunishmentGuiExecutor {
     private static final String LENGTH_REMAINING_CONFIG_VARIABLE = "LENGTH_REMAINING";
 
     /**
-     * Executes this punishment on the provided player as if
-     * it was ran by the provided staff
+     * Executes this punishment on the provided player as if it
+     * was ran by the provided staff
      * <b>Note</b> Everything ran by this method is done async
      *
-     * @param staffSender The staff member
-     * @param offlinePlayer The target player
-     * @param silent Whether to handle this punishment silently
+     * @param button             The button that was clicked
+     * @param staffSender        The staff member
+     * @param offlinePlayer      The target player
+     * @param durationMultiplier The multiplier to apply to the
+     *                           duration
+     * @param silent             Whether to handle this
+     *                           punishment silently
      */
-    public static void executePunish( SinglePunishButton button, CommandSender staffSender, OfflinePlayer offlinePlayer, boolean silent ) {
+    public static void executePunish( SinglePunishButton button, CommandSender staffSender, OfflinePlayer offlinePlayer, float durationMultiplier, boolean silent ) {
         Netuno.SERVICE.getPlayer( offlinePlayer ).thenAcceptAsync( player -> {
             button.generatePreviousPunCount( offlinePlayer ).thenAccept( previousPunCount -> {
                 String reason = REASON_FORMAT.replace( "[REASON]", CyberColorUtils.deleteColor( CyberColorUtils.getColored( button.getItemName() ) ) );
@@ -145,6 +149,14 @@ public class PunishmentGuiExecutor {
                     }
                 }
 
+                // Adding the duration multiplier
+                duration = ( long ) ( duration * durationMultiplier );
+
+                // If the multiplier is greater than 1, add [EXTENDED] to the reason
+                // If the multiplier is less than 1 , add [REDUCED] to the reason
+                if ( durationMultiplier > 1 ) reason += " [EXTENDED]";
+                else if ( durationMultiplier < 1 ) reason += " [REDUCED]";
+
                 // Executing the punishment
                 UUID staffUuid = ( staffSender instanceof ConsoleCommandSender )
                         ? ( ApiPunishment.CONSOLE_UUID ) : ( ( ( Player ) staffSender ).getUniqueId() );
@@ -190,7 +202,7 @@ public class PunishmentGuiExecutor {
      * times with a scale of 2
      * @return The scaled duration
      */
-    private static long getScaledDuration( SinglePunishButton button, int previousPunCount ) {
+    public static long getScaledDuration( SinglePunishButton button, int previousPunCount ) {
         long originalDuration = TimestampUtils.getTimestampFromUnformulatedLength( button.getStartingTime() );
         int punishAfter = ( button.getPunishAfter() == SinglePunishButton.DEFAULT_PUNISH_AFTER ) ? 0 : button.getPunishAfter();
         return TimestampUtils.getScaledDuration( originalDuration, 2, previousPunCount - punishAfter + 1 );

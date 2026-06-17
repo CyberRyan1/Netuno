@@ -2,23 +2,17 @@ package com.github.cyberryan1.netuno.guis.punish;
 
 import com.github.cyberryan1.cybercore.spigot.CyberCore;
 import com.github.cyberryan1.cybercore.spigot.gui.Gui;
-import com.github.cyberryan1.cybercore.spigot.gui.GuiItem;
 import com.github.cyberryan1.cybercore.spigot.utils.CyberGuiUtils;
-import com.github.cyberryan1.cybercore.spigot.utils.CyberItemUtils;
 import com.github.cyberryan1.netuno.Netuno;
 import com.github.cyberryan1.netuno.guis.punish.models.MultiPunishButton;
 import com.github.cyberryan1.netuno.guis.punish.models.PunGuiType;
 import com.github.cyberryan1.netuno.guis.punish.models.PunishSettings;
 import com.github.cyberryan1.netuno.guis.punish.models.SinglePunishButton;
-import com.github.cyberryan1.netuno.utils.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * A class that represents each of the different punishments'
@@ -38,8 +32,9 @@ public class PunishmentSpecificGui {
 
     /**
      * Creating a punishment's GUI
-     * @param type The type of punishment this GUI is for
-     * @param staff The staff executing the command
+     *
+     * @param type   The type of punishment this GUI is for
+     * @param staff  The staff executing the command
      * @param target The target
      */
     public PunishmentSpecificGui( PunGuiType type, Player staff, OfflinePlayer target, boolean silent ) {
@@ -58,60 +53,60 @@ public class PunishmentSpecificGui {
 
         this.rowCount = determineRowCount();
 
-        String guiName = switch ( type ) {
-            case MAIN -> throw new IllegalArgumentException();
-            case WARN -> PunishSettings.WARN_INVENTORY_NAME.coloredString();
-            case MUTE -> PunishSettings.MUTE_INVENTORY_NAME.coloredString();
-            case BAN -> PunishSettings.BAN_INVENTORY_NAME.coloredString();
-            case IPMUTE -> PunishSettings.IPMUTE_INVENTORY_NAME.coloredString();
-            case IPBAN -> PunishSettings.IPBAN_INVENTORY_NAME.coloredString();
-        };
-        this.gui = new Gui( guiName.replace( "[TARGET]", target.getName() ), this.rowCount, CyberGuiUtils.getBackgroundGlass() );
+        this.gui = new Gui( getGuiName(), this.rowCount, CyberGuiUtils.getBackgroundGlass() );
 
         insertItems();
     }
 
     /**
-     * Inserting items that were defined in the config
-     * into this GUI.
+     * Inserting items that were defined in the config into this
+     * GUI.
      * <b>Note:</b> this is not done instantly, as we have
      * to obtain how many punishments the player has of each
      * specific punishment.
      */
     public void insertItems() {
-        // Creating the loading placeholder item
-        final ItemStack loadingItem = CyberItemUtils.createItem(
-                Settings.PUNISH_LOADING_ITEM_MATERIAL.material(), Settings.PUNISH_LOADING_ITEM_NAME.coloredString() );
+//        // Creating the loading placeholder item
+//        final ItemStack LOADING_PLACEHOLDER_ITEM = getLoadingPlaceholderItem();
 
         final List<SinglePunishButton> buttonsList = this.punishButtons.getButtons();
         // Collecting all CompletableFutures from the button inserts
-        List<CompletableFuture<Void>> futures = new ArrayList<>();
+//        List<CompletableFuture<Void>> futures = new ArrayList<>();
         for ( SinglePunishButton button : buttonsList ) {
-            if ( button.getItemMaterial().isAir() ) { continue; }
+            if ( button.getItemMaterial().isAir() ) {
+                continue;
+            }
 
-            // temporarily setting the item slot to the loading item
-            GuiItem loadingGuiItem = new GuiItem( loadingItem, button.getIndex() );
-            gui.addItem( loadingGuiItem );
-
-            // loading the button
-            futures.add(
-                    button.getItem( this.target ).thenAccept( itemstack -> {
-                        GuiItem item = new GuiItem(itemstack, button.getIndex(), (i) -> {
-                            PunishmentGuiExecutor.executePunish(button, this.staff, this.target, this.silent);
-                            staff.closeInventory();
-                        });
-                        gui.addItem( item );
-                    } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING )
-            );
+            button.loadIntoInventory( this.gui, button.getIndex(), this, true );
+//            // temporarily setting the item slot to the loading item
+//            GuiItem loadingGuiItem = new GuiItem( LOADING_PLACEHOLDER_ITEM, button.getIndex() );
+//            gui.addItem( loadingGuiItem );
+//
+//            // loading the button
+//            futures.add(
+//                    button.getItem( this.target ).thenAccept( itemstack -> {
+//                        GuiItem item = new GuiItem( itemstack, button.getIndex(), i -> {
+//                            if ( i.getEvent().getAction() == InventoryAction.PICKUP_HALF ) { // left click
+//                                ChangeDurationGui changeDurationGui = new ChangeDurationGui( this, button );
+//                                changeDurationGui.open();
+//                            }
+//                            else {
+//                                PunishmentGuiExecutor.executePunish( button, this.staff, this.target, this.silent );
+//                                staff.closeInventory();
+//                            }
+//                        } );
+//                        gui.addItem( item );
+//                    } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING )
+//            );
         }
 
-        // Wait for all futures to complete and then update the GUI
-        CompletableFuture.allOf( futures.toArray( new CompletableFuture[0] ) )
-                .thenRun( () -> {
-                    for ( int i = 0; i < this.gui.getSize() * 9; i++ ) {
-                        this.gui.updateItem( this.gui.getItem( i ) );
-                    }
-                } );
+//        // Wait for all futures to complete and then update the GUI
+//        CompletableFuture.allOf( futures.toArray( new CompletableFuture[0] ) )
+//                .thenRun( () -> {
+//                    for ( int i = 0; i < this.gui.getSize() * 9; i++ ) {
+//                        this.gui.updateItem( this.gui.getItem( i ) );
+//                    }
+//                } );
     }
 
     /**
@@ -149,4 +144,16 @@ public class PunishmentSpecificGui {
     public OfflinePlayer getTarget() { return target; }
 
     public boolean isSilent() { return silent; }
+
+    public String getGuiName() {
+        String guiName = switch ( type ) {
+            case MAIN -> throw new IllegalArgumentException();
+            case WARN -> PunishSettings.WARN_INVENTORY_NAME.coloredString();
+            case MUTE -> PunishSettings.MUTE_INVENTORY_NAME.coloredString();
+            case BAN -> PunishSettings.BAN_INVENTORY_NAME.coloredString();
+            case IPMUTE -> PunishSettings.IPMUTE_INVENTORY_NAME.coloredString();
+            case IPBAN -> PunishSettings.IPBAN_INVENTORY_NAME.coloredString();
+        };
+        return guiName.replace( "[TARGET]", target.getName() );
+    }
 }

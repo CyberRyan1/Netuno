@@ -91,6 +91,7 @@ public class PunishCommand extends CyberCommand {
 
             // For sending console instant punishments, they can add the "-o" flag at the end
             // If they do this, then it will override any cooldown
+            // TODO remove excess comments
             //CyberMsgUtils.broadcast( "command.getArgs().length == " + command.getArgs().length ); // ! debug
             //CyberMsgUtils.broadcast( "command.getArg( 2 ) == " + command.getArg( 2 ) ); // ! debug
             boolean override = command.getArgs().length >= 3 && command.getArg( 2 ).equalsIgnoreCase( "-o" );
@@ -104,7 +105,7 @@ public class PunishCommand extends CyberCommand {
             }
 
             instantPunishCooldowns.put( target.getUniqueId(), new Duplex<>( instantKeyParent.getInstantKey(), new Timestamp() ) );
-            PunishmentGuiExecutor.executePunish( instantKeyParent, command.getSender(), target, false ); // for now, will assume all instant punishments are not silent
+            PunishmentGuiExecutor.executePunish( instantKeyParent, command.getSender(), target, 1.0f, false ); // for now, will assume all instant punishments are not silent
 
             return true;
         }
@@ -142,7 +143,7 @@ public class PunishCommand extends CyberCommand {
             }
 
             instantPunishCooldowns.put( target.getUniqueId(), new Duplex<>( instantKeyParent.getInstantKey(), new Timestamp() ) );
-            PunishmentGuiExecutor.executePunish( instantKeyParent, staff, target, false ); // for now, will assume all instant punishments are not silent
+            PunishmentGuiExecutor.executePunish( instantKeyParent, staff, target, 1.0f, false ); // for now, will assume all instant punishments are not silent
             return true;
         }
 
