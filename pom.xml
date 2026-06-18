@@ -40,7 +40,7 @@
         </repository>
     </repositories>
 
-    <dependencies>
+<dependencies>
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
