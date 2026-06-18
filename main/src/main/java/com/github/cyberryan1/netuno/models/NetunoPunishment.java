@@ -1,0 +1,789 @@
+package com.github.cyberryan1.netuno.models;
+
+import com.github.cyberryan1.cybercore.spigot.CyberCore;
+import com.github.cyberryan1.cybercore.spigot.utils.CyberVaultUtils;
+import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.netuno.api.events.punish.PunishmentEvent;
+import com.github.cyberryan1.netuno.api.models.ApiPlayer;
+import com.github.cyberryan1.netuno.api.models.ApiPunishment;
+import com.github.cyberryan1.netuno.database.PunishmentsDatabase;
+import com.github.cyberryan1.netuno.models.libraries.PunishmentLibrary;
+import com.github.cyberryan1.netuno.utils.PrettyStringLibrary;
+import com.github.cyberryan1.netuno.utils.TimestampUtils;
+import com.github.cyberryan1.netuno.utils.settings.Settings;
+import com.github.cyberryan1.netuno.utils.settings.SettingsEntry;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
+/**
+ * Represents a punishment given to a player
+ *
+ * @author Ryan
+ */
+public class NetunoPunishment implements ApiPunishment {
+
+    /**
+     * @param staff The staff trying to use a punishment
+     * @param target The target of the punishment
+     * @return True if the staff member can punish the target,
+     * false otherwise
+     */
+    public static boolean checkPlayerCanPunish( OfflinePlayer staff, OfflinePlayer target ) {
+        if ( Settings.PUNISH_OTHER_STAFF.bool() ) return true;
+
+        final String STAFF_PERM = Settings.STAFF_PERMISSION.string();
+        final String ALL_NETUNO_PERM = Settings.ALL_PERMISSIONS.string();
+
+        if ( CyberVaultUtils.hasPerms( staff, ALL_NETUNO_PERM ) ) return true;
+        if ( CyberVaultUtils.hasPerms( target, STAFF_PERM ) == false ) return true;
+        if ( CyberVaultUtils.hasPerms( target, ALL_NETUNO_PERM ) ) return false;
+        return true;
+    }
+
+    // Data that is stored in the database
+    private int id;
+    private UUID playerUuid;
+    private UUID staffUuid;
+    private PunType punType;
+    private long timestamp;
+    private long length;
+    private String reason;
+    private boolean isActive;
+    private int referenceId;
+    private boolean isGuiPun;
+    private boolean isNotifSent;
+
+    // Other data
+    private boolean isExecuted;
+
+    public NetunoPunishment( int id, UUID playerUuid, UUID staffUuid, PunType punType,
+                             long timestamp, long length, String reason, boolean isActive,
+                             int referenceId, boolean isGuiPun, boolean isNotifSent, boolean isExecuted ) {
+        this.id = id;
+        this.playerUuid = playerUuid;
+        this.staffUuid = staffUuid;
+        this.punType = punType;
+        this.timestamp = timestamp;
+        this.length = length;
+        this.reason = reason;
+        this.isActive = isActive;
+        this.referenceId = referenceId;
+        this.isGuiPun = isGuiPun;
+        this.isNotifSent = isNotifSent;
+        this.isExecuted = isExecuted;
+    }
+
+    public NetunoPunishment( int id, String playerUuid, String staffUuid, PunType punType,
+                             long timestamp, long length, String reason, boolean isActive,
+                             int referenceId, boolean isGuiPun, boolean isNotifSent, boolean isExecuted ) {
+        this(
+                id, UUID.fromString( playerUuid ),
+                staffUuid.equals( ApiPunishment.CONSOLE_UUID_STRING ) ? ApiPunishment.CONSOLE_UUID : UUID.fromString( staffUuid ),
+                punType, timestamp, length,
+                reason, isActive, referenceId, isGuiPun, isNotifSent, isExecuted
+        );
+    }
+
+    public NetunoPunishment( UUID playerUuid, UUID staffUuid, PunType punType,
+                             long timestamp, long length, String reason, boolean isActive,
+                             int referenceId, boolean isGuiPun, boolean isNotifSent, boolean isExecuted ) {
+        this(
+                DEFAULT_ID, playerUuid, staffUuid, punType, timestamp, length, reason, isActive,
+                referenceId, isGuiPun, isNotifSent, isExecuted
+        );
+    }
+
+    public NetunoPunishment( String playerUuid, String staffUuid, PunType punType,
+                             long timestamp, long length, String reason, boolean isActive,
+                             int referenceId, boolean isGuiPun, boolean isNotifSent, boolean isExecuted ) {
+        this(
+                DEFAULT_ID, UUID.fromString( playerUuid ),
+                staffUuid.equals( ApiPunishment.CONSOLE_UUID_STRING ) ? ApiPunishment.CONSOLE_UUID : UUID.fromString( staffUuid ),
+                punType, timestamp, length,
+                reason, isActive, referenceId, isGuiPun, isNotifSent, isExecuted
+        );
+    }
+
+    public NetunoPunishment() {
+        this(
+                DEFAULT_ID, ( UUID ) null, null, null,
+                -1L, -1L, null, false, DEFAULT_REFERENCE_ID,
+                false, false, false
+        );
+    }
+
+    /**
+     * @return the ID of the punishment. If the ID
+     * doesn't exist yet, set this to {@link ApiPunishment#DEFAULT_ID}
+     */
+    @Override
+    public int getId() {
+        return this.id;
+    }
+
+    /**
+     * @param id the ID of the punishment
+     */
+    @Override
+    public void setId( int id ) {
+        this.id = id;
+    }
+
+    /**
+     * @return UUID of the player who is punished
+     */
+    @Override
+    public UUID getPlayerUuid() {
+        return this.playerUuid;
+    }
+
+    /**
+     * @return The player who is punished
+     */
+    public OfflinePlayer getPlayer() {
+        return Bukkit.getOfflinePlayer( this.playerUuid );
+    }
+
+    /**
+     * @param player UUID of the player who is punished
+     */
+    @Override
+    public void setPlayer( UUID player ) {
+        this.playerUuid = player;
+    }
+
+    /**
+     * @return UUID of the staff who did this punishment. Returns
+     * {@link ApiPunishment#CONSOLE_UUID} if executed by console
+     */
+    @Override
+    public UUID getStaffUuid() {
+        return this.staffUuid;
+    }
+
+    /**
+     * @return The staff who executed this punishment. Null
+     * if executed by console.
+     */
+    public OfflinePlayer getStaff() {
+        if ( this.staffUuid == null || this.staffUuid == ApiPunishment.CONSOLE_UUID ) return null;
+        return Bukkit.getOfflinePlayer( this.staffUuid );
+    }
+
+    /**
+     * @param uuid UUID of the staff who did this punishment. Can be null if executed by console
+     */
+    @Override
+    public void setStaff( UUID uuid ) {
+        this.staffUuid = uuid;
+    }
+
+    /**
+     * @return The type of this punishment
+     */
+    @Override
+    public PunType getType() {
+        return this.punType;
+    }
+
+    /**
+     * @param type The type of this punishment
+     */
+    @Override
+    public void setType( PunType type ) {
+        this.punType = type;
+    }
+
+    /**
+     * @return Timestamp, in milliseconds, of when this punishment was executed
+     */
+    @Override
+    public long getTimestamp() {
+        return this.timestamp;
+    }
+
+    /**
+     * @param timestamp Timestamp, in milliseconds, of when this punishment was executed
+     */
+    @Override
+    public void setTimestamp( long timestamp ) {
+        this.timestamp = timestamp;
+    }
+
+    /**
+     * @return The length of the punishment, in milliseconds
+     */
+    @Override
+    public long getLength() {
+        return this.length;
+    }
+
+    /**
+     * @param length The length of this punishment, in milliseconds
+     */
+    @Override
+    public void setLength( long length ) {
+        this.length = length;
+    }
+
+    /**
+     * @return Returns how long the remaining duration of this
+     *         punishment is. If {@link #isActive()} is false,
+     *         returns 0
+     */
+    @Override
+    public long getDurationRemaining() {
+        if ( isActive() == false ) return 0;
+        if ( this.length == ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) return ApiPunishment.PERMANENT_PUNISHMENT_LENGTH;
+        long durationSinceTimestamp = TimestampUtils.getTimeSince( this.timestamp );
+        return this.length - durationSinceTimestamp;
+    }
+
+    /**
+     * @return The reason for this punishment
+     */
+    @Override
+    public String getReason() {
+        return this.reason;
+    }
+
+    /**
+     * @param reason The reason for this punishment
+     */
+    @Override
+    public void setReason( String reason ) {
+        this.reason = reason;
+    }
+
+    /**
+     * This will check if the punishment is active or not. If the
+     * punishment has been set to inactive, returns false. Otherwise,
+     * this will check if the punishment has expired yet or not. If the
+     * punishment has expired, the punishment is set as inactive, the
+     * database is updated (asynchronously), and false is returned.
+     * Otherwise returns true<br><br>
+     *
+     * Note: if the punishment is not active, it can NOT be set back to active.
+     *
+     * @return True if this punishment is active, false otherwise
+     */
+    @Override
+    public boolean isActive() {
+        if ( this.isActive ) {
+            if ( this.length == ApiPunishment.PERMANENT_PUNISHMENT_LENGTH ) return true;
+            if ( TimestampUtils.timestampHasExpired( this.timestamp, this.length ) ) {
+                this.isActive = false;
+                // Updating the punishment in the database and in the cache
+                Netuno.SERVICE.getPlayer( this.playerUuid ).thenAccept( apiPlayer -> {
+                    apiPlayer.updatePunishment( this );
+                } );
+
+                return false;
+            }
+
+            return true;
+        }
+        return this.isActive;
+    }
+
+    /**
+     * Doesn't check if this punishment should be marked as inactive
+     * or not, just returns the current value of isActive
+     * @return True if the punishment is currently active,
+     * false otherwise
+     */
+    public boolean isActive_silent() {
+        return this.isActive;
+    }
+
+    /**
+     * Note: if the punishment is not active, it can NOT be set back to active.
+     *
+     * @param active True if this punishment is active, false otherwise
+     */
+    @Override
+    public void setActive( boolean active ) {
+        if ( this.isActive == false && active == false ) throw new IllegalArgumentException( "A punishment that is currently inactive cannot be set back as active" );
+        if ( active && this.punType.hasNoLength() ) throw new IllegalArgumentException( "A punishment with no length cannot be set as active" );
+        this.isActive = active;
+    }
+
+    /**
+     * @return The ID of the reference punishment associated with this punishment, if there is one.
+     *         Otherwise, returns {@link ApiPunishment#DEFAULT_REFERENCE_ID}
+     */
+    @Override
+    public int getReferenceId() {
+        return this.referenceId;
+    }
+
+    /**
+     * @param referenceId The ID of the reference punishment associated with this punishment, if
+     *                    there is one. Otherwise, set this to {@link ApiPunishment#DEFAULT_REFERENCE_ID}
+     */
+    @Override
+    public void setReferenceId( int referenceId ) {
+        this.referenceId = referenceId;
+    }
+
+    /**
+     * @return True if this punishment was executed via the punishment GUI, false otherwise
+     */
+    @Override
+    public boolean isGuiPun() {
+        return this.isGuiPun;
+    }
+
+    /**
+     * @param guiPun True if this punishment was executed through the punishment GUI, false
+     *               otherwise
+     */
+    @Override
+    public void setGuiPun( boolean guiPun ) {
+        this.isGuiPun = guiPun;
+    }
+
+    /**
+     * @return True if a notification has been sent to the player about this punishment, false
+     *         otherwise
+     */
+    @Override
+    public boolean isNotifSent() {
+        return this.isNotifSent;
+    }
+
+    /**
+     * Only works for IP punishments
+     *
+     * @return True if {@link #getReferenceId()} is equal to
+     *         {@link #DEFAULT_REFERENCE_ID}, false otherwise
+     */
+    @Override
+    public boolean isOriginalPunishment() {
+        return getReferenceId() == DEFAULT_REFERENCE_ID;
+    }
+
+    /**
+     * If the player is online and a notification has not yet been sent to them, this will send the
+     * notification to them. After this, a notification cannot be sent to them again.
+     */
+    @Override
+    public void sendNotification() {
+        OfflinePlayer player = getPlayer();
+        if ( player.isOnline() == false )
+            throw new RuntimeException( "Player " + player.getName() + " (uuid " + player.getUniqueId().toString() + ") is not online" );
+        Settings settingToFill = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.JOIN_NOTIFICATION );
+        Component message = fillSettingMessage( settingToFill );
+        player.getPlayer().sendMessage( message );
+        this.isNotifSent = true;
+    }
+
+    /**
+     * @return true if the punishment has been executed, false otherwise
+     */
+    @Override
+    public boolean isExecuted() {
+        return this.isExecuted;
+    }
+
+    /**
+     * Executes this punishment, provided it has not already been executed.
+     * @param silent True to execute this punishment silently,
+     *               false otherwise
+     */
+    @Override
+    public void execute( boolean silent ) {
+        if ( this.isExecuted ) throw new RuntimeException( "This punishment has already been executed" );
+        this.timestamp = TimestampUtils.getCurrentTimestamp();
+
+        CompletableFuture.runAsync( () -> {
+            // We only send notifications if (a) the player is offline AND (b) the punishment is a warn, mute, or ipmute
+            if ( getPlayer().isOnline() ) this.isNotifSent = true;
+            else if ( List.of( PunType.WARN, PunType.MUTE, PunType.IPMUTE ).contains( getType() ) ) this.isNotifSent = false;
+            else this.isNotifSent = true;
+
+            // Create the punishment and add it to the database
+            this.isActive = this.punType.hasNoLength() == false;
+            this.isExecuted = true;
+            Netuno.PUNISHMENT_SERVICE.createPunishment( this )
+                    // If this is an IP punishment, then we need to
+                    //      apply it to all of the alt accounts as well
+                    // Note that IP unpunishments are also handled here
+                    .thenAccept( id -> {
+                        if ( this.punType.isIpPunishment() ) this.execute_handleIpPunishment( id );
+                    } )
+                    .exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+            //        .join(); // We join this to the outer completable future's
+            //                 // thread so that everything happens in order
+
+            // If the player is online, we need to either notify them
+            //      or kick them from the server, depending on the
+            //      punishment type
+            if ( getPlayer().isOnline() ) {
+                // We kick the player if the punishment type is a
+                //      kick, ban, or ipban
+                if ( List.of( PunType.KICK, PunType.BAN, PunType.IPBAN ).contains( getType() ) ) execute_kickPlayer();
+
+                // Otherwise we notify them
+                else execute_notifyPlayer();
+            }
+
+            // If this is an unpunishment, we need to set all active
+            //      punishments of the correspending type as inactive
+            if ( this.punType.isUnpunishment() ) execute_handleUnpunishment();
+
+            // Sending a staff broadcast
+            execute_staffBroadcast( silent );
+
+            // Sending a global broadcast
+            execute_globalBroadcast( silent );
+
+            // Dispatching a Netuno event
+            Netuno.SERVICE.getEventDispatcher().dispatch( new PunishmentEvent( this ) );
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+    }
+
+    /**
+     * Submethod for the {@link #execute(boolean)} method. Sends
+     * a global broadcast saying that this punishment was executed
+     * @param silent True to execute this punishment silently,
+     *               false otherwise
+     */
+    private void execute_globalBroadcast( boolean silent ) {
+        // Only sending the public broadcast if the punishment
+        //      is NOT silent
+        if ( silent ) return;
+        Settings publicBroadcastSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.BROADCAST );
+        Settings publicBroadcastSound = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.SOUND_GLOBAL );
+        Component component = fillSettingMessage( publicBroadcastSetting );
+
+        // not sending a message if the message is blank
+        if ( messageIsBlank( publicBroadcastSetting ) ) return;
+
+        // if this is an IP mute or IP unmute, we don't want to send multiple messages
+        //      to the player's online alts, if any
+        if ( this.punType == PunType.IPMUTE || this.punType == PunType.UNIPMUTE ) {
+            Netuno.SERVICE.getPlayer( getPlayerUuid() ).thenAccept( apiPlayer -> {
+                List<UUID> alts = apiPlayer.getAlts();
+                for ( Player p : Bukkit.getOnlinePlayers() ) {
+                    // dont want to send this to staff members
+                    if ( CyberVaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) ) continue;
+                    // dont want to send this to the player's alts
+                    if ( alts.contains( p.getUniqueId() ) ) continue;
+                    // dont want to send this to the player
+                    if ( p.getUniqueId().equals( getPlayerUuid() ) ) continue;
+
+                    p.sendMessage( component );
+                    publicBroadcastSound.sound().playSound( p );
+                }
+            } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+        }
+
+        else {
+            for ( Player p : Bukkit.getOnlinePlayers() ) {
+                if ( CyberVaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) == false && p.getUniqueId().equals( getPlayerUuid() ) == false ) {
+                    p.sendMessage( component );
+                    publicBroadcastSound.sound().playSound( p );
+                }
+            }
+        }
+    }
+
+    /**
+     * Submethod for the {@link #execute(boolean)} method. Sends
+     * a broadcast to online staff members that this punishment
+     * was executed
+     * @param silent True to execute this punishment silently,
+     *               false otherwise
+     */
+    private void execute_staffBroadcast( boolean silent ) {
+        Settings staffBroadcastSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.STAFF_BROADCAST );
+        Settings staffBroadcastSound = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.SOUND_STAFF );
+        Component component = fillSettingMessage( staffBroadcastSetting, silent );
+
+        // not sending a message if its blank
+        if ( messageIsBlank( staffBroadcastSetting ) ) return;
+
+        for ( Player p : Bukkit.getOnlinePlayers() ) {
+            if ( CyberVaultUtils.hasPerms( p, Settings.STAFF_PERMISSION.string() ) && p.getUniqueId().equals( getPlayerUuid() ) == false ) {
+                p.sendMessage( component );
+                staffBroadcastSound.sound().playSound( p );
+            }
+        }
+    }
+
+    /**
+     * Submethod for the {@link #execute(boolean)} method. Kicks
+     * the player for their punishment. Note that this only kicks
+     * <b>this</b> player <i>(i.e. if this is an IP punishment,
+     * it will not kick any online alts)</i>. Should only be ran
+     * for the kicks, bans, and IP bans. <br>
+     * <u>Assumes that the player for this punishment is online.</u>
+     */
+    private void execute_kickPlayer() {
+        // Needs to be ran synchronously
+        Bukkit.getScheduler().runTask( CyberCore.getPlugin(), () -> {
+            Settings playerMsgSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.MESSAGE );
+            Component comp = fillSettingMessage( playerMsgSetting );
+            getPlayer().getPlayer().kick( comp );
+        } );
+    }
+
+    /**
+     * Submethod for the {@link #execute(boolean)} method.
+     * Notifies the player for their punishment. Note that this
+     * only notifies <b>this</b> player <i>(i.e. if this is an
+     * IP punishment, it will not notify any online alts)</i>.
+     * Should only be ran for the mutes and IP mutes. <br>
+     * <u>Assumes that the player for this punishment is online.</u>
+     */
+    private void execute_notifyPlayer() {
+        Settings playerMsgSetting = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.MESSAGE );
+        Settings playerMsgSound = PunishmentLibrary.getSettingForMessageType( getType(), PunishmentLibrary.MessageSetting.SOUND_TARGET );
+        Component comp = fillSettingMessage( playerMsgSetting );
+        if ( messageIsBlank( playerMsgSetting ) ) return;
+        getPlayer().getPlayer().sendMessage( comp );
+        playerMsgSound.sound().playSound( getPlayer().getPlayer() );
+    }
+
+    /**
+     * Submethod for the {@link #execute(boolean)} method.
+     * Handles the execution of unpunishments, mainly by setting
+     * all previous punishments of the correct type to be inactive
+     * in the database and in the cache.
+     */
+    private void execute_handleUnpunishment() {
+        // ? maybe want to run async with .thenAcceptAsync
+        // *    according to chatgpt, the stuff within the
+        // *    .thenAccept is ran async (relative to the
+        // *    main thread) as well
+        Netuno.SERVICE.getPlayer( this.playerUuid ).thenAccept( apiTarget -> {
+            final PunType type = switch ( this.punType ) {
+                case UNMUTE -> PunType.MUTE;
+                case UNBAN -> PunType.BAN;
+                case UNIPMUTE -> PunType.IPMUTE;
+                case UNIPBAN -> PunType.IPBAN;
+                default -> null;
+            };
+
+            List<ApiPunishment> activePuns = apiTarget.getActivePunishments().stream()
+                    .filter( pun -> pun.getType() == type )
+                    .collect( Collectors.toList() );
+            for ( ApiPunishment pun : activePuns ) {
+                pun.setActive( false );
+                apiTarget.updatePunishment( pun );
+            }
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+    }
+
+    /**
+     * Submethod for the {@link #execute(boolean)} method.
+     * Handles the execution of IP punishments/unpunishments.
+     * For IP punishments, we need to apply it to the target's
+     * alt accounts as well.
+     *
+     * @param referenceId The ID generated for this punishment,
+     *                   which will be used as the reference ID
+     *                   for the punishments generated here
+     */
+    private void execute_handleIpPunishment( int referenceId ) {
+        // Getting the ApiPlayer of the target
+        Netuno.SERVICE.getPlayer( this.playerUuid ).thenAccept( apiPlayer -> {
+            // Getting the alts of the target
+            Netuno.ALT_SERVICE.getAlts( apiPlayer ).thenAccept( apiAlts -> {
+                // If the player has no alts (meaning apiAlts.size() == 1, as it
+                //      contains the player as well), then do nothing
+                if ( apiAlts.size() == 1 ) return;
+
+                // Applying the punishment to the player's alt accounts
+                for ( ApiPlayer account : apiAlts ) {
+                    // Skip the original player
+                    if ( account.getPlayer().getUniqueId().equals( apiPlayer.getPlayer().getUniqueId() ) ) continue;
+
+                    NetunoPunishment accountPun = ( NetunoPunishment ) this.copy();
+                    accountPun.setId( DEFAULT_ID );
+                    accountPun.setPlayer( account.getPlayer().getUniqueId() );
+                    accountPun.setReferenceId( referenceId );
+                    accountPun.isNotifSent = false;
+
+                    if ( accountPun.getPlayer().isOnline() ) {
+                        accountPun.isNotifSent = true;
+                        // If the punishment requires the player to be kicked
+                        if ( List.of( PunType.KICK, PunType.BAN, PunType.IPBAN ).contains( accountPun.getType() ) ) {
+                            accountPun.execute_kickPlayer();
+                        }
+
+                        // If the punishment requires the player to receive a message
+                        else {
+                            accountPun.execute_notifyPlayer();
+                        }
+                    }
+
+                    // Adding this punishment to the API player's punishments list
+                    account.getPunishments().add( accountPun );
+                    // Adding this punishment to the database
+                    PunishmentsDatabase.addPunishment( accountPun );
+
+                    // If this is an IP unpunishment, then we need to set all the
+                    //      previous IP punishments of the respective type to inactive
+                    if ( accountPun.getType().isUnpunishment() ) {
+                        accountPun.execute_handleUnpunishment();
+                    }
+                }
+            } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+        } ).exceptionally( Netuno.FUTURE_ERROR_HANDLING );
+    }
+
+    /**
+     * Checks if a provided setting's string/stringlist (depending
+     * on the entry type of setting) is all blank
+     * @param setting The setting to check
+     * @return True if the setting is all blank, false otherwise
+     */
+    private boolean messageIsBlank( Settings setting ) {
+        if ( setting.getValueType() == SettingsEntry.EntryType.STRING ) return setting.string().isBlank();
+        else {
+            for ( String str : setting.stringlist() ) {
+                if ( str.isBlank() == false ) return false;
+            }
+            return true;
+        }
+    }
+
+    /**
+     * Replaces all the config variables within the provided
+     * setting and returns it <br> <br>
+     * <p>
+     * List of config variables:
+     * <ul>
+     *     <li><code>[STAFF]</code> Staff who executed the punishment</li>
+     *     <li><code>[TARGET]</code> The player who was punished</li>
+     *     <li><code>[LENGTH]</code> The length of the punishment</li>
+     *     <li><code>[REMAIN]</code> How long until the punishment expires</li>
+     *     <li><code>[REASON]</code> The reason of the punishment</li>
+     *     <li><code>[ACCOUNTS]</code> A list of all known alt accounts of the target player</li>
+     * </ul>
+     *
+     * @param setting The {@link Settings} to use
+     * @return The filled component
+     */
+    public Component fillSettingMessage( Settings setting ) {
+        return fillSettingMessage( setting, false );
+    }
+
+    /**
+     * Replaces all the config variables within the provided
+     * setting and returns it <br> <br>
+     * <p>
+     * List of config variables:
+     * <ul>
+     *     <li><code>[STAFF]</code> Staff who executed the punishment</li>
+     *     <li><code>[TARGET]</code> The player who was punished</li>
+     *     <li><code>[LENGTH]</code> The length of the punishment</li>
+     *     <li><code>[REMAIN]</code> How long until the punishment expires</li>
+     *     <li><code>[REASON]</code> The reason of the punishment</li>
+     *     <li><code>[ACCOUNTS]</code> A list of all known alt accounts of the target player</li>
+     * </ul>
+     *
+     * @param setting The {@link Settings} to use
+     * @param silent True if each line should include the silent prefix,
+     *               false otherwise
+     * @return The filled component
+     */
+    public Component fillSettingMessage( Settings setting, boolean silent ) {
+        String msg = "";
+        final String SILENT_PREFIX = Settings.SILENT_PREFIX.string();
+
+        if ( setting.getValueType() == SettingsEntry.EntryType.STRING ) {
+            msg += ( silent ? SILENT_PREFIX : "" ) + setting.string();
+        }
+        else if ( setting.getValueType() == SettingsEntry.EntryType.STRING_LIST ){
+            for ( String str : setting.stringlist() ) {
+                if ( str.isBlank() ) msg += str;
+                else if ( silent ) msg += SILENT_PREFIX + str;
+                else msg += str;
+                msg += "\n";
+            }
+        }
+        else {
+            throw new IllegalArgumentException( "Invalid setting type" );
+        }
+
+        msg = msg.substring( 0, msg.lastIndexOf( "\n" ) ); // Removing the last \n
+        return LegacyComponentSerializer.legacyAmpersand().deserialize( executeReplacements( msg ) );
+    }
+
+    private String executeReplacements( String msg ) {
+        Map<String, String> replacements = new HashMap<>();
+        final String staffName = getStaffUuid() == ApiPunishment.CONSOLE_UUID ? "console" : getStaff().getName();
+        replacements.put( "[STAFF]", staffName );
+        replacements.put( "[TARGET]", getPlayer().getName() );
+        replacements.put( "[LENGTH]", TimestampUtils.durationToString( getLength() ) );
+        replacements.put( "[REMAIN]", TimestampUtils.durationToString( getDurationRemaining() ) );
+        replacements.put( "[REASON]", getReason() );
+        for ( Map.Entry<String, String> entry : replacements.entrySet() ) {
+            msg = msg.replace( entry.getKey(), entry.getValue() );
+        }
+
+        // Since accounts might be resource intensive, we do it
+        //      separately from the others
+        if ( msg.contains( "[ACCOUNTS]" ) ) {
+            List<String> altNames = Netuno.ALT_SERVICE.getAlts( getPlayerUuid() ).stream()
+                    .map( altUuid -> Bukkit.getOfflinePlayer( altUuid ).getName() )
+                    .collect( Collectors.toList() );
+            // Only going to allow a maximum of three list elements
+            String replacement = PrettyStringLibrary.getNonOxfordCommaListWithRemainder( altNames, 3 );
+            msg = msg.replace( "[ACCOUNTS]", replacement );
+        }
+
+        return msg;
+    }
+
+    /**
+     * @return A copy of this punishment
+     */
+    public ApiPunishment copy() {
+        return new NetunoPunishment(
+                this.id,
+                this.playerUuid,
+                this.staffUuid,
+                this.punType,
+                this.timestamp,
+                this.length,
+                this.reason,
+                this.isActive,
+                this.referenceId,
+                this.isGuiPun,
+                this.isNotifSent,
+                false // note that isExecuted will always be set back to false, unsure if we should do this or not
+        );
+    }
+
+    @Override
+    public String toString() {
+        return "Punishment{" +
+                "id=" + id +
+                ", playerUuid=" + playerUuid +
+                ", staffUuid=" + staffUuid +
+                ", punType=" + punType +
+                ", timestamp=" + timestamp +
+                ", length=" + length +
+                ", reason='" + reason + '\'' +
+                ", isActive=" + isActive +
+                ", referenceId=" + referenceId +
+                ", isGuiPun=" + isGuiPun +
+                ", isNotifSent=" + isNotifSent +
+                ", isExecuted=" + isExecuted +
+                '}';
+    }
+}

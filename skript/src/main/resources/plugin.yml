@@ -1,0 +1,7 @@
+name: skNetuno
+version: ${project.version}
+main: com.github.cyberryan1.netuno.skript.NetunoSkript
+api-version: 1.16
+softdepend: [ Netuno, Vault, Skript ]
+authors: [ CyberRyan ]
+commands:

@@ -1,0 +1,27 @@
+[20:49:45 INFO]: budderboi900 lost connection: Disconnected
+[20:49:45 ERROR]: Could not pass event PlayerQuitEvent to Netuno v2.0.0-DEV-0
+java.lang.NullPointerException: Cannot invoke "com.github.cyberryan1.netuno.models.helpers.PlayerLoginLogoutCache$CacheData.recentlyAccessedUpdate()" because "cacheData" is null
+	at Netuno-2.0.0-DEV-0.jar/com.github.cyberryan1.netuno.models.helpers.PlayerLoginLogoutCache.executeLogout(PlayerLoginLogoutCache.java:253) ~[Netuno-2.0.0-DEV-0.jar:?]
+	at Netuno-2.0.0-DEV-0.jar/com.github.cyberryan1.netuno.models.helpers.PlayerLoginLogoutCache$PlayerLoginLogoutCacheListener.lambda$onPlayerQuit$1(PlayerLoginLogoutCache.java:720) ~[Netuno-2.0.0-DEV-0.jar:?]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596) ~[?:?]
+	at Netuno-2.0.0-DEV-0.jar/com.github.cyberryan1.netuno.models.helpers.PlayerLoginLogoutCache$PlayerLoginLogoutCacheListener.onPlayerQuit(PlayerLoginLogoutCache.java:720) ~[Netuno-2.0.0-DEV-0.jar:?]
+	at co.aikar.timings.TimedEventExecutor.execute(TimedEventExecutor.java:80) ~[paper-api-1.21.4-R0.1-SNAPSHOT.jar:?]
+	at org.bukkit.plugin.RegisteredListener.callEvent(RegisteredListener.java:70) ~[paper-api-1.21.4-R0.1-SNAPSHOT.jar:?]
+	at io.papermc.paper.plugin.manager.PaperEventManager.callEvent(PaperEventManager.java:54) ~[paper-1.21.4.jar:1.21.4-227-7675321]
+	at io.papermc.paper.plugin.manager.PaperPluginManagerImpl.callEvent(PaperPluginManagerImpl.java:131) ~[paper-1.21.4.jar:1.21.4-227-7675321]
+	at org.bukkit.plugin.SimplePluginManager.callEvent(SimplePluginManager.java:628) ~[paper-api-1.21.4-R0.1-SNAPSHOT.jar:?]
+	at net.minecraft.server.players.PlayerList.remove(PlayerList.java:513) ~[paper-1.21.4.jar:1.21.4-227-7675321]
+	at net.minecraft.server.players.PlayerList.remove(PlayerList.java:500) ~[paper-1.21.4.jar:1.21.4-227-7675321]
+	at net.minecraft.server.network.ServerGamePacketListenerImpl.removePlayerFromWorld(ServerGamePacketListenerImpl.java:2104) ~[paper-1.21.4.jar:1.21.4-227-7675321]
+	at net.minecraft.server.network.ServerGamePacketListenerImpl.onDisconnect(ServerGamePacketListenerImpl.java:2083) ~[paper-1.21.4.jar:1.21.4-227-7675321]
+	at net.minecraft.server.network.ServerGamePacketListenerImpl.onDisconnect(ServerGamePacketListenerImpl.java:2069) ~[paper-1.21.4.jar:1.21.4-227-7675321]
+	at net.minecraft.network.Connection.handleDisconnection(Connection.java:866) ~[paper-1.21.4.jar:1.21.4-227-7675321]
+	at net.minecraft.server.network.ServerConnectionListener.tick(ServerConnectionListener.java:270) ~[paper-1.21.4.jar:1.21.4-227-7675321]
+	at net.minecraft.server.MinecraftServer.tickConnection(MinecraftServer.java:1762) ~[paper-1.21.4.jar:1.21.4-227-7675321]
+	at net.minecraft.server.dedicated.DedicatedServer.tickConnection(DedicatedServer.java:427) ~[paper-1.21.4.jar:1.21.4-227-7675321]
+	at net.minecraft.server.MinecraftServer.tickChildren(MinecraftServer.java:1738) ~[paper-1.21.4.jar:1.21.4-227-7675321]
+	at net.minecraft.server.MinecraftServer.tickServer(MinecraftServer.java:1529) ~[paper-1.21.4.jar:1.21.4-227-7675321]
+	at net.minecraft.server.MinecraftServer.runServer(MinecraftServer.java:1251) ~[paper-1.21.4.jar:1.21.4-227-7675321]
+	at net.minecraft.server.MinecraftServer.lambda$spin$2(MinecraftServer.java:310) ~[paper-1.21.4.jar:1.21.4-227-7675321]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[?:?]
+[20:49:45 INFO]: budderboi900 left the game

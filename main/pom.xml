@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.github.cyberryan1.netuno</groupId>
+    <artifactId>Netuno</artifactId>
+    <version>2.0.0</version>
+    <packaging>jar</packaging>
+
+    <parent>
+        <artifactId>NetunoProject</artifactId>
+        <groupId>com.github.cyberryan1</groupId>
+        <version>1.0.0</version>
+    </parent>
+
+    <name>main</name>
+
+    <properties>
+        <java.version>21</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version>
+                <!-- bStats -->
+                <configuration>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>com.github.cyberryan1.netuno</shadedPattern> <!-- May want to change this to com.github.cyberryan1.netuno.bstats? -->
+                        </relocation>
+                    </relocations>
+                </configuration>
+                <!-- End of bStats -->
+                <executions>
+                    <execution>
+                        <id>shade-plugin</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.github.cyberryan1.CyberCore.spigot</pattern>
+                                    <shadedPattern>com.github.cyberryan1.netuno.cybercore</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>shade-plugin</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.bstats</pattern>
+                                    <shadedPattern>com.github.cyberryan1.netuno.libs.bstats</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>io.netty</pattern>
+                                    <shadedPattern>com.github.cyberryan1.netuno.libs.netty</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.github.cyberryan1.cybercore</pattern>
+                                    <shadedPattern>com.github.cyberryan1.netuno.libs.cybercore</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-shade-plugin</artifactId>-->
+<!--                <version>3.5.1</version>-->
+
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>shade</goal>-->
+<!--                        </goals>-->
+
+<!--                        <configuration>-->
+<!--                            <createDependencyReducedPom>false</createDependencyReducedPom>-->
+
+<!--                            &lt;!&ndash; Force-include NetunoApi &ndash;&gt;-->
+<!--                            <artifactSet>-->
+<!--                                <includes>-->
+<!--                                    <include>com.github.cyberryan1.netuno.api:NetunoApi</include>-->
+<!--                                    <include>com.github.cyberryan1.CyberCore.spigot:CyberCore-spigot</include>-->
+<!--                                </includes>-->
+<!--                            </artifactSet>-->
+
+<!--                            &lt;!&ndash; Relocate only bStats &ndash;&gt;-->
+<!--                            <relocations>-->
+<!--                                <relocation>-->
+<!--                                    <pattern>org.bstats</pattern>-->
+<!--                                    <shadedPattern>com.github.cyberryan1.netuno.bstats</shadedPattern>-->
+<!--                                </relocation>-->
+<!--                            </relocations>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources/guis</directory>
+            </resource>
+        </resources>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>maven-central</id>
+            <url>https://oss.sonatype.org/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>aikar</id>
+            <url>https://ci.emc.gs/nexus/content/groups/aikar/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency> <!-- Netuno API -->
+            <groupId>com.github.cyberryan1.netuno.api</groupId>
+            <artifactId>NetunoApi</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.cyberryan1.CyberCore.spigot</groupId>
+            <artifactId>CyberCore-spigot</artifactId>
+            <version>2.0.0.40</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.30</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>3.0.2</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+</project>

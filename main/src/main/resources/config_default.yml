@@ -1,0 +1,802 @@
+########################################
+#                Netuno                #
+#         Developer: CyberRyan         #
+#    Discord: discord.gg/8gxG4KfvBK    #
+########################################
+
+########################################
+#     Netuno Config Msg Variables      #
+########################################
+
+# [STAFF] = Staff executing the command
+# [TARGET] = Player being punished
+# [LENGTH] = Length of a punishment (ex: 30 minutes, 3 hours, etc)
+# [REMAIN] = Length remaining of a punishment
+# [REASON] = Reason for a punishment
+# Note: some variables may be disabled in certain sections,
+  # and more may be introduced in certain sections
+
+########################################
+#                General               #
+########################################
+general:
+  # Permission for staff so that they can see silent punishments, etc
+  staff-perm: "netuno.staff"
+  # Permission for all netuno commands
+  all-perms: "netuno.*"
+  # Primary color for netuno messages (besides what you define in this file)
+  primary-color: "&6"
+  # Secondary color for netuno messages (besides what you define in this file)
+  secondary-color: "&7"
+  # What to send when a player is denied permission to a command
+  perm-denied-msg: "&cInsufficient permissions!"
+  # Prefix for broadcasts for a silently executed command
+  silent-prefix: "&8[&7S&8]"
+  # Permission to use silent commands
+  silent-perm: "netuno.silent"
+  # Whether staff can punish other staff or not
+  # Can be bypassed by players who have the permission defined in all-perms
+  staff-punishments: false
+  # Permission to reload the plugin
+  reload-perm: "netuno.reload"
+
+########################################
+#        General Moderation Cmds       #
+########################################
+warn:
+  # Permission
+  perm: "netuno.warn"
+  # Message sent to all non-staff
+  # Set to just one line with "" for nothing to be sent
+  broadcast:
+    - ""
+  # Message sent to all staff
+  # Set to just one line with "" for nothing to be sent
+  staff-broadcast:
+    - ""
+    - " &6[TARGET] &7has been &6warned"
+    - " &6Reason: &7[REASON]"
+    - " &6Staff: &7[STAFF]"
+    - ""
+  # What the warned player sees in their chat
+  message:
+    - ""
+    - " &7You have been &6warned&7!"
+    - " &6Reason: &7[REASON]"
+    - ""
+
+kick:
+  # Permission
+  perm: "netuno.kick"
+  # Message sent to all non-staff
+  # Set to just one line with "" for nothing to be sent
+  broadcast:
+    - " &6[TARGET] &7has been &6kicked"
+    - " &6Reason: &7[REASON]"
+  # Message sent to all staff
+  # Set to just one line with "" for nothing to be sent
+  staff-broadcast:
+    - ""
+    - " &6[TARGET] &7has been &6kicked"
+    - " &6Reason: &7[REASON]"
+    - " &6Staff: &7[STAFF]"
+    - ""
+  # What the kicked player sees
+  kicked-lines:
+    - "&7You have been &6kicked&7!"
+    - "&6Reason: &7[REASON]"
+
+mute:
+  perm: "netuno.mute"
+  broadcast:
+    - " &6[TARGET] &7has been &6muted &8[&7[LENGTH]&8]"
+    - " &6Reason: &7[REASON]"
+  staff-broadcast:
+    - ""
+    - " &6[TARGET] &7has been &6muted &8[&7[LENGTH]&8]"
+    - " &6Reason: &7[REASON]"
+    - " &6Staff: &7[STAFF]"
+    - ""
+  message:
+    - ""
+    - " &7You have been &6muted&7!"
+    - " &6Length: &7[LENGTH]"
+    - " &6Reason: &7[REASON]"
+    - ""
+  # What to send when a player attempts to speak while muted
+  # Set to just one line with "" for nothing to be sent
+  attempt:
+    - ""
+    - " &7You are &6muted&7!"
+    - " &6Time Remaining: &7[REMAIN]"
+    - " &6Reason: &7[REASON]"
+    - ""
+  # What to send when a player's mute expires
+  # Set to just one line with "" for nothing to be sent
+  # No supported variables
+  expire:
+    - ""
+    - " &7Your mute has &6expired&7!"
+    - ""
+  # What to send to online staff when a player's mute expires
+  # Set to just one line with "" for nothing to be sent
+  # Only supported variable: [TARGET]
+  expire-staff:
+    - " &6[TARGET]&7's mute has expired"
+  # Commands that are blocked while muted
+  # Are also blocked while IP-muted
+  # Should include the command name and the slash (ex: "/msg")
+  blocked-cmds:
+    - "/message"
+    - "/msg"
+    - "/w"
+    - "/whisper"
+  # What to send when a muted player attempts to execute a blocked command
+  blocked-cmd-msg: "&7You cannot do this command while punished"
+
+unmute:
+  perm: "netuno.unmute"
+  broadcast:
+    - ""
+  staff-broadcast:
+    - ""
+    - " &6[TARGET]&7 has been &6unmuted"
+    - " &6Staff: &7[STAFF]"
+    - ""
+  message:
+    - ""
+    - " &7You have been &6unmuted&7!"
+    - ""
+
+ban:
+  perm: "netuno.ban"
+  broadcast:
+    - " &6[TARGET] &7has been &6banned &8[&7[LENGTH]&8]"
+    - " &6Reason: &7[REASON]"
+  # Whether a player without a certain permission can't ban past a certain amount of time
+  # This only applies for the /ban command
+  max-time-enable: false
+  # What the maximum time a player without a certain permission (defined below) can ban for
+  # For example, if you set this to two days, players without the bypass permission that's defined below can only ban for up to two days
+  # Set this in the format of "2d" or "30m" or something like that format
+  # Only works if max-time-enable is true
+  max-time-length: "2d"
+  # The permission needed to ban for longer than the max-time-length, as defined above
+  max-time-bypass: "server.maxtime.bypass"
+  staff-broadcast:
+    - ""
+    - " &6[TARGET] &7has been &6banned &8[&7[LENGTH]&8]"
+    - " &6Reason: &7[REASON]"
+    - " &6Staff: &7[STAFF]"
+    - ""
+  # What the banned player sees when they are first banned (if they are online)
+  banned-lines:
+    - "&7You have been &6banned&7!"
+    - "&6Length: &7[LENGTH]"
+    - "&6Reason: &7[REASON]"
+  # What the banned player sees when they try to join while banned
+  attempt:
+    - "&7You are &6banned&7!"
+    - "&6Time Remaining: &7[REMAIN]"
+    - "&6Reason: &7[REASON]"
+  # No supported variables
+  expire:
+    - ""
+    - " &7Your ban has &6expired&7!"
+    - ""
+  # Only supported variable: [TARGET]
+  expire-staff:
+    - " &6[TARGET]&7's ban has expired"
+
+unban:
+  perm: "netuno.unban"
+  broadcast:
+    - ""
+  staff-broadcast:
+    - ""
+    - " &6[TARGET] &7has been &6unbanned"
+    - " &6Staff: &7[STAFF]"
+    - ""
+  message:
+    - ""
+
+# Note for the ipmute, unipmute, ipban, and unipban sections:
+#   In the "broadcast" and "staff-broadcast" sections, you can use the [ACCOUNTS] variable,
+#     which will be replaced with the target and their alts
+#   For example, if "PlayerOne" has alt "PlayerTwo", then "[ACCOUNTS]" will be replaced with "PlayerOne and PlayerTwo"
+#   Another example: if "PlayerOne" has altS "PlayerTwo", "PlayerThree", and "PlayerFour",
+#     then "[ACCOUNTS]" will be replaced with "PlayerOne, PlayerTwo, and 2 more"
+
+ipmute:
+  perm: "netuno.ipmute"
+  broadcast:
+    - " &6[ACCOUNTS] &7has been &6ipmuted &8[&7[LENGTH]&8]"
+    - " &6Reason: &7[REASON]"
+  staff-broadcast:
+    - ""
+    - " &6[ACCOUNTS] &7has been &6ipmuted &8[&7[LENGTH]&8]"
+    - " &6Reason: &7[REASON]"
+    - " &6Staff: &7[STAFF]"
+    - ""
+  message:
+    - ""
+    - " &7You have been &6ipmuted&7!"
+    - " &6Length: &7[LENGTH]"
+    - " &6Reason: &7[REASON]"
+    - ""
+  attempt:
+    - ""
+    - " &7Your are &6ipmuted&7!"
+    - " &6Time Remaining: &7[REMAIN]"
+    - " &6Reason: &7[REASON]"
+    - ""
+  expire:
+    - ""
+    - " &7Your ipmute has &6expired&7!"
+    - ""
+  expire-staff:
+    - " &6[TARGET]&7's ipmute has expired"
+
+unipmute:
+  perm: "netuno.unipmute"
+  broadcast:
+    - ""
+  staff-broadcast:
+    - ""
+    - " &6[ACCOUNTS] &7has been &6unipmuted"
+    - " &6Staff: &7[STAFF]"
+    - ""
+  message:
+    - ""
+    - " &7You have been &6unipmuted"
+    - ""
+
+ipban:
+  perm: "netuno.ipban"
+  broadcast:
+    - " &6[ACCOUNTS] &7has been &6ipbanned &8[&7[LENGTH]&8]"
+    - " &6Reason: &7[REASON]"
+  staff-broadcast:
+    - ""
+    - " &6[ACCOUNTS] &7has been &6ipbanned &8[&7[LENGTH]&8]"
+    - " &6Reason: &7[REASON]"
+    - " &6Staff: &7[STAFF]"
+    - ""
+  banned-lines:
+    - "&7You have been &6ipbanned&7!"
+    - "&6Length: &7[LENGTH]"
+    - "&6Reason: &7[REASON]"
+  attempt:
+    - "&7You are &6ipbanned&7!"
+    - "&6Time Remaining: &7[REMAIN]"
+    - "&6Reason: &7[REASON]"
+  expire:
+    - ""
+    - " &7Your ipban has &6expired&7!"
+    - ""
+  expire-staff:
+    - " &6[TARGET]&7's ipban has expired"
+
+unipban:
+  perm: "netuno.unipban"
+  broadcast:
+    - ""
+  staff-broadcast:
+    - ""
+    - " &6[ACCOUNTS] &7has been &6unipbanned"
+    - " &6Staff: &7[STAFF]"
+    - ""
+  message:
+    - ""
+
+punish:
+  perm: "netuno.punish"
+
+  # Should staff be able to /punish each other?
+  staff-punish: false
+
+  # Instant punishments
+  # This feature allows staff members to swiftly apply punishments
+  #   by typing '/punish (target) (instant punishment)'. For example,
+  #   if 'warn_spam' is a configured instant key for Spam in the warn GUI,
+  #   a staff member can expedite the penalty process by entering
+  #   '/punish (target) warn_spam', bypassing the need for navigating
+  #   through GUIs.
+  instant:
+    # Whether instant punishments are enabled or not
+    enabled: true
+
+    # Permission to use instant punishments
+    perm: "netuno.punish.instant"
+
+    # Prevents a player from receiving the same instant punishments
+    #   within a defined timeframe.
+    # This should help prevent accidental double punishments by
+    #   staff members, and it is recommended that you use this.
+    # You can set this to zero to not have a cooldown.
+    # The cooldown is in seconds.
+    cooldown: 3
+
+  # What to show when an item in any of the punishment GUIs is loading
+  # This typically happens when Netuno is getting data from a database
+  loading-item:
+    material: ORANGE_STAINED_GLASS_PANE
+    name: "&7Loading..."
+
+########################################
+#                 Alts                 #
+########################################
+ipinfo:
+  perm: "netuno.ipinfo"
+  # Players cannot view players with this permissions alt list,
+  # unless they have the general.all-perms permissions
+  exempt-perm: "netuno.ipinfo.exempt"
+
+  # Whether punished alt notifications are enabled or not
+  notifs: true
+  # What to send when a player joins with punished alt accounts
+  # Only sends to players who have access to the /ipinfo command
+  # Will not be sent if a player has the exempt-perm
+  # Supported variables: [TARGET]
+  notif-msg:
+    - ""
+    - " &6[TARGET]&7 has punished alts! Click here to view them"
+    - ""
+  # The message that is seen when a player hovers over the notif-msg (above)
+  # Set to "" for no hover message
+  # Supported variables: [TARGET]
+  notif-hover: "&7Click to view &6[TARGET]&7's punished alts"
+  # Whether we should send a notification even if the player already has an IP punishment
+  # For example, if this is false, and player 1 joins with an alt account that is muted, but
+  #   they are already IP muted, then a notification will NOT be sent
+  # However, if player 2 joins with an alt account that is muted, but they are not IP muted,
+  #   then a notification will be sent
+  notif-if-ippunished: true
+
+  # Sounds for punished alt notifications
+  notif-sounds:
+    # Whether a sound should be played for punished alt notifications
+    enabled: true
+
+    # What punishments should trigger a sound
+    # For example, "MUTE,BAN" would mean a sound would only be played if
+    #   one of the alt accounts is either muted or banned
+    # Options include: MUTE, BAN, IPMUTE, IPBAN
+    triggers: "MUTE,BAN"
+
+########################################
+#                 Chat                 #
+########################################
+# /chat command
+chat:
+  perm: "netuno.chat"
+
+  # Settings related to mute chat
+  mute:
+    # Permission to mute/unmute the chat
+    perm: "netuno.chat.mute"
+    # Players with the below permission and the general.staff-perm permission will bypass mutechat
+    bypass-perm: "netuno.mutechat.bypass"
+    enable-broadcast:
+      - ""
+      - "&7The chat has been &aenabled&7!"
+      - ""
+    disable-broadcast:
+      - ""
+      - "&7The chat has been &cdisabled&7!"
+      - ""
+    # What to send when a player attempts to chat while it's muted
+    attempt:
+      - ""
+      - "&7The chat is currently &6muted&7!"
+      - ""
+
+  # Settings related to clear chat
+  clear:
+    # Permission to clear the chat
+    perm: "netuno.chat.clear"
+    broadcast: "&7The chat has been cleared!"
+    # If enabled, staff's chat will not be cleared
+    staff-bypass: true
+    # What to send to staff when the chat is cleared
+    # If set to "", then the default broadcast will be sent
+    staff-broadcast: "&7The chat has been cleared by &6[STAFF]"
+
+  # Settings related to slow chat
+  slow:
+    # Permission to slow the chat
+    perm: "netuno.chat.slow"
+    # Permission to bypass the chatslow
+    bypass-perm: "netuno.chatslow.bypass"
+    # Default value to set the chatslow to (in seconds)
+    # Set to 0 for none
+    default-value: 0
+    # What to send to everyone when the chatslow amount is changed
+    # Set to "" for nothing to be sent
+    # All the messages in this (chatslow) section can ONLY use the variable [AMOUNT],
+    # which is the amount of time the chatslow is
+    broadcast: ""
+    # What to send when a player chats quicker then the chatslow allows
+    # Set to "" for nothing to be sent
+    msg: "&7You must wait &6[AMOUNT] seconds&7 before you can chat again"
+
+########################################
+#                History               #
+########################################
+history:
+  # note: players MUST have this permission to use any of the other sub-commands
+  # also gives them access to /history list (player)
+  perm: "netuno.history"
+
+  # ability to edit punishment reasons via GUI
+  reason:
+    perm: "netuno.history.reason"
+
+  # ability to edit punishment times via GUI
+  time:
+    perm: "netuno.history.time"
+
+  # ability to delete punishments
+  delete:
+    perm: "netuno.history.delete"
+
+  # ability to view other staffs' punishments via GUI
+  # i.e. being able to use /history staff (player)
+  staff-list:
+    perm: "netuno.history.staff-list"
+
+  # ability to rollback punishments
+  rollback:
+    # ability to rollback punishments for a player
+    player-perm: "netuno.history.rollback.player"
+    # ability to rollback punishments executed by a staff
+    staff-perm: "netuno.history.rollback.staff"
+
+  # "/history reset" command
+  reset:
+    perm: "netuno.history.reset"
+
+########################################
+#                Signs                 #
+########################################
+signs:
+  # Allow ipmuted/muted players to place signs while ipmuted/mute
+  allow-while-muted: false
+  # What to send when an ipmuted/muted player attempts to place a sign and is blocked
+  sign-while-muted-attempt: "&7You cannot place signs while punished!"
+
+  # Enable sign notifications to staff
+  notifs: true
+  # Permission to toggle sign notifications via /togglesigns and to see sign notifications
+  notifs-perm: "netuno.signs.notifs"
+  # What a sign notification would look like
+  # Use [LINE_1], [LINE_2], [LINE_3], and [LINE_4] for the contents of the sign
+  # ALl four variables above MUST be used
+  # Also can use [LOC] for the location of the sign
+  notifs-msg:
+    - "&6[TARGET] &7has placed a sign at &6[LOC]"
+    - "&61) &7[LINE_1]"
+    - "&62) &7[LINE_2]"
+    - "&63) &7[LINE_3]"
+    - "&64) &7[LINE_4]"
+  # The message that is seen when a player hovers over the notif-msg (above)
+  # Supported variables: NONE
+  notif-hover: "&7Click to teleport to sign"
+
+########################################
+#                Reports               #
+########################################
+# /report command
+# Is what is used to actually by players to report other players to staff
+report:
+  # Set to "" for no permission needed to use this command
+  perm: ""
+
+  # List of all the reasons a player can be reported for
+  # Set to "" for nothing to be placed (can be useful to help format the gui!)
+  # Max of 18 reasons
+  reasons:
+    - "Hacking"
+    - "Spamming"
+    - "Flood"
+    - "Swearing"
+    - "Media Advertisement"
+    - "Discrimination"
+    - "Inappropriate Comments"
+    - "Toxicity"
+    - "Death Threats"
+    - "Harassment"
+    - "Inappropriate Builds"
+    - "Other"
+
+  # The materials used in the /report (player) GUI
+  gui:
+    submit-report: GREEN_CONCRETE # Material for item to submit report
+    reset-selections: RED_CONCRETE # Material for item to reset report reason selections
+    selected-reason: LIME_CONCRETE # Material for item when that reason is selected
+    unselected-reason: LIGHT_GRAY_CONCRETE # Material for item when that reason is not selected
+
+  # What's sent to the player when they submit a report
+  # Set to "" for no message to be sent
+  # Use [REASON] for the reason(s) of the report and [TARGET] for the player reported
+  confirm-msg:
+    - " &7Successfully reported &6[TARGET]&7 for &6[REASON]"
+
+  # What staff are sent when a player makes a report
+  # Sent to all players who have the "general.staff-perm" permission
+  # Set to "" for no message to be sent
+  # Use [REASON] for the reason(s) of the report, [TARGET] for the player reported, and [PLAYER] for the player who made the report
+  staff-msg:
+    - ""
+    - " &6[PLAYER]&7 has reported &6[TARGET]&7 for &6[REASON]"
+    - ""
+
+  # Sounds to play, if desired
+  sounds:
+    # Sound sent to the player when they submit a report
+    player:
+      # Whether or not this sound is enabled or not
+      enabled: true
+      # What sound to play
+      sound: "block.dispenser.fail"
+      # What volume to play the sound at
+      volume: 1.0
+      # What pitch to play the sound at
+      pitch: 2.0
+
+    # Sound sent to the staff when a report is submitted
+    staff:
+      enabled: true
+      sound: "block.note_block.bell"
+      volume: 1.0
+      pitch: 1.0
+
+# /viewreports command
+# Is what is used by staff to view all reports
+view-reports:
+  perm: "netuno.reports"
+
+  # The materials used in the /viewreports (player) GUI
+  gui:
+    zero-reports: LIGHT_GRAY_CONCRETE # Material for when the player has zero reports for the current reason
+    one-report: LIME_CONCRETE # Material for when the player has one report for the current reason
+    two-reports: YELLOW_CONCRETE # Material for when the player has two reports for the current reason
+    three-reports: RED_CONCRETE # Material for when the player has three or more reports for the current reason
+    delete-reports: LAVA_BUCKET # Material for button to delete the player's reports
+
+  # How long (in hours) to wait before a report is automatically deleted
+  # Set to -1 to never delete (not recommended)
+  delete-after: 48
+
+########################################
+#               Watchlist              #
+########################################
+
+# When a player says something that matches an item on the watchlist, it will be notified
+#   for staff to see easier. You can add a prefix to the message, as well as a sound to alert
+#   staff.
+watchlist:
+  # Permission to view the watchlist
+  view-perm: "netuno.chatmod.watchlist.view"
+  # Permission to edit the watchlist
+  edit-perm: "netuno.chatmod.watchlist.edit"
+
+  # Watchlist notifications
+  notifs:
+    # Permission to see/hear watchlist notifications
+    perm: "netuno.chatmod.watchlist.notifs"
+    # What to add as the prefix of the player's message
+    prefix: " &e&l⚠⚠⚠ &r"
+
+    # What sound to play
+    sound:
+      # If true, then a sound will play, otherwise no sound will be played
+      enabled: true
+      sound: "block.note_block.iron_xylophone"
+      volume: 10.0
+      pitch: 0.1
+
+#########################
+#       Punish GUI      #
+#########################
+
+# The configurations for each of the GUIs in the /punish command have been moved!
+# You can now find them in the "guis" folder.
+# As per usual, everything is still explained in depth in each of these files.
+
+#########################
+#        Database       #
+#########################
+database:
+  # Note: changing any of the values in this section of the config will require a restart in order to kick in.
+  # SQLite is what is provided by Netuno automatically. Do not change this if you don't have a SQL server setup.
+  use-sqlite: true
+
+  sql: # Only works if use-sqlite is set to false
+    # Host of your database
+    host: localhost
+    # Port to your database
+    port: 3306
+    # Name of your database
+    database: database
+    # Username to your database
+    username: root
+    # Password to your database
+    password: password
+
+#########################
+#         Sounds        #
+#########################
+
+# We allow you to customize the sounds that can be played during different events, such as bans,
+#   mutes, etc., unless they have already been customized above.
+sounds:
+  punishments:
+    # Warn punishment
+    warn:
+      # What sound staff members hear
+      staff-sound:
+        # Whether or not this sound is enabled or not
+        enabled: false
+        # What sound to play.
+        sound: 'block.note_block.banjo'
+        # What volume to play the sound at
+        volume: 1.0
+        # What pitch to play the sound at
+        pitch: 0.1
+      # What sound the target hears
+      target-sound:
+        enabled: false
+        sound: 'item.mace.smash_air'
+        volume: 1.0
+        pitch: 1.0
+      # What sound everyone else hears when another player is warned. This will not be sent
+      #   if the punishment is silent
+      global-sound:
+        enabled: false
+        sound: 'entity.shulker.hurt_closed'
+        volume: 1.0
+        pitch: 0.1
+
+    kick:
+      staff-sound:
+        enabled: false
+        sound: 'block.note_block.banjo'
+        volume: 1.0
+        pitch: 0.1
+      # Note: kick, ban, and ipban do not have a target-sound, as they are being removed from the server (duh)
+      global-sound:
+        enabled: false
+        sound: 'entity.shulker.hurt_closed'
+        volume: 1.0
+        pitch: 0.1
+
+    mute:
+      staff-sound:
+        enabled: false
+        sound: 'block.note_block.banjo'
+        volume: 1.0
+        pitch: 0.1
+      target-sound:
+        enabled: false
+        sound: 'block.anvil.land'
+        volume: 1.0
+        pitch: 0.5
+      global-sound:
+        enabled: false
+        sound: 'entity.shulker.hurt_closed'
+        volume: 1.0
+        pitch: 0.1
+
+    unmute:
+      staff-sound:
+        enabled: false
+        sound: 'block.note_block.bell'
+        volume: 1.0
+        pitch: 0.1
+      target-sound:
+        enabled: false
+        sound: 'block.note_block.bell'
+        volume: 1.0
+        pitch: 0.1
+      global-sound:
+        enabled: false
+        sound: 'block.note_block.bell'
+        volume: 1.0
+        pitch: 0.1
+
+    ban:
+      staff-sound:
+        enabled: false
+        sound: 'block.note_block.banjo'
+        volume: 1.0
+        pitch: 0.1
+      global-sound:
+        enabled: false
+        sound: 'entity.shulker.hurt_closed'
+        volume: 1.0
+        pitch: 0.1
+
+    unban:
+      staff-sound:
+        enabled: false
+        sound: 'block.note_block.bell'
+        volume: 1.0
+        pitch: 0.1
+      global-sound:
+        enabled: false
+        sound: 'block.note_block.bell'
+        volume: 1.0
+        pitch: 0.1
+
+    ipmute:
+      staff-sound:
+        enabled: false
+        sound: 'block.note_block.banjo'
+        volume: 1.0
+        pitch: 0.1
+      target-sound:
+        enabled: false
+        sound: 'block.anvil.land'
+        volume: 1.0
+        pitch: 0.5
+      global-sound:
+        enabled: false
+        sound: 'entity.shulker.hurt_closed'
+        volume: 1.0
+        pitch: 0.1
+
+    unipmute:
+      staff-sound:
+        enabled: false
+        sound: 'block.note_block.bell'
+        volume: 1.0
+        pitch: 0.1
+      target-sound:
+        enabled: false
+        sound: 'block.note_block.bell'
+        volume: 1.0
+        pitch: 0.1
+      global-sound:
+        enabled: false
+        sound: 'block.note_block.bell'
+        volume: 1.0
+        pitch: 0.1
+
+    ipban:
+      staff-sound:
+        enabled: false
+        sound: 'block.note_block.banjo'
+        volume: 1.0
+        pitch: 0.1
+      global-sound:
+        enabled: false
+        sound: 'entity.shulker.hurt_closed'
+        volume: 1.0
+        pitch: 0.1
+
+    unipban:
+      staff-sound:
+        enabled: false
+        sound: 'block.note_block.bell'
+        volume: 1.0
+        pitch: 0.1
+      global-sound:
+        enabled: false
+        sound: 'block.note_block.bell'
+        volume: 1.0
+        pitch: 0.1
+
+  # Played when a player tries to speak while ipmuted or muted
+  punished-attempt:
+    muted:
+      enabled: false
+      sound: 'block.note_block.bass'
+      volume: 1.0
+      pitch: 0.1
+
+    ipmuted:
+      enabled: false
+      sound: 'block.note_block.bass'
+      volume: 1.0
+      pitch: 0.1

@@ -1,0 +1,168 @@
+package com.github.cyberryan1.netuno.models;
+
+import com.github.cyberryan1.netuno.Netuno;
+import com.github.cyberryan1.netuno.api.models.ApiPlayer;
+import com.github.cyberryan1.netuno.api.models.ApiPunishment;
+import com.github.cyberryan1.netuno.database.PunishmentsDatabase;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+/**
+ * Represents a player and all of their respective Netuno data
+ *
+ * @author Ryan
+ */
+public class NetunoPlayer implements ApiPlayer {
+
+    private final UUID uuid;
+
+    private List<ApiPunishment> loadedPunishments = new ArrayList<>();
+
+    /**
+     * Note that after this constructor is finished,
+     * {@link #reloadData()} is called. You may want to run this
+     * constructor async to avoid lag
+     *
+     * @param uuid The UUID of the player
+     */
+    public NetunoPlayer( UUID uuid ) {
+        this.uuid = uuid;
+
+        reloadData();
+    }
+
+    /**
+     * Note that after this constructor is finished,
+     * {@link #reloadData()} is called. You may want to run this
+     * constructor async to avoid lag
+     *
+     * @param player The player
+     */
+    public NetunoPlayer( OfflinePlayer player ) {
+        this( player.getUniqueId() );
+    }
+
+    /**
+     * @return The UUID of the player represented
+     */
+    @Override
+    public UUID getUuid() {
+        return this.uuid;
+    }
+
+    /**
+     * @return The player represented
+     */
+    @Override
+    public OfflinePlayer getPlayer() {
+        return Bukkit.getOfflinePlayer( this.uuid );
+    }
+
+    /**
+     * Reloads the data for this player. Should be ran async to
+     * avoid lag.
+     */
+    @Override
+    public void reloadData() {
+        // Loading punishments
+        this.loadedPunishments.clear();
+        this.loadedPunishments.addAll( PunishmentsDatabase.getPunishments( uuid.toString() ) );
+    }
+
+    /**
+     * Alias to
+     * {@link
+     * com.github.cyberryan1.netuno.api.services.ApiAltService#getAlts(UUID)}
+     *
+     * @return A list of known accounts that this player has
+     *         joined the server with
+     */
+    @Override
+    public List<UUID> getAlts() {
+        return Netuno.ALT_SERVICE.getAlts( uuid );
+    }
+
+    /**
+     * @return List of all punishments of this player
+     */
+    @Override
+    public List<ApiPunishment> getPunishments() {
+        return this.loadedPunishments;
+    }
+
+    /**
+     * @return List of all active punishments of this player
+     */
+    @Override
+    public List<ApiPunishment> getActivePunishments() {
+        List<ApiPunishment> activePunishments = new ArrayList<>();
+        for ( ApiPunishment pun : this.loadedPunishments ) {
+            if ( pun.isActive() ) activePunishments.add( pun );
+        }
+        return activePunishments;
+    }
+
+    /**
+     * @param type The type of punishment to search by
+     * @return List of all active punishments of the provided
+     * type that this player has
+     */
+    @Override
+    public List<ApiPunishment> getActivePunishments( ApiPunishment.PunType type ) {
+        return this.loadedPunishments.stream()
+                .filter( pun -> pun.isActive() && pun.getType() == type )
+                .collect( Collectors.toList() );
+    }
+
+    /**
+     * @return True if this player has an active punishment,
+     * false otherwise
+     */
+    @Override
+    public boolean isPunished() {
+        return this.getActivePunishments().isEmpty() == false;
+    }
+
+    /**
+     * Checks if the player currently has any active punishments
+     * matching any of the specified types.
+     *
+     * @param types The punishment types to check for
+     * @return true if the player has an active punishment of at
+     * least one of the specified types, false otherwise
+     */
+    @Override
+    public boolean isPunished( ApiPunishment.PunType ... types ) {
+        for ( ApiPunishment.PunType type : types ) {
+            if ( this.getActivePunishments( type ).isEmpty() == false ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Updates the provided punishment for this player in both
+     * the cache and in the database. Should be ran async to
+     * avoid lag
+     *
+     * @param punishment The updated punishment
+     */
+    @Override
+    public void updatePunishment( ApiPunishment punishment ) {
+        // Updating the provided punishment within this instance
+        for ( int index = 0; index < this.loadedPunishments.size(); index++ ) {
+            if ( this.loadedPunishments.get( index ).getId() == punishment.getId() ) {
+                this.loadedPunishments.set( index, punishment );
+            }
+        }
+
+        // Updating the provided punishment within the database
+        Netuno.PUNISHMENT_SERVICE.updatePunishment( punishment );
+    }
+}
